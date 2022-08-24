@@ -1,0 +1,160 @@
+import React from 'react';
+import Select from 'react-select';
+
+import { useState,useEffect } from "react";
+import axios from "axios";
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+              
+
+
+
+
+export default function SelectTageting() {
+
+    const [sport_lists, setSport_lists] = React.useState([]);
+    const [league_lists, setLeague_lists] = React.useState([]);
+    const [team_lists, setTeam_lists] = React.useState([]);
+    const [player_lists, setPlayer_lists] = React.useState([]);
+    const [country_lists, setCountry_lists] = React.useState([]);
+
+    const get_data = async(url,setval) =>{
+        try {
+          let sendData = {}; 
+          let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
+          let response = await axios.get( url, sendData, options1);
+    
+          if (response.status) {
+    
+            let data = response.data;
+    
+            if (data.status) {
+                setval(data.body);
+             // toast.success(data.msg);
+            } else {
+              toast.error('something went wrong please try again');
+            }
+          }
+          else {
+            toast.error('something went wrong please try again..');
+          }
+    
+    
+        } catch (err) { console.error(err); toast.error('some errror'); return false; }
+    
+    }
+    
+    
+    
+    
+      useEffect(() => {
+        get_data('/sport_list',setSport_lists);
+        get_data('/league_list',setLeague_lists);
+        get_data('/team_list',setTeam_lists);
+        get_data('/player_list',setPlayer_lists);
+        get_data('/country_list',setCountry_lists);
+
+
+        // 👇 add class to body element
+        document.body.classList.add('bg-salmon');
+    
+      }, []);
+    
+      
+
+    const sportOptions = (sport_lists.length >0) ? sport_lists.map((item)=>{
+        return  { value: item._id, label: item.name };
+    }) :[];
+    
+
+    const leagueOptions = (league_lists.length >0) ? league_lists.map((item)=>{
+        return  { value: item._id, label: item.league_name };
+    }) :[];
+    
+    
+    const teamOptions = (team_lists.length >0) ? team_lists.map((item)=>{
+        return  { value: item._id, label: item.team_name };
+    }) :[];
+    
+    
+    
+    const playersOptions = (player_lists.length >0) ? player_lists.map((item)=>{
+        return  { value: item._id, label: item.team_name };
+    }) :[];
+    
+    
+    const countryOptions = (country_lists.length >0) ? country_lists.map((item)=>{
+        return  { value: item._id, label: item.name };
+    }) :[];
+    
+    const selectChange = (e,type)=>{
+        console.log(e.currentTarget);
+        alert(" ==jk==  "+type);
+    }
+    
+
+    return (
+        <>
+
+            <div className="col-lg-6 reletive mb-4">
+                <span className='react-select-title'>Select Sports</span>
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="sports"
+                    //value={selected_soprt}
+                  ///  onChange = {(e)=>selectChange( e,'sport')}
+                
+
+                    options={sportOptions}
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+            </div>
+
+            <div className="col-lg-6 reletive mb-4">
+                <span className='react-select-title'>Select League</span>
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="league" 
+                    options={leagueOptions}
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+            </div>
+
+            <div className="col-lg-6 reletive mb-4">
+                <span className='react-select-title'>Select Team</span>
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="team"   
+                    options={teamOptions}
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+            </div>
+
+            <div className="col-lg-6 reletive mb-4">
+                <span className='react-select-title'>Select Players</span>
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="players"  
+                    options={playersOptions}
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+            </div>
+
+            <div className="col-lg-12  mb-4">
+                <label className="title-col mb-3">Targeted Country</label>
+             </div>
+              <div className='reletive col-lg-12'>
+                <span className='react-select-title'>Select Country</span>
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="country" 
+                    options={countryOptions}
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+            </div>
+
+        </>
+    );
+}
