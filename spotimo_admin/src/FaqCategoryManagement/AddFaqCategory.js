@@ -147,7 +147,7 @@ const UpdateFormData = async (e) => {
 
         let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
 
-        axios.put(`http://192.168.1.95:3600/web_api/update_faq_category`, dataToSend2, options1)
+        axios.put(`/update_faq_category`, dataToSend2, options1)
             .then(res => {
                 if (res.status) {
 

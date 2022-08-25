@@ -39,7 +39,7 @@ const onRemoveClick1 = (e) => {
 	 const logout = ()=>{
 
 		//alert("my fun call == ");
-			localStorage.clear();
+		localStorage.clear();
 	    navigate('/');
 		toast.success("Logout Successfully");
 	}

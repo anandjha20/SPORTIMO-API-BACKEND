@@ -51,7 +51,11 @@ function UserListTable() {
    
     const userlist = async () =>
     {
-        await axios.get(`/user_list`)
+        let token = localStorage.getItem("token");
+        let header = ({ 'token': `${token}` });
+        let options = ({ headers: header });
+
+        await axios.get(`/user_list`,  options)
         .then(res => {
           const userData = res.data.body;
           setData(userData);

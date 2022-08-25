@@ -132,10 +132,12 @@ function CreatePoll() {
 
       }
 
-      // const result = await axios.post(`/user_list/${_id}`);
+      let token = localStorage.getItem("token");
+      let header = ({ 'token': `${token}` });
+      let options = ({ headers: header });
 
-      let options1 = { headers: { "Content-type": "application/json" } };
-      let response = await axios.post('/add_poll', sendData, options1);
+      // let options1 = { headers: { "Content-type": "application/json" } };
+      let response = await axios.post('/add_poll', sendData, options);
 
       // const result = await axios('/add_poll',{ method: 'POST',data : sendData,headers: {
       //                                             // 'Authorization': `bearer ${token}`,
