@@ -20,17 +20,13 @@ function TableSponsorship(props) {
     
     const columns =
         [
-
-            
+ 
             { title: 'Match/league', field: 'match'},
             { title: 'Sponsorship Type', field: 'type'},
             // { title: 'Fill Name', field: 'filename'},
             { title: 'Campaign  Date-Range', field: 'date'},
             { title: 'Impressions', field: 'impression'},
             { title: 'Clicks', field: 'Clicks'},
-
-            
-
         ]
 
     const data = sponsor_list.length>0? sponsor_list.map((item)=>{

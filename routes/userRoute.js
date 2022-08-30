@@ -28,7 +28,13 @@ const user_img =  img_upload('./assets/user_img','user_image');
   const PollController = require('../controllers/PollController');    
   const SponsorshipController = require('../controllers/SponsorshipController');    
   const complaintController = require('../controllers/complaintController');    
-                                                 
+   
+ let defaultMsgController = require('../controllers/defaultMsgController');
+ let chatController = require('../controllers/chatController');
+
+ let FirebaseController = require('../controllers/FirebaseController');
+          
+                                              
           router.get('/JK/',UserController.dashboardAllCount);
           router.get('/sendEmail/',UserController.User_sendEmail);
           router.get('/league_list/:id?',user_token_check,FootballController.league_list);
@@ -38,8 +44,12 @@ const user_img =  img_upload('./assets/user_img','user_image');
                        
                                    
           router.post('/registration/',UserController.registration);
-          router.post('/user_profile_update/',user_img,UserController.user_profile_update);
-         
+
+          router.post('/verify_nickName',UserController.verify_nickName);
+          router.post('/user_profile_update',user_img , UserController.user_profile_update);
+
+          router.post('/block_user_add',user_token_check,UserController.block_user_add);
+
           router.post('/user_profile_view',UserController.user_profile_view);
           
           router.get('/resend_otp/:id?',UserController.resend_otp_2); 
@@ -54,6 +64,7 @@ const user_img =  img_upload('./assets/user_img','user_image');
 
         //  block_user_add
          router.post('/block_user_add',user_token_check,UserController.block_user_add);
+       
            
       ///  all Sponsorship Routes
         router.get('/sponsor_list',SponsorshipController.sponsor_list);
@@ -67,4 +78,30 @@ const user_img =  img_upload('./assets/user_img','user_image');
         router.post('/user_complaint_chat_add',complaintController.user_complaint_chat_add);  
         router.get('/user_complaint_chat_list/:id',complaintController.user_complaint_chat_list);  
          
-module.exports = router;  
+   // default msg  Routes
+    router.get('/get_defaultMsg/:id?',defaultMsgController.get_defaultMsg);  
+  
+   // user logout Routes
+    router.delete('/logout/:id?',user_token_check,UserController.logout);  
+   
+   // user social media add on
+    router.put('/update_facebook_id/',UserController.update_facebook_id);  
+   
+   // user settings (like music_sound,haptics,chat,biometric,notifications );
+    router.put('/user_settings',user_token_check,UserController.user_settings);  
+    
+    // user get content
+     router.get('/get_content/:type?',UserController.get_content);  
+     
+    // chat group add   group participant 
+     router.post('/chat_group_add',chatController.chat_group_add);  
+     router.post('/group_participant_add',chatController.group_participant_add);  
+     router.get('/chat_group_list/:id?',chatController.chat_group_list);                       
+     router.get('/group_participant_list/:id?',chatController.group_participant_list);                       
+   
+   // get Firebase Chat Data 
+    router.get('/getFirebaseChatData',FirebaseController.getFirebaseChatData); 
+
+
+              
+module.exports = router;             

@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = process.env.port || 3000;
+const port = process.env.port || 3600;
 const userRoute = require('./routes/userRoute');
 const AdminRoute = require('./routes/AdminRoute');
 const image_urls = require('./routes/image_urls');
@@ -9,8 +9,7 @@ const cors = require('cors');
 var bodyParser = require('body-parser');
                      
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://root:rootadmin@mbc-dev-sportsapp.cluster-ca4ypuzoojjz.us-east-1.docdb.amazonaws.com:27017/sportimo?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false',{tlsCAFile: `rds-combined-ca-bundle.pem`});
-
+mongoose.connect('mongodb://localhost:27017/football_db');
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
@@ -21,7 +20,7 @@ db.once('open', function callback () {
 exports.test = function(req,res) {
   res.render('test');
 };
-
+   
 
 const path = require('path');
 app.use(cors());

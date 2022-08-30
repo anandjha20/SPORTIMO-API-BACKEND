@@ -14,9 +14,9 @@ const router = express.Router();
             return   res.sendFile(full_path);
    });
        
-   router.get('/assets/sponsorship_image/:img?',function(req,res){
-    let img = req.params.img;
-      
+     router.get('/assets/sponsorship_image/:img?',function(req,res){
+          let img = req.params.img;
+          
   
 
    let full_path = path.join(__dirname+`../../assets/sponsorship_image/${img}`);

@@ -100,7 +100,6 @@ export default function CreateTipsTricks() {
     }
 
 
-    
 ///////////////// delete tips tricks api call  /////////////////
     const deleteCategory = (_id) => {  
         let sendData = { id : _id  }

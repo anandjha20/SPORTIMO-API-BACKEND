@@ -1,8 +1,8 @@
 let  express_2 = require('express');
   
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp } = require('../myModel/common_modal');
+const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
    
-
+  
   
   
   // const state_tbl = require('../models/state_tbl');    
@@ -11,6 +11,7 @@ const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp } = require('../m
     const faq_category_tbl = require('../models/faq_categories');    
     const faq_tbl = require('../models/faq');   
     const tips_trick = require('../models/tips_tricks'); 
+    const content_tbls = require('../models/content_tbls'); 
 
 class AdminController { 
 
@@ -361,12 +362,61 @@ console.log('tttttt=======  ',data);
           } catch (error) { console.log(error);
             res.status(200).send({'status':false,'msg':error,'body':''});
           }
-                
-              }     
+      }     
+           
+     /// content_tbls            
+      
+     static content_add = async(req,res)=> {
+      try{    let type  = req.body.type;
+              let content_data = req.body.content_data;
+   
+          if(isEmpty(type) || isEmpty(content_data)){
+              return res.status(200).send({"status":false,"msg":'All Field Required '}) ;       
+          }
+          
+          content_tbls.findOneAndUpdate({type} ,{$set: {type,content_data} },{new: true}, (err,updatedUser)=>{
+          if(err) {  console.log(err);
+              return res.status(200).send({"status":false,"msg":'some errors '}) ;          
+          }
         
-                  
+          if(isEmpty(updatedUser)){
+                  let add =new content_tbls({type,content_data});
+                  add.save((err,datas)=>{
+                    if(err){ console.log(err);   return res.status(200).send({"status":false,"msg":'some errors...'}) ;   
+                         }else{ 
+                           return res.status(200).send({"status":true,"msg":'content data add  successfully',"body":datas }) ;  
+                        }
+
+                  }); 
+
+                   
+          }else{
+                  return res.status(200).send({"status":true,"msg":'content data Update successfully',"body":updatedUser }) ;  
+             }
+      
+                     });
+         }catch (error) { console.log(error);  return res.status(200).send({"status":false,"msg":'no data add' }) ; }
+                 
+    }     
             
-              
+      
+ static get_content = async (req,res)=>{
+  try {
+          let c_type = req.params.type;
+          let whr = isEmpty(c_type)? {} : {type:c_type} ;
+          let sendData =  await content_tbls.find(whr);
+            console.log("adminget content call == ",sendData ); 
+          if(sendData.length >0){
+              return res.status(200).send({status:true ,msg:"success",body:sendData});
+          }else{
+              return res.status(200).send({status:false ,msg:"No Data FOund!.. "});
+          }
+  } catch (error) {  console.log(error); 
+      return res.status(200).send({status:false,msg: "No Data FOund!.. "});
+  }
+
+
+}        
 
 
 }

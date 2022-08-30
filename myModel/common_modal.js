@@ -1,6 +1,9 @@
 
 var nodemailer = require('nodemailer');
+let mongoose = require('mongoose');
 var axios = require('axios');
+const user_tbl = require('../models/user');    
+const user_logs = require('../models/user_logs');  
 
 
 const sentEmail = async (req,res) => {
@@ -108,6 +111,39 @@ const isEmpty = (value) => (
   (typeof value === 'string' && value.trim().length === 0)
 )
 
+const FulldateTime = ()=>{
+  var dt = new Date();
+    var timeString = dt.getFullYear() +  "-" + dt.getMonth() + "-" + dt.getDate() + " " + dt.getHours() + ":" + dt.getMinutes() +":" + dt.getSeconds()
+    return timeString;
+
+}
+
+const user_logs_add = (user_id,type) =>{
+      try{   
+              let date =   FulldateTime();
+               console.log(user_id+ " == user_logs_add is call == "+ type);
+            let whr = (type == 'logout')? {'logout_date':date }:{'login_date':date } ;
+     
+         user_logs.findOneAndUpdate({user_id:user_id} ,{$set: whr },{new: true}, (err,updatedUser)=>{
+            if(err) {  console.log(err); return false ; }   
+            if(isEmpty(updatedUser)){
+                //return res.status(200).send({"status":false,"msg":'Invalid user '}) ;  
+                let add =new user_logs({  "user_id": user_id, "login_date":date,"logout_date":date, });
+                        add.save((err,datas)=>{
+                          if(err){ console.log(err);   }else{console.log("add data ==",datas);  }
+
+                        });
+                  return true;  
+            }else{
+                return true;  
+            }     
+
+                      });
+       }catch (error) { console.log(error); }
+                  
+  
 
 
-module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty};
+}
+
+module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime};

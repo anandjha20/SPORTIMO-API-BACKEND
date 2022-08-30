@@ -75011,3 +75011,23 @@ padding: 8px 12px 8px;
 .css-1dmqq7i-MuiNativeSelect-select-MuiInputBase-input-MuiInput-input:not([multiple]) option, .css-1dmqq7i-MuiNativeSelect-select-MuiInputBase-input-MuiInput-input:not([multiple]) optgroup {
     background-color: #313941 !important;
 }
+
+
+.jodit-status-bar-link
+{
+display : none;
+}
+
+.jodit-wysiwyg {
+    color: white;
+}
+
+.jodit-workplace
+{
+    min-height: 250px !important;
+}
+
+/* .jodit-popup_strategy_leftbottom
+{
+    display: none !important;
+} */

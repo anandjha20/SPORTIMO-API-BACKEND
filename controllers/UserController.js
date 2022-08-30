@@ -1,19 +1,24 @@
     let  express_2 = require('express');
-    let mongoose = require('mongoose')
+    let mongoose = require('mongoose');
+    
+
+
   
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
-   
+const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty,user_logs_add,FulldateTime } = require('../myModel/common_modal');
+const { autoincremental } = require('../myModel/helper_fun');  
 
   
   
-  // const state_tbl = require('../models/state_tbl');    
+  // all mongodb schema    
     const user_tbl = require('../models/user');    
     const sport_tbl = require('../models/sport');    
     const League_tbl = require('../models/League');    
     const Team_tbl = require('../models/Team');    
     const Player_tbl = require('../models/Player');    
-    const block_user_tbl = require('../models/block_user');    
-
+    const block_user_tbl = require('../models/block_user');  
+    const default_massages_tbl = require('../models/default_massages');  
+    const user_logs = require('../models/user_logs');  
+    const content_tbls = require('../models/content_tbls'); 
                   
 
 
@@ -77,13 +82,10 @@ class UserController {
             let date = getcurntDate(); 
             
             let token = gen_str(99);
-
-
-
-            // if(email_len == 0 || name_len == 0 || mobile_len == 0 ){ }else{
-            //     return res.status(200).send({"status":false,"msg":'All Field Required ' , "body":''}) ;     
-            // }
-
+           
+            let seq_id = await autoincremental('seq_id',user_tbl);
+            console.log("seq_id is ==",seq_id);
+            
          if(user_type == 1 || user_type == 2 || user_type == 3 || user_type == 4 || user_type == 5 ){ }else{
                 return res.status(200).send({"status":false,"msg":'Invalid User type Field Value ' , "body":''}) ;     
             }
@@ -95,21 +97,21 @@ class UserController {
 
             ///////////////////////////////////////////////////////////////////////////////      
            let myobjs = { token};
-            user_tbl.findOneAndUpdate({user_type: 5,device_id},{$set : myobjs},{new: true}, (err, updatedUser) => {
+            user_tbl.findOneAndUpdate({user_type: 5,device_id,is_deleted :{$ne : 1}},{$set : myobjs},{new: true}, (err, updatedUser) => {
                 if(err) {  console.log(err);
                    return  res.status(200).send({"status":false,"msg":'some errors '}) ;   
                 }
                if(updatedUser){
-                return res.status(200).json({  
-                    "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
+                              let ddsq = user_logs_add(updatedUser._id,'login');  
+                return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
                }else{
-                let add =new user_tbl({ user_type, date,device_id,token,otp});
+                let add =new user_tbl({ user_type, date,device_id,token,otp,seq_id });
     
                          add.save( (err, data) => {
                               if (err) {        
 
                                 return res.status(200).send({"status":false,"msg":'An error occurred'}) ;            
-                                      }else{       
+                                      }else{        let ddsqq = user_logs_add(data._id,'login');   
                                       return res.status(200).send({"status":true,"msg":'Guset user add successfully' , "body":data  }) ; 
                                } });
                              
@@ -152,10 +154,12 @@ class UserController {
                  mobile:mobile,
                  device_id:device_id,
                  otp : otp,
-                 token : token
+                 token : token,
+                 seq_id : seq_id
                   
             });             
 
+           
                     let allsaveData =  await add.save();
                       
 
@@ -171,7 +175,7 @@ class UserController {
 
         } catch (error) { console.log(error);
             return res.status(200).send({"status":false,"msg":'no data add ' }) ;          
-
+               
         }           
       
 
@@ -242,7 +246,7 @@ query.exec(function (err, person) {
     return res.status(200).send({"status":false,"msg":'Invalid User' }) ; 
   } 
   // Prints "Space Ghost is a talk show host."
-
+  let ddsq = user_logs_add(person._id,'login');  
   if(person.otp == otp){
     return res.status(200).send({"status":true,"msg":'Success' , "body": person }) ;     
   }else{  console.log(person); 
@@ -304,8 +308,6 @@ query.exec(function (err, person) {
 }
 
 
- 
-
 
 static user_profile_update = async(req,res)=>{
     try {
@@ -351,8 +353,8 @@ static user_profile_update = async(req,res)=>{
             league_preference:league_preference,
             team_preference: team_preference,
             player_preference: player_preference,
-            u_name : 'Sportimo-'+newName+'-'+num,
-            nickname : nickname,
+            u_name :nickname ,  
+       
             status_msg : status_msg,
             gender : gender,  
         };
@@ -381,7 +383,7 @@ user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUs
 
 }
 
-
+   
 static block_user_add = async(req,res)=>{
 
     try {
@@ -439,15 +441,117 @@ if(from_user_len == 0 || to_user_len == 0  ){
 
 }
 
+static verify_nickName = async(req,res)=>{
+        let {user_id,nickname} = req.body;    
+        console.log('user_id',user_id);
+        console.log('nickname',nickname);
+     let datas = await user_tbl.find({"u_name":nickname,_id:{ "$ne": user_id } }).countDocuments(); 
+      
+     // let datas = await user_tbl.find({"u_name":nickname,_id:{ "$ne": user_id } }).countDocuments();  
+      
+      
+        if(datas >0 ){  console.log("datas == ",nickname); 
+             return res.status(200).send({"status":true,"msg":'this nick name already exists ' ,body:datas}) ;            
+                       }else{       
+                       return res.status(200).send({"status":false,"msg":'No data found!..' }) ; 
+                }            
+                                 
+            }
+            
+  static logout = async(req,res)=> {
+        try{    let id = req.params.id;
+                let token = gen_str(70);
+
+            user_tbl.findByIdAndUpdate({_id:id} ,{$set: {'is_deleted':1,token:token}},{new: true}, (err,updatedUser)=>{
+            if(err) {  console.log(err);
+                return res.status(200).send({"status":false,"msg":'some errors '}) ;          
+            }
+            if(isEmpty(updatedUser)){
+                return res.status(200).send({"status":false,"msg":'Invalid user '}) ;  
+            }else{
+                          let dd = user_logs_add(id,'logout');  
+                return res.status(200).send({"status":true,"msg":'User Deleted successfully' }) ;  
+            }
+        
+                       });
+           }catch (error) { return res.status(200).send({"status":false,"msg":'no data add'}) ; }
+                   
+      }     
+
+      static update_facebook_id = async(req,res)=> {
+        try{    let user_id  = req.body.user_id;
+                let facebook_id = req.body.facebook_id;
+     
+            if(isEmpty(user_id) || isEmpty(facebook_id)){
+                return res.status(200).send({"status":false,"msg":'All Field Required '}) ;       
+            }
+
+            user_tbl.findByIdAndUpdate({_id:user_id} ,{$set: {'facebook_id':facebook_id }},{new: true}, (err,updatedUser)=>{
+            if(err) {  console.log(err);
+                return res.status(200).send({"status":false,"msg":'some errors '}) ;          
+            }
+            if(isEmpty(updatedUser)){
+                return res.status(200).send({"status":false,"msg":'Invalid user '}) ;  
+            }else{
+                return res.status(200).send({"status":true,"msg":'Facebook_id add  successfully',"body":updatedUser }) ;  
+            }
+        
+                       });
+           }catch (error) { console.log(error);  return res.status(200).send({"status":false,"msg":'no data add' }) ; }
+                   
+      }     
+      
+    static user_settings = async(req,res)=> {
+          try{      let user_id      = req.body.user_id;
+                    let music_sound  = req.body.music_sound;
+                    let haptics      = req.body.haptics;
+                    let chat         = req.body.chat;
+                    let biometric    = req.body.biometric;
+                    let notifications = req.body.notifications;
+                   
+                    music_sound = (music_sound == 1)? 1 : 0;
+                    haptics     = (haptics == 1)? 1 : 0;
+                    chat        = (chat == 1)? 1 : 0;
+                    biometric   = (biometric == 1)? 1 : 0;
+                    notifications = (notifications == 1)? 1 : 0;
+          
+                    console.log("get all data ==  ",req.body);
+
+
+            user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {music_sound,haptics,chat,biometric,notifications }},{new: true}, (err,updatedUser)=>{
+            if(err) {  console.log(err);
+                return res.status(200).send({"status":false,"msg":'some errors '}) ;          
+            }
+            if(isEmpty(updatedUser)){
+                return res.status(200).send({"status":false,"msg":'Invalid user '}) ;  
+            }else{
+                return res.status(200).send({"status":true,"msg":'settings add  successfully',"body":updatedUser }) ;  
+            }
+        
+                       });
+           }catch (error) { console.log(error);  return res.status(200).send({"status":false,"msg":'no data add' }) ; }
+                   
+      }     
+
+ static get_content = async (req,res)=>{
+            try {
+                    let c_type = req.params.type;
+                    let sendData =  await content_tbls.findOne({type:c_type}).exec();
+                    if(! isEmpty(sendData)){
+                        return res.status(200).send({status:true ,msg:"success",body:sendData});
+                    }else{
+                        return res.status(200).send({status:false ,msg:"No Data FOund!.. "});
+                    }
+            } catch (error) {  console.log(error); 
+                return res.status(200).send({status:false,msg: "some errors  "});
+            }
+    
+    
+ }
 
 
 
 }
-
-
-
-
-
-
+       
 
 module.exports = UserController ;      

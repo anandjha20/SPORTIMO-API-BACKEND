@@ -29,8 +29,16 @@ const Userschema = new Schema({
          team_preference:  { type: String ,default: '' },
          player_preference:  { type: String,default: '' },
          u_name :  { type: String,default: '' },
-         nickname :  { type: String,default: '' },
+       //  nickname :  { type: String,default: '' },
          status_msg :  { type: String,default: '' },
+         seq_id : { type: Number,unique: true , default : 1  },
+         is_deleted : { type: Number, default : 0 },
+         facebook_id : { type: String ,default: ''},
+         music_sound : { type: String,enum: [0,1], default: '0' },
+         haptics : { type: String,enum: [0,1], default: '0' },
+         chat : { type: String,enum: [0,1], default: '0' },          
+         biometric  : { type: String,enum: [0,1], default: '0'},
+         notifications : { type: String,enum: [0,1], default: '0' },     
 });
 
 

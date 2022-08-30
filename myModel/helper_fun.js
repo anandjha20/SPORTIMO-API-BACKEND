@@ -7,6 +7,7 @@
     const Team_tbl = require('../models/Team'); 
     const Player_tbl = require('../models/Player'); 
     const country_tbl = require('../models/country'); 
+    const default_massages_tbl = require('../models/default_massages'); 
     
     
     const mongoose = require('mongoose');
@@ -46,5 +47,23 @@ const all_list_come = async(ids,num) =>{
 
 
 
+const autoincremental  = async(seq_id,mymodals) =>{
+    try { 
+                        
+                let total = [] ; 
 
-module.exports = { poll_percent,all_list_come}
+                total =  await mymodals.find().sort({seq_id: -1}).limit(1); 
+            if(total.length )  { console.log("total == ",total )};  
+     
+            let newSeq = total.length == 0 ? 1 :   Number(total[0].seq_id) + 1;
+                console.log("fgfgg === ",total[0].seq_id);
+                console.log("seq  === ",seq_id );        
+         return   newSeq ;    
+               
+        } catch (error) {   console.log('try error====   ',error); return false; }
+}
+
+
+
+
+module.exports = { poll_percent,all_list_come,autoincremental }

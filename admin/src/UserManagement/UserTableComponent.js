@@ -32,7 +32,6 @@ function UserListTable() {
   const viewFun = (_id)=>{
     navigate(`/user/detail/${_id}`);
     return false;   
-
   } 
   
     const columns =

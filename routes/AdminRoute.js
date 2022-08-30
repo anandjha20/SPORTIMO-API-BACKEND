@@ -27,7 +27,8 @@ const token_check =  require('../middleware/token_check');
   let FootballController = require('../controllers/FootballController');
   let SponsorshipController = require('../controllers/SponsorshipController');
   let complaintController = require('../controllers/complaintController');
-
+  let defaultMsgController = require('../controllers/defaultMsgController');
+  let FirebaseController = require('../controllers/FirebaseController');
 
       router.get('/JK/',PollController.JK);
       router.post('/add_poll/',token_check,PollController.add_poll);
@@ -73,10 +74,24 @@ const token_check =  require('../middleware/token_check');
       router.post('/user_complaint_chat_add', complaintController.user_complaint_chat_add); 
       router.delete('/user_complaint_chat_stop/:id',complaintController.user_complaint_chat_stop);
 
+
+          // default msg  Routes
+          router.post('/addDefaultMsg',defaultMsgController.addDefaultMsg);
+           router.get('/get_defaultMsg/:id?', defaultMsgController.get_defaultMsg);  
+           router.delete('/defaultMsg_delete/:id',defaultMsgController.defaultMsg_delete); 
+
+        
+       // default msg  Routes
+          router.post('/content_add',AdminController.content_add);
+          router.get('/get_content/:type?',AdminController.get_content);
+    
+          // get Firebase Chat Data 
+    router.get('/firebase_group_chat_data/:id?',FirebaseController.firebase_group_chat_data);      
+
 router.get('/raj', (req,res)=>{
     return res.status(200).send({"status":true,"msg":'user address already exists ' , "body":''}) ;          
       });              
-                                     
+                                         
                   
 
 

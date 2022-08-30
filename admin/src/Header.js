@@ -148,6 +148,17 @@ return (
 							<i className="fad fa-lightbulb-on sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Tips & Tricks</span></NavLink>
 						</li> 
+
+						 <li className="nav-item" >
+							<NavLink  to="/content" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-money-check-edit sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Content Management</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
+							<NavLink  to="/default-message" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-comments-alt sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Default Status Message</span></NavLink>
+						</li> 
 						
 
 					

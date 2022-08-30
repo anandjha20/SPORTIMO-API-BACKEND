@@ -21,7 +21,10 @@ import Complaintlist from "./ComplaintManagement/Complaintlist";
 import CreateTipsTricks from "./TipsTricksManagement/CreateTipsTricks";
 import AddComplaintCategory from "./ComplaintManagement/AddCategory/AddComplaintCategory";
 import ReplyComplaintChat from "./ComplaintManagement/ChatManagement/ReplyComplaintChat";
-
+import ContentList from "./ContentManagement/ContentList";
+// import AddContent from "./ContentManagement/AddContent";
+import UpdateContent from "./ContentManagement/UpdateContent";
+import CreateDefaultMessage from "./DefaultMessageManagement/CreateDefaultMessage";
 
 function App() {
   return (
@@ -70,7 +73,16 @@ function App() {
         <Route path="/complaint-reply/:_id" component element={ <ReplyComplaintChat setDataDet /> } />
 
         {/*CreateTipsTricks */} 
-        <Route path="tips" element={ <CreateTipsTricks /> } />
+        <Route path="/tips" element={ <CreateTipsTricks /> } />
+
+        {/*ContentManagement */} 
+        <Route path="/content" element={ <ContentList /> } />
+        {/* <Route path="/content/add" element={ <AddContent /> } /> */}
+        <Route path="/content/view/:type" element={ <UpdateContent /> } />
+
+        {/*CreateDefaultMessage */} 
+        <Route path="/default-message" element={ <CreateDefaultMessage /> } />
+       
       </Routes>
     </>
   );

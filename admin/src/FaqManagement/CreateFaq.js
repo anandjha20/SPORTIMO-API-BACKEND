@@ -83,10 +83,11 @@ function CreateFaq() {
              "answer": answer,
             }
             
-
             console.log("new values == ", dataToSend2);
 
-            let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
+            let token = localStorage.getItem("token");
+            let header = ({ 'token': `${token}` });
+            let options1 = ({ headers: header });
            
             axios.post(`/add_faq`, dataToSend2, options1)
             .then(response => {
