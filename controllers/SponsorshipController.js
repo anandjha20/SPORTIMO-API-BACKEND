@@ -1,6 +1,6 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp } = require('../myModel/common_modal');
+const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
    
 
 const { poll_percent,all_list_come} = require('../myModel/helper_fun');
@@ -14,15 +14,8 @@ const { poll_percent,all_list_come} = require('../myModel/helper_fun');
     const Sponsorship_tbl = require('../models/Sponsorship');    
     
 class Sponsorship { 
-
-    static JK = (req,res)=>{
-        res.status(200).send({'status':true,'msg':"success",'body':''});        
-    }
-
-        
-    
-
-    static sponsor_list = async (req,res)=>{
+     
+      static sponsor_list = async (req,res)=>{
         try {
           
            let  match = req.body.match;           let match_len = (match || '').length;
@@ -86,11 +79,8 @@ class Sponsorship {
      static add_sponsor = async(req,res)=>{
 
                 try {
-
-                 
-                    let user_data = req.body;
-                console.log(  'server get value == ',user_data);
-                  
+                      let user_data = req.body;
+                       console.log(  'server get value == ',user_data);
                   let match_len = (user_data.match || '').length;
            if(match_len == 0){
             return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
@@ -113,9 +103,9 @@ class Sponsorship {
                         "view_type":user_data.view_type,
                         "Fdate": user_data.Fdate,
                         "Ldate":user_data.Ldate,
+                        "reward_type":user_data.reward_type,
+                        "reward_quantity":user_data.reward_quantity,
                         "created_date":getcurntDate(),
-
-
                     });
                   
                        add.save((err, data) => {
@@ -140,6 +130,59 @@ class Sponsorship {
               
         
             }
+
+ static update_sponsor = async(req,res)=>{
+
+   try {
+
+                  let id = req.params.id; 
+                  let user_data = req.body;
+              console.log(  'server get value == ',user_data);
+                
+                let match_len = (user_data.match || '').length;
+         if(match_len == 0){ return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; }         
+
+         let img = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
+  
+                  let setDataMy = {
+                     
+                      "match":user_data.match,
+                      "image": img,
+                      "sports": user_data.sports,
+                      "league":user_data.league,
+                      "team": user_data.team,
+                      "players": user_data.players,
+                      "country": user_data.country,
+
+                      "skip_add": user_data.skip_add,
+                      "view_type":user_data.view_type,
+                      "Fdate": user_data.Fdate,
+                      "Ldate":user_data.Ldate,
+                      "reward_type":user_data.reward_type,
+                      "reward_quantity":user_data.reward_quantity,
+                  };
+
+                  if( img != ''){setDataMy.image = img }
+                
+              Sponsorship_tbl.findOneAndUpdate({_id: id},{$set : setDataMy},{new: true}, (err, updatedUser) => {
+                if(err) {  console.log(err);
+                  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                }else if(!isEmpty(updatedUser)){
+                          return res.status(200).send({"status":true,"msg":'Sponsorship Updated Successfully' , "body":updatedUser  }) ;   
+                        }else{
+                          return res.status(200).send({"status":false,"msg":'Invalid Sponsorship Id ' , "body": ''}) ;   
+                          }
+             });     
+     } catch (error) { console.log(error);
+                  return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;          
+      
+              }
+            
+      
+          }
+
+
+
 
             
      static poll_participant = async(req,res)=>{

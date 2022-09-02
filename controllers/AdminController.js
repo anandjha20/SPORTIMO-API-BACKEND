@@ -22,15 +22,47 @@ class AdminController {
     static user_list = async (req,res)=>{
         try {
            let  id = req.params.id;  let id_len = (id || '').length;
-           let whr = (id_len == 0) ? {} :{_id:id};
+         
+           let name    = req.body.name;
+           let mobile  = req.body.mobile;
+           let email   = req.body.email;
+           let country = req.body.country;
+           let guest_user  = req.body.guest_user;
+           let s_date  = req.body.s_date;
+           let e_date  = req.body.e_date;
+           let page  = req.body.page;
+             page = (isEmpty(page) || page == 0 )? 1 :page ; 
+          
+           let whr ={};
+           if(!isEmpty(name)){whr.name = { $regex: '.*' + name + '.*' } ;} 
 
-             let data = await user_tbl.find(whr);
 
-console.log('tttttt=======  ',data);         
-          res.status(200).send({'status':true,'msg':"success",'body':data});
+           if(!isEmpty(mobile)){whr.mobile = mobile;} 
+           if(!isEmpty(email)){whr.email = email;} 
+           if(!isEmpty(country)){whr.name = country;} 
+           if(guest_user == 1 ){whr.user_type = 5;} 
+           if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date = { $gte: s_date, $lte: e_date } ;} 
+           
+           if(!isEmpty(id)){whr = {_id: id} ;} 
+            
+             let query =  user_tbl.find(whr) ;
+              
+             const query2 =  query.clone();
+             const counts = await query.countDocuments();
+
+
+              
+             let offest = (page -1 ) * 10 ; 
+             const records = await query2.skip(offest).limit(10);
+
+
+
+           //  let data2 = await user_tbl.find(whr).sort({ _id: -1 }) ;
+            
+          res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
   
-        } catch (error) { console.log(error);
-          res.status(200).send({'status':false,'msg':error,'body':''});
+        } catch (error) { console.log(error);  // JSON.parse(json.stringify(error))
+          res.status(200).send({'status':false,'msg':'','body':''});
         }
              
             }     

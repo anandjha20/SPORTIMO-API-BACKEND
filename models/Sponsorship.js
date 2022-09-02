@@ -5,11 +5,14 @@ const Schema = mongoose.Schema;
             
 const sprtschema = new Schema({
                              
-         //match: { type: String, required: true, unique: true },
+      
          match: { type: String, required: true },
          image: { type: String, required: true, default :'' },
          sports: { type: String, required: true, default :'' },
-
+    
+         reward_type    : { type: String,default :'' },
+         reward_quantity: { type: String , default :'' },
+        
          league: { type: String, required: true, default :'' },
         
          team :{ type: String, required: true, default :'' },
