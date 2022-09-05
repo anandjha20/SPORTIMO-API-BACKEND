@@ -111,7 +111,7 @@ return (
 							</ul>
 						</li>
 						<li className="nav-item nav-link-child" onClick={handleProfile}>
-							<a onClick={handleActive} className="nav-link with-sub cursor"><span className="shape1"></span>
+							<a  className="nav-link with-sub cursor"><span className="shape1"></span>
 							<span className="shape2"></span>
 							<i className="fad fa-comment-alt-edit sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Complaint </span><i className="angle fe fe-chevron-right"></i></a>
@@ -125,6 +125,28 @@ return (
 								{/* <li className="nav-sub-item">
 									<NavLink  to="/complaint-reply" className="nav-sub-link">Chat Management</NavLink>
 								</li> */}
+							</ul>
+						</li>
+
+						<li className="nav-item nav-master-child" onClick={handleProfile}>
+							<a  className="nav-link with-sub cursor"><span className="shape1"></span>
+							<span className="shape2"></span>
+							<i className="fad fad fa-user-shield sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Preference Master</span><i className="angle fe fe-chevron-right"></i></a>
+							 <ul className="nav-sub">
+								<li className="nav-sub-item">
+									<NavLink  to="/preference/sports" className="nav-sub-link">Sports Preference</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/preference/leagues" className="nav-sub-link">Leagues Preference</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/preference/teams" className="nav-sub-link">Teams Preference</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/preference/players" className="nav-sub-link">Players Preference</NavLink>
+								</li>
+								
 							</ul>
 						</li>
 

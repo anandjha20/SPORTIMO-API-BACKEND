@@ -43,7 +43,7 @@ export default function CreateDefaultMessage() {
 
     const onCloseModal = () => setOpen(false);
     const TipsTricksList = async () => {
-        await axios.get(`/get_defaultMsg`)
+        await axios.get(`/web_api/get_defaultMsg`)
             .then(res => {
                 const userData = res.data.body;
                 setData(userData);
@@ -71,7 +71,7 @@ export default function CreateDefaultMessage() {
             console.log("new values == ", dataToSend2);
 
 
-            axios.post(`/addDefaultMsg`, dataToSend2, options1)
+            axios.post(`/web_api/addDefaultMsg`, dataToSend2, options1)
                 .then(response => {
                     if (response.status) {
 
@@ -84,7 +84,7 @@ export default function CreateDefaultMessage() {
                             toast.success(data.msg);
 
                             e.target.reset();
-                            return axios.get("/get_defaultMsg", options1)
+                            return axios.get("/web_api/get_defaultMsg", options1)
                                 .then(res => {
                                     const userData = res.data.body;
                                     setData(userData);
@@ -112,14 +112,14 @@ export default function CreateDefaultMessage() {
 
 
         let sendData = { id: _id }
-        axios.delete(`/defaultMsg_delete/${_id}`, options1)
+        axios.delete(`/web_api/defaultMsg_delete/${_id}`, options1)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
 
                     if (data.status) {
                         toast.success(data.msg);
-                        return axios.get("/get_defaultMsg", options1)
+                        return axios.get("/web_api/get_defaultMsg", options1)
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
@@ -151,7 +151,7 @@ export default function CreateDefaultMessage() {
                 "id": id,
             }
             console.log("new values == ", dataToSend2);
-            axios.put(`/update_tips`, dataToSend2, options1)
+            axios.put(`/web_api/update_tips`, dataToSend2, options1)
                 .then(res => {
                     if (res.status) {
 
@@ -160,7 +160,7 @@ export default function CreateDefaultMessage() {
                             
                             toast.success(data.msg);
                             setOpen(false);
-                            return axios.get("/get_defaultMsg", options1)
+                            return axios.get("/web_api/get_defaultMsg", options1)
                                 .then(res => {
                                     const userData = res.data.body;
                                     setData(userData);

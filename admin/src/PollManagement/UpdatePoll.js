@@ -18,22 +18,40 @@ import axios from "axios";
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useParams } from 'react-router-dom';
+import { fabClasses } from "@mui/material";
 
-
-export default function CreatePoll(props) {
-  const [showhide, setShowhide] = useState('Free');
+export default function UpdatePoll() {
+  const [showhide, setShowhide] = useState();
+  const [showhide1, setShowhide1] = useState();
   const [npshow, setNpshow] = useState('');
   const [show, setShow] = useState('');
 
   const handleshowhide = (event) => {
     const getuser = event.target.value;
     setShowhide(getuser);
+    if (getuser == 'Free') {
+      document.querySelector("#amountDiv").classList.add('showAmount');
+      document.querySelector("#reset-value").value = '0';
+    }
+    if (getuser == 'Paid') {
+      document.querySelector("#amountDiv").classList.remove('showAmount');
+      document.querySelector("#reset-value").value = datadetail.amount;
+    }
+    return false;
+  }
+  const handleshowhide1 = (event) => {
+    const getuser = event.target.value;
+    setShowhide1(getuser);
+    if (getuser == 'Free') {
+      document.querySelector("#reset-value").value = '0';
+    }
   }
 
   // const [f_type, setF_type] = React.useState('Free');
   // const handleChangef_type = (event) => { setF_type(event.target.value); }
 
-  console.log('fee_type === ', showhide);
+  // console.log('fee_type === ', showhide);
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -50,20 +68,22 @@ export default function CreatePoll(props) {
 
  
   /// poll type select value get section 
-  const [p_type, setP_type] = React.useState('Public Poll');
-  const handleChangep_type = (event) => { setP_type(event.target.value); }
+  const [p_type, setP_type] = React.useState( );
+  const handleChangep_type = (event) => { 
+    setP_type(event.target.value);
+   }
+
 
   /// Fess type select value get section 
   const [f_type, setF_type] = React.useState('Free');
- const handleChangef_type = (event) => { setF_type(event.target.value); }
-
+   const handleChangef_type = (event) => { setF_type(event.target.value); }
 
 
   const [notis, setNotis] = React.useState(0);
   const [innotis, setInnotis] = React.useState(0);
   const [reward, setReward] = React.useState(0);
 
-  const notifun = (event) => {
+  const notifun = () => {
     if (notis == 1) {
       setNotis(0);
       document.querySelector("#change-class").classList.remove('shwooptionIn');
@@ -74,6 +94,7 @@ export default function CreatePoll(props) {
     }
     return false;
   };
+
 
   const notifunapp = (event) => {
     if (innotis == 1) {
@@ -100,7 +121,7 @@ export default function CreatePoll(props) {
   };
 
 
-  console.log(p_type);
+  // console.log(p_type);
   const MenuProps = {
     PaperProps: {
       style: {
@@ -110,6 +131,9 @@ export default function CreatePoll(props) {
     },
   };
 
+  let token = localStorage.getItem("token");
+  let header = ({ 'token': `${token}` });
+  let options1 = ({ headers: header });
 
   const myFormData = async (e) => {
     e.preventDefault();
@@ -119,20 +143,18 @@ export default function CreatePoll(props) {
       const data = new FormData(e.target);
       let Formvlaues = Object.fromEntries(data.entries());
       console.log("form data is == ", Formvlaues);
-      Formvlaues.fee_type = showhide;
-      Formvlaues.poll_type = p_type;
+      // Formvlaues.fee_type = showhide;
+      // Formvlaues.poll_type = p_type;
       Formvlaues.noti_status = notis;
+      Formvlaues.players = plrArray;
+      Formvlaues.teams = teamArray;
       Formvlaues.leagues = leaguesArray;
       Formvlaues.sports = sportsArray;
-
       Formvlaues.noti_in_App_status = innotis;
       Formvlaues.time_duration = minute + ':' + second;
       Formvlaues.apperance_time = hminute + ':' + hsecond;
 
-      let token = localStorage.getItem("token");
-      let header = ({ 'token': `${token}` });
-      let options1 = ({ headers: header });
-      let response = await axios.post('/web_api/add_poll', Formvlaues, options1);
+      let response = await axios.put(`/web_api/update_poll/${id}`, Formvlaues, options1);
       console.log('my fun call', response);
       if (response.status) {
         let data = response.data;
@@ -156,8 +178,6 @@ export default function CreatePoll(props) {
  const [sport_lists, setSport_lists] = React.useState([]);
  const [league_lists, setLeague_lists] = React.useState([]);
  const [team_lists, setTeam_lists] = React.useState([]);
-
-
  const [player_lists, setPlayer_lists] = React.useState([]);
 
  const get_data = async(url,setval) =>{
@@ -196,7 +216,8 @@ export default function CreatePoll(props) {
    }, []);
  
  const sportOptions = (sport_lists.length >0) ? sport_lists.map((item)=>{
-     return  { value: item._id, label: item.name };
+     return (
+      { value: item._id, label: item.name });
  }) :[];
  
  const leagueOptions = (league_lists.length >0) ? league_lists.map((item)=>{
@@ -536,6 +557,52 @@ const secondOptions = [
                 {value : '00' , label : '00'}, 
       ]
       
+  const { id } = useParams();   
+  const [datadetail, setDataDetail] = useState('')
+  const [polltypeSet, setPollyupe] = useState('')
+  const [sportsOpt, setSportsOpt] = useState('')
+
+const polldetail = async () =>
+      {
+          await axios.get(`/web_api/poll_list/${id}`, options1)
+          .then(res => {
+            const datadetail = res.data.body[0];
+            const polltypeSet = res.data.body[0].poll_type;
+            const hminute = res.data.body[0].apperance_time.substring(0, 2);
+            const hsinute = res.data.body[0].apperance_time.slice(-2);
+
+            const minute = res.data.body[0].time_duration.substring(0, 2);
+            const second = res.data.body[0].time_duration.slice(-2);
+
+            const sportsArrayOp = datadetail.sports;
+         
+          
+            setDataDetail(datadetail);
+            setSportsOpt(sportsOpt);
+            setPollyupe(polltypeSet);
+            
+            setHminute(hminute);
+            setHSecond(hsinute);
+            setMinute(minute);
+            setSecond(second);
+            
+
+            // console.log(Object.JSON.parse(sportsArrayOp))
+            console.log("sprorts  ..." + sportsArrayOp.split(','))
+            // console.log(mtime)
+            // console.log(stime)
+            // console.log(minute)
+            // console.log(second)
+            console.log(datadetail); 
+          })
+      }
+  
+      useEffect(() => {
+             polldetail();
+        }, []);
+       
+
+ /////////////////// Poll Detail Api Call ///////////////////////////////////////
 
   return (
     <>
@@ -548,7 +615,7 @@ const secondOptions = [
 
             <div className="page-header">
               <div>
-                <h2 className="main-content-title tx-24 mg-b-5">Create Poll</h2>
+                <h2 className="main-content-title tx-24 mg-b-5">Update Poll</h2>
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <Link to="/home">Home</Link>
@@ -564,26 +631,29 @@ const secondOptions = [
                 </div>
               </div>
             </div>
+
+            
+            {(datadetail) ?
             <div className="row justify-content-center">
               <div className="col-lg-12 table-responsive border border-bottom-0">
                 <div className="card custom-card">
                   <div className="card-body">
                     <div className="row justify-content-center">
                       <div className="col-lg-8">
-
                         <form onSubmit={(e) => myFormData(e)}>
                           <div className="row">
                             <div className="col-lg-12">
                               <label className="title-col">Poll Type</label>
+                             
                               <FormControl className="w-100">
                                 {/* <FormLabel id="demo-radio-buttons-group-label">Create Poll</FormLabel> */}
-                                <RadioGroup aria-labelledby="demo-radio-buttons-group-label" value={p_type} name="poll_type">
+                                <RadioGroup aria-labelledby="demo-radio-buttons-group-label" name="poll_type"  defaultValue={datadetail.poll_type} >
                                   <div className="row  mb-0">
                                     <div className="col-lg-3" style={{ maxWidth: "23%" }}>
-                                      <FormControlLabel value="Public Poll" control={<Radio />} label="Public Poll" onChange={handleChangep_type} />
+                                      <FormControlLabel value="Public Poll"   control={<Radio />} label="Public Poll" onChange={(e) => (handleChangep_type(e))}  />
                                     </div>
                                     <div className="col-lg-3 text-end">
-                                      <FormControlLabel value="Private Poll" control={<Radio />} label="Private Poll" onChange={handleChangep_type} />
+                                      <FormControlLabel value="Private Poll"  control={<Radio />} label="Private Poll" onChange={(e) => (handleChangep_type(e))}  />
                                     </div>
                                   </div>
                                 </RadioGroup>
@@ -592,47 +662,77 @@ const secondOptions = [
 
                             <div className="col-lg-12 reletive mb-4">
                                 <span className='react-select-title'>Second</span>
-                                  <Select labelId="hminute" name="match" id="hminute" menuPortalTarget={document.body}
+                                  <Select labelId="hminute" name="match" id="hminute" 
+                                  defaultValue={{ label : datadetail.match, value: datadetail.match }}
+                                  menuPortalTarget={document.body}
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={matchOptions} />
                               </div>
 
-                          
-
-
                             <div className="col-lg-12 mb-2">
                               <label className="title-col">Poll Fee</label>
+                              
+                              {datadetail.fee_type == 'Paid' ?  
+                              <>
                               <FormControl className="w-100">
-                                <RadioGroup aria-labelledby="demo-radio-buttons-group-label" defaultValue="Free" name="fee_type">
+                                <RadioGroup aria-labelledby="demo-radio-buttons-group-label" defaultValue={datadetail.fee_type} name="fee_type">
                                   <div className="row  mb-2">
                                     <div className="col-lg-3" style={{ maxWidth: "21%" }}>
-                                      <FormControlLabel value="Free" control={<Radio />} label="Free" onChange={(e) => (handleshowhide(e))} />
+                                      <FormControlLabel value="Free"  control={<Radio />} label="Free"  onChange={(e) => (handleshowhide(e))} />
                                     </div>
                                     <div className="col-lg-3 text-end">
-                                      <FormControlLabel value="Paid" control={<Radio />} label="Paid" onChange={(e) => (handleshowhide(e))} />
+                                      <FormControlLabel value="Paid"  control={<Radio />} label="Paid" onChange={(e) => (handleshowhide(e))} />
                                     </div>
                                   </div>
                                 </RadioGroup>
                               </FormControl>
-
-
-                              {
-                                showhide === 'Paid' && (
-                                  <div className="col-lg-12 p-0 mb-4">
+                              
+                                <div className="col-lg-12 p-0 mb-4" id="amountDiv">
                                     <FormControl fullWidth>
                                       <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-                                      <OutlinedInput id="outlined-adornment-amount" name='amount' startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                      <OutlinedInput  id='reset-value' defaultValue={datadetail.amount} name='amount' startAdornment={<InputAdornment position="start">$</InputAdornment>}
                                         label="Amount"
                                       />
                                     </FormControl>
                                   </div>
-                                )}
+                               </>  : null  }
+
+                               {datadetail.fee_type == 'Free' ? <>
+                               <FormControl className="w-100">
+                                <RadioGroup aria-labelledby="demo-radio-buttons-group-label" defaultValue={datadetail.fee_type} name="fee_type">
+                                  <div className="row  mb-2">
+                                    <div className="col-lg-3" style={{ maxWidth: "21%" }}>
+                                      <FormControlLabel value="Free"  control={<Radio />} label="Free"  onChange={(e) => (handleshowhide1(e))} />
+                                    </div>
+                                    <div className="col-lg-3 text-end">
+                                      <FormControlLabel value="Paid"  control={<Radio />}  label="Paid" onChange={(e) => (handleshowhide1(e))} />
+                                    </div>
+                                  </div>
+                                </RadioGroup>
+                              </FormControl>
+                              {
+                                showhide1 === 'Paid' && (
+                                  <div className="col-lg-12 p-0 mb-4" id="amountDiv">
+                                    <FormControl fullWidth>
+                                      <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+                                      <OutlinedInput  id='reset-value' defaultValue="" name='amount' startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                                        label="Amount"
+                                      />
+                                    </FormControl>
+                                  </div>
+                                 )}
+                            
+                               </> : null  }
+                             
 
                             </div>
+
+
+                            
 
                             <div className="col-lg-12 mb-2">
                               <label className="title-col">Result Type</label>
                               <FormControl className="w-100">
-                                <RadioGroup aria-labelledby="demo-radio-buttons-group-label" defaultValue="Disclosed" name="result_type">
+                                <RadioGroup aria-labelledby="demo-radio-buttons-group-label" defaultValue={datadetail.result_type} name="result_type">
                                   <div className="row  mb-2">
                                     <div className="col-lg-3" style={{ maxWidth: "21%" }}>
                                       <FormControlLabel value="Disclosed" control={<Radio />} label="Disclosed" />
@@ -653,12 +753,17 @@ const secondOptions = [
 
                               <div className="col-lg-6 reletive mb-4">
                                 <span className='react-select-title'>Minute</span>
-                                  <Select labelId="hminute" menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}  id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
+                               <Select  defaultValue={{ label : datadetail.apperance_time.substring(0, 2), value: datadetail.apperance_time.substring(0, 2) }}
+                                labelId="hminute" menuPortalTarget={document.body}
+                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}  id="hminute" 
+                                onChange={handleChangeHminute} 
+                                options={hminuteOptions} />
+
                               </div>
                               <div className="col-lg-6 reletive mb-4">
                                 <span className='react-select-title'>Second</span>
-                                  <Select labelId="hminute" menuPortalTarget={document.body}
+                                <Select labelId="hminute" menuPortalTarget={document.body}
+                                  defaultValue={{ label : datadetail.apperance_time.slice(-2), value: datadetail.apperance_time.slice(-2) }}
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond}  options={hsecondOptions} />
                               </div>
 
@@ -672,12 +777,16 @@ const secondOptions = [
 
                               <div className="col-lg-6 reletive mb-4">
                                 <span className='react-select-title'>Minute</span>
-                                  <Select menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
+                                  <Select  
+                                   defaultValue={{ label : datadetail.time_duration.substring(0, 2), value: datadetail.time_duration.substring(0, 2) }}
+                                   menuPortalTarget={document.body}
+                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" 
+                                onChange={handleChangeMinute} options={minuteOptions} />
                               </div>
                               <div className="col-lg-6 reletive mb-4">
                                 <span className='react-select-title'>Second</span>
                                   <Select  menuPortalTarget={document.body}
+                                  defaultValue={{ label : datadetail.time_duration.slice(-2), value: datadetail.time_duration.slice(-2) }}
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute"  id="hminute" onChange={handleChangeSecond} options={secondOptions} />
                               </div>
 
@@ -689,28 +798,42 @@ const secondOptions = [
                             <div className="col-lg-12 mb-3">
                               <label className="title-col mb-3">Send Notification</label>
                               <div className="row">
-
+                             
                                 <div className="col-lg-4">
                                   <FormGroup>
-                                    <FormControlLabel name='noti_status' onChange={(e) => notifun(e)} control={<Checkbox />} label="Push Notification" />
+                                  { datadetail.noti_status == true ? <>
+                                  <FormControlLabel name='noti_status'  onChange={(e) => notifun(e)}   control={<Checkbox defaultChecked /> } label="Push Notification" />
+                                  </> : null }
+                                  { datadetail.noti_status == false ? <>
+                                  <FormControlLabel name='noti_status'  onChange={(e) => notifun(e)}   control={<Checkbox  /> } label="Push Notification" />
+                                  </> : null }
                                   </FormGroup>
 
                                 </div>
                                 <div className="col-lg-4">
                                   <FormGroup>
+                                  { datadetail.noti_in_App_status == true ? <>
+                                    <FormControlLabel name='noti_in_App_status' onChange={(e) => notifunapp(e)} control={<Checkbox defaultChecked/>} label="In-App Notification" />
+                                    </> : null }
+                                    { datadetail.noti_in_App_status == false ? <>
                                     <FormControlLabel name='noti_in_App_status' onChange={(e) => notifunapp(e)} control={<Checkbox />} label="In-App Notification" />
+                                    </> : null }
                                   </FormGroup>
 
                                 </div>
                               </div>
                             </div>
 
-                            <div className="col-lg-12 dnone" id="change-class">
+                               
+
+                            {/* <div className="col-lg-12 dnone" id="change-class"> */}
+                            <div className="col-lg-12" id="change-class">
                               <div className="row">
                               <div className="col-lg-6 reletive mb-4">
                                 <span className='react-select-title'>Select Sports</span>
                                 <Select isMulti
                                     closeMenuOnSelect={false}
+                                    defaultValue={{ label : datadetail.sports, value: datadetail.sports }}
                                     name="sports"
                                     options={sportOptions}
                                     onChange={handleChangeSports}
@@ -719,24 +842,26 @@ const secondOptions = [
                             </div>
 
                             <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Select League</span>
+                                <span className='react-select-title'>Select Leagues</span>
                                 <Select isMulti
                                     closeMenuOnSelect={false}
                                     name="leagues" 
                                     options={leagueOptions}
                                     onChange={handleChangeLeagues}
+                                    defaultValue={{ value: datadetail.sports}}
                                     className="basic-multi-select"
                                     classNamePrefix="select" />
                             </div>
 
                             <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Select Team</span>
+                                <span className='react-select-title'>Select Teams</span>
                                 <Select isMulti
                                     closeMenuOnSelect={false}
                                     name="teams"   
                                     options={teamOptions}
                                     className="basic-multi-select"
                                     classNamePrefix="select"
+                                    defaultValue={{ value: team_lists._id, label: team_lists.name }}
                                     onChange={handleChangeTeam}
                                     />
                             </div>
@@ -746,6 +871,7 @@ const secondOptions = [
                                 <Select isMulti
                                     closeMenuOnSelect={false}
                                     name="players"  
+                                    defaultValue={{ value: player_lists._id, label: player_lists.name }}
                                     options={playersOptions}
                                     className="basic-multi-select"
                                     classNamePrefix="select" 
@@ -759,44 +885,28 @@ const secondOptions = [
 
                             <div className="col-lg-12 mb-4">
                               <label className="title-col">Question</label>
-                              <TextField id="filled-multiline-static" name='qus' label="Enter Question" multiline rows={4} fullWidth defaultValue="" variant="filled" autoComplete="off" />
+                              <TextField id="filled-multiline-static" name='qus' label="Enter Question" multiline rows={4} fullWidth defaultValue={datadetail.qus} variant="filled" autoComplete="off" />
 
                             </div>
 
 
                             <div className="col-lg-6 mb-4">
-                              <TextField id="filled-basic" name='ops_1' fullWidth label="Answer 1" variant="filled" autoComplete="off" />
+                              <TextField id="filled-basic" name='ops_1' fullWidth  defaultValue={datadetail.ops_1} label="Answer 1" variant="filled" autoComplete="off" />
                             </div>
 
                             <div className="col-lg-6 mb-4">
-                              <TextField id="filled-basic1" name='ops_2' fullWidth label="Answer 2" variant="filled" autoComplete="off" />
+                              <TextField id="filled-basic1" name='ops_2' fullWidth  defaultValue={datadetail.ops_2} label="Answer 2" variant="filled" autoComplete="off" />
                             </div>
 
-                            <div className="col-lg-12">
-
-                              {
-                                show ? <div className="row">
-                                  <div className="col-lg-6 mb-4">
-                                    <TextField id="filled-basic1" name='ops_3' fullWidth label="Answer 3" variant="filled" autoComplete="off" />
+                            <div className="col-lg-6 mb-4">
+                                    <TextField id="filled-basic1" name='ops_3' fullWidth label="Answer 3"  defaultValue={datadetail.ops_3} variant="filled" autoComplete="off" />
                                   </div>
                                   <div className="col-lg-6 mb-4">
-                                    <TextField id="filled-basic1" name='ops_4' fullWidth label="Answer 4" variant="filled" autoComplete="off" />
+                                    <TextField id="filled-basic1" name='ops_4' fullWidth label="Answer 4"  defaultValue={datadetail.ops_4} variant="filled" autoComplete="off" />
                                   </div>
                                   <div className="col-lg-6 mb-4">
-                                    <TextField id="filled-basic1" name='ops_5' fullWidth label="Answer 5" variant="filled" autoComplete="off" />
+                                    <TextField id="filled-basic1" name='ops_5' fullWidth label="Answer 5"  defaultValue={datadetail.ops_5} variant="filled" autoComplete="off" />
                                   </div>
-                                </div> : null
-                              }
-                            </div>
-                            <div className="col-lg-12 text-end">
-                              <Button variant="contained" onClick={(ButtonText) => setShow(!show)} className="buttonStyle">
-                                {
-                                  !show ? <span>
-                                    <Button variant="contained" style={{ float: "right" }}> Show More  </Button></span> :
-                                    <span><Button variant="contained" style={{ float: "right", backgroundColor: "#ff4e17b3" }}>Show Less</Button></span>
-                                }
-                              </Button>
-                            </div>
 
 
                             <div className="col-lg-12 mb-4">
@@ -810,18 +920,18 @@ const secondOptions = [
                           
                                   <div className="col-lg-6 reletive mt-2">
                                 <span className='react-select-title'>Select Rewards Type</span>
-                                  <Select labelId="rewards"  id="rewards" name='reward_type' options={rewardsOptions} />
+                                  <Select labelId="rewards"  id="rewards" defaultValue={{ label : datadetail.reward_type, value: datadetail.reward_type }} name='reward_type'  options={rewardsOptions} />
                               </div>
 
                               <div className="col-lg-6 mb-4">
-                              <TextField id="filled-basic" name='reward_quantity' fullWidth label="Enter Rewards" variant="filled" autoComplete="off" />
+                              <TextField id="filled-basic" name='reward_quantity'  defaultValue={datadetail.reward_quantity} fullWidth label="Enter Rewards" variant="filled" autoComplete="off" />
                             </div>
                              </div>
 
                             </div>
 
                             <div className="col-lg-12 text-end">
-                              <Button type='submit' className="mr-3 btn-pd btnBg">Submit</Button>
+                              <Button type='submit' className="mr-3 btn-pd btnBg">Update</Button>
                               <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
                             </div>
 
@@ -838,6 +948,7 @@ const secondOptions = [
 
               </div>
             </div>
+            : ''}
           </div>
 
         </div>

@@ -25,6 +25,13 @@ import ContentList from "./ContentManagement/ContentList";
 // import AddContent from "./ContentManagement/AddContent";
 import UpdateContent from "./ContentManagement/UpdateContent";
 import CreateDefaultMessage from "./DefaultMessageManagement/CreateDefaultMessage";
+import UpdatePoll from "./PollManagement/UpdatePoll";
+import SportsPreference from "./PreferenceMaster/SportsPreference";
+import LeaguesPreference from "./PreferenceMaster/LeaguesPreference";
+import TeamsPreference from "./PreferenceMaster/TeamsPreference";
+import PlayersPreference from "./PreferenceMaster/PlayersPreference";
+import IntroSliderImg from "./SponsorshipManagement/IntroSliderImg";
+
 
 function App() {
   return (
@@ -49,6 +56,7 @@ function App() {
         <Route path="poll/create" element={ <CreatePoll/> } />
         <Route path="/poll" element={ <PollList/> } />
         <Route path="/poll/detail/:id" element={ <PollDetailComponent/> } />
+        <Route path="/poll/update/:id" element={ <UpdatePoll/> } />
 
         {/* GameEngagementQuestions */}
         <Route path="/geq/create" element={ <GameEngagementQuestions/> } />
@@ -58,6 +66,7 @@ function App() {
         {/* sponsorship */}
         <Route path="/sponsorship/add" element={ <AddSponsorship /> } />
         <Route path="/sponsorship" element={ <SponsorshipList /> } />
+        <Route path="/sponsorship/intro-slider" element={ <IntroSliderImg /> } />
         <Route path="/sponsorship/detail/:id" element={ <SponsorshipDetails /> } />
 
         {/* Faq */}
@@ -82,6 +91,13 @@ function App() {
 
         {/*CreateDefaultMessage */} 
         <Route path="/default-message" element={ <CreateDefaultMessage /> } />
+
+
+        {/*PreferenceMaster */} 
+        <Route path="/preference/sports" element={ <SportsPreference /> } />
+        <Route path="/preference/teams" element={ <TeamsPreference /> } />
+        <Route path="/preference/leagues" element={ <LeaguesPreference /> } />
+        <Route path="/preference/players" element={ <PlayersPreference /> } />
        
       </Routes>
     </>

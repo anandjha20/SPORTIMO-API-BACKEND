@@ -24,7 +24,7 @@ export default function CreateTipsTricks() {
     
     const onOpenModal = (_id) => 
     {
-      axios.get(`/get_tips/${_id}`, options1 )
+      axios.get(`/web_api/get_tips/${_id}`, options1 )
         .then(res => {
           const catView = res.data.body[0];
           setCat(catView);
@@ -36,7 +36,7 @@ export default function CreateTipsTricks() {
     const onCloseModal = () => setOpen(false);   
     const TipsTricksList = async () =>
     {
-        await axios.get(`/get_tip_list`)
+        await axios.get(`/web_api/get_tip_list`)
         .then(res => {
           const userData = res.data.body;
           setData(userData);
@@ -64,7 +64,7 @@ export default function CreateTipsTricks() {
             console.log("new values == ", dataToSend2);
 
 
-            axios.post(`/add_tips`, dataToSend2, options1)
+            axios.post(`/web_api/add_tips`, dataToSend2, options1)
                 .then(response => {
                     if (response.status) {
 
@@ -77,7 +77,7 @@ export default function CreateTipsTricks() {
                             toast.success(data.msg);
 
                             e.target.reset();
-                            return axios.get("/get_tip_list", options1)
+                            return axios.get("/web_api/get_tip_list", options1)
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
@@ -103,14 +103,14 @@ export default function CreateTipsTricks() {
 ///////////////// delete tips tricks api call  /////////////////
     const deleteCategory = (_id) => {  
         let sendData = { id : _id  }
-        axios.delete(`/delete_tip/${_id}`, options1)
+        axios.delete(`/web_api/delete_tip/${_id}`, options1)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
 
                     if (data.status) { 
                         toast.success(data.msg);
-                         return axios.get("/get_tip_list", options1)
+                         return axios.get("/web_api/get_tip_list", options1)
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
@@ -142,7 +142,7 @@ export default function CreateTipsTricks() {
             "id": id,
         }
         console.log("new values == ", dataToSend2);
-        axios.put(`/update_tips`, dataToSend2, options1)
+        axios.put(`/web_api/update_tips`, dataToSend2, options1)
             .then(res => {
                 if (res.status) {
 
@@ -150,7 +150,7 @@ export default function CreateTipsTricks() {
                     if (data.status) {
                         toast.success(data.msg);
                         setOpen(false);
-                        return axios.get("/get_tip_list", options1)
+                        return axios.get("/web_api/get_tip_list", options1)
                         .then(res => {
                             const userData = res.data.body;
                             setData(userData);

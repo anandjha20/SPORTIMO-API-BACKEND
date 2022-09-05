@@ -1,108 +1,74 @@
 import React from "react";
 import TextField from '@mui/material/TextField';
-import MaterialTable from 'material-table';
 import Header from "../Header";
 import { Link } from "react-router-dom";
-import Button from "@mui/material/Button";
-import { useNavigate } from 'react-router-dom';
-import "react-responsive-modal/styles.css";
-import { Modal } from "react-responsive-modal";
+import MaterialTable from 'material-table';
+import Button from '@mui/material/Button';
+import { useState, useEffect } from "react";
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
+
+import "react-responsive-modal/styles.css";
+import { Modal } from "react-responsive-modal";
 import 'react-toastify/dist/ReactToastify.css';
-import { useState, useEffect } from "react";
 
-export default function AddFaqCategory() {
-    useEffect(() => {
-        document.body.className = "main-body leftmenu faq_list";
-        return () => {
-          document.body.className = "main-body leftmenu";
-        }
-      }, []);
+export default function IntroSliderImg() {
 
+    const [data, setData] = useState([])
+    const [catView, setCat] = useState([])
+    const [open, setOpen] = useState(false);
 
-      let token = localStorage.getItem("token");
-      let header = ({ 'token': `${token}` });
-      let options1 = ({ headers: header });
-
-
-      const [data, setData] = useState([])
-      const [catView, setCat] = useState([])
-      const [open, setOpen] = useState(false);
-      const onOpenModal = (_id) => 
-      {
-        axios.get(`/web_api/faq_cat_list/${_id}`, options1)
-          .then(res => {
-            const catView = res.data.body[0];
-            setCat(catView);
-            setOpen(true);
-            console.log(catView); 
-          })
-      }
-      const onCloseModal = () => setOpen(false);   
-      const FaqCategoryList = async () =>
-      {
-          await axios.get(`/web_api/faq_cat_list`, options1)
-          .then(res => {
-            const userData = res.data.body;
-            setData(userData);
-          })
-      }
-  
-    useEffect(() => {
-      FaqCategoryList()
-    }, []);
-  
-      const navigate = useNavigate();
-      const columns =
-          [{ title: 'Category Name', field: 'cat_name' }, ]
-
-
-///////////////// delete  api call  /////////////////
-const deleteFaq = (_id) => {  
-    axios.delete(`/web_api/delete_faq_category/${_id}`, options1)
+    let token = localStorage.getItem("token");
+    let header = ({ 'token': `${token}` });
+    let options1 = ({ headers: header });
+    
+    const onOpenModal = (_id) => 
+    {
+      axios.get(`/web_api/get_tips/${_id}`, options1 )
         .then(res => {
-            if (res.status) {
-                let data = res.data;
-
-                if (data.status) { 
-                    toast.success(data.msg);
-                     return axios.get("/web_api/faq_cat_list")
-                        .then(res => {
-                            const userData = res.data.body;
-                            setData(userData);
-                        })
-                } else {
-                    toast.error('something went wrong please try again');
-                }
-            }
-            else {
-                toast.error('something went wrong please try again..');
-            }
-
+          const catView = res.data.body[0];
+          setCat(catView);
+          setOpen(true);
+          console.log(catView); 
         })
-        .catch(error => {
-            console.log(this.state);
+    }
+    
+    const onCloseModal = () => setOpen(false);   
+    const TipsTricksList = async () =>
+    {
+        await axios.get(`/web_api/get_tip_list`)
+        .then(res => {
+          const userData = res.data.body;
+          setData(userData);
         })
-}
+    }
 
+  useEffect(() => {
+    TipsTricksList()
+  }, []);
 
+ const columns =[   
+    { title: 'Image', field: 'text' }, 
+    { title: 'Title', field: 'tips_trick' }, 
+    { title: 'Description', field: 'tips_trick' }, 
+] 
 
-    //////////////////////// Add Faq Catefgory Call Api   ////////////////////////////////////////////
+///////////////////////////  Add Introduction Slider Api Call  /////////////////////////////////////////
 
     const saveFormData = async (e) => {
         e.preventDefault();
         try {
 
-            let cat_name = (e.target.elements.cat_name !== 'undefined') ? e.target.elements.cat_name.value : '';
+            let tips_trick = (e.target.elements.tips_trick !== 'undefined') ? e.target.elements.tips_trick.value : '';
 
             let dataToSend2 = {
-                "cat_name": cat_name,
+                "tips_trick": tips_trick,
             }
 
             console.log("new values == ", dataToSend2);
 
-            axios.post(`/web_api/add_faq_category`, dataToSend2, options1)
+
+            axios.post(`/web_api/add_tips`, dataToSend2, options1)
                 .then(response => {
                     if (response.status) {
 
@@ -111,13 +77,15 @@ const deleteFaq = (_id) => {
                         console.log(data.msg)
 
                         if (data.status) {
+
                             toast.success(data.msg);
+
                             e.target.reset();
-                            return axios.get("/web_api/faq_cat_list")
+                            return axios.get("/web_api/get_tip_list", options1)
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
-                            });
+                            })
                             
                         } else {
                             toast.error('something went wrong please try again');
@@ -136,21 +104,49 @@ const deleteFaq = (_id) => {
     }
 
 
-///////////////// Update complaint category /////////////////
-const UpdateFormData = async (e) => {
+///////////////// delete tips tricks api call  /////////////////
+    const deleteCategory = (_id) => {  
+        let sendData = { id : _id  }
+        axios.delete(`/web_api/delete_tip/${_id}`, options1)
+            .then(res => {
+                if (res.status) {
+                    let data = res.data;
+
+                    if (data.status) { 
+                        toast.success(data.msg);
+                         return axios.get("/web_api/get_tip_list", options1)
+                            .then(res => {
+                                const userData = res.data.body;
+                                setData(userData);
+                            })
+                    } else {
+                        toast.error('something went wrong please try again');
+                    }
+                }
+                else {
+                    toast.error('something went wrong please try again..');
+                }
+
+            })
+            .catch(error => {
+                console.log(this.state);
+            })
+    }
+
+
+ ///////////////// Update complaint category /////////////////
+ const UpdateFormData = async (e) => {
     e.preventDefault();
     try {
 
-        let cat_name = (e.target.elements.cat_name !== 'undefined') ? e.target.elements.cat_name.value : '';
+        let tips_trick = (e.target.elements.tips_trick !== 'undefined') ? e.target.elements.tips_trick.value : '';
         let id = (e.target.elements.id !== 'undefined') ? e.target.elements.id.value : '';
-       
         let dataToSend2 = {
-            "cat_name": cat_name,
+            "tips_trick": tips_trick,
             "id": id,
         }
         console.log("new values == ", dataToSend2);
-
-        axios.put(`/web_api/update_faq_category`, dataToSend2, options1)
+        axios.put(`/web_api/update_tips`, dataToSend2, options1)
             .then(res => {
                 if (res.status) {
 
@@ -158,7 +154,7 @@ const UpdateFormData = async (e) => {
                     if (data.status) {
                         toast.success(data.msg);
                         setOpen(false);
-                        return axios.get("/web_api/faq_cat_list")
+                        return axios.get("/web_api/get_tip_list", options1)
                         .then(res => {
                             const userData = res.data.body;
                             setData(userData);
@@ -175,27 +171,27 @@ const UpdateFormData = async (e) => {
             })
 
     } catch (err) { console.error(err); toast.error('some errror'); return false; }
-}    
+}
 
 
     return (
         <>
-           <div className="faqshow">
             <Header />
-            </div>
             <div className="main-content side-content pt-0">
                 <div className="container-fluid">
                     <div className="inner-body">
 
                         <div className="page-header">
                             <div>
-                                <h2 className="main-content-title tx-24 mg-b-5">Add Faq Category</h2>
+                                <h2 className="main-content-title tx-24 mg-b-5">Add Introduction Slider</h2>
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
                                         <Link to="/home">Home</Link>
                                     </li>
-
-                                    <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Category Management</li>
+                                    <li className="breadcrumb-item">
+                                        <Link to="/sponsorship">&nbsp;&nbsp;Sponsorship</Link>
+                                    </li>
+                                    <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Introduction Slider</li>
                                 </ol>
                             </div>
 
@@ -208,14 +204,24 @@ const UpdateFormData = async (e) => {
                                     <div className="card-body">
                                         <div className="row d-flex">
                                             <div className="col-lg-5">
+
                                                 <form className="mt-3" onSubmit={(e) => saveFormData(e)}>
-                                                    <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Faq Category</h6>
-                                                    <TextField id="categor" className="filter-input" name="cat_name"
-                                                        label="Add Category" fullWidth type="text"
+                                                    <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Introduction Slider</h6>
+                                               <div className="col-lg-12 mb-4 p-0">
+                                                    <TextField id="categor" className="filter-input" name="tips_trick"
+                                                        label="Title" fullWidth type="text"
                                                         InputLabelProps={{
                                                             shrink: true,
                                                         }}
                                                     />
+                                                </div>
+                                               <div className="col-lg-12 mb-4 p-0">
+                                               <TextField id="filled-multiline-static" label="Enter Description" multiline rows={4} fullWidth defaultValue="" className="text-area" variant="filled" />
+                                                </div>
+                                                      <div className="col-lg-12 mb-4  p-0">
+                                                        <label className="title-col">File Upload</label>
+                                                        <input type="file" name='image' className="form-control file-input" />
+                                                        </div>
                                                     <div className="mt-3">
                                                         <Button type='submit'  className="mr-3 btn-pd btnBg">Add</Button>
                                                         <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
@@ -226,9 +232,8 @@ const UpdateFormData = async (e) => {
                                             <div className="col-lg-7">
                                             <div className="row">
                                             <div className="col-lg-12">
-
                                                 <MaterialTable
-                                                    title="Faq Category List"
+                                                    title="Introduction Slider list"
                                                     columns={columns}
                                                     data={data}
                                                     actions={[
@@ -238,12 +243,12 @@ const UpdateFormData = async (e) => {
                                                             tooltip: 'Edit Category',
                                                             onClick: (event, setData) => { onOpenModal(setData._id); }
                                                         },
-                                                        // {
-                                                        //     icon: 'delete',
-                                                        //     iconProps: { style: { color: "#ff0000" } },
-                                                        //     tooltip: 'Delete Category',
-                                                        //     onClick: (event, setData) => { deleteFaq(setData._id); }
-                                                        // },
+                                                        {
+                                                            icon: 'delete',
+                                                            iconProps: { style: { color: "#ff0000" } },
+                                                            tooltip: 'Delete Category',
+                                                            onClick: (event, setData) => { deleteCategory(setData._id); }
+                                                        },
                                                     ]}
                                                     options={{
                                                         search: true,
@@ -257,21 +262,20 @@ const UpdateFormData = async (e) => {
                                             </div>
                                         </div>
 
-
-                                    <Modal open={open} onClose={onCloseModal} center>
-                                        <h2 className="mb-4 text-white">Update Category</h2>
-                                        <div className="mx-500">
-                                            <form className="mt-3 w-100" onSubmit={(e) => UpdateFormData(e)}>
-                                            <div className="form-group mb-4"> <label className="tx-medium">Update Category</label>
-                                                            <input type="hidden" className="form-control" name='id' value={catView._id} />
-                                                            <input type="text" className="form-control" name='cat_name' 
-                                                            defaultValue={catView.cat_name} /> </div>
-                                                <div className="mt-3">
-                                                    <Button type='submit' className="mr-3 btn-pd btnBg">Update</Button>
+                                         <Modal open={open} onClose={onCloseModal} center>
+                                                      <h2 className="mb-4 text-white">Update Category</h2>
+                                                    <div className="mx-500">
+                                                        <form className="mt-3 w-100"  onSubmit={(e) => UpdateFormData(e)}>
+                                                        <div className="form-group mb-4"> <label className="tx-medium">Update Category</label>
+                                                          <input type="hidden" className="form-control" name="id" defaultValue={catView._id} />
+                                                          <input type="text" className="form-control" name="tips_trick" defaultValue={catView.tips_trick} /> </div>
+                                                            <div className="mt-3">
+                                                             <Button type='submit' className="mr-3 btn-pd btnBg">Update</Button>
+                                                                </div>
+                                                        </form>
                                                     </div>
-                                            </form>
-                                        </div>
-                                    </Modal>
+                                                </Modal>
+          
                                             </div>
                                         </div>
                                     </div>

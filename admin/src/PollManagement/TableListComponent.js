@@ -16,35 +16,104 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function TableListComponent() {
 
-const [tblData,setTblData] = useState([]) ;
+const [data,setData] = useState([]) ;
 
-const get_data = async()=>{
 
-    {  try{ 
-        let formData = {};    
-        
-        let token = localStorage.getItem("token");
-        let header = ({ 'token': `${token}` });
-        let options1 = ({ headers: header });
+let token = localStorage.getItem("token");
+let header = ({ 'token': `${token}` });
+let options1 = ({ headers: header });
 
-        // let options1 = { headers:{"Content-type": "application/json","token": localStorage.getItem('token')  }};
-        let response = await axios.get('/poll_list',options1, formData);
-       let t_data = response.data;
-       if(t_data.status){
-             setTblData(t_data.body);
-       }
-       
-        return   response.data;
-       } catch(err){ console.error(err); toast.error('some errror'); return false;  }
-   } 
+const polllist = async () =>
+{
+    await axios.get(`/web_api/poll_list`,  options1)
+    .then(res => {
+      const data = res.data.body;
+      setData(data);
+      console.log(data); 
+    })
 }
 
-    useEffect(() => {
-        get_data();
-      },[]); 
+useEffect(()=> {
+    polllist()
+},[])
+
+// const get_data = async()=>{
+
+//     {  try{ 
+//         let formData = {};    
+//         let token = localStorage.getItem("token");
+//         let header = ({ 'token': `${token}` });
+//         let options1 = ({ headers: header });
+//          let response = await axios.get('/poll_list', options1, formData);
+//         let t_data = response.data.body;
+//         setTblData(t_data);
+//         const result_type = t_data.result_type
+//        } catch(err){ console.error(err); toast.error('some errror'); return false;  }
+       
+//    } 
+// }
+    /////////////////delete poll /////////////////
+    const delPoll = (_id) => {
+        axios.delete(`/web_api/delete_poll/${_id}`)
+            .then(res => {
+                if (res.status) {
+                    let data = res.data;
+                    if (data.status) { 
+                        toast.success(data.msg);
+                        return (
+                             axios.get(`/web_api/poll_list`,  options1)
+                            .then(res => {
+                              const data = res.data.body;
+                              setData(data);
+                              console.log(data); 
+                            })
+                        );
+                    } else {
+                        toast.error('something went wrong please try again');
+                    }
+                }
+                else {
+                    toast.error('something went wrong please try again..');
+                }
+
+            })
+           
+    }
 
 
-console.log("tblData == ", tblData);
+
+const [datadetail, setDataDetail] = useState('')
+
+const disclosedPoll = (_id) =>
+{ 
+
+            const setDataForm = {disclosed_status : '1'}
+             axios.put(`/web_api/poll_result_disclosed/${_id}`, setDataForm, options1)
+             .then(res => {
+                if (res.status) {
+                    let data = res.data;
+                    if (data.status) { 
+                        toast.success(data.msg);
+                        return (
+                             axios.get(`/web_api/poll_list`,  options1)
+                            .then(res => {
+                              const data = res.data.body;
+                              setData(data);
+                              console.log(data); 
+                            })
+                        );
+                    } else {
+                        toast.error('something went wrong please try again');
+                    }
+                }
+                else {
+                    toast.error('something went wrong please try again..');
+                }
+
+            })
+             
+}
+
 
 
     const columns =
@@ -55,12 +124,27 @@ console.log("tblData == ", tblData);
             { title: 'Amount', field: 'amount'  },
             { title: 'Appearance Time', field: 'apperance_time' },
             { title: 'Duration', field: 'time_duration'},
-        ]
+            { title: 'Poll Result', render: rowData => {
+                if (rowData.result_type == "Undisclosed" && rowData.disclosed_status == "1") {
+                    return (
+                        <>
+                          <span>Poll Result Disclosed</span>
+                        </>
+                    );
+                  }
+                  if (rowData.result_type == "Undisclosed" && rowData.disclosed_status == "0") {
+                    return (
+                        <>
+                         <Button onClick={() => { disclosedPoll(rowData._id);}}  type='submit' className="mr-3 btn-pd btnBg">Disclose</Button>
+                        </>
+                    );
+                  }
+            }
+              },
+         ]
 ////////////////////////////////////////////////////////
 
 //const history = useHistory();
-
-
 // const viewFun = (_id)=>{
 //     navigate(`/user-detail/${_id}`);
 //     return false;   
@@ -68,13 +152,17 @@ console.log("tblData == ", tblData);
 //   } 
 
 const navigate = useNavigate();
-
-const editFun = (id)=>{
+const detailFun = (id)=>{
     navigate(`/poll/detail/${id}`)
   return false;   
 
 } 
 
+const editFun = (id)=>{
+    navigate(`/poll/update/${id}`)
+  return false;   
+
+} 
 
 
     return (
@@ -87,14 +175,27 @@ const editFun = (id)=>{
                     <MaterialTable
                         title="Poll List"
                         columns={columns}
-                        data={tblData}
+                        data={data}
                         actions={[
                             {       
                                 icon: 'visibility',
                                 iconProps: { style: { color: "#6259ca" } },
                                 tooltip: 'View Detail',
+                                onClick: (event, rowData) => { detailFun(rowData._id);}
+                            },
+                            {       
+                                icon: 'edit',
+                                iconProps: { style: { color: "#6259ca" } },
+                                tooltip: 'Update Poll',
                                 onClick: (event, rowData) => { editFun(rowData._id);}
                             },
+                            {       
+                                icon: 'delete',
+                                iconProps: { style: { color: "#6259ca" } },
+                                tooltip: 'Delete Poll',
+                                onClick: (event, rowData) => { delPoll(rowData._id);}
+                            },
+                            
                         ]}
                         options={{
                             search: true,

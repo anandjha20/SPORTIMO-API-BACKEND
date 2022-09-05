@@ -27,7 +27,7 @@ function TableComplaintComponent() {
         let token = localStorage.getItem("token");
         let header = ({ 'token': `${token}` });
         let options1 = ({ headers: header });
-        await axios.get(`http://34.204.253.168:3000/api/user_complaint_all`, options1)
+        await axios.get(`/api/user_complaint_all`, options1)
         .then(res => {
           const userData = res.data.body;
           setData(userData);

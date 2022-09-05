@@ -29,7 +29,7 @@ function CreateFaq() {
 
     const [data, setData] = useState([])
     const FaqList = async () => {
-        await axios.get(`/faq_cat_list`)
+        await axios.get(`/web_api/faq_cat_list`)
             .then(res => {
                 const userData = res.data.body;
                 const data = userData
@@ -84,12 +84,11 @@ function CreateFaq() {
             }
             
             console.log("new values == ", dataToSend2);
-
             let token = localStorage.getItem("token");
             let header = ({ 'token': `${token}` });
             let options1 = ({ headers: header });
            
-            axios.post(`/add_faq`, dataToSend2, options1)
+            axios.post(`/web_api/add_faq`, dataToSend2, options1)
             .then(response => {
                 if (response.status) {
   

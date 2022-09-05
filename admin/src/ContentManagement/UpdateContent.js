@@ -58,7 +58,7 @@ function UpdateContent() {
 
   const userDetails = async () => {
 
-    const result = await axios.get(`/get_content/${type}`, options);
+    const result = await axios.get(`/web_api/get_content/${type}`, options);
     const data = result.data.body[0];
     const stype = result.data.body[0].type;
 
@@ -90,7 +90,7 @@ function UpdateContent() {
           let header = ({ 'token': `${token}` });
           let options1 = ({ headers: header });
 
-          axios.post(`/content_add`, dataToSend2, options1)
+          axios.post(`/web_api/content_add`, dataToSend2, options1)
           .then(response => {
               if (response.status) {
 

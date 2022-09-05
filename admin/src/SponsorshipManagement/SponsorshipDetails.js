@@ -25,7 +25,7 @@ function SponsorshipDetails() {
           let token = localStorage.getItem("token");
           let header = ({ 'token': `${token}` });
           let options1 = ({ headers: header });
-          let response = await axios.get('/sponsor_detail/'+id,options1, formData);
+          let response = await axios.get('/web_api/sponsor_detail/'+id,options1, formData);
          let t_data = response.data;
           
     

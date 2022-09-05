@@ -28,7 +28,7 @@ function ReplyComplaintChat() {
 
     const ChatMessage = async () =>
     {
-        await axios.get(`/user_complaint_chat_list/${_id}`, options1)
+        await axios.get(`/web_api/user_complaint_chat_list/${_id}`, options1)
         .then(res => {
           const userData = res.data.body;
           const userDataId = res.data.body[0].complaint_id;
@@ -97,7 +97,7 @@ const saveFormData = async (e) => {
 
         // let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
 
-        axios.post(`/user_complaint_chat_add`, dataToSend2, options1)
+        axios.post(`/web_api/user_complaint_chat_add`, dataToSend2, options1)
             .then(res => {
                 if (res.status) {
 
@@ -105,7 +105,7 @@ const saveFormData = async (e) => {
                     if (data.status) {
                         e.target.reset();        
                        toast.success(data.msg); 
-                       return axios.get(`/user_complaint_chat_list/${_id}`)
+                       return axios.get(`/web_api/user_complaint_chat_list/${_id}`)
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);

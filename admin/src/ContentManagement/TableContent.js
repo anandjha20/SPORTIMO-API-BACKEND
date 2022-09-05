@@ -12,7 +12,7 @@ function TableContent() {
    const regex = /(<([^>]+)>)/ig;
   const ContentList = async () =>
     {
-         await axios.get(`/get_content`)
+         await axios.get(`/web_api/get_content`)
         .then(res => {
           const data = res.data.body;
           setData(data);

@@ -67,7 +67,7 @@ const [Catname, setCatname] = useState()
 const { _id } = useParams();
 
 const userDetails = async () => {
-const result = await axios.get(`/faq_list/${_id}`,options1 );
+const result = await axios.get(`/web_api/faq_list/${_id}`,options1 );
 const data = result.data.body[0];
 const Idselect = result.data.body[0].faq_cat_id._id;
 const Catname = result.data.body[0].faq_cat_id.cat_name;
@@ -102,7 +102,7 @@ let options1 = ({ headers: header });
 
 
 const FaqList = async () => {
-    await axios.get(`/faq_cat_list`, options1)
+    await axios.get(`/web_api/faq_cat_list`, options1)
         .then(res => {
             const userData = res.data.body;
             const catList = userData
@@ -146,7 +146,7 @@ useEffect(() => {
           
 
           console.log("new values == ", dataToSend2); 
-          axios.put(`/update_faq`, dataToSend2, options1)
+          axios.put(`/web_api/update_faq`, dataToSend2, options1)
           .then(response => {
               if (response.status) {
 

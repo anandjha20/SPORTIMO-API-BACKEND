@@ -22,8 +22,8 @@ function UserDetail() {
   let options = ({ headers: header });
 
   const userDetails = async () => {
-    
-    const result = await axios.get(`/user_list/${_id}`, options);
+    const sanData = { page: "1", rows : "1" }
+    const result = await axios.post(`/user_list/${_id}`, sanData, options);
     const data = result.data.body[0];
     setData(data);
     console.log(data);
@@ -35,7 +35,6 @@ function UserDetail() {
 
 
   const formatDate = Moment(data.date).format("MMM Do YY");
-
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 

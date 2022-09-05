@@ -59,7 +59,7 @@ export default function AddComplaintCategory() {
 
     const onOpenModal = (_id) => {
 
-           axios.get(`/user_complaint_cat_list/${_id}`)
+           axios.get(`/web_api/user_complaint_cat_list/${_id}`)
             .then(res => {
                 const catView = res.data.body[0];
                 setCat(catView);
@@ -71,14 +71,14 @@ export default function AddComplaintCategory() {
     /////////////////delete complaint /////////////////
     const deleteCategory = (_id) => {
 
-        axios.delete(`/user_complaint_cat_delete/${_id}`)
+        axios.delete(`/web_api/user_complaint_cat_delete/${_id}`)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
 
                     if (data.status) { 
                         toast.success(data.msg);
-                         return axios.get("/user_complaint_cat_list")
+                         return axios.get("/web_api/user_complaint_cat_list")
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
@@ -101,7 +101,7 @@ export default function AddComplaintCategory() {
     const onCloseModal = () => setOpen(false);
 
     const FaqCategoryList = async () => {
-        await axios.get(`/user_complaint_cat_list`)
+        await axios.get(`/web_api/user_complaint_cat_list`)
             .then(res => {
                 const userData = res.data.body;
                 setData(userData);
@@ -130,7 +130,7 @@ export default function AddComplaintCategory() {
 
             let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
 
-            axios.put(`/user_complaint_cat_update/${_id}`, dataToSend2, options1)
+            axios.put(`/web_api/user_complaint_cat_update/${_id}`, dataToSend2, options1)
                 .then(res => {
                     if (res.status) {
 
@@ -138,7 +138,7 @@ export default function AddComplaintCategory() {
                         if (data.status) {
                             toast.success(data.msg);
                             setOpen(false);
-                            return axios.get("/user_complaint_cat_list")
+                            return axios.get("/web_api/user_complaint_cat_list")
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
@@ -174,7 +174,7 @@ export default function AddComplaintCategory() {
 
             let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
 
-            axios.post(`/add_user_complaint_category`, dataToSend2, options1)
+            axios.post(`/web_api/add_user_complaint_category`, dataToSend2, options1)
                 .then(response => {
                     if (response.status) {
 
@@ -186,7 +186,7 @@ export default function AddComplaintCategory() {
                             toast.success(data.msg);
                             e.target.reset();
 
-                            return axios.get("/user_complaint_cat_list")
+                            return axios.get("/web_api/user_complaint_cat_list")
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);

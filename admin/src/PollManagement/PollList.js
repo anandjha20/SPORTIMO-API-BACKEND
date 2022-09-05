@@ -27,7 +27,7 @@ function PollList() {
 								<div className="justify-content-center">
                                 <Link to="/poll/create" className="btn-link">
                                 <i className="fas fa-plus"></i>&nbsp;&nbsp; Create Poll
-                              </Link>
+                                </Link>
                                
                                 </div>
 							</div>

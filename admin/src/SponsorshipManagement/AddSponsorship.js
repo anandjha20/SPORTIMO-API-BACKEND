@@ -97,7 +97,7 @@ export default function AddSponsorship() {
 
       // let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
 
-      let response = await axios.post('/add_sponsor',dataToSend2, options1);
+      let response = await axios.post('/web_api/add_sponsor',dataToSend2, options1);
 
       if (response.status) {
 

@@ -29,7 +29,7 @@ function TableFaqComponent() {
 
     const FaqList = async () =>
     {
-        await axios.get(`/faq_list`, options1)
+        await axios.get(`/web_api/faq_list`, options1)
         .then(res => {
           const userData = res.data.body;
           setData(userData);
@@ -59,14 +59,14 @@ function TableFaqComponent() {
 ///////////////// delete api call  /////////////////
 const deleteFaq = (_id) => {  
     let sendData = { id : _id  }
-    axios.delete(`/delete_faq/${_id}`,options1)
+    axios.delete(`/web_api/delete_faq/${_id}`,options1)
         .then(res => {
             if (res.status) {
                 let data = res.data;
 
                 if (data.status) { 
                     toast.success(data.msg);
-                     return axios.get("/faq_list")
+                     return axios.get("/web_api/faq_list")
                         .then(res => {
                             const userData = res.data.body;
                             setData(userData);

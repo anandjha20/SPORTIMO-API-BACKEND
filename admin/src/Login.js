@@ -16,7 +16,8 @@ function Login() {
   {
 
   let data={email, pass }; 
-  let result= await  fetch('http://34.204.253.168:3000/web_api/admin_login', {
+ let result= await  fetch('http://34.204.253.168:3000/web_api/admin_login', {
+ //let result= await  fetch('http://192.168.1.95:3600/web_api/admin_login', {
   //let result= await  fetch('/admin_login', {
     
   method : 'POST', 

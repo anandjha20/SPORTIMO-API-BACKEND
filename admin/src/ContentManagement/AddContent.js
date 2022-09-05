@@ -64,7 +64,7 @@ function AddContent() {
           let header = ({ 'token': `${token}` });
           let options1 = ({ headers: header });
 
-          axios.post(`/content_add`, dataToSend2, options1)
+          axios.post(`/web_api/content_add`, dataToSend2, options1)
           .then(response => {
               if (response.status) {
 

@@ -9,16 +9,14 @@ import 'react-toastify/dist/ReactToastify.css';
 
               
 
-
-
-
 export default function SelectTageting() {
 
     const [sport_lists, setSport_lists] = React.useState([]);
     const [league_lists, setLeague_lists] = React.useState([]);
     const [team_lists, setTeam_lists] = React.useState([]);
+
+
     const [player_lists, setPlayer_lists] = React.useState([]);
-    const [country_lists, setCountry_lists] = React.useState([]);
 
     const get_data = async(url,setval) =>{
         try {
@@ -57,10 +55,8 @@ export default function SelectTageting() {
         get_data('/web_api/league_list',setLeague_lists);
         get_data('/web_api/team_list',setTeam_lists);
         get_data('/web_api/player_list',setPlayer_lists);
-        get_data('/web_api/country_list',setCountry_lists);
 
 
-        // 👇 add class to body element
         document.body.classList.add('bg-salmon');
     
       }, []);
@@ -88,18 +84,35 @@ export default function SelectTageting() {
     }) :[];
     
     
-    const countryOptions = (country_lists.length >0) ? country_lists.map((item)=>{
-        return  { value: item._id, label: item.name };
-    }) :[];
     
     const selectChange = (e,type)=>{
         console.log(e.currentTarget);
         alert(" ==jk==  "+type);
     }
+
+
+    const [catArray, setselectedOptions] = React.useState([]);
+
+    const handleChangePlayer = (selectedOptions) => {
+      const catArray = [];
+      selectedOptions.map(item =>  catArray.push(item.value)
+     );
     
+     setselectedOptions(catArray.join(','));
+     console.log(catArray.join(','));
+  }
+    
+
+  
 
     return (
         <>
+
+
+
+
+
+        <div className='row'>
 
             <div className="col-lg-6 reletive mb-4">
                 <span className='react-select-title'>Select Sports</span>
@@ -119,7 +132,7 @@ export default function SelectTageting() {
                 <span className='react-select-title'>Select League</span>
                 <Select isMulti
                     closeMenuOnSelect={false}
-                    name="league" 
+                    name="leagues" 
                     options={leagueOptions}
                     className="basic-multi-select"
                     classNamePrefix="select" />
@@ -129,7 +142,7 @@ export default function SelectTageting() {
                 <span className='react-select-title'>Select Team</span>
                 <Select isMulti
                     closeMenuOnSelect={false}
-                    name="team"   
+                    name="teams"   
                     options={teamOptions}
                     className="basic-multi-select"
                     classNamePrefix="select" />
@@ -142,22 +155,13 @@ export default function SelectTageting() {
                     name="players"  
                     options={playersOptions}
                     className="basic-multi-select"
-                    classNamePrefix="select" />
+                    classNamePrefix="select" 
+                    onChange={handleChangePlayer}
+                    />
             </div>
 
-            <div className="col-lg-12  mb-4">
-                <label className="title-col mb-3">Targeted Country</label>
-             </div>
-              <div className='reletive col-lg-12'>
-                <span className='react-select-title'>Select Country</span>
-                <Select isMulti
-                    closeMenuOnSelect={false}
-                    name="country" 
-                    options={countryOptions}
-                    className="basic-multi-select"
-                    classNamePrefix="select" />
+            
             </div>
-
         </>
     );
 }
