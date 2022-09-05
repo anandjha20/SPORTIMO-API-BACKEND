@@ -35,8 +35,9 @@ const token_check =  require('../middleware/token_check');
   router.post('/admin_login/',AdminController.admin_login);
  
    // all poll  Routes  
-      router.get('/poll_list/:id?',token_check,PollController.poll_list);
-      router.get('/user_list/:id?',token_check,AdminController.user_list);
+      router.post('/add_poll',PollController.add_poll);
+      router.post('/poll_list/:id?',token_check,PollController.poll_list);
+      router.post('/user_list/:id?',token_check,AdminController.user_list);
       router.get('/poll_result_show/:poll_id?',PollController.poll_result_show);
       router.put('/update_poll/:id?',PollController.update_poll);
       router.delete('/delete_poll/:id?',PollController.delete_poll);
@@ -77,8 +78,9 @@ const token_check =  require('../middleware/token_check');
     router.put('/user_complaint_cat_update/:id?',complaintController.user_complaint_cat_update);  
     router.delete('/user_complaint_cat_delete/:id?',complaintController.user_complaint_cat_delete); 
     
+    router.post('/user_complaint_list/:id?', complaintController.all_user_complaint_list);  
       // user complaint chat Routes  user_complaint_chat_stop 
-      router.get('/user_complaint_chat_list/:id ?',complaintController.user_complaint_chat_list);   
+      router.get('/user_complaint_chat_list/:id?',complaintController.user_complaint_chat_list);   
       router.post('/user_complaint_chat_add', complaintController.user_complaint_chat_add); 
       router.delete('/user_complaint_chat_stop/:id',complaintController.user_complaint_chat_stop);
 
@@ -98,15 +100,35 @@ const token_check =  require('../middleware/token_check');
            
     /////   sports crud Route                                   
      router.post('/sports',MasterController.sports_add);             
-     router.get('/sports/:id?',MasterController.sports_get);             
+     router.post('/sports_get/:id?',MasterController.sports_get);             
      router.put('/sports/:id',MasterController.sports_update);             
      router.delete('/sports/:id',MasterController.sports_delete);        
- 
- /////   leagues crud Route                                   
-  router.post('/leagues',MasterController.league_add);             
-  router.get('/leagues/:id?',MasterController.league_get);             
-  router.put('/leagues/:id',MasterController.league_update);             
-  router.delete('/leagues/:id',MasterController.league_delete);        
+      
+      /////   leagues crud Route                                   
+        router.post('/leagues',MasterController.league_add);             
+        router.post('/leagues_get/:id?',MasterController.league_get);             
+        router.put('/leagues/:id',MasterController.league_update);             
+        router.delete('/leagues/:id',MasterController.league_delete);        
+          
+    /////   teams crud Route                                   
+      router.post('/teams',MasterController.team_add);             
+      router.post('/teams_get/:id?',MasterController.team_get);             
+      router.put('/teams/:id',MasterController.team_update);             
+      router.delete('/teams/:id',MasterController.team_delete);        
+  
+  /////   player _get crud Route                                   
+        router.post('/players',MasterController.player_add);             
+        router.post('/players_get/:id?',MasterController.player_get);             
+        router.put('/players/:id',MasterController.player_update);             
+        router.delete('/players/:id',MasterController.player_delete);        
 
+// poll_skip_add
+   router.post('/poll_skip_add',PollController.poll_skip_add); 
+  
+  // poll_analytics route add on 
+   router.get('/poll_analytics/:id',PollController.poll_analytics); 
+
+  // poll_analytics route add on 
+   router.get('/poll_analytics/:id',PollController.poll_analytics); 
    
 module.exports = router;  

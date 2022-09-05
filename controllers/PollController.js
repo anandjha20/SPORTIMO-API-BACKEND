@@ -13,11 +13,44 @@ const { poll_percent} = require('../myModel/helper_fun');
     const admin_tbl = require('../models/admin');    
     const poll_tbl = require('../models/poll');    
     const poll_result_tbl = require('../models/poll_result');    
+    const poll_skips_tbl = require('../models/poll_skips');    
 
 class PollController { 
 
-        
+      static poll_skip_add = async(req,res) =>{
+
+          let poll_id = req.body.poll_id;
+          let user_id = req.body.user_id;
     
+         if(isEmpty(poll_id) || isEmpty(user_id) ){
+               return  res.status(200).send({'status':false,'msg':"All Field Required",'body':''});
+               }
+
+               let add = new poll_skips_tbl({ poll_id,user_id });
+               add.save((err, data) => {
+                if (err) {     console.log(err);
+                  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+              }else{ return res.status(200).send({"status":true,"msg":'Poll Created Successfully' , "body":data  }) ;            
+                    }
+}   );
+
+
+      } 
+   
+    static poll_analytics = async (req,res)=>{
+      try {
+            let id = req.params.id
+         let skip_user_count = await poll_skips_tbl.find({"poll_id":id}).countDocuments();
+         let poll_participate_user_count = await poll_result_tbl.find({"poll_id":id}).countDocuments();
+           return  res.status(200).send({'status':true,'msg':"success",'body':{skip_user_count,poll_participate_user_count}});
+        } catch (error) {
+          return  res.status(200).send({'status':false,'msg':"server error",'body':''});
+        }
+
+
+    }
+
+      
 
     static poll_list = async (req,res)=>{
         try {
@@ -48,17 +81,14 @@ class PollController {
               
              let offest = (page -1 ) * 10 ; 
              const records = await query2.skip(offest).limit(10);
-          res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+          return res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
   
         } catch (error) { console.log(error);
-          res.status(200).send({'status':false,'msg':error,'body':''});
+          return  res.status(200).send({'status':false,'msg':"server error",'body':''});
         }
              
             }     
-    
-   
-     
-  
+ 
      static add_poll = async(req,res)=>{
 
                 try {

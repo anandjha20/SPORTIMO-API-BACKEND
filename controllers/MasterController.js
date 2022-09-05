@@ -184,7 +184,183 @@ try {
 
      }
      
+      /// Team_tbl function section   team
+   static  team_add =  async(req,res) =>{
+        let name = req.body.name;
+        if(isEmpty(name)){
+            return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
+        }
+            let add = new Team_tbl({"team_name":name}); 
+            add.save((err,data)=>{
+                if(err){   return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
+                        }else{
+                return res.status(200).send({"status":true,"msg":"Team Add Successfully","body": data });
+             }
+   });     
+
+        
+      }
+
+    static team_get = async (req,res)=>{
+    try {
+            let  id = req.params.id;
+            let page  = req.body.page;
+            page = (isEmpty(page) || page == 0 )? 1 :page ; 
+            
+            if(!isEmpty(id)){  page = 1;}
+        
+        let whr = (isEmpty(id))? {}: {_id: id}    ;
+     
+        let query =  Team_tbl.find(whr).sort({_id:-1}) ;
+            const query2 =  query.clone();
+        const counts = await query.countDocuments();
+
+
+        
+        let offest = (page -1 ) * 10 ; 
+        const records = await query2.skip(offest).limit(10);
+    res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+
+    } catch (error) { console.log(error);
+    res.status(200).send({'status':false,'msg':error,'body':''});
+    }
+        
+        }     
+
+    static team_update = async(req,res)=>{
+        try {
+                   let id = req.params.id;
+                   let name = req.body.name;
+                   if(isEmpty(name)){
+                       return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
+                   }
+                   Team_tbl.findOneAndUpdate({_id: id},{$set : {"team_name":name}},{new: true}, (err, updatedUser) => {
+        if(err) {  console.log(err);
+            return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+        }else if(!isEmpty(updatedUser)){
+                    return res.status(200).send({"status":true,"msg":'Team Updated Successfully' , "body":updatedUser  }) ;   
+            }else{  return res.status(200).send({"status":false,"msg":'Invalid Team Id ' , "body": ''}) ;   
+                    }
+
+            
+        });
+
+         } catch (error) {
+                 return res.status(200).send({"status":false,"msg":'Server error' , "body":''}) ;          
+     
+             }
+           
+     
+         }          
+  
+   static team_delete = async(req,res)=>{
+         try {
+                 let id = req.params.id;  
+                 Team_tbl.findByIdAndDelete(id, function (err, docs) {
+               if (err){  console.log("jjj === ",err);           //json(err)
+
+                       let getError =  JSON.parse(JSON.stringify(err));
+                 return res.status(200).send({"status":false,"msg":getError.message , "body":''}) ; 
+                  }else if(!isEmpty(docs)){
+                     return res.status(200).send({"status":true,"msg":'Team Deleted Successfully' , "body":''}) ;   
+               }else{
+                 return res.status(200).send({"status":false,"msg":'Invalid Team Id ' , "body":''}) ;  
+               }
+           });
+
+         } catch (error) { return res.status(200).send({"status":true,"msg":'Some error' , "body":''}) ; }
+
+     }
+      /// Player_tbl function section   Player
+      
+      static  player_add =  async(req,res) =>{
+                let name = req.body.name;
+                if(isEmpty(name)){
+                    return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
+                }
+                    let add = new Player_tbl({"team_name":name}); 
+                    add.save((err,data)=>{
+                        if(err){ console.log(err);     
+                                return res.status(200).send({"status":false,"msg":'something went wrong please try again' ,"body":''});
+                                }else{
+                        return res.status(200).send({"status":true,"msg":"Player Add Successfully","body": data });
+                    }
+            });     
+
     
+             }
+
+  static player_get = async (req,res)=>{
+        try {
+                let  id = req.params.id;
+                let page  = req.body.page;
+                page = (isEmpty(page) || page == 0 )? 1 :page ; 
+                
+                if(!isEmpty(id)){  page = 1;}
+            
+            let whr = (isEmpty(id))? {}: {_id: id}    ;
+        
+            let query =  Player_tbl.find(whr).sort({_id:-1}) ;
+                const query2 =  query.clone();
+            const counts = await query.countDocuments();
+
+
+            
+            let offest = (page -1 ) * 10 ; 
+            const records = await query2.skip(offest).limit(10);
+        res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+
+        } catch (error) { console.log(error);
+        res.status(200).send({'status':false,'msg':error,'body':''});
+        }
+            
+            }     
+
+        static player_update = async(req,res)=>{
+            try {
+                    let id = req.params.id;
+                    let name = req.body.name;
+                    if(isEmpty(name)){
+                        return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
+                    }
+                    Player_tbl.findOneAndUpdate({_id: id},{$set : {"team_name":name}},{new: true}, (err, updatedUser) => {
+            if(err) {  console.log(err);
+                return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+            }else if(!isEmpty(updatedUser)){
+                        return res.status(200).send({"status":true,"msg":'Player Updated Successfully' , "body":updatedUser  }) ;   
+                }else{  return res.status(200).send({"status":false,"msg":'Invalid Player Id ' , "body": ''}) ;   
+                        }
+
+                
+            });
+
+            } catch (error) {
+                    return res.status(200).send({"status":false,"msg":'Server error' , "body":''}) ;          
+        
+                }
+            
+        
+            }          
+
+        static player_delete = async(req,res)=>{
+            try {
+                    let id = req.params.id;  
+                    Player_tbl.findByIdAndDelete(id, function (err, docs) {
+                if (err){  console.log("jjj === ",err);           //json(err)
+
+                        let getError =  JSON.parse(JSON.stringify(err));
+                    return res.status(200).send({"status":false,"msg":getError.message , "body":''}) ; 
+                    }else if(!isEmpty(docs)){
+                        return res.status(200).send({"status":true,"msg":'Player Deleted Successfully' , "body":''}) ;   
+                }else{
+                    return res.status(200).send({"status":false,"msg":'Invalid Player Id ' , "body":''}) ;  
+                }
+            });
+
+            } catch (error) { return res.status(200).send({"status":true,"msg":'Some error' , "body":''}) ; }
+
+        }
+          
 
 }
 

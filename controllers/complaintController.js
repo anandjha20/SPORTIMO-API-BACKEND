@@ -1,7 +1,8 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp } = require('../myModel/common_modal');
-   
+const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty } = require('../myModel/common_modal');
+
+      
 
 const { poll_percent,all_list_come} = require('../myModel/helper_fun');
    
@@ -19,7 +20,7 @@ const { poll_percent,all_list_come} = require('../myModel/helper_fun');
     
 class ComplaintController{
 
-        
+  
    static add_user_complaint_category = async(req,res)=>{
             try {
                 let user_data = req.body;
@@ -123,17 +124,20 @@ class ComplaintController{
                 let user_id = req.body.user_id;       let user_id_len  = (user_id || '').length;       
                 let cat_id = req.body.cat_id;         let cat_id_len   = (cat_id || '').length;       
                 let question = req.body.question;     let question_len = (question || '').length;       
-             
+            
+                   let date = getcurntDate();
+                   let times = getTime();
+  
+
                 let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
           
                  if(user_id_len == 0 || cat_id_len == 0 || question_len == 0 ){
                           return res.status(200).send({"status":false,"msg":'All field Required'}) ;       
                     }
 
-
-                        let add = new user_complaint_tbl({ user_id,cat_id,question,image });
+             let add = new user_complaint_tbl({ user_id,cat_id,question,image });
                     
-                    let response  =   await add.save();
+                let response  =   await add.save();
                     if(response){
                                 return res.status(200).send({"status":true,"msg":'Complaint added successfully', "body":response}) ;          
                         }else{
@@ -141,30 +145,75 @@ class ComplaintController{
                             }
 
                     } catch (error) {
-                        return res.status(200).send({"status":false,"msg":'No data add  ' , "body":''}) ;          
+                        return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
                         }
                     }
 
 
     static all_user_complaint_list = async (req,res)=>{
         try {
-            let  id = req.params.id;  let id_len = (id || '').length;
-            let whr = (id_len == 0) ? {admin_status:false} :{_id:id};
-        
-            let data = await user_complaint_tbl.find(whr);
-                if(data){     let allData =  data.map( (item)=>{ item.image = (item.image == '')? '' : "http://192.168.1.95:3500/image/assets/userComlaint_img/" +item.image; return item;});
-                
-                res.status(200).send({'status':true,'msg':"success",'body':allData});
-                }else{      
-                res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
-                    
+             let id = req.params.id ;
+            let cat_id  = req.body.cat_id;
+            let s_date  = req.body.s_date;
+            let e_date  = req.body.e_date;
+            let email  = req.body.email;
+            let mobile  = req.body.mobile;
             
-        
+  
+            let page  = req.body.page;
+            page = (isEmpty(page) || page == 0 )? 1 :page ; 
+            let cat_search = {path:'cat_id' , select:'cat_name'}; 
+            let user_search = {path:'user_id' , select:'name mobile email u_name '}; 
+            let whr ={}; 
+           // if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*' } ;} 
+            if(!isEmpty(cat_id)){  whr.cat_id = cat_id;} 
+            if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date = { $gte: s_date, $lte: e_date } } 
+          
+          
+            if(!isEmpty(id)){whr = {_id: id} ;} 
+          
+     if(!isEmpty(email)){user_search =   {path:'user_id' ,match: {"email":email }, select:'name mobile email u_name '};   } 
+     if(!isEmpty(mobile)){user_search =   {path:'user_id' ,match: {"mobile":mobile }, select:'name mobile email u_name '};   } 
+            
+
+  
+      let query =  user_complaint_tbl.find(whr).populate([user_search]).sort({_id:-1});
+                 
+             const query2 =  query.clone();
+             const counts = await query.countDocuments();
+            let offest = (page -1 ) * 10 ; 
+             const records = await query2.skip(offest).limit(10);
+          return res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+      
+ ///////////////////////////////////////////////////////////////////      
+            // user_complaint_tbl.aggregate()
+            //         .match(whr)
+                   
+            //         .allowDiskUse(true)
+            //         .exec(function(err, data) {
+            //             if (err) { console.log('err==', err); 
+            //             return res.status(200).send({"status":false,"msg":'No data Found!..' , "body":''}) ;    
+            //             }else{
+            //                 console.log( data);
+
+            //             if(data.length>0){
+                    
+            //             return res.status(200).send({"status":true,"msg":'success' , "body":data}) ;     
+            //             }else{
+            //             return res.status(200).send({"status":false,"msg":'No data Found!..' , "body":''}) ; 
+            //             }
+            //         }
+            //         });
+
+    
+/////////////////////////////////////////////////////////////////////////////////////
+
+
         } catch (error) { console.log(error);
             res.status(200).send({'status':false,'msg':error,'body':''});
         }
                 
-            }     
+  }     
         
     static user_complaint_list = async (req,res)=>{
         try {
@@ -282,8 +331,7 @@ class ComplaintController{
      
     static user_complaint_chat_list = async (req,res)=>{
     try {
-       
-        let  id = req.params.id;  let id_len = (id || '').length;
+           let  id = req.params.id;  let id_len = (id || '').length;
      
         let data = await user_complaint_chat_tbl.find({complaint_id:id});
 
@@ -299,7 +347,8 @@ class ComplaintController{
     }
             
         }    
-
+  
+       
         static user_complaint_chat_stop = async (req,res)=>{
             try {
                 let  id = req.params.id;  let id_len = (id || '').length;

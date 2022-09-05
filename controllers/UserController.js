@@ -87,7 +87,7 @@ class UserController {
             console.log("seq_id is ==",seq_id);
             
          if(user_type == 1 || user_type == 2 || user_type == 3 || user_type == 4 || user_type == 5 ){ }else{
-                return res.status(200).send({"status":false,"msg":'Invalid User type Field Value ' , "body":''}) ;     
+                return res.status(200).send({"status":false,"msg":'Invalid User type Field Value '}) ;     
             }
 
     // case 1 if user type == 5 (guest user )  and  device_id id arready exists then
@@ -131,10 +131,15 @@ class UserController {
 
 
     console.log('checkuser == ',checkuser)  ;         
-       let msgtodiv = ''; 
+           
      if(checkuser.length >0 ){
+        let check_user_id = checkuser[0]._id;   
+        const doc = await user_tbl.findOneAndUpdate({ _id: check_user_id},{ otp: otp },
+                                     { upsert: true, useFindAndModify: false });
 
-                let check_type = checkuser[0].user_type;     
+
+
+                let check_type = checkuser[0].user_type;  let msgtodiv = '';   
                 if(check_type == 1){
                     send_mobile_otp({mobile,otp}); 
                     msgtodiv = 'otp sent to your mobile please check know ';
@@ -142,6 +147,8 @@ class UserController {
                     sentEmail({email,otp}); 
                     msgtodiv = 'otp sent to your Email please check know ';
                 }  
+
+
                 return res.status(200).send({"status":true,"msg":msgtodiv, "body":checkuser[0]._id }) ;     
          }
               
@@ -171,7 +178,7 @@ class UserController {
                     msgtodiv = 'otp sent to your Email please check know ';
                 }  
                     console.log('add == ', add); 
-                 return res.status(200).send({"status":true,"msg": msgtodiv , "user_id":add._id }) ;      
+                 return res.status(200).send({"status":true,"msg": msgtodiv , "body":add._id }) ;      
 
         } catch (error) { console.log(error);
             return res.status(200).send({"status":false,"msg":'no data add ' }) ;          

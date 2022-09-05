@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
             
 const sprtschema = new Schema({
                              
-    team_name: { type: String, required: true, unique: true },
+    team_name: { type: String, required: true, unique:[true,'Player Name Already Exists'] },
          active_status: { type: Boolean ,default : 1},
        
 
