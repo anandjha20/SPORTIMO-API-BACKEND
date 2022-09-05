@@ -1,6 +1,6 @@
 let  express_2 = require('express');
   
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp } = require('../myModel/common_modal');
+const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
    
 
   
@@ -51,21 +51,45 @@ static jks = async()=>{
    
     } 
 
-    
+       
     static sport_list = async(req,res)=>{
         try {
-            let id = req.params.id ;
-            let id_len = (id || '').length;
+            // let id = req.params.id ;
+            // let id_len = (id || '').length;
             
-            let whr = (id_len == 0)? {} : { "_id":id};
-            let response = await sport_tbl.find(whr).select("_id name").exec();
+            // let whr = (id_len == 0)? {} : { "_id":id};
+            // let response = await sport_tbl.find(whr).select("_id name").exec();
                     
-            if(response){
-                return res.status(200).send({status:true,msg:'Success' , "body": response }) ;   
-                }else{
-                    return res.status(200).send({status:false,msg:'No Data Found'}) ;  
-                }
+            // if(response){
+            //     return res.status(200).send({status:true,msg:'Success' , "body": response }) ;   
+            //     }else{
+            //         return res.status(200).send({status:false,msg:'No Data Found'}) ;  
+            //     }
+//////////////////////////////////////////////////////////////
+                    let  id = req.params.id;
+                    let page  = req.body.page;
+                    page = (isEmpty(page) || page == 0 )? 1 :page ; 
 
+
+                    let whr = (isEmpty(id))? {}: {_id: id} ;
+                    let query =  sport_tbl.find(whr).select("_id name").sort({_id:-1}) ;
+
+                    const query2 =  query.clone();
+                    const counts = await query.countDocuments();
+    
+                    let offest = (page -1 ) * 10 ; 
+                    const records = await query2.skip(offest).limit(10);
+                  //  res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });       
+
+                    if(records){
+                       return  res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });       
+
+                        }else{
+                            return res.status(200).send({status:false,msg:'No Data Found'}) ;  
+                        }
+
+
+////////////////////////////////////////
          } catch (error) { console.log("some error is == ",error);
                 return res.status(200).send({status:false,msg:'some error' , "body":''}) ;          
 

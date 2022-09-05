@@ -29,11 +29,15 @@ class MasterController {
         try {
                 let  id = req.params.id;
                 let page  = req.body.page;
+                let name    = req.body.name;
+                let whr = {};
+
+                if(!isEmpty(name)){whr.name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+
                 page = (isEmpty(page) || page == 0 )? 1 :page ; 
-          
-          
-            let whr = (isEmpty(id))? {}: {_id: id} ;
-            let query =  sport_tbl.find(whr).sort({_id:-1}) ;
+                 if(!isEmpty(id)){whr = {_id: id} ;} 
+
+            let query =  sport_tbl.find(whr).sort({_id:-1});
               
              const query2 =  query.clone();
              const counts = await query.countDocuments();
@@ -78,7 +82,7 @@ class MasterController {
              
                  }          
           
-             static sports_delete = async(req,res)=>{
+     static sports_delete = async(req,res)=>{
                  try {
                          let id = req.params.id;
                          sport_tbl.findByIdAndDelete(id, function (err, docs) {
@@ -114,14 +118,18 @@ class MasterController {
         
  }
 
- static league_get = async (req,res)=>{
+     static league_get = async (req,res)=>{
 try {
-        let  id = req.params.id;
-        let page  = req.body.page;
-        page = (isEmpty(page) || page == 0 )? 1 :page ; 
-  
-  
-    let whr = (isEmpty(id))? {}: {_id: id} ;
+         let  id = req.params.id;
+                let page  = req.body.page;
+                let name    = req.body.name;
+                let whr = {};
+
+                if(!isEmpty(name)){whr.league_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+
+                page = (isEmpty(page) || page == 0 )? 1 :page ; 
+                 if(!isEmpty(id)){whr = {_id: id} ;} 
+
     let query =  league_tbl.find(whr).sort({_id:-1}) ;
       
      const query2 =  query.clone();
@@ -137,7 +145,7 @@ try {
   res.status(200).send({'status':false,'msg':error,'body':''});
 }
      
-    }     
+                  }     
 
     static league_update = async(req,res)=>{
         try {
@@ -205,12 +213,16 @@ try {
     try {
             let  id = req.params.id;
             let page  = req.body.page;
+            let name    = req.body.name;
+            let whr = {};
+
+            if(!isEmpty(name)){whr.team_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
-            
-            if(!isEmpty(id)){  page = 1;}
-        
-        let whr = (isEmpty(id))? {}: {_id: id}    ;
-     
+            if(!isEmpty(id)){whr = {_id: id} ;} 
+
+
+
         let query =  Team_tbl.find(whr).sort({_id:-1}) ;
             const query2 =  query.clone();
         const counts = await query.countDocuments();
@@ -292,13 +304,15 @@ try {
 
   static player_get = async (req,res)=>{
         try {
-                let  id = req.params.id;
-                let page  = req.body.page;
-                page = (isEmpty(page) || page == 0 )? 1 :page ; 
-                
-                if(!isEmpty(id)){  page = 1;}
-            
-            let whr = (isEmpty(id))? {}: {_id: id}    ;
+            let  id = req.params.id;
+            let page  = req.body.page;
+            let name    = req.body.name;
+            let whr = {};
+
+            if(!isEmpty(name)){whr.team_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+
+            page = (isEmpty(page) || page == 0 )? 1 :page ; 
+            if(!isEmpty(id)){whr = {_id: id} ;} 
         
             let query =  Player_tbl.find(whr).sort({_id:-1}) ;
                 const query2 =  query.clone();
@@ -316,7 +330,7 @@ try {
             
             }     
 
-        static player_update = async(req,res)=>{
+    static player_update = async(req,res)=>{
             try {
                     let id = req.params.id;
                     let name = req.body.name;
@@ -342,7 +356,7 @@ try {
         
             }          
 
-        static player_delete = async(req,res)=>{
+   static player_delete = async(req,res)=>{
             try {
                     let id = req.params.id;  
                     Player_tbl.findByIdAndDelete(id, function (err, docs) {

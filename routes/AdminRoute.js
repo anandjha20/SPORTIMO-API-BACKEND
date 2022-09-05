@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const multer  = require('multer');
 
+const{ img_upload } = require('../myModel/image_helper');
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './assets/sponsorship_image')
@@ -17,8 +19,9 @@ const sponsorImg = multer({ storage: storage });
    
 const sponsorImgUpload = sponsorImg.fields([{ name: 'image', maxCount: 1 }]);
 
+const IntroSliderImgUpload =  img_upload('./assets/introSlider_img','image');
 
-/// import user token middleware   
+/// import user token middleware  
 const token_check =  require('../middleware/token_check');                                                                                                 
  
 //   import controllers                 
@@ -30,22 +33,23 @@ const token_check =  require('../middleware/token_check');
   let defaultMsgController = require('../controllers/defaultMsgController');
   let FirebaseController = require('../controllers/FirebaseController');
   let MasterController = require('../controllers/MasterController');
+  let IntroSliderController = require('../controllers/IntroSliderController');
  
   // admin login Routes  
   router.post('/admin_login/',AdminController.admin_login);
  
-   // all poll  Routes  
+   // all poll  Routes     
       router.post('/add_poll',PollController.add_poll);
       router.post('/poll_list/:id?',token_check,PollController.poll_list);
-      router.post('/user_list/:id?',token_check,AdminController.user_list);
+      router.post('/user_list/:id?',AdminController.user_list);
       router.get('/poll_result_show/:poll_id?',PollController.poll_result_show);
       router.put('/update_poll/:id?',PollController.update_poll);
       router.delete('/delete_poll/:id?',PollController.delete_poll);
       router.put('/poll_result_disclosed/:id?',PollController.poll_result_disclosed);
      
- ///  all list for add on Sponsorship form
+ ///  all list for add on Sponsorship form    
     router.post('/sport',SponsorshipController.sponsor_list);
-    router.get('/sport_list/:id?',token_check,FootballController.sport_list);
+    router.post('/sport_list/:id?',token_check,FootballController.sport_list);
     router.get('/league_list/:id?',token_check,FootballController.league_list);
     router.get('/team_list/:id?',token_check,FootballController.team_list);
     router.get('/player_list/:id?',token_check,FootballController.player_list);
@@ -130,5 +134,12 @@ const token_check =  require('../middleware/token_check');
 
   // poll_analytics route add on 
    router.get('/poll_analytics/:id',PollController.poll_analytics); 
-   
+ 
+  // IntroSlider route add on  introSlider_update  introSlider_delete
+  router.post('/introSlider_add',IntroSliderImgUpload,IntroSliderController.introSlider_add); 
+  router.post('/introSlider_get',IntroSliderController.introSlider_get); 
+  router.put('/introSlider_update/:id',IntroSliderImgUpload,IntroSliderController.introSlider_update);             
+  router.delete('/introSlider_delete/:id',IntroSliderController.introSlider_delete);       
+
+
 module.exports = router;  

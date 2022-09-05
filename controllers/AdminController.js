@@ -217,13 +217,9 @@ class AdminController {
                     res.status(200).send({'status':false,'msg':error,'body':''});
                   }    
         }
-      
-  
-
-
+   
       static add_faq_category = async(req,res)=>{
-
-        try {
+            try {
             // console.log('By shubham');
             let user_data = req.body;
           

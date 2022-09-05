@@ -102,6 +102,44 @@ const user_img =  img_upload('./assets/user_img','user_image');
    // get Firebase Chat Data 
     router.get('/getFirebaseChatData',FirebaseController.getFirebaseChatData); 
 
+   // 
+   router.get('/HomePageDemoApi', async(req,res) =>{
+                let sendData = [{ "date": "2022-09-06T00:00:00.000Z",
+                "league_name": "demo leagues -1",
+                 "logo": "",
+                 "team_one": "India",
+                 "team_two": "pakistan",
+                 "start_time": "10:30:00", 
+                 "team_one_scorecard" : 2, 
+                 "team_two_scorecard" : 4, 
+                 "CardsUsed_1" : 2, 
+                 "CardsUsed_2" : 3 
+              },
+            { "date": "2022-09-10T00:00:00.000Z",
+                "league_name": "demo leagues -1",
+                 "logo": "",
+                 "team_one": "India",
+                 "team_two": "pakistan",
+                 "start_time": "10:30:00", 
+                 "team_one_scorecard" : 0, 
+                 "team_two_scorecard" : 0, 
+                 "CardsUsed_1" : 2, 
+                 "CardsUsed_2" : 3 
+              },
+              { "date": "2022-09-15T00:00:00.000Z",
+                "league_name": "demo leagues -1",
+                 "logo": "",
+                 "team_one": "India",
+                 "team_two": "pakistan",
+                 "start_time": "10:30:00", 
+                 "team_one_scorecard" : 0, 
+                 "team_two_scorecard" : 0, 
+                 "CardsUsed_1" : 2, 
+                 "CardsUsed_2" : 3 
+              }];
 
-              
+
+             return res.status(200).send({'status':true,'msg':"success",'body':sendData});
+
+          });        
 module.exports = router;             

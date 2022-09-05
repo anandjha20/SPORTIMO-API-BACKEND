@@ -412,7 +412,7 @@ if(from_user_len == 0 || to_user_len == 0  ){
         let whr1 = { "from_user": fUser ,"to_user": toUser};
         let whr = { "from_user": fUser ,"to_user": toUser ,"date":date};
         
-      
+       
       
       let datas = await block_user_tbl.find(whr1);
             if(datas.length >0 ){ 
@@ -435,7 +435,7 @@ if(from_user_len == 0 || to_user_len == 0  ){
             }else{       
             return res.status(200).send({"status":true,"msg":'this user blocked  Successfully' , "body":''  }) ; 
      } });
-
+   
 
     }
 
