@@ -126,7 +126,7 @@ class UserController {
         }
 
 
-    let checkuser = ( user_type == 2 || user_type == 3 || user_type == 4 )? await user_tbl.find({email }).exec() : await user_tbl.find({mobile }).exec() ;
+    let checkuser = ( user_type == 2 || user_type == 3 || user_type == 4 )? await user_tbl.find({email }).exec() : await user_tbl.find({mobile}).exec() ;
     let sendmsg = ( user_type == 2 || user_type == 3 || user_type == 4 )? "Email already exists" :  "Mobile already exists" ;
 
 
@@ -136,10 +136,8 @@ class UserController {
         let check_user_id = checkuser[0]._id;   
         const doc = await user_tbl.findOneAndUpdate({ _id: check_user_id},{ otp: otp },
                                      { upsert: true, useFindAndModify: false });
-
-
-
-                let check_type = checkuser[0].user_type;  let msgtodiv = '';   
+         
+              let check_type = checkuser[0].user_type;  let msgtodiv = '';   
                 if(check_type == 1){
                     send_mobile_otp({mobile,otp}); 
                     msgtodiv = 'otp sent to your mobile please check know ';
@@ -148,7 +146,7 @@ class UserController {
                     msgtodiv = 'otp sent to your Email please check know ';
                 }  
 
-
+   
                 return res.status(200).send({"status":true,"msg":msgtodiv, "body":checkuser[0]._id }) ;     
          }
               
@@ -168,20 +166,24 @@ class UserController {
 
            
                     let allsaveData =  await add.save();
-                      
+            if(allsaveData){
+
+                 let msgtodiv2 = '';
 
                 if(user_type == 1){
                     send_mobile_otp({mobile,otp}); 
-                    msgtodiv = 'otp sent to your mobile please check know ';
+                    msgtodiv2 = 'otp sent to your mobile please check know ';
                 }else  if(user_type == 2 || user_type == 3 || user_type == 4 ){
                     sentEmail({email,otp}); 
-                    msgtodiv = 'otp sent to your Email please check know ';
+                    msgtodiv2 = 'otp sent to your Email please check know ';
                 }  
-                    console.log('add == ', add); 
-                 return res.status(200).send({"status":true,"msg": msgtodiv , "body":add._id }) ;      
-
-        } catch (error) { console.log(error);
-            return res.status(200).send({"status":false,"msg":'no data add ' }) ;          
+                    console.log('add == ', add);    
+                 return res.status(200).send({"status":true,"msg": msgtodiv2 , "body":add._id }) ;      
+                }else{
+                    return res.status(200).send({"status":false,"msg":'no data add ' }) ;           
+                }    
+        } catch (error) { console.log("user register api == ",error);
+            return res.status(200).send({"status":false,"msg":'Server errror' }) ;          
                
         }           
       
@@ -366,6 +368,9 @@ static user_profile_update = async(req,res)=>{
             gender : gender,  
         };
     if(img){ myobjs.image = img }
+
+
+    
 ///////////////////////////////////////////////////////////////////////////////      
 user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUser) => {
     if(err) {  console.log(err);

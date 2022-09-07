@@ -2,7 +2,7 @@ let  express_2 = require('express');
   
 const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
    
-
+const  {MyBasePath} = require("../myModel/image_helper");
   
   
   // const state_tbl = require('../models/state_tbl');    
@@ -12,7 +12,7 @@ const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = requi
     const Team_tbl = require('../models/Team');    
     const Player_tbl = require('../models/Player');    
     const country_tbl = require('../models/country');    
-
+  
        
 class FootballController { 
     
@@ -36,10 +36,16 @@ static jks = async()=>{
             let id_len = (id || '').length;
             
             let whr = (id_len == 0)? {} : { "_id":id};
-            let response = await League_tbl.find(whr).select("_id league_name").exec();
+            let response = await League_tbl.find(whr).select("_id league_name image").exec();
                     
             if(response){
-                return res.status(200).send({status:true,msg:'Success' , "body": response }) ;   
+                let paths =MyBasePath(req,res);    
+                     response.map((item)=> { 
+                        item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
+                                           return item;
+                                 }); 
+
+                return res.status(200).send({status:true,msg:'League Listed Successfully' , "body": response }) ;   
                 }else{
                     return res.status(200).send({status:false,msg:'No Data Found'}) ;  
                 }
@@ -54,25 +60,14 @@ static jks = async()=>{
        
     static sport_list = async(req,res)=>{
         try {
-            // let id = req.params.id ;
-            // let id_len = (id || '').length;
-            
-            // let whr = (id_len == 0)? {} : { "_id":id};
-            // let response = await sport_tbl.find(whr).select("_id name").exec();
-                    
-            // if(response){
-            //     return res.status(200).send({status:true,msg:'Success' , "body": response }) ;   
-            //     }else{
-            //         return res.status(200).send({status:false,msg:'No Data Found'}) ;  
-            //     }
-//////////////////////////////////////////////////////////////
+           
                     let  id = req.params.id;
                     let page  = req.body.page;
                     page = (isEmpty(page) || page == 0 )? 1 :page ; 
 
 
                     let whr = (isEmpty(id))? {}: {_id: id} ;
-                    let query =  sport_tbl.find(whr).select("_id name").sort({_id:-1}) ;
+                    let query =  sport_tbl.find(whr).select("_id name image").sort({_id:-1}) ;
 
                     const query2 =  query.clone();
                     const counts = await query.countDocuments();
@@ -82,14 +77,18 @@ static jks = async()=>{
                   //  res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });       
 
                     if(records){
+
+                        let paths =MyBasePath(req,res);    
+                          records.map((item)=> { 
+                           item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
+                                              return item; }); 
+
                        return  res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });       
 
                         }else{
                             return res.status(200).send({status:false,msg:'No Data Found'}) ;  
                         }
-
-
-////////////////////////////////////////
+       ////////////////////////////////////////
          } catch (error) { console.log("some error is == ",error);
                 return res.status(200).send({status:false,msg:'some error' , "body":''}) ;          
 
@@ -97,15 +96,22 @@ static jks = async()=>{
    
     }  // sport_lists
     
-    static team_list = async(req,res)=>{
-        try {
+  static team_list = async(req,res)=>{
+     try {
             let id = req.params.id ;
             let id_len = (id || '').length;
             
             let whr = (id_len == 0)? {} : { "_id":id};
-            let response = await Team_tbl.find(whr).select("_id team_name").exec();
+            let response = await Team_tbl.find(whr).select("_id team_name image").exec();
                     
             if(response){
+                 
+                let paths =MyBasePath(req,res);    
+                  response.map((item)=> { 
+                      item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
+                                      return item;
+                            });      
+
                 return res.status(200).send({status:true,msg:'Success' , "body": response }) ;   
                 }else{
                     return res.status(200).send({status:false,msg:'No Data Found'}) ;  
@@ -124,9 +130,14 @@ static jks = async()=>{
             let id_len = (id || '').length;
             
             let whr = (id_len == 0)? {} : { "_id":id};
-            let response = await Player_tbl.find(whr).select("_id team_name").exec();
+            let response = await Player_tbl.find(whr).select("_id team_name image").exec();
                     
             if(response){
+                let paths =MyBasePath(req,res);    
+                     response.map((item)=> { 
+                        item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
+                                           return item;
+                                 }); 
                 return res.status(200).send({status:true,msg:'Success' , "body": response }) ;   
                 }else{
                     return res.status(200).send({status:false,msg:'No Data Found'}) ;  

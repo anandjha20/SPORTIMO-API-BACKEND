@@ -11,9 +11,32 @@ const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = requi
     const faq_category_tbl = require('../models/faq_categories');    
     const faq_tbl = require('../models/faq');   
     const tips_trick = require('../models/tips_tricks'); 
-    const content_tbls = require('../models/content_tbls'); 
-
+    const content_tbls = require('../models/content_tbls');      // tips_status_update
+  
 class AdminController { 
+
+  static tips_status_update = async (req,res)=>{
+    try {
+        let  id = req.params.id; 
+        let tips_status = req.body.tips_status;  
+        tips_status = (isEmpty(tips_status))? 0 : tips_status;   
+      console.log("tips_status",tips_status);
+        tips_trick.findOneAndUpdate({_id: id},{$set : {active_status:tips_status}},{new: true}, (err, updateData) => {
+    if(err) {  console.log(err);
+        return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
+    }
+    if(isEmpty(updateData)){
+      return res.status(200).json({ "status":false,"msg": "Invalid Id" });
+    }else{
+    return res.status(200).json({"status":true,"msg": "Tip status updated successfully!" , "body":updateData}); }
+});    
+
+    
+    } catch (error) { console.log(error);
+        res.status(200).send({'status':false,'msg':'server error','body':''});
+    }
+            
+        } 
 
     static JK = (req,res)=>{
         res.status(200).send({'status':true,'msg':"success",'body':''});        
@@ -67,6 +90,21 @@ class AdminController {
              
             }     
     
+            static user_detail = async (req,res)=>{
+              try {
+                 let  id = req.params.id; 
+                   const records = await  user_tbl.find({_id: id} ).exec() ;
+                if(records.length >0 ){
+                  return res.status(200).send({'status':true,'msg':"success",'body':records });
+                }else{
+                  return res.status(200).send({'status':false,'msg':'Invalid Id'});
+                }
+              } catch (error) { console.log(error);  // JSON.parse(json.stringify(error))
+                res.status(200).send({'status':false,'msg':'Server Error','body':''});
+              }
+                   
+                  }     
+
 
      static admin_login = async (req,res)=>{
         try {
@@ -158,7 +196,7 @@ class AdminController {
             }
             
             return res.status(200).json({  
-                "status":true,"msg": "success" , "body":updatedUser
+                "status":true,"msg": "Tips updated successfully" , "body":updatedUser
             });
         });    
       
@@ -179,7 +217,7 @@ class AdminController {
                   if (err) { console.log(err);
                       return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;  
                   } else {
-                      return res.status(200).json({ "status":true,"msg": "Category Deleted successfully " , "body":''});
+                      return res.status(200).json({ "status":true,"msg": "Tip Deleted successfully " , "body":''});
                   }
               });
           } catch (error) { console.log(error);

@@ -2,6 +2,7 @@ let  express_2 = require('express');
 const mongoose = require('mongoose');
 const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty } = require('../myModel/common_modal');
 
+const  {MyBasePath} = require("../myModel/image_helper");
       
 
 const { poll_percent,all_list_come} = require('../myModel/helper_fun');
@@ -174,15 +175,22 @@ class ComplaintController{
           
      if(!isEmpty(email)){user_search =   {path:'user_id' ,match: {"email":email }, select:'name mobile email u_name '};   } 
      if(!isEmpty(mobile)){user_search =   {path:'user_id' ,match: {"mobile":mobile }, select:'name mobile email u_name '};   } 
-            
-
-  
-      let query =  user_complaint_tbl.find(whr).populate([user_search]).sort({_id:-1});
+    
+        //    let cat_search = {path: 'cat_id', select: 'cat_name'};
+ 
+     // {path: 'cat_id', select: 'cat_name'}, {path: 'meal', select: 'name'}
+      let query =  user_complaint_tbl.find(whr).populate([cat_search, user_search]).sort({_id:-1});
                  
-             const query2 =  query.clone();
+             const query2 =  query.clone();  
              const counts = await query.countDocuments();
             let offest = (page -1 ) * 10 ; 
              const records = await query2.skip(offest).limit(10);
+
+             let paths =MyBasePath(req,res); 
+             if(records){ records.map((item)=> { 
+                item.image = (item.image)? `${paths}/image/assets/userComplaint_img/${item.image}` : '' ;
+                        return item; })} 
+
           return res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
       
  ///////////////////////////////////////////////////////////////////      
@@ -220,14 +228,15 @@ class ComplaintController{
             let  user_id = req.params.user_id; 
             let  id = req.params.id;  let id_len =(id || '').length;
         let whr = (id_len == 0)? {user_id:user_id} : {_id:id} ;
-            console.log("whr value == ",whr )
-            let data = await user_complaint_tbl.find(whr);
-
+          
+            let data = await user_complaint_tbl.find(whr).populate('cat_id','cat_name').sort({_id:-1}).exec() ;
+          
+            console.log("whr value1111 == ",data );
            // let data = await user_complaint_tbl.find(whr).populate('cat_id' ).select({'_id':1,'question':1,'admin_status':1,'image':1,'cat_id':1}).exec();
               
-
-
-                if(data){     let allData =  data.map( (item)=>{ item.image = (item.image == '')? '' : "http://192.168.1.95:3500/image/assets/userComplaint_img/" +item.image; return item;});
+           let paths =MyBasePath(req,res); 
+             
+     if(data){  let allData =  data.map( (item)=>{ item.image = (item.image == '')? '' : `${paths}/image/assets/userComplaint_img/${item.image}`; return item;});
                 
                 res.status(200).send({'status':true,'msg':"success",'body':allData});
                 }else{      
@@ -269,12 +278,17 @@ class ComplaintController{
           
             // let data = await user_complaint_tbl.find({});
             // let data = await user_complaint_tbl.find(whr).populate('cat_id' ).select({'_id':1,'question':1,'admin_status':1,'image':1,'cat_id':1}).exec();
-                if(appdata){
+             
+            let paths =MyBasePath(req,res); 
+            
+            
+            
+            if(appdata){
                   
                        let allData =  appdata.map( (item)=>{
                         let whr = {_id:item.cat_id};
                         let cat_data =  user_complaint_cat_tbl.find(whr);
-                        item.image = (item.image == '')? '' : "http://192.168.1.95:3500/image/assets/userComplaint_img/" +item.image;
+                        item.image = (item.image == '')? '' :`${paths}/image/assets/master/${item.image}`;
                          return item;
                         });
 
@@ -303,16 +317,13 @@ class ComplaintController{
                        return res.status(200).send({"status":false,"msg":'All field Required'}) ;       
                  }
                 
-            user_complaint_tbl.find({_id:complaint_id,admin_status:true }).exec((err,data)=>{
-                if(err){  console.log("check err",err); }else{
-                     if(data.length >0){
-                        return res.status(200).send({"status":false,"msg":'stop chate for admin'}) ; 
-                     }
-                }
+        let getData =   await  user_complaint_tbl.find({_id:complaint_id,admin_status:true }).exec();
 
-              });
-          
-            
+
+          if(getData.length >0){
+            return res.status(200).send({"status":false,"msg":'Complaint status marked closed already.'}) ; 
+                  
+          }else{
                      let objMy = {complaint_id,message,sender_type} ;    
                      let add = new user_complaint_chat_tbl(objMy);
                  
@@ -322,6 +333,7 @@ class ComplaintController{
                      }else{
                              return res.status(200).send({"status":false,"msg":'Complaint chat not add'}) ;    
                          }
+                        }
 
                  } catch (error) { console.log(error);
                      return res.status(200).send({"status":false,"msg":'No data add'}) ;          
@@ -360,7 +372,7 @@ class ComplaintController{
             }
             
             return res.status(200).json({  
-                "status":true,"msg": "success" , "body":updatedUser
+                "status":true,"msg": "Complaint marked as closed successfully." , "body":updatedUser
             });
         });    
     

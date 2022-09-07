@@ -13,6 +13,17 @@ const img_upload = (path,img_name) =>{
       return   uComplaintImgUpload ; 
 }
 
+
+const MyBasePath = (req,res)=>{
+    try {
+      const url = new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+        return url.origin;
+    } catch (error) {
+          return false; 
+    }
+  
+
+}
        
 
-module.exports = { img_upload}
+module.exports = { img_upload,MyBasePath}

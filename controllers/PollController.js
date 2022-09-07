@@ -1,6 +1,6 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty } = require('../myModel/common_modal');
+const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty,rows_count } = require('../myModel/common_modal');
 const { sendNotificationAdd } = require('../myModel/helper_fun');
    
 
@@ -16,8 +16,12 @@ const { poll_percent} = require('../myModel/helper_fun');
     const poll_skips_tbl = require('../models/poll_skips');    
 
 class PollController { 
-
-      static poll_skip_add = async(req,res) =>{
+      static jk_test = async(req,res)=>{
+          let dd = await rows_count(poll_result_tbl,{});
+            console.log('jk_test is call == ', dd);
+         return  res.status(200).send({'status':false,'msg':'Success', 'body': dd });
+      }
+      static poll_skip_add = async(req,res) =>{  
 
           let poll_id = req.body.poll_id;
           let user_id = req.body.user_id;
@@ -54,15 +58,17 @@ class PollController {
 
     static poll_list = async (req,res)=>{
         try {
-          
+               
            let  id = req.params.id;
            let poll_type    = req.body.poll_type;
            let fee_type  = req.body.fee_type;
            let match  = req.body.match;
            let s_date  = req.body.s_date;
            let e_date  = req.body.e_date;
-           
-           let page  = req.body.page;
+           let U_id =  req.body.user_id ; 
+          // console.log("poll list call == ", req.body.user_id);   
+      
+           let page  = req.body.page;  
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
           
           
@@ -81,6 +87,8 @@ class PollController {
               
              let offest = (page -1 ) * 10 ; 
              const records = await query2.skip(offest).limit(10);
+
+
           return res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
   
         } catch (error) { console.log(error);
@@ -107,7 +115,8 @@ class PollController {
                       let mm_type =  (user_data.noti_status == 1)? 1 : 0 ; 
                           let title = `New Poll has been publihed for match: ${ user_data.match} ` ;  
                       let msgs = `New Poll has been publihed for match: ${ user_data.match} Click here to participate.`; 
-                  let demo =  sendNotificationAdd(title,msgs,mm_type);
+                
+                      let demo =  sendNotificationAdd(title,msgs,mm_type);
           }
 
           let mydate = getcurntDate();
@@ -266,12 +275,10 @@ class PollController {
 
      static poll_participant = async(req,res)=>{
 
-                try {
+                try {   
 
                     let user_data = req.body;
                 console.log(  'server get value == ',user_data);
-                
-
                   let user_id_len = (user_data.user_id || '').length;
                   let poll_id_len = (user_data.poll_id || '').length;
                   let poll_option_len = (user_data.poll_option || '').length;
@@ -279,11 +286,17 @@ class PollController {
            if(user_id_len == 0 ||  poll_id_len == 0  ||  poll_option_len == 0   ) {
             return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
 
-           }         
+           } 
+           
+           
+
+
             let whr = { "poll_id": user_data.poll_id,"user_id": user_data.user_id,"user_ans":user_data.poll_option };
-           let datas = await poll_result_tbl.find(whr);
+            let checkWhr = { "poll_id": user_data.poll_id,"user_id": user_data.user_id};
+         
+            let datas = await poll_result_tbl.find(checkWhr);
             if(datas.length >0 ){   console.log( "check poll user == ",datas)
-              return res.status(200).send({"status":false,"msg":'This poll allredy add ' , "body":''}) ; 
+              return res.status(200).send({"status":false,"msg":'This poll is already taken.' , "body":''}) ; 
             }
 
                     let add = new poll_result_tbl(whr);

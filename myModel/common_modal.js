@@ -146,4 +146,16 @@ const user_logs_add = (user_id,type) =>{
 
 }
 
-module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime};
+const rows_count =  async(tbl,whr) =>{
+      try {
+        let count =  await tbl.find(whr).countDocuments(); 
+          let sendData = (count >0 )? count : 0 ; 
+        return sendData;
+      } catch (error) {
+              return 0 ;  
+      }
+    ///   let dd = await rows_count(poll_result_tbl,{});
+
+}
+
+module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,rows_count};

@@ -33,6 +33,7 @@ const user_img =  img_upload('./assets/user_img','user_image');
  let chatController = require('../controllers/chatController');
 
  let FirebaseController = require('../controllers/FirebaseController');
+ let IntroSliderController = require('../controllers/IntroSliderController');
           
                                               
           router.get('/JK/',UserController.dashboardAllCount);
@@ -102,7 +103,11 @@ const user_img =  img_upload('./assets/user_img','user_image');
    // get Firebase Chat Data 
     router.get('/getFirebaseChatData',FirebaseController.getFirebaseChatData); 
 
-   // 
+
+    // get introSlider list  
+    router.get('/get_introSlider/:id?',IntroSliderController.get_introSlider_user); 
+       
+   // get HomePageDemoApi list 
    router.get('/HomePageDemoApi', async(req,res) =>{
                 let sendData = [{ "date": "2022-09-06T00:00:00.000Z",
                 "league_name": "demo leagues -1",
@@ -141,5 +146,6 @@ const user_img =  img_upload('./assets/user_img','user_image');
 
              return res.status(200).send({'status':true,'msg':"success",'body':sendData});
 
-          });        
+          }); 
+
 module.exports = router;             

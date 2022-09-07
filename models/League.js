@@ -6,6 +6,7 @@ const Schema = mongoose.Schema;
 const sprtschema = new Schema({
                              
          league_name: { type: String, required: true, unique: true },
+         image: {type:String, default :''},
          active_status: { type: Boolean ,default : 1},
        
 

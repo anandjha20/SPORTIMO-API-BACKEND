@@ -1,29 +1,19 @@
+require('dotenv').config();
+    
+       
 const express = require('express');
 const app = express();
-const port = process.env.port || 3600;
 const userRoute = require('./routes/userRoute');
 const AdminRoute = require('./routes/AdminRoute');
 const image_urls = require('./routes/image_urls');
-
+const Port = process.env.Port || 3600; 
 const cors = require('cors'); 
 var bodyParser = require('body-parser');
-                     
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/football_db');
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-
-db.once('open', function callback () {
-  console.log("mongodb database connected");
-});
-                
-exports.test = function(req,res) {
-  res.render('test');
-};
-   
+  
+const config = require("./config");
 
 const path = require('path');
-app.use(cors());
+app.use(cors());  
 var jsonParser = bodyParser.json();
 app.use(jsonParser);
 
@@ -39,7 +29,7 @@ app.use('/image/',image_urls);
 app.get('/demo/v2/', (req,res)=>{
   return res.status(200).send({"status":true,"msg":'user address already exists ' , "body":''}) ;          
 
-
+      
 });
 
 app.use((req,res)=>{
@@ -48,6 +38,7 @@ app.use((req,res)=>{
 
 
 // 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+
+app.listen(Port, () => {
+  console.log(`Example app listening on port ${Port}`)
 })

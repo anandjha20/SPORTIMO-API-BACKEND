@@ -1,5 +1,6 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
+const  {MyBasePath} = require("../myModel/image_helper");
 const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
    
 
@@ -53,9 +54,12 @@ class Sponsorship {
                                       let sport_name   =  await  all_list_come(sendData.sports,1);
                                       let league_name  =  await  all_list_come(sendData.league,2);
                                       let  team_name   = await  all_list_come(sendData.team,3);
-                                      let players_name = await  all_list_come(sendData.players,4);
+                                        let players_name = await  all_list_come(sendData.players,4);
                                       let country_name = await  all_list_come(sendData.country,5);
-                                     let img = `http://192.168.1.95:3500/image/assets/sponsorship_image/${sendData.image}`;
+                                
+                                      let paths =MyBasePath(req,res); 
+                                   
+                                      let img = `${paths}/image/assets/sponsorship_image/${sendData.image}`;
                                      //console.log ("call my data == " , dd );
                                       return {img,sport_name,league_name,team_name,players_name,country_name,"allData" : sendData}; 
                               

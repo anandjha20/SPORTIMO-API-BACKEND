@@ -24,9 +24,9 @@ const sprtschema = new Schema({
          Ldate: { type: Date,required: true },
          created_date: { type: Date,required: true },                   
     
-             active_status: { type: Boolean ,default : 1},
-       
-
+         active_status: { type: Boolean ,default : 1},
+         impressions_count: { type: Number ,default : 0},
+        clicks_count: { type: Number ,default : 0},
 });
 
 

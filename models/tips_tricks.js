@@ -7,7 +7,7 @@ const tips_tricks = new Schema({
          tips_trick: { type: String, required: true },
          active_status: { type: Boolean , default : 1 },
 });
-
+  
 
 module.exports = mongoose.model('tips_trick', tips_tricks);
 
