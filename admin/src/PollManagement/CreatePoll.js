@@ -18,9 +18,12 @@ import axios from "axios";
 import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 
 export default function CreatePoll(props) {
+
+  const navigate = useNavigate();
   const [showhide, setShowhide] = useState('Free');
   const [npshow, setNpshow] = useState('');
   const [show, setShow] = useState('');
@@ -137,6 +140,7 @@ export default function CreatePoll(props) {
       if (response.status) {
         let data = response.data;
         if (data.status) {
+          // navigate(`/poll`);
           toast.success(data.msg);
         } else {
           toast.error('something went wrong please try again');

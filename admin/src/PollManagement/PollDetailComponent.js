@@ -28,9 +28,8 @@ function PollDetailComponent() {
         let token = localStorage.getItem("token");
         let header = ({ 'token': `${token}` });
         let options1 = ({ headers: header });
-        let formData = {};
-        //  let options1 = { headers:{"Content-type": "application/json" }};
-        let response = await axios.get('/web_api/poll_list/' + id, options1, formData,);
+        const sendatds = {data1 : "data1"}        //  let options1 = { headers:{"Content-type": "application/json" }};
+        let response = await axios.post('/web_api/poll_list/' + id, sendatds, options1);
         let t_data = response.data;
 
 

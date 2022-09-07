@@ -15,6 +15,7 @@ import IconButton from '@mui/material/IconButton';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { ToastContainer, toast } from 'react-toastify';
 
 function UserListTable(props) {
 
@@ -26,14 +27,18 @@ function UserListTable(props) {
     const handleClickOpen = () => {
         setOpen(true);
     };
+    const handleMeesage = () => {
+        setOpen(false);
+        toast.success('Message Sent Successfully');
+    };
 
     const handleClose = () => {
         setOpen(false);
+        
     };
 
     const [data, setData] = useState([])
 
-    const date = Moment().format("MMM Do YY");
     const navigate = useNavigate();
 
     const viewFun = (_id) => {
@@ -209,35 +214,41 @@ function UserListTable(props) {
                         <table className="table ">
                             <thead>
                                 <tr>
-                                    <th scope="col">User Name</th>
+                                    <th scope="col">User Image</th>
+                                    <th scope="col">Unique ID</th>
                                     <th scope="col">Unique Name</th>
+                                    <th scope="col">User Name</th>
                                     <th scope="col">Mobile No.</th>
                                     <th scope="col">Email Address</th>
-                                    <th scope="col">Date Of Birth</th>
-                                    <th scope="col">User language</th>
+                                    <th scope="col">Registration Date</th>
+                                    {/* <th scope="col">User language</th> */}
                                     <th scope="col">Country</th>
                                     <th scope="col">Gender</th>
+                                    <th scope="col">User Type</th>
                                     <th scope="col" className="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                               {data == '' ? <>
                                <tr>
-                               <td className="text-center" colspan='9'> 
+                               <td className="text-center" colSpan='10'> 
                                  <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
                                </tr>
                                </> : null}
                                 {data.map((item) => {
                                     return (
                                         <tr key={item._id}>
-                                            <td>{item.name}</td>
+                                            <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
+                                            <td>{item._id}</td>
                                             <td>{item.u_name}</td>
+                                            <td>{item.name}</td>
                                             <td>{item.mobile}</td>
                                             <td>{item.email}</td>
-                                            <td>{item.date}</td>
-                                            <td>{item.user_language}</td>
+                                            <td>{Moment(item.date).format("DD/MM//YYYY")}</td>
+                                            {/* <td>{item.user_language}</td> */}
                                             <td>{item.country}</td>
                                             <td>{item.gender}</td>
+                                            <td>{item.user_type == "5"  ? <><span>Guest User</span></> : null}</td>
                                             <td className="text-end">
                                                 <div className="d-flex justtify-content-end">
                                                     <IconButton onClick={(e) => { viewFun(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">
@@ -300,11 +311,12 @@ function UserListTable(props) {
                         </DialogContent>
                         <DialogActions className="mb-2">
                             <Button className="mr-3" onClick={handleClose}>Cancel</Button>
-                            <Button variant="contained" className="mr-3 btn-pd btnBg" onClick={handleClose}>Send</Button>
+                            <Button variant="contained" className="mr-3 btn-pd btnBg" onClick={handleMeesage}>Send</Button>
                         </DialogActions>
                     </Dialog>
                 </div>
             </div>
+            <ToastContainer position="top-right" />
         </>
 
     )

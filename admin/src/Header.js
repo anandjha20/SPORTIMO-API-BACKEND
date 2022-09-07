@@ -91,13 +91,28 @@ return (
 							<span className="sidemenu-label">GEQ</span></NavLink>
 						</li> 
 
-						 <li className="nav-item" >
+						 {/* <li className="nav-item" >
 							<NavLink  to="/sponsorship" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
 							<i className="fad fa-bullhorn sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Sponsorship</span></NavLink>
-						</li> 
+						</li>  */}
 
 
+						<li className="nav-item nav-spon-local" onClick={handleProfile}>
+							<a  className="nav-link with-sub cursor"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-bullhorn sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Sponsorship </span><i className="angle fe fe-chevron-right"></i>
+							</a>
+							 <ul className="nav-sub">
+								<li className="nav-sub-item">
+									<NavLink  to="/sponsorship" className="nav-sub-link" >Home Sponsorship</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/intro-slider" className="nav-sub-link " >Add Introduction Slider</NavLink>
+								</li>
+							</ul>
+						</li>
+						
 						<li className="nav-item nav-link-local" onClick={handleProfile}>
 							<a  className="nav-link with-sub cursor"><span className="shape1"></span><span className="shape2"></span><i className="fad fa-question-circle sidemenu-icon menu-icon"></i><span className="sidemenu-label">Faq</span><i className="angle fe fe-chevron-right"></i>
 							</a>
@@ -110,6 +125,8 @@ return (
 								</li>
 							</ul>
 						</li>
+
+
 						<li className="nav-item nav-link-child" onClick={handleProfile}>
 							<a  className="nav-link with-sub cursor"><span className="shape1"></span>
 							<span className="shape2"></span>

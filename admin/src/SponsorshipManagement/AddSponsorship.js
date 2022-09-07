@@ -11,6 +11,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
 import SelectTageting from "./Components/SelectTageting";
+import { useNavigate } from 'react-router-dom';
 
 import axios from "axios";
 
@@ -19,7 +20,15 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function AddSponsorship() {
+  
 
+  const navigate = useNavigate();
+  useEffect(() => {
+    document.body.className = "main-body leftmenu sponer_list";
+    return () => {
+      document.body.className = "main-body leftmenu";
+    }
+  }, []);
   const [alignment, setAlignment] = React.useState("banner");
   const [alignmentSkip, setAlignmentSkip] = React.useState("skip");
   const [skip_add, setSkip_add] = React.useState("1");
@@ -104,7 +113,7 @@ export default function AddSponsorship() {
         let data = response.data;
 
         if (data.status) {
-
+          navigate(`/sponsorship`);
           toast.success(data.msg);
         } else {
           toast.error('something went wrong please try again');

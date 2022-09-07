@@ -31,6 +31,7 @@ import LeaguesPreference from "./PreferenceMaster/LeaguesPreference";
 import TeamsPreference from "./PreferenceMaster/TeamsPreference";
 import PlayersPreference from "./PreferenceMaster/PlayersPreference";
 import IntroSliderImg from "./SponsorshipManagement/IntroSliderImg";
+import IntroSliderDetails from "./SponsorshipManagement/IntroSliderDetails";
 
 
 function App() {
@@ -66,7 +67,8 @@ function App() {
         {/* sponsorship */}
         <Route path="/sponsorship/add" element={ <AddSponsorship /> } />
         <Route path="/sponsorship" element={ <SponsorshipList /> } />
-        <Route path="/sponsorship/intro-slider" element={ <IntroSliderImg /> } />
+        <Route path="/intro-slider" element={ <IntroSliderImg /> } />
+        <Route path="/intro-slider/detail/:_id" element={ <IntroSliderDetails /> } />
         <Route path="/sponsorship/detail/:id" element={ <SponsorshipDetails /> } />
 
         {/* Faq */}

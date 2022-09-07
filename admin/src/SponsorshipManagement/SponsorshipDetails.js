@@ -13,9 +13,14 @@ import { ToastContainer, toast } from 'react-toastify';
 
     
 function SponsorshipDetails() {
-            
-            const { id } = useParams();
-                console.log("params idsdd == ",id);
+    useEffect(() => {
+        document.body.className = "main-body leftmenu sponer_list";
+        return () => {
+          document.body.className = "main-body leftmenu";
+        }
+      }, []);     
+     const { id } = useParams();
+     console.log("params idsdd == ",id);
 
     const[sponsorData,setSponsorData] = useState([]);
     const get_data = async(id)=>{

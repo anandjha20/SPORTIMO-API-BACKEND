@@ -48,19 +48,19 @@ function TableContent() {
         <>
             <div className="row">
                 <div className="col-lg-12">
-                <div className="card custom-card">
+                {/* <div className="card custom-card">
               <div className="card-body">
                     <div className="row align-items-center">
                         <div className="col-lg-4">
                         <input type="text" className="form-control" placeholder="Search Content Type.." style={{    height: "45px"}}></input>
                         {/* <TextField id="outlined-basic" fullWidth label="Search Match/league" variant="outlined" style={{ padding : " 11.5px 14px !important"}} /> */}
-                        </div>
+                        {/* </div>
                         <div className="col-lg-4">
                         <Button type='button' variant="contained" className="mr-3 btn-pd btnBg">Search</Button>
                         </div>
                     </div>
                     </div>
-                    </div>
+                    </div> */} 
                     <MaterialTable
                         title="Content Management"
                         columns={columns}

@@ -47,7 +47,50 @@ export default function CreateTipsTricks() {
     TipsTricksList()
   }, []);
 
- const columns =[   { title: 'Tips & Tricks', field: 'tips_trick' }, ] 
+ const columns =[   { title: 'Tips & Tricks', field: 'tips_trick' }, 
+  { title: 'Status', render: rowData => {
+    if (rowData.active_status == true) {
+        return (
+            <>
+            
+             <Button onClick={() => { disclosedPoll(rowData._id, rowData.statusTips="0");}} className="mr-3 btn-pd btnBg">Active</Button>
+            </>
+        );
+      }
+      if (rowData.active_status == false) {
+        return (
+            <>
+            <Button onClick={() => { disclosedPoll(rowData._id, rowData.statusTips="1");}} className="mr-3 btn-pd deactive">Deactive</Button>
+            </>
+        );
+      }
+}
+  }, ] 
+
+
+
+ /////////////////status update/////////////////////
+ const disclosedPoll = (_id, statusTips) =>
+{ 
+           const setDataForm = { tips_status : statusTips } 
+            axios.put(`/web_api/tips_status_update/${_id}`, setDataForm , options1)
+             .then(res => {
+                if (res.status) {
+                    let data = res.data;
+                    if (data.status) { 
+                        toast.success(data.msg);
+                        return TipsTricksList();
+                    } else {
+                        toast.error('something went wrong please try again');
+                    }
+                }
+                else {
+                    toast.error('something went wrong please try again..');
+                }
+
+            })
+             
+} 
 
 ///////////////////////////  Add Tips & Tricks Api Call  /////////////////////////////////////////
 

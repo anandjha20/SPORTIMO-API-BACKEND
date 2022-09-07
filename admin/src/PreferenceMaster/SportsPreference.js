@@ -47,16 +47,26 @@ export default function SportsPreference() {
             document.body.className = "main-body leftmenu";
         }
     }, []);
+
     const { _id } = useParams();
+
     const [data, setData] = useState([])
     const [catView, setCat] = useState([])
     const [pageCount, setpageCount] = useState('');
     const [open, setOpen] = useState(false);
 
+
+
+
+    let token = localStorage.getItem("token");
+    let header = ({ 'token': `${token}` });
+    let options1 = ({ headers: header });
+
+
     /////////////////view complaint detail/////////////////
 
     const onOpenModal = (_id) => {
-        axios.post(`/web_api/sports_get/${_id}`)
+        axios.post(`/web_api/sports_get/${_id}`, options1)
             .then(res => {
                 const catView = res.data.body[0];
                 setCat(catView);
@@ -68,14 +78,14 @@ export default function SportsPreference() {
     /////////////////delete complaint /////////////////
     const deleteCategory = (_id) => {
 
-        axios.delete(`/web_api/sports/${_id}`)
+        axios.delete(`/web_api/sports/${_id}`, options1)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
 
                     if (data.status) {
                         toast.success(data.msg);
-                        return SportPreferenceList();
+                        return PreferenceList();
                     } else {
                         toast.error('something went wrong please try again');
                     }
@@ -89,13 +99,50 @@ export default function SportsPreference() {
             })
     }
 
+
+        ///////////////// Update complaint category /////////////////
+        const saveFormData = async (e)  => {
+
+        const id = catView._id
+
+            e.preventDefault(_id);
+            const data = new FormData(e.target);
+            const Formvlaues = Object.fromEntries(data.entries());
+    
+            let dataToSend2 = new FormData();
+            dataToSend2.append('name', Formvlaues.name);
+            dataToSend2.append('image', Formvlaues.image);
+    
+                axios.put(`/web_api/sports/${id}`, dataToSend2, options1)
+                    .then(res => {
+                        if (res.status) {
+    
+                            let data = res.data;
+                            if (data.status) {
+                                toast.success(data.msg);
+                                setOpen(false);
+                                return PreferenceList();
+                            } else {
+                                toast.error('something went wrong please try again');
+                            }
+                        }
+                        else {
+                            toast.error('something went wrong please try again..');
+                        }
+                    })
+                    .catch(error => {
+                        console.log(this.state);
+                    })
+    
+        }
+
     /////////////////complaint list/////////////////
     const onCloseModal = () => setOpen(false);
 
     const limit = 10;
-    const SportPreferenceList = async (page) => {
+    const PreferenceList = async (page) => {
         const sanData = { page: page }
-        await axios.post(`/web_api/sports_get`,)
+        await axios.post(`/web_api/sports_get`, options1)
             .then(res => {
                 const userData = res.data.body;
                 const total = res.data.rows;
@@ -105,61 +152,23 @@ export default function SportsPreference() {
             })
     }
     useEffect(() => {
-        SportPreferenceList();
+        PreferenceList();
     }, []);
 
 
-    ///////////////// Update complaint category /////////////////
-    const saveFormData = async (e) => {
-        e.preventDefault();
-        try {
 
-            let name = (e.target.elements.name !== 'undefined') ? e.target.elements.name.value : '';
-            let _id = (e.target.elements._id !== 'undefined') ? e.target.elements._id.value : '';
-            let dataToSend2 = {
-                "name": name,
-            }
-            console.log("new values == ", dataToSend2);
-
-            let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
-
-            axios.put(`/web_api/sports/${_id}`, dataToSend2, options1)
-                .then(res => {
-                    if (res.status) {
-
-                        let data = res.data;
-                        if (data.status) {
-                            toast.success(data.msg);
-                            setOpen(false);
-                            return SportPreferenceList();
-                        } else {
-                            toast.error('something went wrong please try again');
-                        }
-                    }
-                    else {
-                        toast.error('something went wrong please try again..');
-                    }
-                })
-                .catch(error => {
-                    console.log(this.state);
-                })
-
-        } catch (err) { console.error(err); toast.error('some errror'); return false; }
-    }
 
 
     /////////////////// Add  Sports Preference API call ///////////////////////////////////////////////// 
     const AddFormData = async (e) => {
         e.preventDefault();
-        try {
-            let name = (e.target.elements.name !== 'undefined') ? e.target.elements.name.value : '';
+        const data = new FormData(e.target);
+        const Formvlaues = Object.fromEntries(data.entries());
+        let dataToSend2 = new FormData();
+        dataToSend2.append('name', Formvlaues.name);
+        dataToSend2.append('image', Formvlaues.image);
 
-            let dataToSend2 = {
-                "name": name,
-            }
-            console.log("new values == ", dataToSend2);
-            let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
-            axios.post(`/web_api/sports`, dataToSend2, options1)
+        axios.post(`/web_api/sports`, dataToSend2, options1)
                 .then(response => {
                     if (response.status) {
                         let data = response.data;
@@ -167,7 +176,7 @@ export default function SportsPreference() {
                         if (data.status) {
                             toast.success(data.msg);
                             e.target.reset();
-                            return SportPreferenceList();
+                            return PreferenceList();
                         } else {
                             toast.error('something went wrong please try again');
                         }
@@ -179,8 +188,6 @@ export default function SportsPreference() {
                 .catch(error => {
                     console.log(this.state);
                 })
-
-        } catch (err) { console.error(err); toast.error('some errror'); return false; }
     }
 
     ///////////////pagenestion///////////////
@@ -248,6 +255,11 @@ export default function SportsPreference() {
                                                         <p className="error">{errors.name}</p>
                                                     )}
 
+                                                   <div className="col-lg-12 mt-4 mb-3  p-0">
+                                                        <label className="title-col">File Upload</label>
+                                                        <input type="file" name='image' className="form-control file-input" />
+                                                    </div>
+
                                                     <div className="mt-3">
                                                         <Button type='submit' className="mr-3 btn-pd btnBg" disabled={disable}>Add</Button>
                                                         <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
@@ -264,6 +276,7 @@ export default function SportsPreference() {
                                                             <table className="table ">
                                                                 <thead>
                                                                     <tr>
+                                                                        <th scope="col">Image</th>
                                                                         <th scope="col">Sports Preference</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
@@ -271,7 +284,7 @@ export default function SportsPreference() {
                                                                 <tbody>
                                                                 {data == '' ? <>
                                                                     <tr>
-                                                                    <td className="text-center" colspan='2'> 
+                                                                    <td className="text-center" colsSan='3'> 
                                                                         <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
                                                                     </tr>
                                                                     </> : null}
@@ -279,6 +292,7 @@ export default function SportsPreference() {
                                                                         if (item.name !== '') {
                                                                             return (
                                                                                 <tr key={item._id}>
+                                                                                    <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
                                                                                     <td>{item.name}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
@@ -338,6 +352,11 @@ export default function SportsPreference() {
                                                                 <input type="hidden" className="form-control" name='_id' value={catView._id} />
                                                                 <input type="text" className="form-control" name='name'
                                                                     defaultValue={catView.name} /> </div>
+
+                                                            <div className="col-lg-12 mt-4 mb-3  p-0">
+                                                                <label className="title-col">File Upload</label>
+                                                                <input type="file" name='image' className="form-control file-input" />
+                                                            </div>
                                                             <div className="mt-3">
                                                                 <Button type='submit' className="mr-3 btn-pd btnBg" >Update</Button>
                                                             </div>

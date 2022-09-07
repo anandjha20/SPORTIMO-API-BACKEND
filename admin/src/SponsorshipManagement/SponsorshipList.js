@@ -14,9 +14,14 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-
 function SponsorshipList() {
-   
+
+    useEffect(() => {
+        document.body.className = "main-body leftmenu sponer_list";
+        return () => {
+          document.body.className = "main-body leftmenu";
+        }
+      }, []);
 
     const [sponsor_list, setSponsor_list] = React.useState([]);
 
@@ -72,19 +77,13 @@ function SponsorshipList() {
                                 </ol>
                             </div>
                             <div className="d-flex">
-                            <div className="justify-content-center">
-                                    <Link to="/sponsorship/intro-slider">
-                                        <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add  Introduction Slider</Button>
-                                    </Link>
-                                </div>
+                          
                                 <div className="justify-content-center">
                                     <Link to="/sponsorship/add">
                                         <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add  Sponsorship</Button>
                                     </Link>
-                                </div>
-                               
+                                </div>                              
                             </div>
-
                         </div>
                         <div className="row justify-content-center">
                             <div className="col-lg-12 table-responsive border border-bottom-0">

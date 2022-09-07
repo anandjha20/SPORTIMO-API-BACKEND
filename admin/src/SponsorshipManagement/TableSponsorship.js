@@ -11,9 +11,7 @@ function TableSponsorship(props) {
 
     const navigate = useNavigate();
 
-    const viewFun = (id)=>{
-
-      
+    const viewFun = (id)=>{ 
      navigate(`/sponsorship/detail/${id}`);
         return false;   
     }  

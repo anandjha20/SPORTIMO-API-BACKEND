@@ -22,8 +22,8 @@ function UserDetail() {
   let options = ({ headers: header });
 
   const userDetails = async () => {
-    const sanData = { page: "1", rows : "1" }
-    const result = await axios.post(`/user_list/${_id}`, sanData, options);
+    // const sanData = { page: "1", rows : "1" }
+    const result = await axios.get(`/web_api/user_detail/${_id}`, options);
     const data = result.data.body[0];
     setData(data);
     console.log(data);
@@ -34,7 +34,7 @@ function UserDetail() {
   }, []);
 
 
-  const formatDate = Moment(data.date).format("MMM Do YY");
+  const formatDate = Moment(data.date).format("DD/MM//YYYY");
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -82,23 +82,30 @@ function UserDetail() {
                 <div className="card custom-card">
                   <div className="card-body">
                     <div className="row">
-
-
                       <div className="col-lg-12">
-
-                        {/* <div className="box-img">
-                          <img src="/assets/img/users.webp" alt="avtar" />
-                        </div> */}
-
+                      <label className="tx-medium">User Image</label>
+                        <div className="box-img">
+                        <div className="box-img">{data.image !== '' ? <> <img src={data.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div>
+                        </div>
                       </div>
 
                       <div className="col-lg-6">
+                      <div className="form-group mb-4"> <label className="tx-medium">Unique ID</label>
+                          <input type="text" className="form-control" readOnly value={data._id || ''} /> </div>
+                      </div>
 
-
+                      <div className="col-lg-6">
                         <div className="form-group mb-4"> <label className="tx-medium">Unique Name</label>
                           <input type="text" className="form-control" readOnly value={data.u_name || ''} /> </div>
                       </div>
-
+                      {data.user_type == "5"  ? <>
+                      <div className="col-lg-6">
+                        <div className="form-group mb-4"> <label className="tx-medium">User Type</label>
+                          <input type="text" className="form-control" readOnly value="Guest User" /> </div>
+                      </div>
+                      </> : null}
+                   
+                        
                       <div className="col-lg-6">
                         <div className="form-group mb-4"> <label className="tx-medium">User Name</label>
                           <input type="text" className="form-control text-capitalize" readOnly value={data.name || ''} />
@@ -122,7 +129,7 @@ function UserDetail() {
 
 
                       <div className="col-lg-6">
-                        <div className="form-group mb-4"> <label className="tx-medium">Date Of Birth</label>
+                        <div className="form-group mb-4"> <label className="tx-medium">Registration Date	</label>
                           <input type="text" className="form-control" readOnly value={formatDate || ''} />
                         </div>
                       </div>

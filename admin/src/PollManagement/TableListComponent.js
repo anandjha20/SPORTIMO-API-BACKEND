@@ -1,58 +1,146 @@
 import React from "react";
-import MaterialTable from 'material-table';
-import { TextField } from "@material-ui/core";
-import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
-
-
-import {Link, useHistory } from 'react-router-dom';
-
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-
+import Select from 'react-select';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import ReactPaginate from "react-paginate";
+import IconButton from '@mui/material/IconButton';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Moment from 'moment';
+
+function TableListComponent(props) {
+
+    const [open, setOpen] = React.useState(false);
+    const [pageCount, setpageCount] = useState('');
+    const [guestUser, setGuest] = React.useState(0);
+    const [Fromvalue, setFromvalue] = React.useState('');
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+    const handleMeesage = () => {
+        setOpen(false);
+        toast.success('Message Sent Successfully');
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        
+    };
+
+    const [data, setData] = useState([])
+
+    const navigate = useNavigate();
+
+    const guestfun = (event) => {
+        if (guestUser == 1) {
+          setGuest(0);
+        }
+        if (guestUser == 0) {
+          setGuest(1);
+        }
+        return false;
+      };
+  
+
+    const customStyles = {
+        container: (base, state) => ({
+            ...base,
+            zIndex: "999"
+          })
+    }
+
+    const token = localStorage.getItem("token");
+    const header = ({ 'token': `${token}` });
+    const options = ({ headers: header });
+
+    const limit = 10;
+    
+    const formsave = (e, page)=>{
+        e.preventDefault();
+          const data = new FormData(e.target);
+         const Formvlaues = Object.fromEntries(data.entries());
+        //  Formvlaues.guest_user = guestUser
+         const formData = Formvlaues
+         setFromvalue(formData);
+           console.log('Formvlaues === ', Formvlaues);
+            axios.post(`/web_api/poll_list`, formData, options)
+           .then(res => {
+               const data = res.data.body;
+               setData(data);
+               const total = res.data.rows;
+               const totalPage = (Math.ceil(total / limit));
+               setpageCount(totalPage);
+           })
+          
+     }
+
+    const polllist = async () => {
+        const datadammy = {}
+        await axios.post(`/web_api/poll_list`, datadammy, options)
+            .then(res => {
+                const data = res.data.body;
+                const total = res.data.rows;
+                const totalPage = (Math.ceil(total / limit));
+                setpageCount(totalPage);
+                setData(data);
+                console.log(data);
+            })
+    }
+    useEffect(() => {
+        polllist()
+    }, [])
 
 
-function TableListComponent() {
+    ///////////////pagenestion///////////////
+    const fetchComments = async (page) => {
+        const senData = { guest_user : guestUser, page: page }
+        // const cosole = Fromvalue;
+        // console.log(Fromvalue);
+        axios.post(`/web_api/poll_list`, senData,  options)
+            .then(res => {
+                const data = res.data.body;
+                setData(data);
+            })
+        return data;
+    };
 
-const [data,setData] = useState([]) ;
+    const handlePageClick = async (data) => {
+        // console.log(data.selected);
+        const page = data.selected + 1;
+        const commentsFormServer = await fetchComments(page);
+        setData(commentsFormServer);
+    };
 
 
-let token = localStorage.getItem("token");
-let header = ({ 'token': `${token}` });
-let options1 = ({ headers: header });
+const detailFun = (id)=>{
+    navigate(`/poll/detail/${id}`)
+  return false;   
+} 
 
-const polllist = async () =>
-{
-    await axios.get(`/web_api/poll_list`,  options1)
-    .then(res => {
-      const data = res.data.body;
-      setData(data);
-      console.log(data); 
-    })
+const editFun = (id)=>{
+    navigate(`/poll/update/${id}`)
+  return false;   
 }
 
-useEffect(()=> {
-    polllist()
-},[])
 
-// const get_data = async()=>{
+const polltype = [
+    { value: 'Public Poll', label: 'Public Poll' },
+    { value: 'Private Poll', label: 'Private Poll' },
+]
+const pollfee = [
+    { value: 'Free', label: 'Free' },
+    { value: 'Paid', label: 'Paid' },
+]
 
-//     {  try{ 
-//         let formData = {};    
-//         let token = localStorage.getItem("token");
-//         let header = ({ 'token': `${token}` });
-//         let options1 = ({ headers: header });
-//          let response = await axios.get('/poll_list', options1, formData);
-//         let t_data = response.data.body;
-//         setTblData(t_data);
-//         const result_type = t_data.result_type
-//        } catch(err){ console.error(err); toast.error('some errror'); return false;  }
-       
-//    } 
-// }
-    /////////////////delete poll /////////////////
+
+/////////////////delete poll /////////////////
     const delPoll = (_id) => {
         axios.delete(`/web_api/delete_poll/${_id}`)
             .then(res => {
@@ -60,14 +148,8 @@ useEffect(()=> {
                     let data = res.data;
                     if (data.status) { 
                         toast.success(data.msg);
-                        return (
-                             axios.get(`/web_api/poll_list`,  options1)
-                            .then(res => {
-                              const data = res.data.body;
-                              setData(data);
-                              console.log(data); 
-                            })
-                        );
+                        return polllist();
+                        
                     } else {
                         toast.error('something went wrong please try again');
                     }
@@ -80,135 +162,180 @@ useEffect(()=> {
            
     }
 
-
-
-const [datadetail, setDataDetail] = useState('')
-
-const disclosedPoll = (_id) =>
-{ 
-
-            const setDataForm = {disclosed_status : '1'}
-             axios.put(`/web_api/poll_result_disclosed/${_id}`, setDataForm, options1)
-             .then(res => {
-                if (res.status) {
-                    let data = res.data;
-                    if (data.status) { 
-                        toast.success(data.msg);
-                        return (
-                             axios.get(`/web_api/poll_list`,  options1)
-                            .then(res => {
-                              const data = res.data.body;
-                              setData(data);
-                              console.log(data); 
-                            })
-                        );
-                    } else {
-                        toast.error('something went wrong please try again');
+/////////////////poll status api call ////////////////
+    const disclosedPoll = (_id) =>
+    { 
+                const setDataForm = {disclosed_status : '1'}
+                 axios.put(`/web_api/poll_result_disclosed/${_id}`, setDataForm, options)
+                 .then(res => {
+                    if (res.status) {
+                        let data = res.data;
+                        if (data.status) { 
+                            toast.success(data.msg);
+                            return polllist();
+                        } else {
+                            toast.error('something went wrong please try again');
+                        }
                     }
-                }
-                else {
-                    toast.error('something went wrong please try again..');
-                }
-
-            })
-             
-}
-
-
-
-    const columns =
-        [
-            { title: 'Match/league', field: 'match'},
-            { title: 'Poll Type', field: 'poll_type', },
-            { title: 'Poll Fee', field: 'fee_type'  },
-            { title: 'Amount', field: 'amount'  },
-            { title: 'Appearance Time', field: 'apperance_time' },
-            { title: 'Duration', field: 'time_duration'},
-            { title: 'Poll Result', render: rowData => {
-                if (rowData.result_type == "Undisclosed" && rowData.disclosed_status == "1") {
-                    return (
-                        <>
-                          <span>Poll Result Disclosed</span>
-                        </>
-                    );
-                  }
-                  if (rowData.result_type == "Undisclosed" && rowData.disclosed_status == "0") {
-                    return (
-                        <>
-                         <Button onClick={() => { disclosedPoll(rowData._id);}}  type='submit' className="mr-3 btn-pd btnBg">Disclose</Button>
-                        </>
-                    );
-                  }
-            }
-              },
-         ]
-////////////////////////////////////////////////////////
-
-//const history = useHistory();
-// const viewFun = (_id)=>{
-//     navigate(`/user-detail/${_id}`);
-//     return false;   
-
-//   } 
-
-const navigate = useNavigate();
-const detailFun = (id)=>{
-    navigate(`/poll/detail/${id}`)
-  return false;   
-
-} 
-
-const editFun = (id)=>{
-    navigate(`/poll/update/${id}`)
-  return false;   
-
-} 
+                    else {
+                        toast.error('something went wrong please try again..');
+                    }
+                })            
+    }
+      
 
 
     return (
 
         <>
 
+<ToastContainer position="top-right" />
+ 
+
+             
+<div className="card custom-card">
+                <div className="card-body">
+                    <form onSubmit={(e)=>formsave(e)}>
+                    <div className="row align-items-center">
+                    <div className="col-lg-12 ml-2">
+                                 <FormGroup className="mb-3">
+                                    <FormControlLabel name=''  control={<Checkbox />} label="Active Poll" />
+                                  </FormGroup>
+                        </div>
+                        <div className="col-lg-4 mb-3">
+                            <TextField id="search" className="filter-input" name='match' label="Search Match/league" fullWidth type="text"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </div>
+                        <div className="col-lg-4 reletive mb-3">
+                            <span className="react-select-title">Poll Type</span>
+                            <Select  name='poll_type'
+                                options={polltype}
+                                className="basic-multi-select"
+                                classNamePrefix="select" />
+
+                        </div>
+                        <div className="col-lg-4 reletive mb-3">
+                            <span className="react-select-title">Poll Fee</span>
+                            <Select  name='fee_type'
+                                options={pollfee}
+                                className="basic-multi-select"
+                                classNamePrefix="select" />
+
+                        </div>
+                        <div className="col-lg-4 mb-3">
+                            <TextField id="sdate" name='s_date' className="filter-input" label="Start Date" fullWidth type="date"
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+
+                        </div>
+
+                        <div className="col-lg-4 mb-3">
+                            <TextField id="edate" name='e_date' className="filter-input" label="End Date" fullWidth type="date"
+                                InputLabelProps={{ shrink: true, }} />
+
+                        </div>
+                        <div className="col-lg-4 mb-3 d-flex">
+                            <Button type='submit' variant="contained" className="mr-3 btn-filter btnBg">Search</Button>
+                            <Button type='reset' onClick={polllist} className="mr-3 btn-dark btn-filter">Reset</Button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+
             <div className="row">
                 <div className="col-lg-12">
-               
-                    <MaterialTable
-                        title="Poll List"
-                        columns={columns}
-                        data={data}
-                        actions={[
-                            {       
-                                icon: 'visibility',
-                                iconProps: { style: { color: "#6259ca" } },
-                                tooltip: 'View Detail',
-                                onClick: (event, rowData) => { detailFun(rowData._id);}
-                            },
-                            {       
-                                icon: 'edit',
-                                iconProps: { style: { color: "#6259ca" } },
-                                tooltip: 'Update Poll',
-                                onClick: (event, rowData) => { editFun(rowData._id);}
-                            },
-                            {       
-                                icon: 'delete',
-                                iconProps: { style: { color: "#6259ca" } },
-                                tooltip: 'Delete Poll',
-                                onClick: (event, rowData) => { delPoll(rowData._id);}
-                            },
-                            
-                        ]}
-                        options={{
-                            search: true,
-                            actionsColumnIndex: -1,
-                            showFirstLastPageButtons: true,
-                            pageSize: 5,
-                            pageSizeOptions: [5, 20, 50]
-                        }}
+                    <div className="table-card MuiPaper-root MuiPaper-elevation2 MuiPaper-rounded">
+                        <h6 className="MuiTypography-root MuiTypography-h6 padd1rem">Poll List</h6>
+                        <table className="table ">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Match/league</th>
+                                    <th scope="col">Poll Type</th>
+                                    <th scope="col">Poll Fee</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Appearance Time</th>
+                                    <th scope="col">Duration</th>
+                                    <th scope="col">Poll Result</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col" className="text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              {data == '' ? <>
+                               <tr>
+                               <td className="text-center" colSpan='9'> 
+                                 <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                               </tr>
+                               </> : null}
+                                {data.map((item) => {
+                                    return (
+                                        <tr key={item._id}>
+                                            <td>{item.match}</td>
+                                            <td>{item.poll_type}</td>
+                                            <td>{item.fee_type}</td>
+                                            <td>{item.amount}</td>
+                                            <td>{item.apperance_time}</td>
+                                            <td>{item.time_duration}</td>
+                                            <td>
+                                            { item.result_type == "Undisclosed" && item.disclosed_status == "1" ? <> <span>Poll Result Disclosed</span></> : null}
+                                            {item.result_type == "Undisclosed" && item.disclosed_status == "0" ? <><Button onClick={() => { disclosedPoll(item._id);}}  type='submit' className="mr-3 btn-pd btnBg">Disclose</Button></> : null }
+                                            </td>
+                                            <td>{Moment(item.date).format("DD/MM//YYYY")}</td>
+                                            <td className="text-end">
+                                                <div className="d-flex justtify-content-end">
+                                                    <IconButton onClick={(e) => { detailFun(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">
+                                                        visibility </span>
+                                                    </IconButton>
+                                                    <IconButton onClick={(e) => { editFun(item._id); }} aria-label="edit">
+                                                        <span className="material-symbols-outlined">
+                                                            edit </span>
+                                                    </IconButton>
+                                                    <IconButton onClick={(e) => { delPoll(item._id); }} aria-label="delete">
+                                                        <span className="material-symbols-outlined">
+                                                        Delete </span>
+                                                    </IconButton>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
 
-                    />
+
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="col-lg-12 mt-2 text-end">
+                        <ReactPaginate
+                            previousLabel={"previous"}
+                            nextLabel={"next"}
+                            breakLabel={"..."}
+                            pageCount={pageCount}
+                            marginPagesDisplayed={2}
+                            pageRangeDisplayed={3}
+                            onPageChange={handlePageClick}
+                            containerClassName={"pagination justify-content-end"}
+                            pageClassName={"page-item"}
+                            pageLinkClassName={"page-link"}
+                            previousClassName={"page-item"}
+                            previousLinkClassName={"page-link"}
+                            nextClassName={"page-item"}
+                            nextLinkClassName={"page-link"}
+                            breakClassName={"page-item"}
+                            breakLinkClassName={"page-link"}
+                            activeClassName={"active"}
+                        />
+                    </div>
                 </div>
-                <ToastContainer  position="top-right"  />     
+                <div>
+                </div>
             </div>
+           
         </>
 
     )

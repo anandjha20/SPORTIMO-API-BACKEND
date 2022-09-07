@@ -564,7 +564,8 @@ const secondOptions = [
 
 const polldetail = async () =>
       {
-          await axios.get(`/web_api/poll_list/${id}`, options1)
+          const sendatds = {data1 : "data1"}
+          await axios.post(`/web_api/poll_list/${id}`, sendatds, options1)
           .then(res => {
             const datadetail = res.data.body[0];
             const polltypeSet = res.data.body[0].poll_type;
