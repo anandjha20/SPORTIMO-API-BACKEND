@@ -8,7 +8,7 @@ const Userschema = new Schema({
          name: { type: String, default: ''},
          doc_type: { type: String,default: ''},
          token: { type: String, default: '' },
-      
+         city: { type: String, default: '' },
          address: { type: String, default: '' },
          user_language : { type: String,enum: ['Arabic', 'English'],  default: 'English' },
 

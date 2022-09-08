@@ -103,7 +103,7 @@ class PollController {
 
                  
                     let user_data = req.body;
-                console.log(  'server get value == ',user_data);
+                    console.log(  'server get value == ',user_data);
                   
                   let match_len = (user_data.match || '').length;
            if(match_len == 0){
@@ -111,14 +111,7 @@ class PollController {
 
            }   
            
-           if(user_data.noti_status == 1 || user_data.noti_in_App_status == 1 ){
-                      let mm_type =  (user_data.noti_status == 1)? 1 : 0 ; 
-                          let title = `New Poll has been publihed for match: ${ user_data.match} ` ;  
-                      let msgs = `New Poll has been publihed for match: ${ user_data.match} Click here to participate.`; 
-                
-                      let demo =  sendNotificationAdd(title,msgs,mm_type);
-          }
-
+           
           let mydate = getcurntDate();
 
                     let add = new poll_tbl({
@@ -159,9 +152,25 @@ class PollController {
                        add.save((err, data) => {
                                 if (err) {     console.log(err);
                                   return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
-                              }else{
-                     
+                              }else if(! isEmpty(data)) {
+                                    
+                                if(user_data.noti_status == 1 || user_data.noti_in_App_status == 1 ){
+                                  let mm_type =  1 ; 
+                                      let title = `New Poll has been publihed for match: ${ user_data.match} ` ;  
+                                  let msgs = `New Poll has been publihed for match: ${ user_data.match} Click here to participate.`; 
+                                  let module_id = data._id;
+                                  let module_type = 'polls';
+                                  let category_type = 'results';
+
+                                  let demo =  sendNotificationAdd(title,msgs,mm_type,module_type,module_id,category_type );
+                      }
+            
+
+
                                  return res.status(200).send({"status":true,"msg":'Poll Created Successfully' , "body":data  }) ;            
+                            }else{
+                                  return res.status(200).send({"status":false,"msg":'something went wrong please try again' , "body":''  }) ;            
+                       
                             }
                 }   );
                 
@@ -473,15 +482,16 @@ static my_polls_old = async(req,res)=>{
           if(err) {  console.log(err);
             return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
           }else if(!isEmpty(updatedUser)){
+                      
+                     let mm_type =  (user_data.noti_status == 1)? 1 : 0 ; 
+                     let title = `${updatedUser.match} Poll Result has been disclosed ` ;  
+                     let msgs = `${updatedUser.match} Poll Result has been disclosed  Click here to view.`; 
+                     let demo =  sendNotificationAdd(title,msgs,mm_type);
+                     
                     return res.status(200).send({"status":true,"msg":'Poll Result Disclosed Successfully' , "body":''  }) ;   
       
-                  }else{
-                    return res.status(200).send({"status":false,"msg":'Invalid poll Id ' , "body": ''}) ;   
-        
-                  }
-
-                          
-                      });
+              }else{  return res.status(200).send({"status":false,"msg":'Invalid poll Id ' , "body": ''}) ;   
+                      }  });
 
               } catch (error) {
                       return res.status(200).send({"status":false,"msg":'Sreve' , "body":''}) ;          

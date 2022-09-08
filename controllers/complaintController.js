@@ -1,6 +1,6 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty } = require('../myModel/common_modal');
+const { rows_count,Email,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty } = require('../myModel/common_modal');
 
 const  {MyBasePath} = require("../myModel/image_helper");
       
@@ -96,20 +96,29 @@ class ComplaintController{
      static user_complaint_cat_delete = async (req,res)=>{
         try {
             let  id = req.params.id;  let id_len = (id || '').length;
-            let cat_name = req.body.cat_name; let cat_name_len = (cat_name || '').length;
-            
             if( id_len == 0 ){
-                         return   res.status(200).send({'status':false,'msg':"Id Field Required",'body':''});
-                         }  
+                      return   res.status(200).send({'status':false,'msg':"Id Field Required",'body':''});
+                   }  
             
-             user_complaint_cat_tbl.findOneAndDelete({ _id:id }, (err, data) => {
-                if (err) { console.log(err);
-                    return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;  
-                } else {
-                    return res.status(200).json({ "status":true,"msg": "Category Deleted successfully " , "body":''});
-                }
-            });
-        
+                    let check_catData = await rows_count(user_complaint_tbl,{cat_id: id})  ;             
+                           
+                 if(check_catData >0 ){  
+                      return   res.status(200).send({'status':false,'msg':"Can't delete this category, complaint with this category is still available",'body':''});
+                      
+                    }else{
+                            user_complaint_cat_tbl.findOneAndDelete({ _id:id }, (err, data) => {
+                                if (err) { console.log(err);
+                                    return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;  
+                                } else if(!isEmpty(data)) {
+                                    return res.status(200).json({ "status":true,"msg": "Category Deleted successfully " , "body":''});
+                                }else{
+                                    return res.status(200).send({"status":false,"msg":'Invalid Category Id ' , "body":''}) ;  
+                           
+                                }
+                            });
+                      }
+
+
         } catch (error) { console.log(error);
                       return  res.status(200).send({'status':false,'msg':error,'body':''});
         }

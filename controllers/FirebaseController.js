@@ -4,7 +4,7 @@ const serviceAccount = require("../serviceAccountKey.json");
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://chattron-7ac2c.firebaseio.com",
+    databaseURL: process.env.FIRBASEDBURL ,
   });
 
   const FirebaseDB = admin.firestore();

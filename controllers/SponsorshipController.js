@@ -376,9 +376,75 @@ static my_polls = async (req,res)=>{
             }
 
 
+static sponsorship_impressions_count_add = async(req,res)=>{
+    try {
+       
+     let sponsorship_id = req.body.sponsorship_id ; 
+      if(isEmpty(sponsorship_id)){
+        return res.status(200).sened({"status":false,"msg":"Sponsorship Id Required " ,"body":""});
+          }
+      let getData = await Sponsorship_tbl.find({"_id": sponsorship_id });        
+
+        if(getData.length > 0){ let impressions_count = (getData[0].impressions_count >0)?getData[0].impressions_count +1 : 1 ;
+          
+          Sponsorship_tbl.findOneAndUpdate({_id: sponsorship_id},{$set : {impressions_count}},{new: true}, (err, updatedUser) => {
+            if(err) {  console.log(err);
+              return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+            }else if(!isEmpty(updatedUser)){
+                      return res.status(200).send({"status":true,"msg":'impressions_count add  Successfully' , "body":updatedUser.impressions_count  }) ;   
+                    }else{
+                      return res.status(200).send({"status":false,"msg":'Invalid Sponsorship Id ' , "body": ''}) ;   
+                      }
+         });  
 
 
 
+        }else{
+          return res.status(200).sened({"status":false,"msg":"Invalid Sponsorship Id " ,"body":""});
+        }  
+      } catch (error) { console.log(error); 
+        return res.status(200).sened({"status":false,"msg":"Invalid Sponsorship Id " ,"body":""});
+      }     
+        
+        
+
+    }
+
+
+static sponsorship_clicks_count_add = async(req,res)=>{
+      try {
+          
+       let sponsorship_id = req.body.sponsorship_id ; 
+        if(isEmpty(sponsorship_id)){
+          return res.status(200).sened({"status":false,"msg":"Sponsorship Id Required " ,"body":""});
+            }
+        let getData = await Sponsorship_tbl.find({"_id": sponsorship_id });        
+  
+          if(getData.length > 0){ let clicks_count = (getData[0].clicks_count >0)?getData[0].clicks_count +1 : 1 ;
+            
+            Sponsorship_tbl.findOneAndUpdate({_id: sponsorship_id},{$set : {clicks_count}},{new: true}, (err, updatedUser) => {
+              if(err) {  console.log(err);
+                return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+              }else if(!isEmpty(updatedUser)){
+                        return res.status(200).send({"status":true,"msg":'Sponsorship clicks add Successfully' , "body":updatedUser.clicks_count  }) ;   
+                      }else{
+                        return res.status(200).send({"status":false,"msg":'Invalid Sponsorship Id ' , "body": ''}) ;   
+                        }
+           });  
+  
+  
+  
+          }else{
+            return res.status(200).sened({"status":false,"msg":"Invalid Sponsorship Id " ,"body":""});
+          }  
+        } catch (error) { console.log(error); 
+          return res.status(200).sened({"status":false,"msg":"Invalid Sponsorship Id " ,"body":""});
+        }     
+          
+          
+  
+      }
+  
 
 }
    

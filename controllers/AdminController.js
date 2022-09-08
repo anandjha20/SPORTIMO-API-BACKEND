@@ -1,6 +1,6 @@
 let  express_2 = require('express');
   
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
+const { rows_count,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
    
   
   
@@ -25,7 +25,7 @@ class AdminController {
     if(err) {  console.log(err);
         return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
     }
-    if(isEmpty(updateData)){
+    if(isEmpty(updateData)){ 
       return res.status(200).json({ "status":false,"msg": "Invalid Id" });
     }else{
     return res.status(200).json({"status":true,"msg": "Tip status updated successfully!" , "body":updateData}); }
@@ -287,8 +287,8 @@ class AdminController {
             }
             faq_category_tbl.findOneAndUpdate({_id: id},{$set : {cat_name:cat_name}},{new: true}, (err, updateddata) => {
         if(err) {  console.log(err);
-            return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
-        }
+                return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
+             }
         
         return res.status(200).json({  
             "status":true,"msg": "success" , "body":updateddata
@@ -300,23 +300,30 @@ class AdminController {
             res.status(200).send({'status':false,'msg':error,'body':''});
         }
                 
-            } 
-            static delete_faq_category = async (req,res)=>{
+            }  
+          static delete_faq_category = async (req,res)=>{
               try {
                 // console.log(req)
-                  let  id = req.params.id;  let id_len = (id || '').length;
-                  if( id_len == 0 ){
-                        return   res.status(200).send({'status':false,'msg':"Id Field Required",'body':''});
-                  }                
-                  faq_category_tbl.findOneAndDelete({ _id:id }, (err, data) => {
-                      if (err) { console.log(err);
-                          return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;  
-                      } else {
-                          return res.status(200).json({ "status":true,"msg": "FAQ Category Deleted successfully " , "body":''});
-                      }
-                  });
+                  let  id = req.params.id; 
+                 
+                  let check_catData = await rows_count(faq_tbl,{faq_cat_id: id})  ;             
+                           
+                  if(check_catData >0 ){  
+                       return   res.status(200).send({'status':false,'msg':"Can't delete this category, FAQ with this category is still available",'body':''});
+                       
+                     }else{   
+                      faq_category_tbl.findOneAndDelete({ _id:id }, (err, data) => {
+                              if (err) { console.log(err);
+                                  return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;  
+                              }else if(! isEmpty(data)) {
+                                  return res.status(200).json({ "status":true,"msg": "FAQ Category Deleted successfully " , "body":''});
+                              }else{
+                                return res.status(200).send({"status":false,"msg":'Invalid FAQ Category Id ' , "body":''}) ;  
+                              }
+                          });
+                }
               } catch (error) { console.log(error);
-                        return  res.status(200).send({'status':false,'msg':error,'body':''});
+                        return  res.status(200).send({'status':false,'msg':"server error",'body':''});
               }
                               
         }         
@@ -355,17 +362,17 @@ class AdminController {
             let answer    = req.body.answer;   let answer_lan   = (answer || '').length;
             if(cat_id_lan == 0 || cat_id_lan == 0 || cat_id_lan == 0){
               return res.status(200).send({"status":false,"msg":'All Field Required' , "body":''}) ;   
-            }
-            
-            faq_tbl.findOneAndUpdate({_id: id},{$set : {cat_id:cat_id,question:question,answer:answer}},{new: true}, (err, updateddata) => {
+            }   
+                  
+            faq_tbl.findOneAndUpdate({_id: id},{$set : {faq_cat_id:cat_id,question:question,answer:answer}},{new: true}, (err, updateddata) => {
               if(err) {  console.log(err);
                   return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
               }
-              
-              return res.status(200).json({  
-                  "status":true,"msg": "success" , "body":updateddata
-              });
-            });                  
+              if(isEmpty(updateddata)){
+                return res.status(200).send({"status":false,"msg":'Invalid Id' , "body":''}) ;   
+              }else{ return res.status(200).json({ "status":true,"msg": "success" , "body":updateddata});
+                   } });  
+
         } catch (error) { console.log("error is == ", error);
             return res.status(200).send({"status":false,"msg":'No data add  ' , "body":''}) ;          
             }

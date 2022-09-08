@@ -35,11 +35,12 @@ const token_check =  require('../middleware/token_check');
   let FirebaseController = require('../controllers/FirebaseController');
   let MasterController = require('../controllers/MasterController');
   let IntroSliderController = require('../controllers/IntroSliderController');
- 
+  let NotificationController = require('../controllers/NotificationController');
+      
   // admin login Routes  
   router.post('/admin_login/',AdminController.admin_login);
  
-   // all poll  Routes         
+   // all poll  Routes            
       router.post('/add_poll',PollController.add_poll);
       router.post('/poll_list/:id?',token_check,PollController.poll_list);
      
@@ -63,17 +64,16 @@ const token_check =  require('../middleware/token_check');
     router.get('/sponsor_detail/:id?',SponsorshipController.sponsor_detail);
     router.put('/update_sponsor/:id?',sponsorImgUpload,SponsorshipController.update_sponsor);
 
-
-
+       
  // FAQ section Routes 
     router.post('/add_faq_category/',AdminController.add_faq_category);
     router.put('/update_faq_category/',AdminController.update_faq_category);
-    router.delete('/delete_faq_category/:id?',AdminController.delete_faq_category);
+    router.delete('/delete_faq_category/:id',AdminController.delete_faq_category);
     router.post('/add_faq/',AdminController.add_faq);
-    router.put('/update_faq/',AdminController.update_faq);
+    router.put('/update_faq/',AdminController.update_faq);         
     router.delete('/delete_faq/:id?',AdminController.delete_faq);
     router.post('/add_tips/',AdminController.add_tips);
-    router.get('/faq_cat_list/:id?',AdminController.faq_cat_list);  
+    router.get('/faq_cat_list/:id?',AdminController.faq_cat_list);      
     router.get('/faq_list/:id?',AdminController.faq_list);     
     router.get('/get_tips/:id?',AdminController.get_tips);     
     router.get('/get_tip_list',AdminController.get_tip_list); 
@@ -129,7 +129,7 @@ const token_check =  require('../middleware/token_check');
   /////   player _get crud Route                                   
         router.post('/players',MasterImgUpload,MasterController.player_add);             
         router.post('/players_get/:id?',MasterController.player_get);             
-        router.put('/players/:id',MasterImgUpload,MasterController.player_update);             
+        router.put('/players/:id',MasterImgUpload,MasterController.player_update);                
         router.delete('/players/:id',MasterController.player_delete);        
 
 // poll_skip_add
@@ -149,5 +149,7 @@ const token_check =  require('../middleware/token_check');
   router.put('/introSlider_update/:id',IntroSliderImgUpload,IntroSliderController.introSlider_update);             
   router.delete('/introSlider_delete/:id',IntroSliderController.introSlider_delete);       
 
-
+// get notification list  
+router.post('/notification_list/:id?',NotificationController.notification_list); 
+router.delete('/notification_delete/:id',NotificationController.notification_delete); 
 module.exports = router;  

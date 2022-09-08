@@ -4,7 +4,7 @@
 
 
   
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty,user_logs_add,FulldateTime } = require('../myModel/common_modal');
+const { isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime } = require('../myModel/common_modal');
 const { autoincremental } = require('../myModel/helper_fun');  
 
   
@@ -335,6 +335,9 @@ static user_profile_update = async(req,res)=>{
         let  team_preference = req.body.team_preference;        
         let  device_id = req.body.device_id;    
         let  player_preference = req.body.player_preference;    
+        let  email = req.body.email;    
+        let  city = req.body.city;    
+        let  address = req.body.address;    
          
           let name_len = (name || '').length;      let country_len = (country || '').length;  
           let sport_preferences_len = (sport_preferences || '').length;
@@ -368,7 +371,9 @@ static user_profile_update = async(req,res)=>{
             gender : gender,  
         };
     if(img){ myobjs.image = img }
-
+  if(!isEmpty(email)){ myobjs.email = email }
+  if(!isEmpty(city)){ myobjs.city = city }
+  if(!isEmpty(address)){ myobjs.address = address }
 
     
 ///////////////////////////////////////////////////////////////////////////////      

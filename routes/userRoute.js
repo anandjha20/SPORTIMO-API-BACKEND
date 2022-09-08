@@ -34,6 +34,7 @@ const user_img =  img_upload('./assets/user_img','user_image');
 
  let FirebaseController = require('../controllers/FirebaseController');
  let IntroSliderController = require('../controllers/IntroSliderController');
+ let NotificationController = require('../controllers/NotificationController');
           
                                               
           router.get('/JK/',UserController.dashboardAllCount);
@@ -70,6 +71,8 @@ const user_img =  img_upload('./assets/user_img','user_image');
       ///  all Sponsorship Routes
         router.get('/sponsor_list',SponsorshipController.sponsor_list);
         router.get('/sponsor_detail/:id ?',SponsorshipController.sponsor_detail);
+        router.put('/sponsorship_impressions_count_add',SponsorshipController.sponsorship_impressions_count_add);
+        router.put('/sponsorship_clicks_count_add',SponsorshipController.sponsorship_clicks_count_add);
 
       // user complaint Routes  
         router.get('/user_complaint_cat_list/:id?', user_token_check,complaintController.user_complaint_cat_list);  
@@ -147,5 +150,7 @@ const user_img =  img_upload('./assets/user_img','user_image');
              return res.status(200).send({'status':true,'msg':"success",'body':sendData});
 
           }); 
-
+  // get notification list  
+  router.get('/notification_list/:id?',NotificationController.notification_list); 
+       
 module.exports = router;             

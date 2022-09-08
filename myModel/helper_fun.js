@@ -1,3 +1,5 @@
+  const {isEmpty }  = require("./common_modal");   
+
     const user_tbl = require('../models/user');    
     const admin_tbl = require('../models/admin');    
     const poll_tbl = require('../models/poll');    
@@ -64,17 +66,24 @@ const autoincremental  = async(seq_id,mymodals) =>{
         } catch (error) {   console.log('try error====   ',error); return false; }
 }
 
-const sendNotificationAdd = (title,msg,type)=>{
+const sendNotificationAdd = (title,msg,type_status,module_type,module_id,category_type)=>{
                 try {
-                        let add = new notification_tbl({ title:title,message:msg,type_status:type });
+                       let addData =  { title:title,message:msg,type_status:type_status };
+                       
+                       if(! isEmpty(category_type)){addData.category_type = category_type ; }
+                       if(! isEmpty(module_id)){addData.module_id = module_id.toString(); }
+                       if(! isEmpty(module_type)){addData.module_type = module_type ; }
+                       
+
+                        let add = new notification_tbl(addData);
                             add.save((err,data)=>{
-                                if(err){  console.log('try error====   ',error); return false; }else{
+                                if(err){  console.log('try error====   ',err); return false; }else{
                                     console.log('sendNotification success data ===   ',data); return true;
                                     }
                             });   
                     } catch (error){ console.log('some error====',error); return false; }
 
         }
-
+                
 
 module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd }
