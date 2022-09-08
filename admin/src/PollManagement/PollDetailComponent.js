@@ -182,7 +182,7 @@ function PollDetailComponent() {
 
                       <div className="col-lg-5">
                         <UserAnswerPieChart />
-                        <h3 className="text-center mt-3 title-pie">User Answers Chart</h3>
+                        {/* <h3 className="text-center mt-3 title-pie">User Answers Chart</h3> */}
                       </div>
 
                     </div>

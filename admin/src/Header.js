@@ -183,6 +183,11 @@ return (
 							<span className="sidemenu-label">Complaint Management</span></NavLink>
 						</li>  */}
 						 <li className="nav-item" >
+							<NavLink  to="/notificaiton" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-bell sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Notifications</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
 							<NavLink  to="/tips" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
 							<i className="fad fa-lightbulb-on sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Tips & Tricks</span></NavLink>

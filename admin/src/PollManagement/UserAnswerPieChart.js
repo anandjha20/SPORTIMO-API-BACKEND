@@ -1,123 +1,84 @@
-import React from "react";
-import * as am4core from "@amcharts/amcharts4/core";
-import * as am4charts from "@amcharts/amcharts4/charts";
-import am4themes_material from "@amcharts/amcharts4/themes/material";
-import am4themes_animated from "@amcharts/amcharts4/themes/animated";
+import React ,{ useState, useEffect} from "react";
+import  Chart  from "react-apexcharts";
 import axios from "axios";
-import { useState, useEffect } from "react";
-
 import { useParams } from "react-router-dom";
+import Button from "@mui/material/Button";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-am4core.useTheme(am4themes_material);
-am4core.useTheme(am4themes_animated);
+function UserAnswerPieChart()
+{
+   const [stdudentSubject, setStudentsubject]= useState([]);
+   const [studentMarks, setStudentMarks]= useState([]);
+   const [datachart, setData]= useState([]);
+  
+   const { id } = useParams();
 
-export default function UserAnswerPieChart(props) {
 
 
-    const { id } = useParams();
-    const [dataChart, setData] = useState('')
-    const [dataChart0, setData0] = useState('')
-    const [dataChart1, setData1] = useState('')
-    const [dataChart2, setData2] = useState('')
-    const [dataChart3, setData3] = useState('')
-    const [dataChart4, setData4] = useState('')
-
-    const userChart = async () =>
-    {
-        // await axios.get(`/poll_result_show/${id}`)
-        await axios.get(`http://192.168.1.95:3600/web_api/poll_result_show/63186188a3c6c1cc38f72166`)
-        .then(res => {
-          const dataChart = res.data.body;
-          const dataChart0 = res.data.body[0];
-          const dataChart1 = res.data.body[1];
-          const dataChart2 = res.data.body[2];
-          const dataChart3 = res.data.body[3];
-          setData(dataChart);
-          setData0(dataChart0);
-          setData1(dataChart1);
-          setData2(dataChart2);
-          setData3(dataChart3);
-         
+const disclosedPoll = ()=>
+{
+    const OptionCount=[];
+    const optionName=[];
+   axios.get(`/web_api/poll_result_show/${id}`)
+    .then(res => {
+          const datachart = res.data.body;
+          setData(datachart)
+          console.log(datachart);
+          if(res.status)
+          {
+            for(let i=0; i< datachart.length; i++)
+                {
+                optionName.push(datachart[i]._id);
+                OptionCount.push((datachart[i].count));
+                }
+                setStudentsubject(optionName);
+                setStudentMarks(OptionCount);
+                console.log(optionName); 
+                console.log(OptionCount); 
+                console.log(datachart); 
+         }
+         else {
+            toast.error('something went wrong please try again');
+        }
         })
-    }
-    
-    useEffect(() => {
-        userChart();
-      },[]); 
+       
+}
 
-    useEffect(() => {
-        var chart = am4core.create("piediv", am4charts.PieChart3D);
-        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+   useEffect( ()=>
+    {
+    disclosedPoll();
 
-        chart.legend = new am4charts.Legend();
+   },[]);
 
-
-        if(dataChart3._id == "ops_3")
-        {
-         chart.data = 
-            [  
-                {
-                    option: dataChart0._id,
-                    litres: dataChart0.count,
-                },
-                {
-                    option: dataChart1._id,
-                    litres: dataChart1.count,
-                },
-                {
-                    option: dataChart2._id,
-                    litres: dataChart2.count,
-                },
-                {
-                    option: dataChart3._id,
-                    litres: dataChart3.count,
-                },
-             ] 
-            }
-
-    
-    // { dataChart.map((obj) => 
-    //   chart.data = 
-    //     [  
-    //         {
-    //             option: obj._id,
-    //             litres: obj.count,
-    //         },
-    //     ] 
-    //      )}
-
-        // if(dataChart._id === 'ops_1')
-        // {
-        //     chart.data = [
-        //         {
-        //             option: "Answer 1",
-        //             litres: dataChart.count
-        //         },
-        //     ]
-        // }
-
-     
-        var series = chart.series.push(new am4charts.PieSeries3D());
-        series.dataFields.value = "litres";
-        series.dataFields.category = "option";
-
-        return () => {
-            chart && chart.dispose();
-        };
-    });
-
-    
-
+   
     return(
         <>
-            <div
-                id="piediv"
-                className={props.className}
-                style={{ width: "100%", height: "380px", marginTop: "40px" , }}
-            >
+           <ToastContainer position="top-right" />
 
+            <div className="container-fluid mb-3" >
+                <h3 className="text-center mt-3 title-pie">USER ANSWERS CHART</h3>
+
+
+                {!datachart ? <><h2 className="text-white text-center mt-5">No Answer Available!</h2></>  : null}
+                {/* <Button type='submit' variant="contained" className="mr-3 btn-filter btnBg" onClick={() => { disclosedPoll();}}>Show Pie Chart</Button> */}
+                <Chart 
+                type="pie"
+                style={{ width: "100%", height: "380px", marginTop: "40px" , }}
+                series={ studentMarks}                
+                 options={{
+                        // title:{ text:"Student PieChart"
+                        // } , 
+                  noData:{text:"Empty Data"},                        
+                  labels:stdudentSubject                     
+
+                 }}
+                >  
+
+              
+                </Chart>
             </div>
         </>
-
     );
 }
+export default UserAnswerPieChart;

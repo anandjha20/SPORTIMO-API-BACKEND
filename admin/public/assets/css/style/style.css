@@ -75167,3 +75167,8 @@ color : white !important;
     border-radius: 5px !important;
     background: #e8645a !important;
 }
+
+.apexcharts-legend-text
+{
+color : white  !important;
+}

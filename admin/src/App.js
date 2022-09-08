@@ -32,7 +32,7 @@ import TeamsPreference from "./PreferenceMaster/TeamsPreference";
 import PlayersPreference from "./PreferenceMaster/PlayersPreference";
 import IntroSliderImg from "./SponsorshipManagement/IntroSliderImg";
 import IntroSliderDetails from "./SponsorshipManagement/IntroSliderDetails";
-
+import AllListNotification from "./NotificationManagement/AllListNotification";
 
 function App() {
   return (
@@ -85,6 +85,9 @@ function App() {
 
         {/*CreateTipsTricks */} 
         <Route path="/tips" element={ <CreateTipsTricks /> } />
+
+        {/*Notification Management*/} 
+        <Route path="/notificaiton" element={ <AllListNotification /> } />
 
         {/*ContentManagement */} 
         <Route path="/content" element={ <ContentList /> } />
