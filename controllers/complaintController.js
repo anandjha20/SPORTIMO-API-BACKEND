@@ -5,7 +5,7 @@ const { rows_count,Email,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty }
 const  {MyBasePath} = require("../myModel/image_helper");
       
 
-const { poll_percent,all_list_come} = require('../myModel/helper_fun');
+const { poll_percent,all_list_come,sendNotificationAdd} = require('../myModel/helper_fun');
    
   
   
@@ -338,6 +338,18 @@ class ComplaintController{
                  
                  let response  =   await add.save();
                  if(response){
+                          
+                        let type_status = 1; 
+                        let title = `You have a new message from admin  ` ;  
+                        let msg = `You have a new message from admin Click here to view.`; 
+                      
+                       let module_type = "complaint";
+                       let module_id  = response._id;
+                        let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id});
+                              
+
+
+
                              return res.status(200).send({"status":true,"msg":'Complaint cht added successfully', "body":response}) ;          
                      }else{
                              return res.status(200).send({"status":false,"msg":'Complaint chat not add'}) ;    
@@ -375,14 +387,25 @@ class ComplaintController{
                 let  id = req.params.id;  let id_len = (id || '').length;
                 
             //////////////////////////////////////////
-            user_complaint_tbl.findOneAndUpdate({_id: id},{$set : {admin_status:true}},{new: true}, (err, updatedUser) => {
+     user_complaint_tbl.findOneAndUpdate({_id:id},{$set : {admin_status:true}},{new: true},(err, updatedUser) => {
             if(err) {  console.log(err);
                 return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
-            }
-            
-            return res.status(200).json({  
-                "status":true,"msg": "Complaint marked as closed successfully." , "body":updatedUser
-            });
+                }
+
+            if(!isEmpty(updatedUser)){
+
+                let type_status = 1; 
+                let title = `complaint marked closed by admin ` ;  
+                let msg = `complaint marked closed by admin Click here to view.`; 
+                let module_type = "complaint";
+                let module_id  = updatedUser._id;
+                let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id});
+                
+             return res.status(200).json({ "status":true,"msg": "Complaint marked as closed successfully." ,
+                                             "body":updatedUser });
+
+        }else{ return res.status(200).json({  "status":false,"msg": "Invalid Id " });
+                }
         });    
     
             

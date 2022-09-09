@@ -1,4 +1,4 @@
-  const {isEmpty }  = require("./common_modal");   
+  const {isEmpty,getcurntDate }  = require("./common_modal");   
 
     const user_tbl = require('../models/user');    
     const admin_tbl = require('../models/admin');    
@@ -11,7 +11,7 @@
     const country_tbl = require('../models/country'); 
     const default_massages_tbl = require('../models/default_massages'); 
     const notification_tbl = require('../models/notification_tbl'); 
-    
+     
     
     const mongoose = require('mongoose');
 
@@ -66,15 +66,31 @@ const autoincremental  = async(seq_id,mymodals) =>{
         } catch (error) {   console.log('try error====   ',error); return false; }
 }
 
-const sendNotificationAdd = (title,msg,type_status,module_type,module_id,category_type)=>{
+const sendNotificationAdd = (my_obj )=>{
                 try {
-                       let addData =  { title:title,message:msg,type_status:type_status };
+                       // console.log("fun call ==  ",my_obj);  
+                       // return false;        
+                     let title = my_obj.title ;  
+                     let msg = my_obj.msg ;  
+                     let type_status = my_obj.type_status ;  
+                     let category_type = my_obj.category_type ;  
+                     let module_id = my_obj.module_id ;  
+                     let module_type = my_obj.module_type ;
+                     
+                     
+
+                       let m_id =  String(module_id);
+                       console.log("sendNotificationAdd == ", module_id);
+                   // let date = getcurntDate(); 
+                       let addData =  {title:title,message:msg,type_status:type_status };
                        
                        if(! isEmpty(category_type)){addData.category_type = category_type ; }
-                       if(! isEmpty(module_id)){addData.module_id = module_id.toString(); }
+                       if(! isEmpty(m_id)){addData.module_id = m_id  }
                        if(! isEmpty(module_type)){addData.module_type = module_type ; }
-                       
-
+                     
+                       if(addData.module_id == 'undefined' ){ addData.module_id = '' }
+                       console.log("sendData == ", addData);
+                          
                         let add = new notification_tbl(addData);
                             add.save((err,data)=>{
                                 if(err){  console.log('try error====   ',err); return false; }else{
@@ -83,7 +99,7 @@ const sendNotificationAdd = (title,msg,type_status,module_type,module_id,categor
                             });   
                     } catch (error){ console.log('some error====',error); return false; }
 
-        }
-                
+        }    
+                    
 
 module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd }

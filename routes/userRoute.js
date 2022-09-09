@@ -50,7 +50,7 @@ const user_img =  img_upload('./assets/user_img','user_image');
           router.post('/verify_nickName',UserController.verify_nickName);
           router.post('/user_profile_update',user_img , UserController.user_profile_update);
 
-          router.post('/block_user_add',user_token_check,UserController.block_user_add);
+          router.post('/block_user_add',user_token_check,UserController.block_user_add);  
 
           router.post('/user_profile_view',UserController.user_profile_view);
           

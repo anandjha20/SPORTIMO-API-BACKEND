@@ -99,10 +99,8 @@ class PollController {
  
      static add_poll = async(req,res)=>{
 
-                try {
-
-                 
-                    let user_data = req.body;
+         try {   
+               let user_data = req.body;
                     console.log(  'server get value == ',user_data);
                   
                   let match_len = (user_data.match || '').length;
@@ -111,7 +109,7 @@ class PollController {
 
            }   
            
-           
+             
           let mydate = getcurntDate();
 
                     let add = new poll_tbl({
@@ -149,25 +147,22 @@ class PollController {
 
                     });
                   
-                       add.save((err, data) => {
+                          add.save((err, data) => {
                                 if (err) {     console.log(err);
                                   return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
                               }else if(! isEmpty(data)) {
                                     
                                 if(user_data.noti_status == 1 || user_data.noti_in_App_status == 1 ){
-                                  let mm_type =  1 ; 
+                                  let type_status =  1 ; 
                                       let title = `New Poll has been publihed for match: ${ user_data.match} ` ;  
-                                  let msgs = `New Poll has been publihed for match: ${ user_data.match} Click here to participate.`; 
+                                  let msg = `New Poll has been publihed for match: ${ user_data.match} Click here to participate.`; 
                                   let module_id = data._id;
                                   let module_type = 'polls';
                                   let category_type = 'results';
 
-                                  let demo =  sendNotificationAdd(title,msgs,mm_type,module_type,module_id,category_type );
+                                  let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,category_type} );
                       }
-            
-
-
-                                 return res.status(200).send({"status":true,"msg":'Poll Created Successfully' , "body":data  }) ;            
+                              return res.status(200).send({"status":true,"msg":'Poll Created Successfully' , "body":data  }) ;            
                             }else{
                                   return res.status(200).send({"status":false,"msg":'something went wrong please try again' , "body":''  }) ;            
                        
@@ -467,7 +462,7 @@ static my_polls_old = async(req,res)=>{
                       details: err
                   });
               }
-              
+                  
             }
              
  static poll_result_disclosed = async(req,res)=>{
@@ -483,11 +478,14 @@ static my_polls_old = async(req,res)=>{
             return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
           }else if(!isEmpty(updatedUser)){
                       
-                     let mm_type =  (user_data.noti_status == 1)? 1 : 0 ; 
+                     let type_status =  (updatedUser.noti_status == 1)? 1 : 0 ; 
                      let title = `${updatedUser.match} Poll Result has been disclosed ` ;  
-                     let msgs = `${updatedUser.match} Poll Result has been disclosed  Click here to view.`; 
-                     let demo =  sendNotificationAdd(title,msgs,mm_type);
-                     
+                     let msg = `${updatedUser.match} Poll Result has been disclosed  Click here to view.`; 
+                     let category_type = 'results';
+                    let module_type = "polls";
+                    let module_id  = updatedUser._id;
+                     let demo =  sendNotificationAdd({title,msg,type_status,category_type,module_type,module_id});
+                           
                     return res.status(200).send({"status":true,"msg":'Poll Result Disclosed Successfully' , "body":''  }) ;   
       
               }else{  return res.status(200).send({"status":false,"msg":'Invalid poll Id ' , "body": ''}) ;   

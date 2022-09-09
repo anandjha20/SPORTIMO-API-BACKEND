@@ -36,7 +36,7 @@ const token_check =  require('../middleware/token_check');
   let MasterController = require('../controllers/MasterController');
   let IntroSliderController = require('../controllers/IntroSliderController');
   let NotificationController = require('../controllers/NotificationController');
-      
+  let ReportReasonController = require('../controllers/ReportReasonController');
   // admin login Routes  
   router.post('/admin_login/',AdminController.admin_login);
  
@@ -150,6 +150,15 @@ const token_check =  require('../middleware/token_check');
   router.delete('/introSlider_delete/:id',IntroSliderController.introSlider_delete);       
 
 // get notification list  
-router.post('/notification_list/:id?',NotificationController.notification_list); 
+router.post('/notification_list/:id?',NotificationController.notification_list_admin); 
 router.delete('/notification_delete/:id',NotificationController.notification_delete); 
-module.exports = router;  
+router.post('/addNotification',NotificationController.addNotification); 
+
+
+// ReportReason route  
+ router.post('/report_reason_add',ReportReasonController.report_reason_add); 
+router.post('/report_reason_get/:id?',ReportReasonController.report_reason_get); 
+router.put('/report_reason_update/:id',ReportReasonController.report_reason_update); 
+router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_delete); 
+
+module.exports = router;     
