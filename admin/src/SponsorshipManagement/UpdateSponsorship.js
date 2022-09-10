@@ -12,14 +12,13 @@ import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
 import SelectTageting from "./Components/SelectTageting";
 import { useNavigate } from 'react-router-dom';
-
+import { useParams } from "react-router-dom";
 import axios from "axios";
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-export default function AddSponsorship() {
+export default function UpdateSponsorship() {
   
 
   const navigate = useNavigate();
@@ -29,12 +28,11 @@ export default function AddSponsorship() {
       document.body.className = "main-body leftmenu";
     }
   }, []);
-  const [alignment, setAlignment] = React.useState("banner");
-  const [alignmentSkip, setAlignmentSkip] = React.useState("skip");
+  const [alignment, setAlignment] = React.useState('');
+  const [alignmentSkip, setAlignmentSkip] = React.useState('skip');
   const [skip_add, setSkip_add] = React.useState("1");
   const [view_type, setView_type] = React.useState("banner");
-
-
+  const [imgpath, setImgPath] = React.useState('');
 
 
   const handleChangeToggle = (event) => {
@@ -83,6 +81,7 @@ export default function AddSponsorship() {
 
       Formvlaues.skip_add = skip_add;
       Formvlaues.view_type = view_type;
+      // Formvlaues.image = imgpath;
 
       let dataToSend2 = new FormData();
       dataToSend2.append('Fdate', Formvlaues.Fdate);
@@ -96,25 +95,19 @@ export default function AddSponsorship() {
       dataToSend2.append('sports', Formvlaues.sports);
       dataToSend2.append('team', Formvlaues.team);
       dataToSend2.append('view_type', Formvlaues.view_type);
-
-
       console.log("new values == ", dataToSend2);
-
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
       let options1 = ({ headers: header });
 
-      // let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
-
-      let response = await axios.post('/web_api/add_sponsor',dataToSend2, options1);
-
+      let response = await axios.put(`/web_api/update_sponsor/${id}`,dataToSend2, options1);
       if (response.status) {
 
         let data = response.data;
-
         if (data.status) {
-          navigate(`/sponsorship`);
+          //navigate(`/sponsorship`);
           toast.success(data.msg);
+          SponsorshipDetail();
         } else {
           toast.error('something went wrong please try again');
         }
@@ -130,6 +123,50 @@ export default function AddSponsorship() {
   }
 
 
+  const { id } = useParams();
+  const [datadetail, setDatadetail] = useState('')
+  const [formDate, setFromdate] = useState('')
+  const [toDate, setToDate] = useState('')
+  const [dataImg, setDataImg] = useState('')
+
+
+  const SponsorshipDetail = async () => {
+    await axios.get(`/web_api/sponsor_detail/${id}`)
+        .then(res => {
+            const dataImg = res.data.body[0];
+            const imgpath = dataImg.img;
+            setDataImg(dataImg);
+            setImgPath(imgpath);
+            console.log(imgpath);
+            const datadetail = res.data.body[0].allData;
+            setDatadetail(datadetail);
+            const viewType = datadetail.view_type;
+            const match = datadetail.match;
+            setMatch(match);
+            setAlignment(viewType);
+            console.log(datadetail);
+            const formDate = datadetail.Fdate.substring(0, 10);
+            const toDate = datadetail.Ldate.substring(0, 10);
+            if(datadetail.skip_add == true)
+            {
+              const togglevalue = "skip";
+              setAlignmentSkip(togglevalue);
+            }
+            if(datadetail.skip_add == false)
+            {
+              const togglevalue = "Noskip";
+              setAlignmentSkip(togglevalue);
+            }
+            setFromdate(formDate);
+            setToDate(toDate);
+            console.log(formDate, toDate)
+           
+        })
+}
+
+  useEffect(() => {
+      SponsorshipDetail();
+  }, []);
 
 
   return (
@@ -142,7 +179,7 @@ export default function AddSponsorship() {
           <div className="inner-body">
             <div className="page-header">
               <div>
-                <h2 className="main-content-title tx-24 mg-b-5">Add Sponsorship</h2>
+                <h2 className="main-content-title tx-24 mg-b-5">Update Sponsorship</h2>
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <Link to="/home">Home</Link>
@@ -168,11 +205,8 @@ export default function AddSponsorship() {
                     <div className="row justify-content-center">
                       <div className="col-lg-8">
 
-                        <form id="mdF" onSubmit={(e) => saveFormData(e)} enctype="multipart/form-data" >
+                        <form id="mdF" onSubmit={(e) => saveFormData(e)} encType="multipart/form-data" >
                           <div className="row">
-
-
-
                             <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Match/league</label>
                               <FormControl fullWidth>
@@ -187,7 +221,6 @@ export default function AddSponsorship() {
                                 {/* <FormHelperText>Without label</FormHelperText> */}
                               </FormControl>
                             </div>
-
                             <div className="col-lg-12">
                               <div className="row  mb-2 justify-space-between">
 
@@ -199,7 +232,6 @@ export default function AddSponsorship() {
                                     <ToggleButton onClick={(e) => setSkip_add(0)} value="Noskip">No </ToggleButton>
                                   </ToggleButtonGroup>
                                 </div>
-
                                 <div className="col-lg-6 mb-3">
                                   <label className="title-col mb-3">SPONSORSHIP TYPE</label>
                                   <ToggleButtonGroup
@@ -210,8 +242,6 @@ export default function AddSponsorship() {
                                 </div>
                               </div>
                             </div>
-
-
                             {/* <div className="col-lg-9 mb-2">
                               <label className="title-col">Sponsorship Type</label>
                               <FormControl className="w-100">
@@ -229,16 +259,20 @@ export default function AddSponsorship() {
                             </div> */}
 
                             <div className="col-lg-12 mb-4">
+                              
+                              <div className="imagebox">
+                               {dataImg.img !== '' ? <img src=  {dataImg.img || ''}  alt="banner image" /> : <><img src='/assets/images/no-image.png' /></>}
+                              </div>
+
                               <label className="title-col">File Upload</label>
-                              <input type="file" name='image' className="form-control file-input" />
+                              <input type="file" name="image" className="form-control file-input"/>
                             </div>
-
-
                             <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Campaign  Date range</label>
                               <div className="row  mb-0">
                                 <div className="col-lg-6">
-                                  <TextField id="sdate" name='Fdate' label="Start Date" fullWidth type="date"
+                                  <label className="label-date">Start Date</label>
+                                  <input className="form-control"  defaultValue={formDate} id="sdate" name='Fdate'  type="date"
                                     InputLabelProps={{
                                       shrink: true,
                                     }}
@@ -246,7 +280,8 @@ export default function AddSponsorship() {
 
                                 </div>
                                 <div className="col-lg-6">
-                                  <TextField id="edate" name='Ldate' label="End Date" fullWidth type="date"
+                                <label className="label-date">End Date</label>
+                                  <input className="form-control" id="edate" defaultValue={toDate} name='Ldate'  label="End Date" type="date"
                                     InputLabelProps={{ shrink: true, }} />
 
                                 </div>
@@ -256,16 +291,13 @@ export default function AddSponsorship() {
                             <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Sponsorship Targeting</label>
                               <div className="row">
-
                                 <SelectTageting />
-
-
                               </div>
                             </div>
 
 
                             <div className="col-lg-12 text-end">
-                              <Button type='submit' variant="contained" className="mr-3 btn-pd">Submit</Button>
+                              <Button type='submit' variant="contained" className="mr-3 btn-pd">Update</Button>
                               <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
                             </div>
 

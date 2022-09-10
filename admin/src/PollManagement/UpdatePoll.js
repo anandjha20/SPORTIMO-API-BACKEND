@@ -561,7 +561,10 @@ const secondOptions = [
   const [datadetail, setDataDetail] = useState('')
   const [polltypeSet, setPollyupe] = useState('')
   const [sportsOpt, setSportsOpt] = useState('')
+   
 
+
+  
 const polldetail = async () =>
       {
           const sendatds = {data1 : "data1"}
@@ -576,10 +579,13 @@ const polldetail = async () =>
             const second = res.data.body[0].time_duration.slice(-2);
 
             const sportsArrayOp = datadetail.sports;
-         
-          
-            setDataDetail(datadetail);
+            const sportsOpt = sportsArrayOp.split(',');
+
             setSportsOpt(sportsOpt);
+
+            console.log(sportsOpt);
+
+            setDataDetail(datadetail);
             setPollyupe(polltypeSet);
             
             setHminute(hminute);
@@ -588,8 +594,7 @@ const polldetail = async () =>
             setSecond(second);
             
 
-            // console.log(Object.JSON.parse(sportsArrayOp))
-            console.log("sprorts  ..." + sportsArrayOp.split(','))
+            //console.log(Object.JSON.parse(sportsArrayOp))
             // console.log(mtime)
             // console.log(stime)
             // console.log(minute)
@@ -834,7 +839,11 @@ const polldetail = async () =>
                                 <span className='react-select-title'>Select Sports</span>
                                 <Select isMulti
                                     closeMenuOnSelect={false}
-                                    defaultValue={{ label : datadetail.sports, value: datadetail.sports }}
+                                    // defaultValue = { sportsOpt.map((item) => {
+                                    //   return (
+                                    //    { value: sportsOpt, label: sportsOpt });
+                                    //   }) }
+                                    // defaultValue={userTechsForSelect[0]}
                                     name="sports"
                                     options={sportOptions}
                                     onChange={handleChangeSports}
@@ -842,6 +851,7 @@ const polldetail = async () =>
                                     classNamePrefix="select" />
                             </div>
 
+                       
                             <div className="col-lg-6 reletive mb-4">
                                 <span className='react-select-title'>Select Leagues</span>
                                 <Select isMulti

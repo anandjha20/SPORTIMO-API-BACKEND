@@ -19,9 +19,17 @@ import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-
+import InputEmoji from 'react-input-emoji'
 
 export default function CreatePoll(props) {
+
+///////////////emoji input value get
+  const [answerOne, setAnswerOne] = useState('');
+  const [answerTwo, setAnswerTwo] = useState('');
+  const [answerThree, setAnswerThree] = useState('');
+  const [answerFour, setAnswerFour] = useState('');
+  const [answerFive, setAnswerFive] = useState('');
+/////////////// emoji input value get
 
   const navigate = useNavigate();
   const [showhide, setShowhide] = useState('Free');
@@ -36,7 +44,7 @@ export default function CreatePoll(props) {
   // const [f_type, setF_type] = React.useState('Free');
   // const handleChangef_type = (event) => { setF_type(event.target.value); }
 
-  console.log('fee_type === ', showhide);
+  // console.log('fee_type === ', showhide);
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -51,14 +59,14 @@ export default function CreatePoll(props) {
     setMatch(event.target.value);
   };
 
- 
+
   /// poll type select value get section 
   const [p_type, setP_type] = React.useState('Public Poll');
   const handleChangep_type = (event) => { setP_type(event.target.value); }
 
   /// Fess type select value get section 
   const [f_type, setF_type] = React.useState('Free');
- const handleChangef_type = (event) => { setF_type(event.target.value); }
+  const handleChangef_type = (event) => { setF_type(event.target.value); }
 
 
 
@@ -103,7 +111,7 @@ export default function CreatePoll(props) {
   };
 
 
-  console.log(p_type);
+  // console.log(p_type);
   const MenuProps = {
     PaperProps: {
       style: {
@@ -154,392 +162,395 @@ export default function CreatePoll(props) {
 
 
   }
-  
-
- ////////////////////multiple dropdown //////////////////////////////
- const [sport_lists, setSport_lists] = React.useState([]);
- const [league_lists, setLeague_lists] = React.useState([]);
- const [team_lists, setTeam_lists] = React.useState([]);
 
 
- const [player_lists, setPlayer_lists] = React.useState([]);
+  ////////////////////multiple dropdown //////////////////////////////
+  const [sport_lists, setSport_lists] = React.useState([]);
+  const [league_lists, setLeague_lists] = React.useState([]);
+  const [team_lists, setTeam_lists] = React.useState([]);
 
- const get_data = async(url,setval) =>{
-     try {
-       let sendData = {}; 
-       let token = localStorage.getItem("token");
-       let header = ({ 'token': `${token}` });
-       let options1 = ({ headers: header });
-     //   let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
-       let response = await axios.get( url, options1, sendData );
- 
-       if (response.status) {
- 
-         let data = response.data;
- 
-         if (data.status) {
-             setval(data.body);
+
+  const [player_lists, setPlayer_lists] = React.useState([]);
+
+  const get_data = async (url, setval) => {
+    try {
+      let sendData = {};
+      let token = localStorage.getItem("token");
+      let header = ({ 'token': `${token}` });
+      let options1 = ({ headers: header });
+      //   let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
+      let response = await axios.get(url, options1, sendData);
+
+      if (response.status) {
+
+        let data = response.data;
+
+        if (data.status) {
+          setval(data.body);
           // toast.success(data.msg);
-         } else {
-           toast.error('something went wrong please try again');
-         }
-       }
-       else {
-         toast.error('something went wrong please try again..');
-       }
- 
-     } catch (err) { console.error(err); toast.error('some errror'); return false; }
- 
- }
-   useEffect(() => {
-     get_data('/web_api/sport_list',setSport_lists);
-     get_data('/web_api/league_list',setLeague_lists);
-     get_data('/web_api/team_list',setTeam_lists);
-     get_data('/web_api/player_list',setPlayer_lists);
-     document.body.classList.add('bg-salmon');
-   }, []);
- 
- const sportOptions = (sport_lists.length >0) ? sport_lists.map((item)=>{
-     return  { value: item._id, label: item.name };
- }) :[];
- 
- const leagueOptions = (league_lists.length >0) ? league_lists.map((item)=>{
-     return  { value: item._id, label: item.league_name };
- }) :[];
- 
- const teamOptions = (team_lists.length >0) ? team_lists.map((item)=>{
-     return  { value: item._id, label: item.team_name };
- }) :[];
- 
- const playersOptions = (player_lists.length >0) ? player_lists.map((item)=>{
-     return  { value: item._id, label: item.team_name };
- }) :[];
- 
- const selectChange = (e,type)=>{
-     console.log(e.currentTarget);
-     alert(" ==jk==  "+type);
- }
+        } else {
+          toast.error('something went wrong please try again');
+        }
+      }
+      else {
+        toast.error('something went wrong please try again..');
+      }
 
- ///////select Player ///////////
- const [plrArray, setselectedOptions] = React.useState()
- const handleChangePlayer = (selectedOptions) => {
-   const plrArray = [];
-   selectedOptions.map(item =>  plrArray.push(item.value)
-  );
-  setselectedOptions(plrArray.join(','));
-}
+    } catch (err) { console.error(err); toast.error('some errror'); return false; }
 
- ///////select Teams ///////////
- const [teamArray, setteamOptionsarry] = React.useState()
- const handleChangeTeam = (teamOptionsarry) => {
-   const teamArray =[];
-   teamOptionsarry.map(item =>  teamArray.push(item.value)
-  );
-  setteamOptionsarry(teamArray.join(','));
-}
+  }
+  useEffect(() => {
+    get_data('/web_api/sport_list', setSport_lists);
+    get_data('/web_api/league_list', setLeague_lists);
+    get_data('/web_api/team_list', setTeam_lists);
+    get_data('/web_api/player_list', setPlayer_lists);
+    document.body.classList.add('bg-salmon');
+  }, []);
 
- ///////select Leagues ///////////
- const [leaguesArray, setleaguesOptionsarry] = React.useState()
- const handleChangeLeagues = (leaguesOptionsarry) => {
-   const leaguesArray =[];
-   leaguesOptionsarry.map(item =>  leaguesArray.push(item.value)
-  );
-  setleaguesOptionsarry(leaguesArray.join(','));
-}
+  const sportOptions = (sport_lists.length > 0) ? sport_lists.map((item) => {
+    return { value: item._id, label: item.name };
+  }) : [];
 
- ///////select Sports ///////////
- const [sportsArray, setsportsOptionsarry] = React.useState()
- const handleChangeSports = (SportsOptionsarry) => {
-   const sportsArray = [];
-   SportsOptionsarry.map(item =>  sportsArray.push(item.value)
-  );
-  setsportsOptionsarry(sportsArray.join(','));
-}
-
-
-const [minute, setMinute] = React.useState('');
-const handleChangeMinute = (event) => {
-  const minute = event.value
-  setMinute(minute)
-}
-const [second, setSecond] = React.useState('');
-const handleChangeSecond = (event) => {
-  const second = event.value
-  setSecond(second)
-}
-const [hminute, setHminute] = React.useState('');
-const handleChangeHminute = (event) => {
-  const hminute = event.value
-  setHminute(hminute)
-}
-const [hsecond, setHSecond] = React.useState('');
-const handleChangeHSecond = (event) => {
-  const hsecond = event.value
-  setHSecond(hsecond)
-}
-
-const rewardsOptions = [
-          {value : 'coins' , label : 'Coins'},
-          {value : 'Diamonds' , label : 'Diamonds'},
-      ]
-      
-const matchOptions = [
-                {value : 'Bali' , label : 'Bali Utd vs Rans Nusantara'},
-                {value : 'Persija' , label : 'Persija vs Persita'},
-                {value : 'Dewa' , label : 'Dewa United vs Arema'},
-                {value : 'demo' , label : 'Demo'},
-      ]
-      
-const hminuteOptions = [
-                {value : '01' , label : '01'},
-                {value : '02' , label : '02'},
-                {value : '03' , label : '03'},
-                {value : '04' , label : '04'},
-                {value : '05' , label : '05'},
-                {value : '06' , label : '06'},
-                {value : '07' , label : '07'},
-                {value : '08' , label : '08'},
-                {value : '09' , label : '09'},
-                {value : '10' , label : '10'},
-                {value : '12' , label : '12'},
-                {value : '13' , label : '13'},
-                {value : '14' , label : '14'},
-                {value : '15' , label : '15'},
-                {value : '16' , label : '16'},
-                {value : '17' , label : '17'},
-                {value : '18' , label : '18'},
-                {value : '19' , label : '19'},
-                {value : '20' , label : '20'},
-                {value : '21' , label : '21'},
-                {value : '22' , label : '22'},
-                {value : '23' , label : '23'},
-                {value : '24' , label : '24'},
-                {value : '25' , label : '25'},
-                {value : '26' , label : '26'},
-                {value : '27' , label : '27'},
-                {value : '28' , label : '28'},
-                {value : '29' , label : '29'},
-                {value : '30' , label : '30'},
-                {value : '31' , label : '31'},
-                {value : '32' , label : '32'},
-                {value : '33' , label : '33'},
-                {value : '34' , label : '34'},
-                {value : '35' , label : '35'},
-                {value : '36' , label : '36'},
-                {value : '37' , label : '37'},
-                {value : '38' , label : '38'},
-                {value : '39' , label : '39'},
-                {value : '10' , label : '40'},
-                {value : '41' , label : '41'},
-                {value : '42' , label : '42'},
-                {value : '43' , label : '43'},
-                {value : '44' , label : '44'},
-                {value : '45' , label : '45'},
-                {value : '46' , label : '46'},
-                {value : '47' , label : '47'},
-                {value : '48' , label : '48'},
-                {value : '49' , label : '49'},
-                {value : '51' , label : '50'},
-                {value : '52' , label : '51'},
-                {value : '53' , label : '52'},
-                {value : '54' , label : '53'},
-                {value : '55' , label : '54'},
-                {value : '55' , label : '55'},
-                {value : '55' , label : '56'},
-                {value : '57' , label : '57'},
-                {value : '58' , label : '58'},
-                {value : '59' , label : '59'},
-                {value : '00' , label : '00'}, 
-      ]
+  const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+    return { value: item._id, label: item.league_name };
   
-const hsecondOptions = [
-                {value : '01' , label : '01'},
-                {value : '02' , label : '02'},
-                {value : '03' , label : '03'},
-                {value : '04' , label : '04'},
-                {value : '05' , label : '05'},
-                {value : '06' , label : '06'},
-                {value : '07' , label : '07'},
-                {value : '08' , label : '08'},
-                {value : '09' , label : '09'},
-                {value : '10' , label : '10'},
-                {value : '11' , label : '11'},
-                {value : '12' , label : '12'},
-                {value : '13' , label : '13'},
-                {value : '14' , label : '14'},
-                {value : '15' , label : '15'},
-                {value : '16' , label : '16'},
-                {value : '17' , label : '17'},
-                {value : '18' , label : '18'},
-                {value : '19' , label : '19'},
-                {value : '20' , label : '20'},
-                {value : '21' , label : '21'},
-                {value : '22' , label : '22'},
-                {value : '23' , label : '23'},
-                {value : '24' , label : '24'},
-                {value : '25' , label : '25'},
-                {value : '26' , label : '26'},
-                {value : '27' , label : '27'},
-                {value : '28' , label : '28'},
-                {value : '29' , label : '29'},
-                {value : '30' , label : '30'},
-                {value : '31' , label : '31'},
-                {value : '32' , label : '32'},
-                {value : '33' , label : '33'},
-                {value : '34' , label : '34'},
-                {value : '35' , label : '35'},
-                {value : '36' , label : '36'},
-                {value : '37' , label : '37'},
-                {value : '38' , label : '38'},
-                {value : '39' , label : '39'},
-                {value : '10' , label : '40'},
-                {value : '41' , label : '41'},
-                {value : '42' , label : '42'},
-                {value : '43' , label : '43'},
-                {value : '44' , label : '44'},
-                {value : '45' , label : '45'},
-                {value : '46' , label : '46'},
-                {value : '47' , label : '47'},
-                {value : '48' , label : '48'},
-                {value : '49' , label : '49'},
-                {value : '51' , label : '50'},
-                {value : '52' , label : '51'},
-                {value : '53' , label : '52'},
-                {value : '54' , label : '53'},
-                {value : '55' , label : '54'},
-                {value : '55' , label : '55'},
-                {value : '55' , label : '56'},
-                {value : '57' , label : '57'},
-                {value : '58' , label : '58'},
-                {value : '59' , label : '59'},
-                {value : '00' , label : '00'}, 
-      ]
+  }) : [];
 
-const minuteOptions = [
-                {value : '01' , label : '01'},
-                {value : '02' , label : '02'},
-                {value : '03' , label : '03'},
-                {value : '04' , label : '04'},
-                {value : '05' , label : '05'},
-                {value : '06' , label : '06'},
-                {value : '07' , label : '07'},
-                {value : '08' , label : '08'},
-                {value : '09' , label : '09'},
-                {value : '10' , label : '10'},
-                {value : '11' , label : '11'},
-                {value : '12' , label : '12'},
-                {value : '13' , label : '13'},
-                {value : '14' , label : '14'},
-                {value : '15' , label : '15'},
-                {value : '16' , label : '16'},
-                {value : '17' , label : '17'},
-                {value : '18' , label : '18'},
-                {value : '19' , label : '19'},
-                {value : '20' , label : '20'},
-                {value : '21' , label : '21'},
-                {value : '22' , label : '22'},
-                {value : '23' , label : '23'},
-                {value : '24' , label : '24'},
-                {value : '25' , label : '25'},
-                {value : '26' , label : '26'},
-                {value : '27' , label : '27'},
-                {value : '28' , label : '28'},
-                {value : '29' , label : '29'},
-                {value : '30' , label : '30'},
-                {value : '31' , label : '31'},
-                {value : '32' , label : '32'},
-                {value : '33' , label : '33'},
-                {value : '34' , label : '34'},
-                {value : '35' , label : '35'},
-                {value : '36' , label : '36'},
-                {value : '37' , label : '37'},
-                {value : '38' , label : '38'},
-                {value : '39' , label : '39'},
-                {value : '10' , label : '40'},
-                {value : '41' , label : '41'},
-                {value : '42' , label : '42'},
-                {value : '43' , label : '43'},
-                {value : '44' , label : '44'},
-                {value : '45' , label : '45'},
-                {value : '46' , label : '46'},
-                {value : '47' , label : '47'},
-                {value : '48' , label : '48'},
-                {value : '49' , label : '49'},
-                {value : '51' , label : '50'},
-                {value : '52' , label : '51'},
-                {value : '53' , label : '52'},
-                {value : '54' , label : '53'},
-                {value : '55' , label : '54'},
-                {value : '55' , label : '55'},
-                {value : '55' , label : '56'},
-                {value : '57' , label : '57'},
-                {value : '58' , label : '58'},
-                {value : '59' , label : '59'},
-                {value : '00' , label : '00'}, 
-      ]
-const secondOptions = [
-                {value : '01' , label : '01'},
-                {value : '02' , label : '02'},
-                {value : '03' , label : '03'},
-                {value : '04' , label : '04'},
-                {value : '05' , label : '05'},
-                {value : '06' , label : '06'},
-                {value : '07' , label : '07'},
-                {value : '08' , label : '08'},
-                {value : '09' , label : '09'},
-                {value : '10' , label : '10'},
-                {value : '11' , label : '11'},
-                {value : '12' , label : '12'},
-                {value : '13' , label : '13'},
-                {value : '14' , label : '14'},
-                {value : '15' , label : '15'},
-                {value : '16' , label : '16'},
-                {value : '17' , label : '17'},
-                {value : '18' , label : '18'},
-                {value : '19' , label : '19'},
-                {value : '20' , label : '20'},
-                {value : '21' , label : '21'},
-                {value : '22' , label : '22'},
-                {value : '23' , label : '23'},
-                {value : '24' , label : '24'},
-                {value : '25' , label : '25'},
-                {value : '26' , label : '26'},
-                {value : '27' , label : '27'},
-                {value : '28' , label : '28'},
-                {value : '29' , label : '29'},
-                {value : '30' , label : '30'},
-                {value : '31' , label : '31'},
-                {value : '32' , label : '32'},
-                {value : '33' , label : '33'},
-                {value : '34' , label : '34'},
-                {value : '35' , label : '35'},
-                {value : '36' , label : '36'},
-                {value : '37' , label : '37'},
-                {value : '38' , label : '38'},
-                {value : '39' , label : '39'},
-                {value : '10' , label : '40'},
-                {value : '41' , label : '41'},
-                {value : '42' , label : '42'},
-                {value : '43' , label : '43'},
-                {value : '44' , label : '44'},
-                {value : '45' , label : '45'},
-                {value : '46' , label : '46'},
-                {value : '47' , label : '47'},
-                {value : '48' , label : '48'},
-                {value : '49' , label : '49'},
-                {value : '51' , label : '50'},
-                {value : '52' , label : '51'},
-                {value : '53' , label : '52'},
-                {value : '54' , label : '53'},
-                {value : '55' , label : '54'},
-                {value : '55' , label : '55'},
-                {value : '55' , label : '56'},
-                {value : '57' , label : '57'},
-                {value : '58' , label : '58'},
-                {value : '59' , label : '59'},
-                {value : '00' , label : '00'}, 
-      ]
-      
+  const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
+    return { value: item._id, label: item.team_name };
+  }) : [];
+
+  const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
+    return { value: item._id, label: item.team_name };
+  }) : [];
+
+  const selectChange = (e, type) => {
+    console.log(e.currentTarget);
+    alert(" ==jk==  " + type);
+  }
+
+  ///////select Player ///////////
+  const [plrArray, setselectedOptions] = React.useState()
+  const handleChangePlayer = (selectedOptions) => {
+    const plrArray = [];
+    selectedOptions.map(item => plrArray.push(item.value)
+    );
+    setselectedOptions(plrArray.join(','));
+  }
+
+  ///////select Teams ///////////
+  const [teamArray, setteamOptionsarry] = React.useState()
+  const handleChangeTeam = (teamOptionsarry) => {
+    const teamArray = [];
+    teamOptionsarry.map(item => teamArray.push(item.value)
+    );
+    setteamOptionsarry(teamArray.join(','));
+  }
+
+  ///////select Leagues ///////////
+  const [leaguesArray, setleaguesOptionsarry] = React.useState()
+  const handleChangeLeagues = (leaguesOptionsarry) => {
+    const leaguesArray = [];
+    leaguesOptionsarry.map(item => leaguesArray.push(item.value)
+    );
+    setleaguesOptionsarry(leaguesArray.join(','));
+  }
+
+  ///////select Sports ///////////
+  const [sportsArray, setsportsOptionsarry] = React.useState()
+  const handleChangeSports = (SportsOptionsarry) => {
+    const sportsArray = [];
+    SportsOptionsarry.map(item => sportsArray.push(item.value, item.label)
+    );
+   
+    console.log(SportsOptionsarry);
+    setsportsOptionsarry(sportsArray.join(','));
+  }
+
+
+  const [minute, setMinute] = React.useState('');
+  const handleChangeMinute = (event) => {
+    const minute = event.value
+    setMinute(minute)
+  }
+  const [second, setSecond] = React.useState('');
+  const handleChangeSecond = (event) => {
+    const second = event.value
+    setSecond(second)
+  }
+  const [hminute, setHminute] = React.useState('');
+  const handleChangeHminute = (event) => {
+    const hminute = event.value
+    setHminute(hminute)
+  }
+  const [hsecond, setHSecond] = React.useState('');
+  const handleChangeHSecond = (event) => {
+    const hsecond = event.value
+    setHSecond(hsecond)
+  }
+
+  const rewardsOptions = [
+    { value: 'coins', label: 'Coins' },
+    { value: 'Diamonds', label: 'Diamonds' },
+  ]
+
+  const matchOptions = [
+    { value: 'Bali', label: 'Bali Utd vs Rans Nusantara' },
+    { value: 'Persija', label: 'Persija vs Persita' },
+    { value: 'Dewa', label: 'Dewa United vs Arema' },
+    { value: 'demo', label: 'Demo' },
+  ]
+
+  const hminuteOptions = [
+    { value: '01', label: '01' },
+    { value: '02', label: '02' },
+    { value: '03', label: '03' },
+    { value: '04', label: '04' },
+    { value: '05', label: '05' },
+    { value: '06', label: '06' },
+    { value: '07', label: '07' },
+    { value: '08', label: '08' },
+    { value: '09', label: '09' },
+    { value: '10', label: '10' },
+    { value: '12', label: '12' },
+    { value: '13', label: '13' },
+    { value: '14', label: '14' },
+    { value: '15', label: '15' },
+    { value: '16', label: '16' },
+    { value: '17', label: '17' },
+    { value: '18', label: '18' },
+    { value: '19', label: '19' },
+    { value: '20', label: '20' },
+    { value: '21', label: '21' },
+    { value: '22', label: '22' },
+    { value: '23', label: '23' },
+    { value: '24', label: '24' },
+    { value: '25', label: '25' },
+    { value: '26', label: '26' },
+    { value: '27', label: '27' },
+    { value: '28', label: '28' },
+    { value: '29', label: '29' },
+    { value: '30', label: '30' },
+    { value: '31', label: '31' },
+    { value: '32', label: '32' },
+    { value: '33', label: '33' },
+    { value: '34', label: '34' },
+    { value: '35', label: '35' },
+    { value: '36', label: '36' },
+    { value: '37', label: '37' },
+    { value: '38', label: '38' },
+    { value: '39', label: '39' },
+    { value: '10', label: '40' },
+    { value: '41', label: '41' },
+    { value: '42', label: '42' },
+    { value: '43', label: '43' },
+    { value: '44', label: '44' },
+    { value: '45', label: '45' },
+    { value: '46', label: '46' },
+    { value: '47', label: '47' },
+    { value: '48', label: '48' },
+    { value: '49', label: '49' },
+    { value: '51', label: '50' },
+    { value: '52', label: '51' },
+    { value: '53', label: '52' },
+    { value: '54', label: '53' },
+    { value: '55', label: '54' },
+    { value: '55', label: '55' },
+    { value: '55', label: '56' },
+    { value: '57', label: '57' },
+    { value: '58', label: '58' },
+    { value: '59', label: '59' },
+    { value: '00', label: '00' },
+  ]
+
+  const hsecondOptions = [
+    { value: '01', label: '01' },
+    { value: '02', label: '02' },
+    { value: '03', label: '03' },
+    { value: '04', label: '04' },
+    { value: '05', label: '05' },
+    { value: '06', label: '06' },
+    { value: '07', label: '07' },
+    { value: '08', label: '08' },
+    { value: '09', label: '09' },
+    { value: '10', label: '10' },
+    { value: '11', label: '11' },
+    { value: '12', label: '12' },
+    { value: '13', label: '13' },
+    { value: '14', label: '14' },
+    { value: '15', label: '15' },
+    { value: '16', label: '16' },
+    { value: '17', label: '17' },
+    { value: '18', label: '18' },
+    { value: '19', label: '19' },
+    { value: '20', label: '20' },
+    { value: '21', label: '21' },
+    { value: '22', label: '22' },
+    { value: '23', label: '23' },
+    { value: '24', label: '24' },
+    { value: '25', label: '25' },
+    { value: '26', label: '26' },
+    { value: '27', label: '27' },
+    { value: '28', label: '28' },
+    { value: '29', label: '29' },
+    { value: '30', label: '30' },
+    { value: '31', label: '31' },
+    { value: '32', label: '32' },
+    { value: '33', label: '33' },
+    { value: '34', label: '34' },
+    { value: '35', label: '35' },
+    { value: '36', label: '36' },
+    { value: '37', label: '37' },
+    { value: '38', label: '38' },
+    { value: '39', label: '39' },
+    { value: '10', label: '40' },
+    { value: '41', label: '41' },
+    { value: '42', label: '42' },
+    { value: '43', label: '43' },
+    { value: '44', label: '44' },
+    { value: '45', label: '45' },
+    { value: '46', label: '46' },
+    { value: '47', label: '47' },
+    { value: '48', label: '48' },
+    { value: '49', label: '49' },
+    { value: '51', label: '50' },
+    { value: '52', label: '51' },
+    { value: '53', label: '52' },
+    { value: '54', label: '53' },
+    { value: '55', label: '54' },
+    { value: '55', label: '55' },
+    { value: '55', label: '56' },
+    { value: '57', label: '57' },
+    { value: '58', label: '58' },
+    { value: '59', label: '59' },
+    { value: '00', label: '00' },
+  ]
+
+  const minuteOptions = [
+    { value: '01', label: '01' },
+    { value: '02', label: '02' },
+    { value: '03', label: '03' },
+    { value: '04', label: '04' },
+    { value: '05', label: '05' },
+    { value: '06', label: '06' },
+    { value: '07', label: '07' },
+    { value: '08', label: '08' },
+    { value: '09', label: '09' },
+    { value: '10', label: '10' },
+    { value: '11', label: '11' },
+    { value: '12', label: '12' },
+    { value: '13', label: '13' },
+    { value: '14', label: '14' },
+    { value: '15', label: '15' },
+    { value: '16', label: '16' },
+    { value: '17', label: '17' },
+    { value: '18', label: '18' },
+    { value: '19', label: '19' },
+    { value: '20', label: '20' },
+    { value: '21', label: '21' },
+    { value: '22', label: '22' },
+    { value: '23', label: '23' },
+    { value: '24', label: '24' },
+    { value: '25', label: '25' },
+    { value: '26', label: '26' },
+    { value: '27', label: '27' },
+    { value: '28', label: '28' },
+    { value: '29', label: '29' },
+    { value: '30', label: '30' },
+    { value: '31', label: '31' },
+    { value: '32', label: '32' },
+    { value: '33', label: '33' },
+    { value: '34', label: '34' },
+    { value: '35', label: '35' },
+    { value: '36', label: '36' },
+    { value: '37', label: '37' },
+    { value: '38', label: '38' },
+    { value: '39', label: '39' },
+    { value: '10', label: '40' },
+    { value: '41', label: '41' },
+    { value: '42', label: '42' },
+    { value: '43', label: '43' },
+    { value: '44', label: '44' },
+    { value: '45', label: '45' },
+    { value: '46', label: '46' },
+    { value: '47', label: '47' },
+    { value: '48', label: '48' },
+    { value: '49', label: '49' },
+    { value: '51', label: '50' },
+    { value: '52', label: '51' },
+    { value: '53', label: '52' },
+    { value: '54', label: '53' },
+    { value: '55', label: '54' },
+    { value: '55', label: '55' },
+    { value: '55', label: '56' },
+    { value: '57', label: '57' },
+    { value: '58', label: '58' },
+    { value: '59', label: '59' },
+    { value: '00', label: '00' },
+  ]
+  const secondOptions = [
+    { value: '01', label: '01' },
+    { value: '02', label: '02' },
+    { value: '03', label: '03' },
+    { value: '04', label: '04' },
+    { value: '05', label: '05' },
+    { value: '06', label: '06' },
+    { value: '07', label: '07' },
+    { value: '08', label: '08' },
+    { value: '09', label: '09' },
+    { value: '10', label: '10' },
+    { value: '11', label: '11' },
+    { value: '12', label: '12' },
+    { value: '13', label: '13' },
+    { value: '14', label: '14' },
+    { value: '15', label: '15' },
+    { value: '16', label: '16' },
+    { value: '17', label: '17' },
+    { value: '18', label: '18' },
+    { value: '19', label: '19' },
+    { value: '20', label: '20' },
+    { value: '21', label: '21' },
+    { value: '22', label: '22' },
+    { value: '23', label: '23' },
+    { value: '24', label: '24' },
+    { value: '25', label: '25' },
+    { value: '26', label: '26' },
+    { value: '27', label: '27' },
+    { value: '28', label: '28' },
+    { value: '29', label: '29' },
+    { value: '30', label: '30' },
+    { value: '31', label: '31' },
+    { value: '32', label: '32' },
+    { value: '33', label: '33' },
+    { value: '34', label: '34' },
+    { value: '35', label: '35' },
+    { value: '36', label: '36' },
+    { value: '37', label: '37' },
+    { value: '38', label: '38' },
+    { value: '39', label: '39' },
+    { value: '10', label: '40' },
+    { value: '41', label: '41' },
+    { value: '42', label: '42' },
+    { value: '43', label: '43' },
+    { value: '44', label: '44' },
+    { value: '45', label: '45' },
+    { value: '46', label: '46' },
+    { value: '47', label: '47' },
+    { value: '48', label: '48' },
+    { value: '49', label: '49' },
+    { value: '51', label: '50' },
+    { value: '52', label: '51' },
+    { value: '53', label: '52' },
+    { value: '54', label: '53' },
+    { value: '55', label: '54' },
+    { value: '55', label: '55' },
+    { value: '55', label: '56' },
+    { value: '57', label: '57' },
+    { value: '58', label: '58' },
+    { value: '59', label: '59' },
+    { value: '00', label: '00' },
+  ]
+
 
   return (
     <>
@@ -595,12 +606,11 @@ const secondOptions = [
                             </div>
 
                             <div className="col-lg-12 reletive mb-4">
-                                <span className='react-select-title'>Second</span>
-                                  <Select labelId="hminute" name="match" id="hminute" menuPortalTarget={document.body}
+                              <span className='react-select-title'>Match/League</span>
+                              <Select labelId="hminute" name="match" id="hminute" menuPortalTarget={document.body}
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={matchOptions} />
-                              </div>
+                            </div>
 
-                          
 
 
                             <div className="col-lg-12 mb-2">
@@ -655,16 +665,16 @@ const secondOptions = [
                               <label className="title-col mb-3">Appearance Time</label>
                               <div className="row">
 
-                              <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Minute</span>
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Minute</span>
                                   <Select labelId="hminute" menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}  id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
-                              </div>
-                              <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Second</span>
+                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
+                                </div>
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Second</span>
                                   <Select labelId="hminute" menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond}  options={hsecondOptions} />
-                              </div>
+                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond} options={hsecondOptions} />
+                                </div>
 
 
                               </div>
@@ -674,16 +684,16 @@ const secondOptions = [
                               <label className="title-col mb-3">Duration</label>
                               <div className="row">
 
-                              <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Minute</span>
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Minute</span>
                                   <Select menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
-                              </div>
-                              <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Second</span>
-                                  <Select  menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute"  id="hminute" onChange={handleChangeSecond} options={secondOptions} />
-                              </div>
+                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
+                                </div>
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Second</span>
+                                  <Select menuPortalTarget={document.body}
+                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeSecond} options={secondOptions} />
+                                </div>
 
 
                               </div>
@@ -711,51 +721,51 @@ const secondOptions = [
 
                             <div className="col-lg-12 dnone" id="change-class">
                               <div className="row">
-                              <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Select Sports</span>
-                                <Select isMulti
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select Sports</span>
+                                  <Select isMulti
                                     closeMenuOnSelect={false}
                                     name="sports"
                                     options={sportOptions}
                                     onChange={handleChangeSports}
                                     className="basic-multi-select"
                                     classNamePrefix="select" />
-                            </div>
+                                </div>
 
-                            <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Select League</span>
-                                <Select isMulti
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select League</span>
+                                  <Select isMulti
                                     closeMenuOnSelect={false}
-                                    name="leagues" 
+                                    name="leagues"
                                     options={leagueOptions}
                                     onChange={handleChangeLeagues}
                                     className="basic-multi-select"
                                     classNamePrefix="select" />
-                            </div>
+                                </div>
 
-                            <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Select Team</span>
-                                <Select isMulti
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select Team</span>
+                                  <Select isMulti
                                     closeMenuOnSelect={false}
-                                    name="teams"   
+                                    name="teams"
                                     options={teamOptions}
                                     className="basic-multi-select"
                                     classNamePrefix="select"
                                     onChange={handleChangeTeam}
-                                    />
-                            </div>
+                                  />
+                                </div>
 
-                            <div className="col-lg-6 reletive mb-4">
-                                <span className='react-select-title'>Select Players</span>
-                                <Select isMulti
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select Players</span>
+                                  <Select isMulti
                                     closeMenuOnSelect={false}
-                                    name="players"  
+                                    name="players"
                                     options={playersOptions}
                                     className="basic-multi-select"
-                                    classNamePrefix="select" 
+                                    classNamePrefix="select"
                                     onChange={handleChangePlayer}
-                                    />
-                            </div>
+                                  />
+                                </div>
                               </div>
                             </div>
 
@@ -769,26 +779,41 @@ const secondOptions = [
 
 
                             <div className="col-lg-6 mb-4">
-                              <TextField id="filled-basic" name='ops_1' fullWidth label="Answer 1" variant="filled" autoComplete="off" />
+                              <label className="title-col mb-0">Answer 1</label>
+                              <InputEmoji  onChange={setAnswerOne} cleanOnEnter placeholder="Enter Answer"/>
+                              <input type='hidden' value={answerOne} name='ops_1' />
                             </div>
 
+
                             <div className="col-lg-6 mb-4">
-                              <TextField id="filled-basic1" name='ops_2' fullWidth label="Answer 2" variant="filled" autoComplete="off" />
+                              <label className="title-col mb-0">Answer 2</label>
+                              <InputEmoji  onChange={setAnswerTwo} cleanOnEnter placeholder="Enter Answer"/>
+                              <input type='hidden' value={answerTwo} name='ops_2' />
                             </div>
 
                             <div className="col-lg-12">
 
                               {
                                 show ? <div className="row">
-                                  <div className="col-lg-6 mb-4">
-                                    <TextField id="filled-basic1" name='ops_3' fullWidth label="Answer 3" variant="filled" autoComplete="off" />
-                                  </div>
-                                  <div className="col-lg-6 mb-4">
-                                    <TextField id="filled-basic1" name='ops_4' fullWidth label="Answer 4" variant="filled" autoComplete="off" />
-                                  </div>
-                                  <div className="col-lg-6 mb-4">
-                                    <TextField id="filled-basic1" name='ops_5' fullWidth label="Answer 5" variant="filled" autoComplete="off" />
-                                  </div>
+
+                               <div className="col-lg-6 mb-4">
+                                <label className="title-col mb-0">Answer 3</label>
+                                <InputEmoji  onChange={setAnswerThree} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerThree} name='ops_3' />
+                               </div>
+
+                               <div className="col-lg-6 mb-4">
+                                <label className="title-col mb-0">Answer 4</label>
+                                <InputEmoji  onChange={setAnswerFour} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerFour} name='ops_4' />
+                               </div>
+
+                               <div className="col-lg-6 mb-4">
+                                <label className="title-col mb-0">Answer 5</label>
+                                <InputEmoji  onChange={setAnswerFive} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerFive} name='ops_5' />
+                               </div>
+
                                 </div> : null
                               }
                             </div>
@@ -804,23 +829,23 @@ const secondOptions = [
 
 
                             <div className="col-lg-12 mb-4">
-                                   <FormGroup className="mb-3">
-                                    <FormControlLabel name=''  onChange={(e) => rewardfun(e)} control={<Checkbox />} label="Rewards" />
-                                  </FormGroup>
+                              <FormGroup className="mb-3">
+                                <FormControlLabel name='' onChange={(e) => rewardfun(e)} control={<Checkbox />} label="Rewards" />
+                              </FormGroup>
 
-                                 
-                            
-                             <div className="row" id="rewards1">
-                          
-                                  <div className="col-lg-6 reletive mt-2">
-                                <span className='react-select-title'>Select Rewards Type</span>
-                                  <Select labelId="rewards"  id="rewards" name='reward_type' options={rewardsOptions} />
+
+
+                              <div className="row" id="rewards1">
+
+                                <div className="col-lg-6 reletive mt-2">
+                                  <span className='react-select-title'>Select Rewards Type</span>
+                                  <Select labelId="rewards" id="rewards" name='reward_type' options={rewardsOptions} />
+                                </div>
+
+                                <div className="col-lg-6 mb-4">
+                                  <TextField id="filled-basic" name='reward_quantity' fullWidth label="Enter Rewards" variant="filled" autoComplete="off" />
+                                </div>
                               </div>
-
-                              <div className="col-lg-6 mb-4">
-                              <TextField id="filled-basic" name='reward_quantity' fullWidth label="Enter Rewards" variant="filled" autoComplete="off" />
-                            </div>
-                             </div>
 
                             </div>
 

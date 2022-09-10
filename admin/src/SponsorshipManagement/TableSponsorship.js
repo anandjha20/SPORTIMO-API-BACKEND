@@ -15,10 +15,15 @@ function TableSponsorship(props) {
      navigate(`/sponsorship/detail/${id}`);
         return false;   
     }  
+    const UpdateFun = (id)=>{ 
+     navigate(`/sponsorship/update/${id}`);
+        return false;   
+    }  
     
     const columns =
         [
  
+
             { title: 'Match/league', field: 'match'},
             { title: 'Sponsorship Type', field: 'type'},
             // { title: 'Fill Name', field: 'filename'},
@@ -30,15 +35,11 @@ function TableSponsorship(props) {
     const data = sponsor_list.length>0? sponsor_list.map((item)=>{
 
        return { type : item.view_type, date : `${item.Fdate.slice(0, 10).split("-").reverse().join("-")} To  ${item.Ldate.slice(0,10).split("-").reverse().join("-")}  `, 
-                       impression : '20', Clicks : '50', match: item.match , id:item._id };
+                       impression : item.impressions_count, Clicks : item.clicks_count, match: item.match , id:item._id,  };
     }) :[];
        
-
-
     return (
-
         <>
-
             <div className="row">
                 <div className="col-lg-12">
                
@@ -52,6 +53,12 @@ function TableSponsorship(props) {
                                 iconProps: { style: { color: "#6259ca" } },
                                 tooltip: 'View Detail',
                                 onClick: (event, setData) => { viewFun(setData.id);}
+                            },
+                            {
+                                icon: 'edit',
+                                iconProps: { style: { color: "#6259ca" } },
+                                tooltip: 'Update Sponsorship',
+                                onClick: (event, setData) => { UpdateFun(setData.id);}
                             },
                         ]}
                         options={{

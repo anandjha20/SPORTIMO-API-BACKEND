@@ -75172,3 +75172,86 @@ color : white !important;
 {
 color : white  !important;
 }
+
+.jodit-container:not(.jodit_inline) .jodit-workplace
+{
+    background: #313941;
+}
+
+.react-input-emoji--container
+{
+    vertical-align: baseline;
+    border: none !important;
+    margin-right: 0;
+    margin: 5px 0px !important;
+    border-radius: 5px !important;
+    background: #3d454c !important;
+    height: 65px !important;
+    color: white !important;
+}
+.react-input-emoji--wrapper {
+    height: 68px;
+    padding: 14px 10px 10px 1px !important;
+}
+
+.react-input-emoji--button
+{
+    position: absolute !important; 
+    right: 0;
+    background: #3d454c !important; 
+    height: 53px !important; 
+    z-index: 90;
+}
+.label-date {
+    position: absolute;
+    color: #ffffffa1;
+    margin-top: -9px;
+    z-index: 10;
+    margin-left: 15px;
+    background: #313941;
+    padding: 0px 8px;
+}
+
+
+.imagebox {
+    width: 200px;
+    height: 117px;
+    display: flex;
+    /* justify-content: center; */
+    align-items: center;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+.imagebox img {
+    border-radius: 5px;
+    height: inherit;
+}
+
+.main-sidebar-body
+{
+    overflow-y: scroll;
+}
+/* width */
+.main-sidebar-body::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+.main-sidebar-body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 0px grey; 
+  border-radius: 10px;
+  margin-top:0px;
+}
+ 
+/* Handle */
+.main-sidebar-body::-webkit-scrollbar-thumb {
+  background : #40404066; 
+  border-radius: 10px;
+}
+
+
+/* Handle on hover */
+.main-sidebar-body::-webkit-scrollbar-thumb:hover {
+  background: #7f8489;
+}

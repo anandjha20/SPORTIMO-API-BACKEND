@@ -183,7 +183,7 @@ return (
 							<span className="sidemenu-label">Complaint Management</span></NavLink>
 						</li>  */}
 						 <li className="nav-item" >
-							<NavLink  to="/notificaiton" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<NavLink  to="/notification" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
 							<i className="fad fa-bell sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Notifications</span></NavLink>
 						</li> 
@@ -202,6 +202,17 @@ return (
 							<NavLink  to="/default-message" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
 							<i className="fad fa-comments-alt sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Default Status Message</span></NavLink>
+						</li> 
+
+						 <li className="nav-item" >
+							<NavLink  to="/report" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-atlas sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Report Reason</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
+							<NavLink  to="/groups" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-users-class sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Groups Chat Manage..</span></NavLink>
 						</li> 
 						
 

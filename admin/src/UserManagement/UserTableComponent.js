@@ -23,6 +23,7 @@ function UserListTable(props) {
     const [pageCount, setpageCount] = useState('');
     const [guestUser, setGuest] = React.useState(0);
     const [Fromvalue, setFromvalue] = React.useState('');
+    const [Selectvalue, SetSelectvalue] = useState('');
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -104,6 +105,7 @@ function UserListTable(props) {
                 const totalPage = (Math.ceil(total / limit));
                 setpageCount(totalPage);
                 setData(data);
+                SetSelectvalue('')
                 console.log(data);
             })
     }
@@ -174,8 +176,8 @@ function UserListTable(props) {
                         <div className="col-lg-3 reletive">
                             <span className="react-select-title">Select Country</span>
                             <Select   name = 'country'
-                                options={countryOptions}
-                                isSearchable
+                                options={countryOptions} onChange={SetSelectvalue} value={Selectvalue}
+                                isSearchable 
                                 placeholder="Search.."
                                 isSelected="slbania"
                                 menuPortalTarget={document.body}
@@ -231,7 +233,7 @@ function UserListTable(props) {
                             <tbody>
                               {data == '' ? <>
                                <tr>
-                               <td className="text-center" colSpan='10'> 
+                               <td className="text-center" colSpan='11'> 
                                  <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
                                </tr>
                                </> : null}

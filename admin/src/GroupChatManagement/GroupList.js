@@ -2,11 +2,9 @@ import React from "react";
 import Header from "../Header";
 import { Link } from "react-router-dom";
 import Button  from "@mui/material/Button";
-import TableLIstNotification from "./TableLIstNotification";
-import {useEffect} from "react";
+import TableGroups from "./TableGroups";
 
-
-function AllListNotification() {
+function GroupList() {
     return (
         <>
           <Header />
@@ -16,28 +14,28 @@ function AllListNotification() {
 
                         <div className="page-header">
                             <div>
-                                <h2 className="main-content-title tx-24 mg-b-5">Notification List</h2>
+                                <h2 className="main-content-title tx-24 mg-b-5">Groups Management</h2>
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
                                         <Link to="/home">Home</Link>
                                     </li>
                                   
-                                    <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Notification Management</li>
+                                    <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Groups Management</li>
                                 </ol>
                             </div>
                             <div className="d-flex">
 								<div className="justify-content-center">
-							       <Link  to="/notification/add">
-                                    <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add Notification </Button>
-                                    </Link>
+							       {/* <Link  to="/geq/create">
+                                    <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add  Groups Chat Management</Button>
+                                    </Link> */}
                                 </div>
 							</div>
                            
                         </div>
                         <div className="row justify-content-center">
                             <div className="col-lg-12 table-responsive border border-bottom-0">
-
-                          <TableLIstNotification />   
+                                
+                             <TableGroups />          
                             </div>
                         </div>
                     </div>
@@ -48,4 +46,4 @@ function AllListNotification() {
     );
 }
 
-export default AllListNotification;
+export default GroupList;

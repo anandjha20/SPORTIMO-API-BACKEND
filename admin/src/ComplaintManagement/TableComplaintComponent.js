@@ -44,12 +44,14 @@ function TableComplaintComponent() {
         let options1 = ({ headers: header });
         await axios.post(`/web_api/user_complaint_list`, formData, options1)
         .then(res => {
-          const userData = res.data.body;
-          setData(userData);
-          const category = userData.category;
-          const image = res.data.body.image;
-          console.log(userData); 
-        //   console.log(userCategory); 
+            const data = res.data.body;
+            const total = res.data.rows;
+            const totalPage = (Math.ceil(total / limit));
+            setpageCount(totalPage);
+            setData(data);
+            const category = data.category;
+            const image = res.data.body.image;
+            console.log(data);
         })
     }
     const CategoryList = async () =>
@@ -76,6 +78,7 @@ function TableComplaintComponent() {
                 const data = res.data.body;
                 const total = res.data.rows;
                 const totalPage = (Math.ceil(total / limit));
+                setpageCount(totalPage);
                 setData(data);
                 const category = data.category;
                 const image = res.data.body.image;

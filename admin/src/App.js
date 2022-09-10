@@ -13,6 +13,7 @@ import ChangePassword from "./ProfileManagement/ChangePassword";
 import AddSponsorship from "./SponsorshipManagement/AddSponsorship";
 import SponsorshipList from "./SponsorshipManagement/SponsorshipList";
 import SponsorshipDetails from "./SponsorshipManagement/SponsorshipDetails";
+import UpdateSponsorship from "./SponsorshipManagement/UpdateSponsorship";
 import AddFaqCategory from "./FaqCategoryManagement/AddFaqCategory";
 import Faqlist from "./FaqManagement/Faqlist";
 import CreateFaq from "./FaqManagement/CreateFaq";
@@ -33,6 +34,10 @@ import PlayersPreference from "./PreferenceMaster/PlayersPreference";
 import IntroSliderImg from "./SponsorshipManagement/IntroSliderImg";
 import IntroSliderDetails from "./SponsorshipManagement/IntroSliderDetails";
 import AllListNotification from "./NotificationManagement/AllListNotification";
+import AddNotification from "./NotificationManagement/AddNotification";
+import ReportReason from "./ReportReasonMangement/ReportReason";
+import GroupList from "./GroupChatManagement/GroupList";
+import GroupChatManagement from "./GroupChatManagement/GroupChatManagement";
 
 function App() {
   return (
@@ -70,6 +75,7 @@ function App() {
         <Route path="/intro-slider" element={ <IntroSliderImg /> } />
         <Route path="/intro-slider/detail/:_id" element={ <IntroSliderDetails /> } />
         <Route path="/sponsorship/detail/:id" element={ <SponsorshipDetails /> } />
+        <Route path="/sponsorship/update/:id" element={ <UpdateSponsorship /> } />
 
         {/* Faq */}
         <Route path="/add-category" element={ <AddFaqCategory /> } />
@@ -86,8 +92,16 @@ function App() {
         {/*CreateTipsTricks */} 
         <Route path="/tips" element={ <CreateTipsTricks /> } />
 
+        {/*Group Chat Management */} 
+        <Route path="/groups" element={ <GroupList /> } />
+        <Route path="/groups/chat" element={ <GroupChatManagement /> } />
+
+        {/*ReportReasonManagement */} 
+        <Route path="/report" element={ <ReportReason /> } />
+
         {/*Notification Management*/} 
-        <Route path="/notificaiton" element={ <AllListNotification /> } />
+        <Route path="/notification" element={ <AllListNotification /> } />
+        <Route path="/notification/add" element={ <AddNotification /> } />
 
         {/*ContentManagement */} 
         <Route path="/content" element={ <ContentList /> } />

@@ -146,7 +146,7 @@ export default function SelectTageting() {
             </div>
 
             <div className="col-lg-12  mb-4">
-                <label className="title-col mb-3">Targeted Country</label>
+                <label className="title-col mb-2">Targeted Country</label>
              </div>
               <div className='reletive col-lg-12'>
                 <span className='react-select-title'>Select Country</span>
