@@ -528,55 +528,75 @@ static verify_nickName = async(req,res)=>{
                    
       }     
       
-    static user_settings = async(req,res)=> {
-          try{      let user_id      = req.body.user_id;
-                    let music_sound  = req.body.music_sound;
-                    let haptics      = req.body.haptics;
-                    let chat         = req.body.chat;
-                    let biometric    = req.body.biometric;
-                    let notifications = req.body.notifications;
-                   
-                    music_sound = (music_sound == 1)? 1 : 0;
-                    haptics     = (haptics == 1)? 1 : 0;
-                    chat        = (chat == 1)? 1 : 0;
-                    biometric   = (biometric == 1)? 1 : 0;
-                    notifications = (notifications == 1)? 1 : 0;
-          
-                    console.log("get all data ==  ",req.body);
+        static user_settings = async(req,res)=> {
+                    try{      let user_id      = req.body.user_id;
+                                let music_sound  = req.body.music_sound;
+                                let haptics      = req.body.haptics;
+                                let chat         = req.body.chat;
+                                let biometric    = req.body.biometric;
+                                let notifications = req.body.notifications;
+                            
+                                music_sound = (music_sound == 1)? 1 : 0;
+                                haptics     = (haptics == 1)? 1 : 0;
+                                chat        = (chat == 1)? 1 : 0;
+                                biometric   = (biometric == 1)? 1 : 0;
+                                notifications = (notifications == 1)? 1 : 0;
+                    
+                                console.log("get all data ==  ",req.body);
 
 
-            user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {music_sound,haptics,chat,biometric,notifications }},{new: true}, (err,updatedUser)=>{
-            if(err) {  console.log(err);
-                return res.status(200).send({"status":false,"msg":'some errors '}) ;          
+                        user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {music_sound,haptics,chat,biometric,notifications }},{new: true}, (err,updatedUser)=>{
+                        if(err) {  console.log(err);
+                            return res.status(200).send({"status":false,"msg":'some errors '}) ;          
+                        }
+                        if(isEmpty(updatedUser)){
+                            return res.status(200).send({"status":false,"msg":'Invalid user '}) ;  
+                        }else{
+                            return res.status(200).send({"status":true,"msg":'settings add  successfully',"body":updatedUser }) ;  
+                        }
+                    
+                                });
+                    }catch (error) { console.log(error);  return res.status(200).send({"status":false,"msg":'no data add' }) ; }
+                            
+                }     
+
+     static get_content = async (req,res)=>{
+                        try {
+                                let c_type = req.params.type;
+                                let sendData =  await content_tbls.findOne({type:c_type}).exec();
+                                if(! isEmpty(sendData)){
+                                    return res.status(200).send({status:true ,msg:"success",body:sendData});
+                                }else{
+                                    return res.status(200).send({status:false ,msg:"No Data FOund!.. "});
+                                }
+                        } catch (error) {  console.log(error); 
+                            return res.status(200).send({status:false,msg: "some errors  "});
+                        }
+                
+                
             }
-            if(isEmpty(updatedUser)){
-                return res.status(200).send({"status":false,"msg":'Invalid user '}) ;  
-            }else{
-                return res.status(200).send({"status":true,"msg":'settings add  successfully',"body":updatedUser }) ;  
-            }
-        
-                       });
-           }catch (error) { console.log(error);  return res.status(200).send({"status":false,"msg":'no data add' }) ; }
-                   
-      }     
 
- static get_content = async (req,res)=>{
-            try {
-                    let c_type = req.params.type;
-                    let sendData =  await content_tbls.findOne({type:c_type}).exec();
-                    if(! isEmpty(sendData)){
-                        return res.status(200).send({status:true ,msg:"success",body:sendData});
-                    }else{
-                        return res.status(200).send({status:false ,msg:"No Data FOund!.. "});
-                    }
-            } catch (error) {  console.log(error); 
-                return res.status(200).send({status:false,msg: "some errors  "});
-            }
-    
-    
- }
+             // get_autocomplete_users
+           static get_autocomplete_users = async(req,res)=>{
+                            try {
+                                let name    = req.body.name;
+                                if(isEmpty(name)){
+                                   return  res.status(200).send({'status':false,'msg':"Name Field Required",'body':''});     
+                                } 
+   
+                            let whr = { "name" :{ $regex: '.*' + name + '.*', $options: 'i' }} ;
+                         let query =  user_tbl.find(whr).select("name").sort({_id:-1});
+                            
+                            const query2 =  query.clone();
+                            const counts = await query.countDocuments();
+                      const records = await query2.skip(0).limit(8);
 
+                        res.status(200).send({'status':true,'msg':"success", 'body':records });
 
+                        } catch (error) { console.log(error);
+                        res.status(200).send({'status':false,'msg':error,'body':''});
+                        }
+}
 
 }
        

@@ -17,7 +17,8 @@ const storage = multer.diskStorage({
 const uComplaintImg = multer({ storage: storage });
    
 const uComplaintImgUpload = uComplaintImg.fields([{ name: 'image', maxCount: 1 }]);
-const user_img =  img_upload('./assets/user_img','user_image');
+const user_img      =  img_upload('./assets/user_img','user_image');
+const userReportImg =  img_upload('./assets/user_img','image');
 
 /// import user token middleware
  const user_token_check =  require('../middleware/user_token_check.js');
@@ -35,7 +36,7 @@ const user_img =  img_upload('./assets/user_img','user_image');
  let FirebaseController = require('../controllers/FirebaseController');
  let IntroSliderController = require('../controllers/IntroSliderController');
  let NotificationController = require('../controllers/NotificationController');
-          
+ let ReportReasonController = require("../controllers/ReportReasonController");
                                               
           router.get('/JK/',UserController.dashboardAllCount);
           router.get('/sendEmail/',UserController.User_sendEmail);
@@ -46,18 +47,14 @@ const user_img =  img_upload('./assets/user_img','user_image');
                        
                                    
           router.post('/registration/',UserController.registration);
-
           router.post('/verify_nickName',UserController.verify_nickName);
           router.post('/user_profile_update',user_img , UserController.user_profile_update);
-
           router.post('/block_user_add',user_token_check,UserController.block_user_add);  
-
           router.post('/user_profile_view',UserController.user_profile_view);
-          
           router.get('/resend_otp/:id?',UserController.resend_otp_2); 
           router.post('/verify_otp',UserController.verify_otp);         
         
-          /// PollController route list
+          /// PollController route list      
           router.get('/poll_list/:id?',user_token_check,PollController.poll_list);      
           router.post('/poll_participant',user_token_check,PollController.poll_participant);      
           router.get('/poll_result_show/:poll_id ?',user_token_check,PollController.poll_result_show);      
@@ -80,7 +77,8 @@ const user_img =  img_upload('./assets/user_img','user_image');
         router.get('/user_complaint_list/:user_id/:id?',complaintController.user_complaint_list);  
         router.get('/user_complaint_all',complaintController.user_complaint_all);  
         router.post('/user_complaint_chat_add',complaintController.user_complaint_chat_add);  
-        router.get('/user_complaint_chat_list/:id',complaintController.user_complaint_chat_list);  
+        router.get('/user_complaint_chat_list/:id',complaintController.user_complaint_chat_list); 
+
          
    // default msg  Routes
     router.get('/get_defaultMsg/:id?',defaultMsgController.get_defaultMsg);  
@@ -152,5 +150,10 @@ const user_img =  img_upload('./assets/user_img','user_image');
           }); 
   // get notification list  
   router.get('/notification_list/:id?',NotificationController.notification_list); 
-       
+   
+//  user reports route      
+    router.get('/report_reason_types/:id?',ReportReasonController.report_reason_types);
+    router.post('/add_user_reports',userReportImg,ReportReasonController.add_user_reports);
+    router.get('/get_user_report_list/:id',ReportReasonController.get_user_report_list);
+                           
 module.exports = router;             

@@ -66,6 +66,8 @@ class PollController {
            let s_date  = req.body.s_date;
            let e_date  = req.body.e_date;
            let U_id =  req.body.user_id ; 
+           let leagues =  req.body.leagues ; 
+
           // console.log("poll list call == ", req.body.user_id);   
       
            let page  = req.body.page;  
@@ -73,22 +75,22 @@ class PollController {
           
           
             let whr ={};
-            if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*' } ;} 
+            if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*', $options: 'i' } ;} 
             if(!isEmpty(poll_type)){whr.poll_type = poll_type;} 
             if(!isEmpty(fee_type)){whr.fee_type = fee_type;} 
             if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date = { $gte: s_date, $lte: e_date } ;} 
+           
+            if(!isEmpty(leagues)){whr.leagues = { $regex: '.*' + leagues + '.*' } ;} 
             if(!isEmpty(id)){whr = {_id: id} ;} 
             let query =  poll_tbl.find(whr).sort({_id:-1});
               
              const query2 =  query.clone();
-             const counts = await query.countDocuments();
+             const counts = await query.countDocuments();   
               
 
               
              let offest = (page -1 ) * 10 ; 
              const records = await query2.skip(offest).limit(10);
-
-
           return res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
   
         } catch (error) { console.log(error);

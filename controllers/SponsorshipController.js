@@ -43,18 +43,15 @@ class Sponsorship {
   
             static sponsor_detail = async (req,res)=>{
               try {
-                
-                 let  id = req.params.id;      
-            
-                   let data = await Sponsorship_tbl.find({ "_id": mongoose.Types.ObjectId(id) });
-                  
-                   if(data.length >0){
-
-                  let allData = await Promise.all( data.map( async (sendData)=>{
+                      let  id = req.params.id;      
+                    let data = await Sponsorship_tbl.find({ "_id": mongoose.Types.ObjectId(id) });
+                 
+                    if(data.length >0){
+                              let allData = await Promise.all( data.map( async (sendData)=>{
                                       let sport_name   =  await  all_list_come(sendData.sports,1);
                                       let league_name  =  await  all_list_come(sendData.league,2);
                                       let  team_name   = await  all_list_come(sendData.team,3);
-                                        let players_name = await  all_list_come(sendData.players,4);
+                                      let players_name = await  all_list_come(sendData.players,4);
                                       let country_name = await  all_list_come(sendData.country,5);
                                 
                                       let paths =MyBasePath(req,res); 
@@ -62,7 +59,6 @@ class Sponsorship {
                                       let img = `${paths}/image/assets/sponsorship_image/${sendData.image}`;
                                      //console.log ("call my data == " , dd );
                                       return {img,sport_name,league_name,team_name,players_name,country_name,"allData" : sendData}; 
-                              
                                    })) ;          
                                   
                   return   res.status(200).send({'status':true,'msg':"success",'body':allData});

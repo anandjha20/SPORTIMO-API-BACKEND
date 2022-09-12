@@ -37,6 +37,7 @@ const token_check =  require('../middleware/token_check');
   let IntroSliderController = require('../controllers/IntroSliderController');
   let NotificationController = require('../controllers/NotificationController');
   let ReportReasonController = require('../controllers/ReportReasonController');
+const UserController = require('../controllers/UserController');
   // admin login Routes  
   router.post('/admin_login/',AdminController.admin_login);
  
@@ -161,4 +162,14 @@ router.post('/report_reason_get/:id?',ReportReasonController.report_reason_get);
 router.put('/report_reason_update/:id',ReportReasonController.report_reason_update); 
 router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_delete); 
 
-module.exports = router;     
+//  user reports route 
+   router.post('/get_user_report_admin/:id?',ReportReasonController.get_user_report_admin);
+  
+  // get autocomplete users name like route
+   router.get('/get_autocomplete_users',UserController.get_autocomplete_users);
+
+                 
+
+
+
+module.exports = router;       

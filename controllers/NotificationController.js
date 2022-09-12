@@ -14,7 +14,7 @@ class notificationController {
                 let from_date = req.body.from_date;                                
                 let to_date = req.body.to_date;                                
                 let noti_type = req.body.noti_type;                                
-                 let whr = {}; 
+                 let whr = {};                                
          
               if(!isEmpty(module_type)){whr.module_type = module_type};
               if(!isEmpty(category_type)){whr.category_type = category_type};
@@ -22,7 +22,7 @@ class notificationController {
               if(noti_type == 1 || noti_type == 0){whr.type_status = noti_type }
             console.log("filter == ",whr); 
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
-         if(!isEmpty(id)){whr = {_id: id} ; page = 1;} 
+         if(!isEmpty(id)){whr = {_id: id} ; page = 1;}            
 
             let query =  notification_tbl.find(whr).sort({_id:-1});
               const query2 =  query.clone();   

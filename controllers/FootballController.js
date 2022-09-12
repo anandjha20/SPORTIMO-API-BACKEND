@@ -18,14 +18,7 @@ class FootballController {
     
 static jks = async()=>{
      let data = new country_tbl({name: "Bangladesh"}) ;  
-              //  data.save();
-    // country_tbl.save({name: "China"});
-    // country_tbl.save({name: "India"});
-    // country_tbl.save({name: "Pakistan"});
-    // country_tbl.execute(function(err, result) {
-    //     if (err) console.error(err);
-    //     console.log('Inserted ' + result.nInserted + ' row(s).');
-    // });
+            
           
 }
 
