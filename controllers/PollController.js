@@ -96,7 +96,7 @@ class PollController {
         } catch (error) { console.log(error);
           return  res.status(200).send({'status':false,'msg':"server error",'body':''});
         }
-             
+               
             }     
  
      static add_poll = async(req,res)=>{

@@ -1,6 +1,7 @@
 
 const {getcurntDate,isEmpty,gen_str} = require('../myModel/common_modal');
  const  {MyBasePath} = require("../myModel/image_helper");
+ const  {userBlocked_fun} = require("../myModel/helper_fun");
 
 const report_reason_tbl = require('../models/report_reason');
 const user_reportings_tbl = require('../models/user_reportings');
@@ -166,6 +167,8 @@ class ReportReasonController {
               if(isEmpty(response)){
                        return res.status(200).send({'status':false,'msg':"Something went wrong please try again",'body':'' });  
                 }else{  
+
+                          let dsx = await userBlocked_fun(reported_user_id);   
                     return res.status(200).send({'status':true,'msg':"Report add successfully",'body':response });  
                    }  
       

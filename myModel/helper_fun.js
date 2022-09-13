@@ -1,4 +1,4 @@
-  const {isEmpty,getcurntDate }  = require("./common_modal");   
+  const {isEmpty,getcurntDate,rows_count }  = require("./common_modal");   
 
     const user_tbl = require('../models/user');    
     const admin_tbl = require('../models/admin');    
@@ -11,7 +11,9 @@
     const country_tbl = require('../models/country'); 
     const default_massages_tbl = require('../models/default_massages'); 
     const notification_tbl = require('../models/notification_tbl'); 
-     
+     const user_reportings_tbl = require('../models/user_reportings');
+     const user_chat_blocks_tbl = require('../models/user_chat_blocks');
+     const user_tokens_tbl = require('../models/user_tokens');
     
     const mongoose = require('mongoose');
 
@@ -100,6 +102,28 @@ const sendNotificationAdd = (my_obj )=>{
                     } catch (error){ console.log('some error====',error); return false; }
 
         }    
-                    
 
-module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd }
+     const userBlocked_fun = async( user_id)=>{
+          try {
+                 let user_rows = await rows_count(user_reportings_tbl,{reported_user_id:user_id,autoBlockStatus:false});
+                      console.log("userBlocked_fun row count == ",user_rows );
+                      if(user_rows >= 5){
+                            let block_status = 1;
+                            let addData = new user_chat_blocks_tbl({ user_id,block_status,block_type: "auto"});
+                            let response = await addData.save();
+                            if(response){ 
+                                let dds = user_tbl.findByIdAndUpdate({ _id:user_id},{$set: {chatBlockStatus:block_status }},{new: true},
+                                                    (err,updatedUser)=>{ if(err) {  console.log(err); } });
+                            let dxsd = user_reportings_tbl.updateMany({reported_user_id:user_id,autoBlockStatus:false}, {"$set":{"autoBlockStatus": 1}}, {"multi": true}, (err, writeResult) => {if(err) { console.log(err); } })  ;     
+                          }
+                 }
+                } catch (error) {
+                        console.log(error); 
+                }
+
+
+
+        }       
+     
+
+module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun }

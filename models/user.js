@@ -38,7 +38,9 @@ const Userschema = new Schema({
          haptics : { type: String,enum: [0,1], default: '0' },
          chat : { type: String,enum: [0,1], default: '0' },          
          biometric  : { type: String,enum: [0,1], default: '0'},
-         notifications : { type: String,enum: [0,1], default: '0' },     
+         notifications : { type: String,enum: [0,1], default: '0' }, 
+         chatBlockStatus :{type:Boolean,default: 0 },
+         firebase_token :  { type: String ,default: ''},  
 });
 
 

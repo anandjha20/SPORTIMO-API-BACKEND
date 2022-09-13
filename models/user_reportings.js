@@ -9,7 +9,8 @@ const user_reportSchema = new Schema({
     reason_id :  {type: Schema.Types.ObjectId,  ref: 'report_reason_tbls', required: true },
     discription : {type:String, default:''},  
     image : {type:String, default:''},                        
-    date : {type:Date,default: Date.now}
+    date : {type:Date,default: Date.now},
+    autoBlockStatus: {type:Boolean, default:0},  
 });
 
 

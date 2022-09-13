@@ -1,7 +1,8 @@
    const { isEmpty } = require("../myModel/common_modal");
+   const { send_noti } = require("../myModel/Notification_helper");
    
    const notification_tbl = require("../models/notification_tbl");
-
+    
 
 class notificationController {
 
@@ -102,7 +103,13 @@ class notificationController {
       }
         
    
-
+ static jk_noti = async(req, res) =>{
+      let title = "welcome to sportimo Football";
+      let msg = "welcome to sportimo Football leages ";
+         let ddd =  send_noti([],title,msg);
+         return res.status(200).send({'status':false,'msg':"All Field Required",'body':'' });
+      
+ }
 
 
 }

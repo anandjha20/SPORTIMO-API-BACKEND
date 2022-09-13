@@ -37,7 +37,8 @@ const token_check =  require('../middleware/token_check');
   let IntroSliderController = require('../controllers/IntroSliderController');
   let NotificationController = require('../controllers/NotificationController');
   let ReportReasonController = require('../controllers/ReportReasonController');
-const UserController = require('../controllers/UserController');
+  const UserController = require('../controllers/UserController');
+  let chatController = require("../controllers/chatController");
   // admin login Routes  
   router.post('/admin_login/',AdminController.admin_login);
  
@@ -94,6 +95,7 @@ const UserController = require('../controllers/UserController');
       router.post('/user_complaint_chat_add', complaintController.user_complaint_chat_add); 
       router.delete('/user_complaint_chat_stop/:id',complaintController.user_complaint_chat_stop);
 
+      router.post('/adminUserChatBlockUnblock',chatController.adminUserChatBlock); 
 
           // default msg  Routes
           router.post('/addDefaultMsg',defaultMsgController.addDefaultMsg);
@@ -167,8 +169,9 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
   
   // get autocomplete users name like route
    router.get('/get_autocomplete_users',UserController.get_autocomplete_users);
+   router.get('/jk_noti',NotificationController.jk_noti);
 
-                 
+                     
 
 
 

@@ -4,7 +4,7 @@
 
 
   
-const { isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime } = require('../myModel/common_modal');
+const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime } = require('../myModel/common_modal');
 const { autoincremental,sendNotificationAdd } = require('../myModel/helper_fun');  
 
   
@@ -67,8 +67,8 @@ class UserController {
             let  mobile = req.body.mobile;      let email     = req.body.email;
             let address = req.body.address;     let user_type = req.body.user_type;
             let name    = req.body.name;        let device_id = req.body.device_id;
-             // let gender    = req.body.gender;
-            
+           let firebase_token    = req.body.firebase_token;
+              
             let user_type_len = (user_type || '').length;    let device_id_len = (device_id || '').length;
             let name_len = (name || '').length;              let mobile_len    = (mobile || '').length;
            
@@ -105,7 +105,7 @@ class UserController {
                               let ddsq = user_logs_add(updatedUser._id,'login');  
                 return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
                }else{
-                let add =new user_tbl({ user_type, date,device_id,token,otp,seq_id });
+                let add =new user_tbl({ user_type, date,device_id,token,otp,seq_id,firebase_token});
     
                          add.save( (err, data) => {
                               if (err) {        
@@ -160,8 +160,8 @@ class UserController {
                  device_id:device_id,
                  otp : otp,
                  token : token,
-                 seq_id : seq_id
-                  
+                 seq_id : seq_id,
+                 firebase_token : firebase_token
             });             
 
            
@@ -172,7 +172,7 @@ class UserController {
 
                 if(user_type == 1){
                     send_mobile_otp({mobile,otp}); 
-                    msgtodiv2 = 'otp sent to your mobile please check know ';
+                      msgtodiv2 = 'otp sent to your mobile please check know ';
                 }else  if(user_type == 2 || user_type == 3 || user_type == 4 ){
                     sentEmail({email,otp}); 
                     msgtodiv2 = 'otp sent to your Email please check know ';
@@ -597,6 +597,32 @@ static verify_nickName = async(req,res)=>{
                         res.status(200).send({'status':false,'msg':error,'body':''});
                         }
 }
+
+  static  userFirebaseTokenUpdate = async(req,res)=>{
+    try {
+            let user_id = req.body.user_id;
+            let firebase_token = req.body.firebase_token;
+    
+          if(isEmpty(user_id) || isEmpty(firebase_token) ){
+               return res.status(200).send({"status":false,"msg":'no data add' }) ; 
+            }
+              
+       let dds = user_tbl.findByIdAndUpdate({ _id:user_id},{$set: {firebase_token }},{new: true},
+                                    (err,updatedUser)=>{ if(err) {  console.log(err); return res.status(200).send({"status":false,"msg":'something went wrong please try again' }) ;
+                                                                }else if (!isEmpty(updatedUser)){
+                                                                    return res.status(200).send({"status":true,"msg":'Firebase Token update successfully' }) ;
+                                                                  }else{
+                                                                    return res.status(200).send({"status":false,"msg":'Invalid user' }) ;
+                                                                  }});
+                    } catch (error) {  console.log(error); 
+                return res.status(200).send({"status":false,"msg":'Server error' }) ;
+          }
+
+
+
+  }       
+
+
 
 }
        
