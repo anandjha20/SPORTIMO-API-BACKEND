@@ -158,4 +158,12 @@ const rows_count =  async(tbl,whr) =>{
 
 }
 
-module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,rows_count};
+const ArrChunks =  async (array, size = 1)=>{
+                            let results = [];
+                            while (array.length) {
+                              results.push(array.splice(0, size));
+                            }
+                            return results;
+                          };
+
+module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,rows_count,ArrChunks};

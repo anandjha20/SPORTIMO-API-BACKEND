@@ -103,7 +103,7 @@ const token_check =  require('../middleware/token_check');
            router.delete('/defaultMsg_delete/:id',defaultMsgController.defaultMsg_delete); 
 
         
-       // default msg  Routes
+       // content Routes
           router.post('/content_add',AdminController.content_add);
           router.get('/get_content/:type?',AdminController.get_content);
     
@@ -144,7 +144,7 @@ const token_check =  require('../middleware/token_check');
   // poll_analytics route add on 
    router.get('/poll_analytics/:id',PollController.poll_analytics); 
   
-   router.get('/jk_test',PollController.jk_test); 
+  
  
   // IntroSlider route add on  introSlider_update  introSlider_delete
   router.post('/introSlider_add',IntroSliderImgUpload,IntroSliderController.introSlider_add); 
@@ -171,7 +171,7 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.get('/get_autocomplete_users',UserController.get_autocomplete_users);
    router.get('/jk_noti',NotificationController.jk_noti);
 
-                     
+   router.get('/jk_test',PollController.jk_test);                 
 
 
 

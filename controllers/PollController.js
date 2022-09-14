@@ -1,8 +1,8 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty,rows_count } = require('../myModel/common_modal');
+const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
 const { sendNotificationAdd } = require('../myModel/helper_fun');
-   
+  const {send_noti,get_preferenceUserToken} = require('../myModel/Notification_helper');
 
 const { poll_percent} = require('../myModel/helper_fun');
    
@@ -17,10 +17,40 @@ const { poll_percent} = require('../myModel/helper_fun');
 
 class PollController { 
       static jk_test = async(req,res)=>{
-          let dd = await rows_count(poll_result_tbl,{});
-            console.log('jk_test is call == ', dd);
-         return  res.status(200).send({'status':false,'msg':'Success', 'body': dd });
-      }
+        let sports = req.body.sports;
+        let leagues = req.body.leagues;
+        let teams = req.body.teams;
+        let players = req.body.players;
+          //  let sendToken = await get_sportsUserToken(sports);
+          
+            let sport_preferences = await get_preferenceUserToken(sports,'sport_preferences');
+            let league_preference = await get_preferenceUserToken(leagues,'league_preference');
+            let team_preference   = await get_preferenceUserToken(teams,'team_preference');
+            let player_preference = await get_preferenceUserToken(players,'player_preference');
+       
+            let my_obj = {sport_preferences:sport_preferences.length  ,league_preference : league_preference.length,
+                      team_preference:team_preference.length,player_preference:player_preference.length};
+                      sport_preferences.concat(league_preference,team_preference,player_preference);
+           
+            let new_arr =    [...new Set(sport_preferences)];
+           
+            const  arrPairs = await ArrChunks(new_arr,3);
+          
+             if(arrPairs.length>0){
+                 
+                    console.log("arrPairs == ",arrPairs);
+
+                    arrPairs.map((chunkarr,i)=>{
+                            console.log("notication loop run no == ",i);
+                       send_noti(chunkarr," welcome to sortimo .... ","sortimo notification testing by jk bhopali ");
+                    })
+                     
+          }
+        return res.status(200).send({'status':false,'msg':'Success',"count":my_obj,"body":new_arr });
+    }
+   
+
+
       static poll_skip_add = async(req,res) =>{  
 
           let poll_id = req.body.poll_id;
@@ -36,10 +66,8 @@ class PollController {
                   return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
               }else{ return res.status(200).send({"status":true,"msg":'Poll Created Successfully' , "body":data  }) ;            
                     }
-}   );
-
-
-      } 
+         } );
+     } 
    
     static poll_analytics = async (req,res)=>{
       try {
