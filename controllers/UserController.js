@@ -5,8 +5,9 @@
 
   
 const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime } = require('../myModel/common_modal');
-const { autoincremental,sendNotificationAdd } = require('../myModel/helper_fun');  
+const { autoincremental,sendNotificationAdd } = require('../myModel/helper_fun');
 
+  const  {MyBasePath} = require("../myModel/image_helper");
   
   
   // all mongodb schema    
@@ -296,11 +297,12 @@ query.exec(function (err, person) {
   if (err){
                  return res.status(200).send({"status":false,"msg":'Invalid User' }) ; 
              }else{
-            
+                let paths =MyBasePath(req,res); 
+               
                 if (!isEmpty(person)){
-                    person.image = (person.image == '')? '': "http://localhost:3600/image/assets/user_img/"+ person.image ;      
+                    person.image = (person.image == '')? '': `${paths}/image/assets/user_img/${person.image}` ;      
                     person.block_status = checkusers;
-                }
+                }   
               
                 return res.status(200).send({"status":true,"msg":'Success' , "body": person,'blockuser':checkusers }) ;  
       } });
@@ -330,25 +332,27 @@ static user_profile_update = async(req,res)=>{
         let  gender  = req.body.gender ;
 
         let  country = req.body.country;   
-        let  sport_preferences = req.body.sport_preferences; 
-        let  league_preference = req.body.league_preference; 
-        let  team_preference = req.body.team_preference;        
+        
+        // let  sport_preferences = req.body.sport_preferences; 
+        // let  league_preference = req.body.league_preference; 
+        // let  team_preference = req.body.team_preference;        
+        // let  player_preference = req.body.player_preference;    
+       
         let  device_id = req.body.device_id;    
-        let  player_preference = req.body.player_preference;    
         let  email = req.body.email;    
         let  city = req.body.city;    
-        let  address = req.body.address;    
+        let  address = req.body.address;     
+        let name_len = (name || '').length;      let country_len = (country || '').length;  
+        let id_len = (id || '').length;    
          
-          let name_len = (name || '').length;      let country_len = (country || '').length;  
-          let sport_preferences_len = (sport_preferences || '').length;
-          let league_preference_len = (league_preference || '').length;
-          let team_preference_len = (team_preference || '').length;
-          let id_len = (id || '').length;
-          let player_preference_len = (player_preference || '').length;
-              
-          if( id_len == 0 || sport_preferences_len == 0 || league_preference_len == 0 || team_preference_len == 0 || player_preference_len == 0  ){ 
-            return res.status(200).send({"status":false,"msg":'All Field Required ' , "body":''}) ;     
-        }
+        //   let sport_preferences_len = (sport_preferences || '').length;
+        //   let league_preference_len = (league_preference || '').length;
+        //   let team_preference_len   = (team_preference || '').length;
+        //   let player_preference_len = (player_preference || '').length;
+          
+        //   if( id_len == 0 || sport_preferences_len == 0 || league_preference_len == 0 || team_preference_len == 0 || player_preference_len == 0  ){ 
+        //     return res.status(200).send({"status":false,"msg":'All Field Required ' , "body":''}) ;     
+        // }
 
       //  let token = gen_str(99);
 
@@ -357,19 +361,13 @@ static user_profile_update = async(req,res)=>{
       //  let newName = name.replaceAll( " ", '') ;
         
         let newName = name.replace(/ /g,"-");  
-        let myobjs = {
-            name: name,
-            device_id: device_id,
-            country : country,
-            sport_preferences: sport_preferences,
-            league_preference:league_preference,
-            team_preference: team_preference,
-            player_preference: player_preference,
-            u_name :nickname ,  
-       
-            status_msg : status_msg,
-            gender : gender,  
-        };
+        let myobjs = {  name: name,
+                        device_id: device_id,
+                        country : country,
+                        u_name :nickname ,  
+                        status_msg : status_msg,
+                        gender : gender  
+                    };
     if(img){ myobjs.image = img }
   if(!isEmpty(email)){ myobjs.email = email }
   if(!isEmpty(city)){ myobjs.city = city }
@@ -381,9 +379,10 @@ user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUs
     if(err) {  console.log(err);
         return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
     }
-    
+    let paths =MyBasePath(req,res); 
+   
       if(!isEmpty(updatedUser)){
-     updatedUser.image = (updatedUser.image == '')? '': "http://localhost:3600/image/assets/user_img/"+ updatedUser.image ;
+     updatedUser.image = (updatedUser.image == '')? '':  `${paths}/image/assets/user_img/${updatedUser.image}` ;
       }
     return res.status(200).json({  
         "status":true,"msg": "success" , "body":updatedUser
@@ -400,6 +399,51 @@ user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUs
 
 }
 
+
+   static user_preference_update = async(req,res)=>{
+            try {
+                    let  id   = req.params.id;
+                    let  sport_preferences = req.body.sport_preferences; 
+                    let  league_preference = req.body.league_preference; 
+                    let  team_preference = req.body.team_preference;        
+                    let  player_preference = req.body.player_preference;    
+                    
+        // if(isEmpty(sport_preferences) || isEmpty(league_preference) ||
+        //          isEmpty(team_preference) || isEmpty(player_preference) ){
+        //         return res.status(200).send({"status":false,"msg":'All Field Required ' , "body":''}) ;    
+        //     }
+        
+      
+        let myobjs = { sport_preferences,league_preference,team_preference,player_preference};
+     
+
+                
+            ///////////////////////////////////////////////////////////////////////////////      
+            user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUser) => {
+                if(err) {  console.log(err);
+                    return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
+                }
+                let paths =MyBasePath(req,res); 
+            
+                if(!isEmpty(updatedUser)){
+                updatedUser.image = (updatedUser.image == '')? '':  `${paths}/image/assets/user_img/${updatedUser.image}` ;
+                 return res.status(200).json({"status":true,"msg": "success" , "body":updatedUser }) ;
+                }else{
+                    return res.status(200).json({"status":false,"msg": "Invalid user"  }) ;
+                }
+               
+            });       
+                
+            ///////////////////////////////////////////////////////////////////////////
+                
+                } catch (error) { console.log(error);
+                    return res.status(200).send({"status":false,"msg":'no data add ' , "body":''}) ;          
+
+                }           
+            
+
+    }
+
    
 static block_user_add = async(req,res)=>{
 
@@ -407,10 +451,11 @@ static block_user_add = async(req,res)=>{
                 let user_data = req.body;
          let from_user_len = (user_data.from_user || '').length;
          let to_user_len = (user_data.to_user || '').length;
-
+          
         if(from_user_len == 0 || to_user_len == 0  ){
             return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
-         }         
+           } 
+
         let date = getcurntDate();
         let fUser = mongoose.Types.ObjectId(user_data.from_user);
         let toUser = mongoose.Types.ObjectId(user_data.to_user);

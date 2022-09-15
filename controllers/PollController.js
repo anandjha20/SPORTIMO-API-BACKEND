@@ -2,7 +2,7 @@ let  express_2 = require('express');
 const mongoose = require('mongoose');
 const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
 const { sendNotificationAdd } = require('../myModel/helper_fun');
-  const {send_noti,get_preferenceUserToken} = require('../myModel/Notification_helper');
+  const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification} = require('../myModel/Notification_helper');
 
 const { poll_percent} = require('../myModel/helper_fun');
    
@@ -14,39 +14,34 @@ const { poll_percent} = require('../myModel/helper_fun');
     const poll_tbl = require('../models/poll');    
     const poll_result_tbl = require('../models/poll_result');    
     const poll_skips_tbl = require('../models/poll_skips');    
-
-class PollController { 
+    
+class PollController {   
       static jk_test = async(req,res)=>{
         let sports = req.body.sports;
         let leagues = req.body.leagues;
         let teams = req.body.teams;
-        let players = req.body.players;
-          //  let sendToken = await get_sportsUserToken(sports);
-          
-            let sport_preferences = await get_preferenceUserToken(sports,'sport_preferences');
-            let league_preference = await get_preferenceUserToken(leagues,'league_preference');
-            let team_preference   = await get_preferenceUserToken(teams,'team_preference');
-            let player_preference = await get_preferenceUserToken(players,'player_preference');
+        let players = req.body.players;  
+        let user_id = req.body.user_id;  
+      
+        // let userData = await user_tbl.findOne({"_id":user_id},"firebase_token");
+        
+        // if(! isEmpty(userData)){
+        //      let title = 'Admin has replied to your complaint';   
+        //      let details = 'Admin has replied to your complaint';  
+        //       send_noti([userData.firebase_token],title,details);
+        // }
+        let title = 'Admin has replied to your complaint'; 
+        let details = 'Admin has replied to your complaint';    
        
-            let my_obj = {sport_preferences:sport_preferences.length  ,league_preference : league_preference.length,
-                      team_preference:team_preference.length,player_preference:player_preference.length};
-                      sport_preferences.concat(league_preference,team_preference,player_preference);
-           
-            let new_arr =    [...new Set(sport_preferences)];
-           
-            const  arrPairs = await ArrChunks(new_arr,3);
-          
-             if(arrPairs.length>0){
-                 
-                    console.log("arrPairs == ",arrPairs);
+        let data = await userSentNotification({user_id,title,details});
 
-                    arrPairs.map((chunkarr,i)=>{
-                            console.log("notication loop run no == ",i);
-                       send_noti(chunkarr," welcome to sortimo .... ","sortimo notification testing by jk bhopali ");
-                    })
-                     
-          }
-        return res.status(200).send({'status':false,'msg':'Success',"count":my_obj,"body":new_arr });
+        return res.status(200).send({'status':false,'msg':'Success',"body":userData });
+
+        //let ssobj = {sports,leagues,teams,players,"title": "demo testing poll created on Sportimo",
+           //           "details": 'get_user_report_admin' } ;
+       
+       // let sendToken = await send_poll_notification(ssobj);
+        
     }
    
 
@@ -192,7 +187,19 @@ class PollController {
 
                                   let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,category_type} );
                       }
-                              return res.status(200).send({"status":true,"msg":'Poll Created Successfully' , "body":data  }) ;            
+                      if(user_data.noti_status == 1){
+                        let title2 = `New Poll has been publihed for match: ${ user_data.match} ` ;  
+                        let msg2 = `New Poll has been publihed for match: ${ user_data.match} Click here to participate.`; 
+                       
+                        let poll_noti_parms = { "sports":user_data.sports,"leagues":user_data.leagues,"teams":user_data.teams,
+                                    "players":user_data.players,"title":title2, details: msg2 };
+                        
+                         let sendTokenSS =  send_poll_notification(poll_noti_parms);
+                     
+                      }
+                           
+                          
+                          return res.status(200).send({"status":true,"msg":'Poll Created Successfully' , "body":data  }) ;            
                             }else{
                                   return res.status(200).send({"status":false,"msg":'something went wrong please try again' , "body":''  }) ;            
                        

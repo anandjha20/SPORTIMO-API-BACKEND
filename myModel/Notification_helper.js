@@ -1,8 +1,10 @@
  const  axios = require('axios');
- const {isEmpty,getcurntDate,rows_count }  = require("./common_modal");   
+ const {isEmpty,getcurntDate,rows_count,ArrChunks }  = require("./common_modal");   
 
  const user_tbl = require('../models/user');    
  
+
+
 const send_noti = (tokens,title,msg)=>{
     var serverKey = 'AAAAbNzLTl4:APA91bEcbPDTEwzTLUZSnPYiDoIhYOI4Jnb_v0OvNNg1tttjZpEJWKi9gMz5csQC6bx1nKz8rPpPRl_Klo_TpioQMA9C8OEkFFlZX8F9Ra7UhS4uwrC3k_w6SOgd-a9wKZfgxM2Naiaa';
      
@@ -78,7 +80,7 @@ const get_preferenceUserToken = async(preference,preference_name)=>{
         if(like_som.length>0 ){ 
              like_som.map( (row_2)=> {
                                         if(row_2.length > 0){
-                                      row_2.map((sum)=>{ sendToken.push (sum.firebase_token);
+                                      row_2.map((sum)=>{ if(sum.firebase_token != null){sendToken.push (sum.firebase_token); }  //firebase_token
                                       }); 
                 
                          } }) }  
@@ -87,7 +89,78 @@ const get_preferenceUserToken = async(preference,preference_name)=>{
 
 }
 
+const UniqueArrayFun = async(myArray)=>{
+     console.log(['joe', 'jane', 'mary'].includes('jane'));
+     let   uniqueArrays =[]
+     if(isEmpty(myArray)){ return []; }
+
+      myArray.map((elem, pos)=> { if(! uniqueArrays.includes(elem)){ uniqueArrays.push(elem)   } });
+      return  await uniqueArrays;
+}
+
+const send_poll_notification = async (req,res)=>{
+     try {
+          
+               let sports = req.sports;  let leagues = req.leagues;
+               let teams = req.teams;    let players = req.players;
+               let title = req.title;    let details = req.details;
+           /// get all user token get 
+               let sport_preferences = await get_preferenceUserToken(sports,'sport_preferences');
+               let league_preference = await get_preferenceUserToken(leagues,'league_preference');
+               let team_preference   = await get_preferenceUserToken(teams,'team_preference');
+               let player_preference = await get_preferenceUserToken(players,'player_preference');
+               
+               let myobj = {sport_preferences,league_preference,team_preference,player_preference}
+              
+               let bigArr = [];
+           /// preferences check empty token array
+               if(! isEmpty(sport_preferences)){ bigArr = [ ...bigArr,...sport_preferences ] }
+               if(! isEmpty(league_preference)){ bigArr = [...bigArr, ...league_preference ] }
+               if(! isEmpty(team_preference)){ bigArr = [ ...bigArr,...team_preference ] }
+               if(! isEmpty(player_preference)){ bigArr = [...bigArr, ...player_preference ] }
+         
+           // check uniq array token      
+               let new_arr = await  UniqueArrayFun(bigArr);
+                   //console.log(" fun call  == ",new_arr);  
+           
+           // array  Chunks small array      
+            const  arrPairs = await ArrChunks(new_arr,3);
+               /// console.log(" arrPairs fun call  == ",arrPairs);
+         
+            /// ArrChunks  loop run and send notification            
+               if(arrPairs.length > 0){
+                    console.log("arrPairs == ",arrPairs);
+                       arrPairs.map((chunkarr,i)=>{
+                                   console.log("notication loop run no == ",i);
+                              send_noti(chunkarr,title,details);
+                         }) }
+
+    } catch (error) { console.log("send_poll_notification errr  == ",error); }
+}
+
+const userSentNotification =  async(req,res)=>{
+        try {
+          
+               let user_id = req.user_id; 
+               let title = req.title;    
+               let details = req.details;   
+               let userData = await user_tbl.findOne({"_id":user_id},"firebase_token");
+               console.log("send_USER_notificatioN  == ",req);
+                    if(! isEmpty(userData)){
+                         //let title = 'Admin has replied to your complaint';   
+                       //  let details = 'Admin has replied to your complaint';  
+                              send_noti([userData.firebase_token],title,details);
+                    }
 
 
 
-module.exports = {send_noti,get_preferenceUserToken }
+          } catch (error) { console.log("send_poll_notification errr  == ",error); }
+
+}
+
+
+
+
+
+
+module.exports = {send_noti,get_preferenceUserToken,send_poll_notification,UniqueArrayFun,userSentNotification}

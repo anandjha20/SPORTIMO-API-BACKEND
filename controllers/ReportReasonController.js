@@ -6,7 +6,7 @@ const {getcurntDate,isEmpty,gen_str} = require('../myModel/common_modal');
 const report_reason_tbl = require('../models/report_reason');
 const user_reportings_tbl = require('../models/user_reportings');
 
-
+  
 class ReportReasonController {
         static  report_reason_add =  async(req,res) =>{
              let name = req.body.name;

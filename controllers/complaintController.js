@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 const { rows_count,Email,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty } = require('../myModel/common_modal');
 
 const  {MyBasePath} = require("../myModel/image_helper");
-      
+    
+  const {userSentNotification} = require('../myModel/Notification_helper');
+  
 
 const { poll_percent,all_list_come,sendNotificationAdd} = require('../myModel/helper_fun');
    
@@ -340,14 +342,16 @@ class ComplaintController{
                  if(response){
                           
                         let type_status = 1; 
-                        let title = `You have a new message from admin  ` ;  
-                        let msg = `You have a new message from admin Click here to view.`; 
-                      
+                       
+                        let title = 'Admin has replied to your complaint'; 
+                        let msg = `Admin has replied to your complaint Click here to view.`; 
+                        
+
                        let module_type = "complaint";
                        let module_id  = response._id;
                         let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id});
                               
-
+                        let data = await userSentNotification({ "user_id": complaint_id,"title":title,"details":msg});
 
 
                              return res.status(200).send({"status":true,"msg":'Complaint cht added successfully', "body":response}) ;          

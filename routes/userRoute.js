@@ -53,6 +53,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
           router.post('/user_profile_view',UserController.user_profile_view);
           router.get('/resend_otp/:id?',UserController.resend_otp_2); 
           router.post('/verify_otp',UserController.verify_otp);         
+          router.put('/user_preference_update/:id',UserController.user_preference_update);         
         
           /// PollController route list      
           router.get('/poll_list/:id?',user_token_check,PollController.poll_list);      
