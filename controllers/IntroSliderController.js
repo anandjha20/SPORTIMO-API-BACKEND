@@ -1,11 +1,6 @@
-const{ isEmpty} = require("../myModel/common_modal");
-
-
-const IntroSlider_tbls = require("../models/IntroSlider_tbls");
-
-
-
-
+ 
+ const{ isEmpty} = require("../myModel/common_modal");
+ const IntroSlider_tbls = require("../models/IntroSlider_tbls");
 
 class IntroSliderController{
     

@@ -2,7 +2,7 @@ let  express_2 = require('express');
 const mongoose = require('mongoose');
 const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
 const { sendNotificationAdd } = require('../myModel/helper_fun');
-  const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification} = require('../myModel/Notification_helper');
+  const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
 
 const { poll_percent} = require('../myModel/helper_fun');
    
@@ -14,33 +14,24 @@ const { poll_percent} = require('../myModel/helper_fun');
     const poll_tbl = require('../models/poll');    
     const poll_result_tbl = require('../models/poll_result');    
     const poll_skips_tbl = require('../models/poll_skips');    
-    
+    const user_complaint_tbl = require('../models/user_complaint');     
 class PollController {   
       static jk_test = async(req,res)=>{
-        let sports = req.body.sports;
-        let leagues = req.body.leagues;
-        let teams = req.body.teams;
-        let players = req.body.players;  
-        let user_id = req.body.user_id;  
-      
-        // let userData = await user_tbl.findOne({"_id":user_id},"firebase_token");
-        
-        // if(! isEmpty(userData)){
-        //      let title = 'Admin has replied to your complaint';   
-        //      let details = 'Admin has replied to your complaint';  
-        //       send_noti([userData.firebase_token],title,details);
-        // }
-        let title = 'Admin has replied to your complaint'; 
-        let details = 'Admin has replied to your complaint';    
-       
-        let data = await userSentNotification({user_id,title,details});
+        let complaint_id = req.body.complaint_id;
+        let title   =  'Your poll result Disclosed';  
+        let details =  'Admin has replied to your complaint';    
+ 
+  
+     ////////////////////////////////   
+     let data = await  user_complaint_tbl.findOne({"_id":complaint_id}).populate({path:"user_id",select:['firebase_token']}).exec();
+        if ( (!isEmpty(data)) && (! isEmpty(data.user_id)) && (! isEmpty(data.user_id.firebase_token) ))  {
+                 let sdd =  send_noti([data.user_id.firebase_token],title,details);
+        }
+      //let data = await pollDisclosed_noti_fun({poll_id,title,details});
 
-        return res.status(200).send({'status':false,'msg':'Success',"body":userData });
+        return res.status(200).send({'status':false,'msg':'Success',"body":data });
 
-        //let ssobj = {sports,leagues,teams,players,"title": "demo testing poll created on Sportimo",
-           //           "details": 'get_user_report_admin' } ;
-       
-       // let sendToken = await send_poll_notification(ssobj);
+     
         
     }
    
@@ -144,16 +135,16 @@ class PollController {
                         "fee_type": user_data.fee_type,
                         "amount":user_data.amount,
                         "apperance_time": user_data.apperance_time,
-                        "time_duration": user_data.time_duration,
+                        "time_duration": user_data.time_duration,             
 
-                        "qus": user_data.qus,
-                        "ops_1":user_data.ops_1,
-                        "ops_2": user_data.ops_2,
-                        "ops_3":user_data.ops_3,
-                        "ops_4":user_data.ops_4,
-                        "ops_5":user_data.ops_5,
+                        "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
+                        "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,
+                        "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,
+                        "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,
+                        "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,
+                        "ops_5":user_data.ops_5,     "ops_5_ara":user_data.ops_5_ara,
                       
-                        "noti_status":user_data.noti_status,
+                        "noti_status":user_data.noti_status,               
                        
                         "noti_in_App_status":user_data.noti_in_App_status,
                         "result_type":user_data.result_type,
@@ -242,14 +233,15 @@ class PollController {
                       "amount":user_data.amount,
                       "apperance_time": user_data.apperance_time,
                       "time_duration": user_data.time_duration,
+                      
+                      "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
+                      "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,
+                      "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,
+                      "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,
+                      "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,
+                      "ops_5":user_data.ops_5,     "ops_5_ara":user_data.ops_5_ara,
 
-                      "qus": user_data.qus,
-                      "ops_1":user_data.ops_1,
-                      "ops_2": user_data.ops_2,
-                      "ops_3":user_data.ops_3,
-                      "ops_4":user_data.ops_4,
-                      "ops_5":user_data.ops_5,
-                    
+
                       "noti_status":user_data.noti_status,
                      
                       "noti_in_App_status":user_data.noti_in_App_status,
@@ -509,7 +501,7 @@ static my_polls_old = async(req,res)=>{
         if(disclosed_status == 0 || disclosed_status == 1){}else{
           return res.status(200).send({"status":false,"msg":'Invalid disclosed status' , "body": disclosed_status }) ;   
         }  
-      
+       
         poll_tbl.findOneAndUpdate({_id: id,result_type:"Undisclosed"},{$set : {"disclosed_status":disclosed_status}},{new: true}, (err, updatedUser) => {
           if(err) {  console.log(err);
             return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
@@ -519,10 +511,10 @@ static my_polls_old = async(req,res)=>{
                      let title = `${updatedUser.match} Poll Result has been disclosed ` ;  
                      let msg = `${updatedUser.match} Poll Result has been disclosed  Click here to view.`; 
                      let category_type = 'results';
-                    let module_type = "polls";
-                    let module_id  = updatedUser._id;
+                     let module_type = "polls";
+                     let module_id  = updatedUser._id;
                      let demo =  sendNotificationAdd({title,msg,type_status,category_type,module_type,module_id});
-                           
+                     let noti_damo =   pollDisclosed_noti_fun({title,poll_id:id,details:msg});             
                     return res.status(200).send({"status":true,"msg":'Poll Result Disclosed Successfully' , "body":''  }) ;   
       
               }else{  return res.status(200).send({"status":false,"msg":'Invalid poll Id ' , "body": ''}) ;   

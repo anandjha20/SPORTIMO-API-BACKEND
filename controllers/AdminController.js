@@ -261,17 +261,18 @@ class AdminController {
             // console.log('By shubham');
             let user_data = req.body;
           
-            let add = new faq_category_tbl({
-                cat_name: user_data.cat_name,
+            let add = new faq_category_tbl({ 
+                cat_name: user_data.cat_name, cat_name_ara : user_data.cat_name_ara, 
+                cat_name_fr: user_data.cat_name_fr,
                 
             });
           
-          let response  =   await add.save();
-          if(response){
-                      return res.status(200).send({"status":true,"msg":'FAQ category added successfully' , "body": ''}) ;          
-              }else{
-                    return res.status(200).send({"status":false,"msg":'FAQ category  not add' , "body": ''}) ;    
-                  }
+           add.save( (err,datas)=>{
+              if(err){    return res.status(200).send({"status":false,"msg":'FAQ category  not add' , "body": ''}) ;        
+                }else{     
+                return res.status(200).send({"status":true,"msg":'FAQ category added successfully' , "body": datas }) ;    }
+          });
+        
       
         } catch (error) {
             return res.status(200).send({"status":false,"msg":'No data add  ' , "body":''}) ;          
@@ -279,14 +280,18 @@ class AdminController {
       }
       static update_faq_category = async (req,res)=>{
         try {
-            let  id = req.body.id;  let id_len = (id || '').length;
-            let cat_name = req.body.cat_name; let cat_name_len = (cat_name || '').length;
+              let  id = req.body.id;             
+              let cat_name = req.body.cat_name;  let cat_name_ara = req.body.cat_name_ara;   
+              let cat_name_fr = req.body.cat_name_fr;  
+        
+              //   let cat_name_arb = req.body.cat_name; let cat_name_len = (cat_name || '').length;
             
-            if(cat_name_len == 0 || id_len == 0 ){
-            return   res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});
-            }
-            faq_category_tbl.findOneAndUpdate({_id: id},{$set : {cat_name:cat_name}},{new: true}, (err, updateddata) => {
-        if(err) {  console.log(err);
+            if( isEmpty(cat_name) || isEmpty(cat_name_ara) || isEmpty(id) || isEmpty(cat_name_fr) ){
+                 return   res.status(200).send({'status':false,'msg':"All Field Required ",'body':''});
+              }
+
+            faq_category_tbl.findOneAndUpdate({_id: id},{$set :{cat_name,cat_name_ara,cat_name_fr} },{new: true}, (err, updateddata) => {
+           if(err){  console.log(err);
                 return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
              }
         

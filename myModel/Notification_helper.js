@@ -2,7 +2,7 @@
  const {isEmpty,getcurntDate,rows_count,ArrChunks }  = require("./common_modal");   
 
  const user_tbl = require('../models/user');    
- 
+ const poll_result_tbl = require('../models/poll_result');    
 
 
 const send_noti = (tokens,title,msg)=>{
@@ -159,8 +159,30 @@ const userSentNotification =  async(req,res)=>{
 }
 
 
+const pollDisclosed_noti_fun = async(req)=>{
+     try {    
+               let poll_id = req.poll_id;
+               let title   = req.title;       //  'Your poll result Disclosed';  
+               let details = req.details;    //  'Admin has replied to your complaint';    
+        
+           let data = await poll_result_tbl.find({'poll_id':poll_id}).populate({path: "user_id",select:['firebase_token']}).exec();
+           let allTokens = []; 
+
+            if( ! isEmpty(data)){ data.map((item)=>{ if(! isEmpty(item.user_id)){ allTokens.push(item.user_id.firebase_token)}
+                         }); }
+
+         const  arrPairs = await ArrChunks(allTokens,1);
+         if(arrPairs.length > 0){
+           console.log("arrPairs == ",arrPairs);
+              arrPairs.map((chunkarr,i)=>{
+                          console.log("notication loop run no == ",i);
+                     send_noti(chunkarr,title,details);
+                }) }
+       return true;             
+      } catch (error) { console.log(error);  return false; }
+      
+}
 
 
 
-
-module.exports = {send_noti,get_preferenceUserToken,send_poll_notification,UniqueArrayFun,userSentNotification}
+module.exports = {send_noti,get_preferenceUserToken,send_poll_notification,UniqueArrayFun,userSentNotification,pollDisclosed_noti_fun}

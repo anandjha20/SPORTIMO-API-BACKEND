@@ -22,7 +22,7 @@ const { poll_percent,all_list_come,sendNotificationAdd} = require('../myModel/he
     const complaint_categories = require('../models/user_complaint_cat');    
     
 class ComplaintController{
-
+   
   
    static add_user_complaint_category = async(req,res)=>{
             try {
@@ -397,14 +397,14 @@ class ComplaintController{
                 }
 
             if(!isEmpty(updatedUser)){
-
+                let com_user_id =  updatedUser.user_id;    
                 let type_status = 1; 
                 let title = `complaint marked closed by admin ` ;  
                 let msg = `complaint marked closed by admin Click here to view.`; 
                 let module_type = "complaint";
                 let module_id  = updatedUser._id;
                 let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id});
-                
+                let demo3 = userSentNotification({"user_id":com_user_id,"details": msg,title});
              return res.status(200).json({ "status":true,"msg": "Complaint marked as closed successfully." ,
                                              "body":updatedUser });
 
