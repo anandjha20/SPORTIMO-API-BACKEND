@@ -38,7 +38,8 @@ function TableContent() {
         [
   
             { title: 'Content Type', field: 'type'},
-            { title: 'Complaint Category', render: rowData => <div>{rowData.content_data.replace(regex, '')}</div> },
+            { title: 'Content Category (English)', render: rowData => <div>{rowData.content_data.replace(regex, '')}</div> },
+            { title: 'Content Category (Arabic)', render: rowData => <div>{rowData.content_data_ara.replace(regex, '')}</div> },
         
         ]
 

@@ -214,8 +214,10 @@ function TableLIstNotification() {
                         <table className="table ">
                             <thead>
                                 <tr>
-                                    <th scope="col">Title</th>
-                                    <th scope="col">Message</th>
+                                    <th scope="col">Title (English)</th>
+                                    <th scope="col">Message (English)</th>
+                                    <th scope="col">Title (Arabic)</th>
+                                    <th scope="col">Message (Arabic)</th>
                                     <th scope="col">Category Type</th>
                                     <th scope="col">Notification Type</th>
                                     <th scope="col">Module Type</th>
@@ -235,6 +237,9 @@ function TableLIstNotification() {
                                         <tr key={item._id}>
                                             <td>{item.title.slice(0, 30)}</td>
                                             <td>{item.message.slice(0, 30)}</td>
+                                            <td>{item.title_ara.slice(0, 30)}</td>
+                                            <td>{item.message_ara.slice(0, 30)}</td>
+                                           
                                             <td>{item.category_type}</td>
                                             <td>{item.type_status == "1" ? <>Push</> : <>In-App</>}</td>
                                             <td>{item.module_type}</td>
@@ -287,12 +292,21 @@ function TableLIstNotification() {
                 <DialogTitle><i className="fal fa-bell"></i> &nbsp;View Notification</DialogTitle>
                 <DialogContent>
                     <div className="row">
+
                         <div className="col-lg-12 mb-4">
-                            <TextField InputProps={{ readOnly: true, }}  name='title' label="Title" multiline rows={1} fullWidth defaultValue={notiItem.title} variant="filled" autoComplete="off" />
+                            <TextField InputProps={{ readOnly: true, }}  name='title' label="Title (English)" multiline rows={1} fullWidth defaultValue={notiItem.title} variant="filled" autoComplete="off" />
                         </div>
                         <div className="col-lg-12 mb-4">
-                            <TextField InputProps={{ readOnly: true, }}  name='message' label="Message" multiline rows={2} defaultValue={notiItem.message} fullWidth variant="filled" autoComplete="off" />
+                            <TextField InputProps={{ readOnly: true, }}  name='message' label="Message (English)" multiline rows={2} defaultValue={notiItem.message} fullWidth variant="filled" autoComplete="off" />
                         </div>
+
+                        <div className="col-lg-12 mb-4">
+                            <TextField InputProps={{ readOnly: true, }}  name='title' label="Title (Arabic)" multiline rows={1} fullWidth defaultValue={notiItem.title_ara} variant="filled" autoComplete="off" />
+                        </div>
+                        <div className="col-lg-12 mb-4">
+                            <TextField InputProps={{ readOnly: true, }}  name='message' label="Message (Arabic)" multiline rows={2} defaultValue={notiItem.message_ara} fullWidth variant="filled" autoComplete="off" />
+                        </div>
+
                         <div className="col-lg-6 mb-4">
                             <TextField InputProps={{ readOnly: true, }}  name='title' label="Category Type"  fullWidth defaultValue={notiItem.category_type} variant="filled" autoComplete="off" />
                         </div>

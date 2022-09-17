@@ -124,6 +124,7 @@ export default function TeamsPreference() {
     
             let dataToSend2 = new FormData();
             dataToSend2.append('name', Formvlaues.name);
+            dataToSend2.append('name_ara', Formvlaues.name_ara);
             dataToSend2.append('image', Formvlaues.image);
     
                 axios.put(`/web_api/players/${id}`, dataToSend2, options1)
@@ -136,15 +137,12 @@ export default function TeamsPreference() {
                                 setOpen(false);
                                 return PreferenceList();
                             } else {
-                                toast.error('something went wrong please try again');
+                                toast.error(data.msg);
                             }
                         }
                         else {
-                            toast.error('something went wrong please try again..');
+                            toast.error(data.msg);
                         }
-                    })
-                    .catch(error => {
-                        console.log(this.state);
                     })
         }
 
@@ -155,6 +153,7 @@ export default function TeamsPreference() {
         const Formvlaues = Object.fromEntries(data.entries());
         let dataToSend2 = new FormData();
         dataToSend2.append('name', Formvlaues.name);
+        dataToSend2.append('name_ara', Formvlaues.name_ara);
         dataToSend2.append('image', Formvlaues.image);
 
         axios.post(`/web_api/players`, dataToSend2, options1)
@@ -167,15 +166,12 @@ export default function TeamsPreference() {
                             e.target.reset();
                             return PreferenceList();
                         } else {
-                            toast.error('something went wrong please try again');
+                            toast.error(data.msg);
                         }
                     }
                     else {
-                        toast.error('something went wrong please try again..');
+                        toast.error(data.msg);
                     }
-                })
-                .catch(error => {
-                    console.log(this.state);
                 })
     }
 
@@ -232,22 +228,26 @@ export default function TeamsPreference() {
                                                 <form className="mt-3" onSubmit={(e) => AddFormData(e)}>
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Players Preference</h6>
 
-                                                    <TextField id="categor" className="filter-input" name="name" autoComplete="off"
-                                                        onChange={handleOnChange} label="Players Preference" fullWidth type="text"
-                                                        InputLabelProps={{
-                                                            shrink: true,
-                                                        }}
-                                                    />
+                                                    <label className="title-col">Players Preference <span className="text-blue">(English)</span></label>
+                                                      <input  onChange={handleOnChange} id="categor" className="form-control mb-4" name="name"
+                                                         type="text"
+                                                        />
+
                                                     {errors.name && dirty.name && (
-                                                        <p className="error">{errors.name}</p>
-                                                    )}
+                                                    <p className="error">{errors.name}</p>
+                                                     )}
+    
+                                                      <label className="title-col">Players Preference <span className="text-blue">(Arabic)</span></label>
+                                                      <input  id="categor" className="form-control mb-4" name="name_ara"
+                                                         type="text"
+                                                        />
 
                                                    <div className="col-lg-12 mt-4 mb-4 p-0">
                                                         <label className="title-col">File Upload</label>
                                                         <input type="file" name='image' className="form-control file-input" />
                                                     </div>
 
-                                                    <div className="mt-3">
+                                                    <div className="mt-3 mb-4">
                                                         <Button type='submit' className="mr-3 btn-pd btnBg" disabled={disable}>Add</Button>
                                                         <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
                                                     </div>
@@ -264,14 +264,15 @@ export default function TeamsPreference() {
                                                                 <thead>
                                                                     <tr>
                                                                         <th scope="col">Image</th>
-                                                                        <th scope="col">Players Preference</th>
+                                                                        <th scope="col">Players Preference (English)</th>
+                                                                        <th scope="col">Players Preference (Arabic)</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                 {data == '' ? <>
                                                                     <tr>
-                                                                    <td className="text-center" colspan='2'> 
+                                                                    <td className="text-center" colspan='4'> 
                                                                         <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
                                                                     </tr>
                                                                     </> : null}
@@ -280,7 +281,8 @@ export default function TeamsPreference() {
                                                                             return (
                                                                                 <tr key={item._id}>
                                                                                     <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
-                                                                                    <td>{item.team_name}</td>
+                                                                                    <td>{item.name}</td>
+                                                                                    <td>{item.name_ara}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
                                                                                             <IconButton onClick={(e) => { onOpenModal(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">
@@ -326,18 +328,27 @@ export default function TeamsPreference() {
                                                     </div>
                                                 </div>
                                                 <Modal open={open} onClose={onCloseModal} center>
-                                                    <h2 className="mb-4 text-white">Update Category</h2>
+                                                    <h2 className="mb-4 text-white">Update Players Preference</h2>
                                                     <div className="mx-500">
                                                         <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
-                                                            <div className="form-group mb-4"> <label className="tx-medium">Update Category</label>
+                                                            <div className="form-group mb-4"> 
+
+                                                              <label className="title-col"> Players Preference <span className="text-blue">(English)</span></label>
                                                                 <input type="hidden" className="form-control" name='_id' value={catView._id} />
                                                                 <input type="text" className="form-control" name='name'
-                                                                    defaultValue={catView.team_name} /> </div>
-                                                                      <div className="col-lg-12 mt-4 mb-3  p-0">
+                                                                    defaultValue={catView.name} /> </div>
+
+                                                                <label className="title-col"> Players Preference <span className="text-blue">(Arabic)</span></label>
+                                                                <input  id="categor" className="form-control mb-4" name="name_ara"
+                                                                type="text" defaultValue={catView.name_ara}
+                                                                />  
+
+
+                                                        <div className="col-lg-12 mt-4 mb-3  p-0">
                                                                 <label className="title-col">File Upload</label>
                                                                 <input type="file" name='image' className="form-control file-input" />
                                                               </div>
-                                                            <div className="mt-3">
+                                                            <div className="mt-4 mb-3">
                                                                 <Button type='submit' className="mr-3 btn-pd btnBg" >Update</Button>
                                                             </div>
                                                         </form>

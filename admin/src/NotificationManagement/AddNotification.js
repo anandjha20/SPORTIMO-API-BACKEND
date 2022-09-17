@@ -80,6 +80,9 @@ export default function AddNotification(props) {
                 if (data.status) {
                     // navigate(`/poll`);
                     toast.success(data.msg);
+                    e.target.reset();
+
+            
                 } else {
                     toast.error('something went wrong please try again');
                 }
@@ -143,15 +146,15 @@ export default function AddNotification(props) {
     }) : [];
 
     const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
-        return { value: item._id, label: item.league_name };
+        return { value: item._id, label: item.name };
     }) : [];
 
     const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
-        return { value: item._id, label: item.team_name };
+        return { value: item._id, label: item.name };
     }) : [];
 
     const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
-        return { value: item._id, label: item.team_name };
+        return { value: item._id, label: item.name };
     }) : [];
     const countryOptions = (country_lists.length > 0) ? country_lists.map((item) => {
         return { value: item._id, label: item.name };
@@ -246,13 +249,26 @@ export default function AddNotification(props) {
                                                 <form onSubmit={(e) => myFormData(e)}>
                                                     <div className="row">
                                                         <div className="col-lg-12 mb-4">
-                                                            <label className="title-col">Title</label>
+                                                            <label className="title-col">Title <span className="text-blue">(English)</span></label>
                                                             <TextField id="filled-multiline-static" name='title' label="Enter Title" multiline rows={1} fullWidth defaultValue="" variant="filled" autoComplete="off" />
 
                                                         </div>
+                                                      
                                                         <div className="col-lg-12 mb-4">
-                                                            <label className="title-col">Message</label>
+                                                            <label className="title-col">Message <span className="text-blue">(English)</span></label>
                                                             <TextField id="filled-multiline-static" name='message' label="Enter Message" multiline rows={4} fullWidth defaultValue="" variant="filled" autoComplete="off" />
+
+                                                        </div>
+
+                                                        {/* ////////add message Arabic////////////// */}
+                                                        <div className="col-lg-12 mb-4">
+                                                            <label className="title-col">Title <span className="text-blue">(Arabic)</span></label>
+                                                            <TextField id="filled-multiline-static" name='title_ara' label="Enter Title" multiline rows={1} fullWidth defaultValue="" variant="filled" autoComplete="off" />
+
+                                                        </div>
+                                                        <div className="col-lg-12 mb-4">
+                                                            <label className="title-col">Message <span className="text-blue">(Arabic)</span></label>
+                                                            <TextField id="filled-multiline-static" name='message_ara' label="Enter Message" multiline rows={4} fullWidth defaultValue="" variant="filled" autoComplete="off" />
 
                                                         </div>
                                                         <div className="col-lg-12 mb-3">

@@ -32,12 +32,14 @@ import LeaguesPreference from "./PreferenceMaster/LeaguesPreference";
 import TeamsPreference from "./PreferenceMaster/TeamsPreference";
 import PlayersPreference from "./PreferenceMaster/PlayersPreference";
 import IntroSliderImg from "./SponsorshipManagement/IntroSliderImg";
+import IntroSliderTable from "./SponsorshipManagement/IntroSliderTable";
 import IntroSliderDetails from "./SponsorshipManagement/IntroSliderDetails";
 import AllListNotification from "./NotificationManagement/AllListNotification";
 import AddNotification from "./NotificationManagement/AddNotification";
 import ReportReason from "./ReportReasonMangement/ReportReason";
 import GroupList from "./GroupChatManagement/GroupList";
 import GroupChatManagement from "./GroupChatManagement/GroupChatManagement";
+import UserReportList from "./ReportReasonMangement/UserReportList";
 
 function App() {
   return (
@@ -72,7 +74,8 @@ function App() {
         {/* sponsorship */}
         <Route path="/sponsorship/add" element={ <AddSponsorship /> } />
         <Route path="/sponsorship" element={ <SponsorshipList /> } />
-        <Route path="/intro-slider" element={ <IntroSliderImg /> } />
+        <Route path="/intro-slider/add" element={ <IntroSliderImg /> } />
+        <Route path="/intro-slider" element={ <IntroSliderTable /> } />
         <Route path="/intro-slider/detail/:_id" element={ <IntroSliderDetails /> } />
         <Route path="/sponsorship/detail/:id" element={ <SponsorshipDetails /> } />
         <Route path="/sponsorship/update/:id" element={ <UpdateSponsorship /> } />
@@ -98,6 +101,7 @@ function App() {
 
         {/*ReportReasonManagement */} 
         <Route path="/report" element={ <ReportReason /> } />
+        <Route path="/user-report" element={ <UserReportList /> } />
 
         {/*Notification Management*/} 
         <Route path="/notification" element={ <AllListNotification /> } />

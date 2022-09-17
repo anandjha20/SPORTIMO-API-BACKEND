@@ -54,7 +54,10 @@ export default function CreateDefaultMessage() {
         TipsTricksList()
     }, []);
 
-    const columns = [{ title: 'Default Status Message', field: 'd_msg' },]
+    const columns = [
+        { title: 'Default Status Message (English)', field: 'd_msg' },
+        { title: 'Default Status Message (Arabic)'  , field: 'd_msg_ara' },
+    ]
 
     ///////////////////////////  Add Default Status Message Api Call  /////////////////////////////////////////
 
@@ -63,9 +66,11 @@ export default function CreateDefaultMessage() {
         try {
 
             let d_msg = (e.target.elements.d_msg !== 'undefined') ? e.target.elements.d_msg.value : '';
+            let d_msg_ara = (e.target.elements.d_msg_ara !== 'undefined') ? e.target.elements.d_msg_ara.value : '';
 
             let dataToSend2 = {
                 "d_msg": d_msg,
+                "d_msg_ara": d_msg_ara,
             }
 
             console.log("new values == ", dataToSend2);
@@ -91,11 +96,11 @@ export default function CreateDefaultMessage() {
                                 })
 
                         } else {
-                            toast.error('something went wrong please try again');
+                            toast.error(data.msg);
                         }
                     }
                     else {
-                        toast.error('something went wrong please try again..');
+                        toast.error(data.msg);
                     }
 
                 })
@@ -236,12 +241,16 @@ export default function CreateDefaultMessage() {
                                                 <form className="mt-3" onSubmit={(e) => saveFormData(e)}>
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Default Status Message</h6>
 
-                                                    <TextField id="categor" className="filter-input" name="d_msg"
-                                                        label="Add Default Status Message" fullWidth type="text"
-                                                        InputLabelProps={{
-                                                            shrink: true,
-                                                        }}
-                                                    />
+                                                     <label className="title-col">Default Status <span className="text-blue">(English)</span></label>
+                                                      <input id="categor" className="form-control mb-4" name="d_msg"
+                                                         type="text"
+                                                        />
+
+                                                 
+                                                      <label className="title-col">Default Status <span className="text-blue">(Arabic)</span></label>
+                                                      <input  id="categor" className="form-control mb-4" name="d_msg_ara"
+                                                         type="text"
+                                                        />
 
                                                     <div className="mt-3">
                                                         <Button type='submit' className="mr-3 btn-pd btnBg">Add</Button>
@@ -294,11 +303,22 @@ export default function CreateDefaultMessage() {
                                                         autoFocus
                                                         margin="dense"
                                                         id="name"
-                                                        label=""
+                                                        label="English"
                                                         type="text"
                                                         fullWidth
                                                         variant="standard"
                                                         defaultValue={opnData.d_msg}
+                                                                InputProps={{readOnly: true, }}
+                                                    />
+                                                    <TextField multiline rows={2}
+                                                        autoFocus
+                                                        margin="dense"
+                                                        id="name"
+                                                        label="Arabic"
+                                                        type="text"
+                                                        fullWidth
+                                                        variant="standard"
+                                                        defaultValue={opnData.d_msg_ara}
                                                                 InputProps={{readOnly: true, }}
                                                     />
                                                     </DialogContent>

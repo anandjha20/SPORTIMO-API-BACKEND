@@ -103,19 +103,24 @@ export default function ReportReason() {
     }, []);
 
 
+    ////////get token //////////
+    const token = localStorage.getItem("token");
+    const header = ({ 'token': `${token}` });
+    const options1 = ({ headers: header });
+
     ///////////////// Update complaint category /////////////////
     const saveFormData = async (e) => {
         e.preventDefault();
         try {
 
             let name = (e.target.elements.name !== 'undefined') ? e.target.elements.name.value : '';
+            let name_ara = (e.target.elements.name_ara !== 'undefined') ? e.target.elements.name_ara.value : '';
             let _id = (e.target.elements._id !== 'undefined') ? e.target.elements._id.value : '';
             let dataToSend2 = {
                 "name": name,
+                "name_ara": name_ara,
             }
             console.log("new values == ", dataToSend2);
-
-            let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
 
             axios.put(`/web_api/report_reason_update/${_id}`, dataToSend2, options1)
                 .then(res => {
@@ -147,9 +152,11 @@ export default function ReportReason() {
         e.preventDefault();
         try {
             let name = (e.target.elements.name !== 'undefined') ? e.target.elements.name.value : '';
+            let name_ara = (e.target.elements.name_ara !== 'undefined') ? e.target.elements.name_ara.value : '';
 
             let dataToSend2 = {
                 "name": name,
+                "name_ara": name_ara,
             }
             console.log("new values == ", dataToSend2);
             let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
@@ -228,15 +235,22 @@ export default function ReportReason() {
                                                 <form className="mt-3" onSubmit={(e) => AddFormData(e)}>
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Report Reason</h6>
 
-                                                    <TextField id="categor" className="filter-input" name="name" autoComplete="off"
-                                                        onChange={handleOnChange} label="Report Reason" fullWidth type="text"
-                                                        InputLabelProps={{
-                                                            shrink: true,
-                                                        }}
-                                                    />
-                                                    {errors.name && dirty.name && (
-                                                        <p className="error">{errors.name}</p>
-                                                    )}
+                                                      <label className="title-col">Report Reason <span className="text-blue">(English)</span></label>
+
+                                                       <input id="categor"  autoComplete="off"  onChange={handleOnChange} className="form-control mb-4" name="name"
+                                                         type="text"
+                                                        />
+                                                           {errors.name && dirty.name && (
+                                                            <p className="error">{errors.name}</p>
+                                                          )}
+                                                 
+                                                      <label className="title-col">Report Reason <span className="text-blue">(Arabic)</span></label>
+                                                      <input  id="categor" autoComplete="off" className="form-control mb-4" name="name_ara"
+                                                         type="text"
+                                                        />
+                                                           {errors.name_ara && dirty.name_ara && (
+                                                        <p className="error">{errors.name_ara}</p>
+                                                         )}
 
                                                     <div className="mt-3">
                                                         <Button type='submit' className="mr-3 btn-pd btnBg" disabled={disable}>Add</Button>
@@ -254,16 +268,24 @@ export default function ReportReason() {
                                                             <table className="table ">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th scope="col">Report Reason</th>
+                                                                        <th scope="col">Report Reason (English)</th>
+                                                                        <th scope="col">Report Reason (Arabic)</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
+                                                                {data == '' ? <>
+                                                                    <tr>
+                                                                    <td className="text-center" colSpan='3'> 
+                                                                        <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                                                                    </tr>
+                                                                    </> : null}
                                                                     {data.map((item) => {
                                                                         if (item.name !== '') {
                                                                             return (
                                                                                 <tr key={item._id}>
                                                                                     <td>{item.name}</td>
+                                                                                    <td>{item.name_ara}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
                                                                                             <IconButton onClick={(e) => { onOpenModal(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">
@@ -309,13 +331,23 @@ export default function ReportReason() {
                                                     </div>
                                                 </div>
                                                 <Modal open={open} onClose={onCloseModal} center>
-                                                    <h2 className="mb-4 text-white">Update Category</h2>
+                                                    <h2 className="mb-4 text-white">Update Report Reason</h2>
                                                     <div className="mx-500">
-                                                        <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
-                                                            <div className="form-group mb-4"> <label className="tx-medium">Update Category</label>
-                                                                <input type="hidden" className="form-control" name='_id' value={catView._id} />
-                                                                <input type="text" className="form-control" name='name'
-                                                                    defaultValue={catView.name} /> </div>
+                                                    <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
+
+                                                            <div className="form-group mb-4"> 
+                                                            <input type="hidden" className="form-control" name='_id' value={catView._id} />
+
+                                                             <label className="title-col">Report Reason <span className="text-blue">(English)</span></label>
+                                                            <input type="text" className="form-control" name='name' 
+                                                            defaultValue={catView.name} /> 
+                                                            </div>
+
+                                                            <label className="title-col">Report Reason <span className="text-blue">(Arabic)</span></label>
+                                                            <input  id="categor" className="form-control mb-4" name="name_ara"
+                                                               defaultValue={catView.name_ara}  type="text"  />   
+                                                              
+
                                                             <div className="mt-3">
                                                                 <Button type='submit' className="mr-3 btn-pd btnBg" >Update</Button>
                                                             </div>

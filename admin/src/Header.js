@@ -210,12 +210,16 @@ return (
 							<span className="sidemenu-label">Report Reason</span></NavLink>
 						</li> 
 						 <li className="nav-item" >
+							<NavLink  to="/user-report" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-atlas sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">User  Report Reason List</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
 							<NavLink  to="/groups" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
 							<i className="fad fa-users-class sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Groups Chat Manage..</span></NavLink>
 						</li> 
 						
-
 					
 					</ul>
 				</div>

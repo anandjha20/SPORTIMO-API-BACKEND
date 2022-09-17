@@ -8,7 +8,7 @@ function Home() {
   return (
     <div className="App">
 		<ToastContainer/>
-     
+    
         <Header />
         <div className="main-content side-content pt-0">
 				<div className="container-fluid">

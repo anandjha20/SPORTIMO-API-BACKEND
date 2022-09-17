@@ -21,7 +21,7 @@ function ViewFaqDetail() {
   const ITEM_PADDING_TOP = 8;
   const [match, setMatch] = React.useState('');
 
-
+  console.log(match + "sunil");
 
   const stateSchema = {
     answer: { error: "" },
@@ -132,18 +132,27 @@ function ViewFaqDetail() {
     e.preventDefault();
     try {
 
-      let cat_id = (e.target.elements.cat_id !== 'undefined') ? e.target.elements.cat_id.value : '';
+     
       let question = (e.target.elements.question !== 'undefined') ? e.target.elements.question.value : '';
       let answer = (e.target.elements.answer !== 'undefined') ? e.target.elements.answer.value : '';
+      let question_ara = (e.target.elements.question_ara !== 'undefined') ? e.target.elements.question_ara.value : '';
+      let answer_ara = (e.target.elements.answer_ara !== 'undefined') ? e.target.elements.answer_ara.value : '';
+
       let id = (e.target.elements.id !== 'undefined') ? e.target.elements.id.value : '';
 
+     
+       let cat_id = (e.target.elements.cat_id !== 'undefined') ? e.target.elements.cat_id.value : '';
+     
       let dataToSend2 = {
-        "cat_id": cat_id,
+        "cat_id" : cat_id,
         "question": question,
         "answer": answer,
+        "question_ara": question_ara,
+        "answer_ara": answer_ara,
         "id": id,
       }
 
+      console.log(dataToSend2)
 
       console.log("new values == ", dataToSend2);
       axios.put(`/web_api/update_faq`, dataToSend2, options1)
@@ -156,9 +165,10 @@ function ViewFaqDetail() {
 
             if (data.status) {
 
-              toast.success(data.msg);
+              
 
-              // navigate("/faq");
+               navigate("/faq");
+               toast.success(data.msg);
 
             } else {
               toast.error('something went wrong please try again');
@@ -226,7 +236,7 @@ function ViewFaqDetail() {
                               <label className="title-col mb-3">CATEGORY</label>
 
                               <input type="hidden" name='id' defaultValue={data._id || ''} />
-
+                             
                               {/* <NativeSelect  defaultValue={Idselect} inputProps={{   name: 'age',    id: 'uncontrolled-native',  }}  > 
  
                                {catList.map((daTa) => {
@@ -242,7 +252,7 @@ function ViewFaqDetail() {
                            defaultValue={Idselect || '' } variant="filled" /> */}
 
 
-                              <Select labelId="demo-simple-select-label" id="demo-simple-select" fullWidth
+                              <Select labelId="demo-simple-select-label" id="demo-simple-select" fullWidth name="cat_id"
                                 MenuProps={MenuProps} value={match} label="Match/league" onChange={handleChange}>
                                 {catList.map((daTa) => {
                                   return (
@@ -265,7 +275,7 @@ function ViewFaqDetail() {
 
 
                             <div className="col-lg-12 mb-4">
-                              <label className="title-col">Question</label>
+                              <label className="title-col">Question <span className="text-blue">(English)</span></label>
                               <TextField onChange={handleOnChange} id="filled-multiline-static" name='question' className="update-input" multiline rows={3} fullWidth defaultValue={data.question || ''} variant="filled" />
                               {errors.question && dirty.question && (
                                 <p className="error">{errors.question}</p>
@@ -274,13 +284,24 @@ function ViewFaqDetail() {
 
 
                             <div className="col-lg-12 mb-4">
-                              <label className="title-col">Answer</label>
+                              <label className="title-col">Answer <span className="text-blue">(English)</span></label>
                               <TextField onChange={handleOnChange} id="filled-multiline-static" name='answer' className="update-input"
                                 multiline rows={3} fullWidth defaultValue={data.answer || ''} variant="filled" />
                               {errors.answer && dirty.answer && (
                                 <p className="error">{errors.answer}</p>
                               )}
                             </div>
+
+                             {/* ///////////Arabic////////// */}
+                             <div className="col-lg-12 mb-4">
+                               <label className="title-col">Question <span className="text-blue">(Arabic)</span> </label>
+                               <TextField id="filled-multiline-static" defaultValue={data.question_ara || ''} className="update-input" multiline rows={3} fullWidth name='question_ara' variant="filled" />
+                              </div>
+
+                                <div className="col-lg-12 mb-4">
+                               <label className="title-col">Answer <span className="text-blue">(Arabic)</span> </label>
+                                 <TextField id="filled-multiline-static" defaultValue={data.answer_ara || ''} className="update-input" multiline rows={3} fullWidth name='answer_ara' variant="filled" />
+                                </div>
 
                             <div className="col-lg-12 text-end">
                               <Button type='submit' variant="contained" className="mr-3 btn-pd">Update</Button>

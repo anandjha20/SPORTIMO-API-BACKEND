@@ -74153,12 +74153,21 @@ html.fullscreen .main-content {
     padding: 7px 25px !important;
 }
 
-.title-col
+/* .title-col
 {
     text-transform: uppercase;
     font-size: 15px;
     font-weight: 500;
     color: #d9d9d9;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+} */
+
+.title-col {
+    text-transform: capitalize;
+    font-size: 15px;
+    font-weight: 400;
+    color: #fffafa;
     opacity: 0.9;
     letter-spacing: 0.5px;
 }
@@ -75200,7 +75209,7 @@ color : white  !important;
     right: 0;
     background: #3d454c !important; 
     height: 53px !important; 
-    z-index: 90;
+    z-index: 1;
 }
 .label-date {
     position: absolute;
@@ -75254,4 +75263,54 @@ color : white  !important;
 /* Handle on hover */
 .main-sidebar-body::-webkit-scrollbar-thumb:hover {
   background: #7f8489;
+}
+
+/* .css-igs3ac {
+    text-align: left;
+    position: absolute;
+    inset: -5px 0px 0px;
+    margin: 0px;
+    padding: 0px 8px;
+    pointer-events: none;
+    border-radius: inherit;
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    min-width: 0%;
+    border-color: rgb(255 255 255 / 50%) !important;
+}
+
+.css-u9osun {
+    color: rgb(255 255 255 / 80%) !important;
+}
+
+.css-sl0zss::before {
+    border-bottom: 1px solid rgb(255 255 255 / 81%) !important
+}
+
+.css-1rgmeur {
+    color: rgb(255 255 255 / 80%) !important;
+} */
+
+.MuiOutlinedInput-notchedOutline
+{
+    border-color: rgb(255 255 255 / 61%) !important;
+}
+
+
+.text-blue
+{
+    color: #03a9f4;
+    text-transform: capitalize;
+}
+
+.text-red {
+    background: #e59d9d;
+    padding: 2px 5px;
+    color: #9c2929f7 !important;
+    border-radius: 3px;
+}
+.react-responsive-modal-modal h2.text-white
+{
+    font-size: 1.2rem !important;
 }

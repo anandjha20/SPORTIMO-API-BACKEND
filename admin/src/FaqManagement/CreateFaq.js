@@ -76,11 +76,15 @@ function CreateFaq() {
             let cat_id = (e.target.elements.cat_id !== 'undefined') ? e.target.elements.cat_id.value : '';
             let question = (e.target.elements.question !== 'undefined') ? e.target.elements.question.value : '';
             let answer = (e.target.elements.answer !== 'undefined') ? e.target.elements.answer.value : '';
+            let question_ara = (e.target.elements.question_ara !== 'undefined') ? e.target.elements.question_ara.value : '';
+            let answer_ara = (e.target.elements.answer_ara !== 'undefined') ? e.target.elements.answer_ara.value : '';
 
             let dataToSend2 = {
              "cat_id": cat_id,
              "question": question,
              "answer": answer,
+             "question_ara": question_ara,
+             "answer_ara": answer_ara,
             }
             
             console.log("new values == ", dataToSend2);
@@ -181,7 +185,7 @@ function CreateFaq() {
 
 
                                                         <div className="col-lg-12 mb-4">
-                                                            <label className="title-col">Question</label>
+                                                            <label className="title-col">Question <span className="text-blue">(English)</span></label>
                                                             <TextField id="filled-multiline-static" label="Enter Question" multiline rows={4} fullWidth name='question' variant="filled" />
                                                             {/*<div className="textarea">
                                                                <ThemeProvider theme={myTheme}>
@@ -191,13 +195,25 @@ function CreateFaq() {
                                                         </div>
 
                                                         <div className="col-lg-12 mb-4">
-                                                            <label className="title-col">Answer </label>
+                                                            <label className="title-col">Answer <span className="text-blue">(English)</span></label>
                                                             <TextField id="filled-multiline-static" label="Enter Answer" multiline rows={4} fullWidth name='answer' variant="filled" />
                                                             {/*<div className="textarea">
                                                                <ThemeProvider theme={myTheme}>
                                                                     <MUIRichTextEditor label="Enter Answer" name='answer' />
                                                                 </ThemeProvider> 
                                                             </div>*/}
+                                                        </div>
+                                                          
+                                                        {/* ///////////Arabic////////// */}
+                                                        <div className="col-lg-12 mb-4">
+                                                            <label className="title-col">Question <span className="text-blue">(Arabic)</span> </label>
+                                                            <TextField id="filled-multiline-static" label="Enter Question" multiline rows={4} fullWidth name='question_ara' variant="filled" />
+                                                            
+                                                        </div>
+
+                                                        <div className="col-lg-12 mb-4">
+                                                            <label className="title-col">Answer <span className="text-blue">(Arabic)</span> </label>
+                                                            <TextField id="filled-multiline-static" label="Enter Answer" multiline rows={4} fullWidth name='answer_ara' variant="filled" />
                                                         </div>
 
                                                         <div className="col-lg-12 text-end">

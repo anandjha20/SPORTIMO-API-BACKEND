@@ -11,13 +11,14 @@ import Select from 'react-select';
 import Moment from 'moment';
 
 
-function TableComplaintComponent() {
+function TableUserReportList() {
 
 
   
     const [data, setData] = useState([]);
     const [CatList, setDataCat] = useState([]);
     const [pageCount, setpageCount] = useState('');
+    const [nodata, setNoData] = useState('');
 
     const [userCategory, setuserCategory] = useState([])
 
@@ -42,8 +43,10 @@ function TableComplaintComponent() {
         let token = localStorage.getItem("token");
         let header = ({ 'token': `${token}` });
         let options1 = ({ headers: header });
-        await axios.post(`/web_api/user_complaint_list`, formData, options1)
+        await axios.post(`/web_api/get_user_report_admin`, formData, options1)
         .then(res => {
+            if(res.status == true)
+                {
             const data = res.data.body;
             const total = res.data.rows;
             const totalPage = (Math.ceil(total / limit));
@@ -52,70 +55,65 @@ function TableComplaintComponent() {
             const category = data.category;
             const image = res.data.body.image;
             console.log(data);
-        })
-    }
-    const CategoryList = async () =>
-    {
-        axios.get(`/web_api/user_complaint_cat_list`, options1)
-        .then(res => {
-          const CatList = res.data.body;
-          setDataCat(CatList);
-          console.log(CatList); 
+        }
+        else{
+          setNoData(nodata)
+        }
         })
     }
 
-    const category_type = (CatList.length >0) ? CatList.map((item)=>{
-        return  { value: item._id, label: item.cat_name };
-    }) :[];
 
     const formsave = (e, page) => {
         e.preventDefault();
         const data = new FormData(e.target);
         const Formvlaues = Object.fromEntries(data.entries());
         console.log(Formvlaues);
-        axios.post(`/web_api/user_complaint_list`, Formvlaues, options1)
+        axios.post(`/web_api/get_user_report_admin`, Formvlaues, options1)
             .then(res => {
+                if(res.status == true)
+                {
                 const data = res.data.body;
                 const total = res.data.rows;
                 const totalPage = (Math.ceil(total / limit));
                 setpageCount(totalPage);
                 setData(data);
-                const category = data.category;
                 const image = res.data.body.image;
                 console.log(data);
+                }
+                else{
+                    console.log("no data")
+                }
             })
     }
 
+        const CategoryList = async () =>
+        {
+            const setGet = {}
+            axios.post(`/web_api/report_reason_get`, setGet, options1)
+            .then(res => {
+            const CatList = res.data.body;
+            setDataCat(CatList);
+            console.log(CatList); 
+            })
+        }
+
+        const category_type = (CatList.length >0) ? CatList.map((item)=>{
+            return  { value: item._id, label: item.name };
+        }) :[];
+
     useEffect(() => {
-        CompList();
+        CompList(); 
         CategoryList();
     }, [])
 
-    // const formsave = (e, page) => {
-    //     e.preventDefault();
-    //     const data = new FormData(e.target);
-    //     const Formvlaues = Object.fromEntries(data.entries());
-    //     //  Formvlaues.guest_user = guestUser
-    //     const formData = Formvlaues
-    //     setFromvalue(formData);
-    //     console.log('Formvlaues === ', Formvlaues);
-    //     axios.post(`/web_api/poll_list`, formData, options)
-    //         .then(res => {
-    //             const data = res.data.body;
-    //             setData(data);
-    //             const total = res.data.rows;
-    //             const totalPage = (Math.ceil(total / limit));
-    //             setpageCount(totalPage);
-    //         })
-
-    // }
+  
 
     ///////////////pagenestion///////////////
     const fetchComments = async (page) => {
         const senData = { page: page }
         // const cosole = Fromvalue;
         // console.log(Fromvalue);
-        axios.post(`/web_api/user_complaint_list`, senData, options1)
+        axios.post(`/web_api/get_user_report_admin`, senData, options1)
             .then(res => {
                 const data = res.data.body;
                 setData(data);
@@ -130,6 +128,8 @@ function TableComplaintComponent() {
         setData(commentsFormServer);
     };
 
+ 
+
     return (
 
         <>
@@ -138,23 +138,17 @@ function TableComplaintComponent() {
                 <div className="card-body">
                     <form onSubmit={(e) => formsave(e)}>
                         <div className="row align-items-center">
-                            <div className="col-lg-3 reletive mb-3">
-                                <span className="react-select-title">Category Type</span>
-                                <Select  name='cat_id'
+                            
+                        <div className="col-lg-3 reletive mb-3">
+                                <span className="react-select-title">Select Reason Type</span>
+                                <Select  name='reason_id'
                                 options={category_type}
                                 className="basic-multi-select"
                                 classNamePrefix="select" />
 
                             </div>
-                            <div className="col-lg-3 mb-3" style={{ maxWidth : "23%"}}>
-                                <TextField name='mobile' className="filter-input" label="Mobile Number" fullWidth type="number"
-                                   InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                />
-                            </div>
                             <div className="col-lg-2 mb-3">
-                                <TextField id="sdate" name='s_date' className="filter-input" label="Start Date" fullWidth type="date"
+                                <TextField id="sdate" name='from_date' className="filter-input" label="Start Date" fullWidth type="date"
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
@@ -162,7 +156,7 @@ function TableComplaintComponent() {
                             </div>
 
                             <div className="col-lg-2 mb-3">
-                                <TextField id="edate" name='e_date' className="filter-input" label="End Date" fullWidth type="date"
+                                <TextField id="edate" name='to_date' className="filter-input" label="End Date" fullWidth type="date"
                                     InputLabelProps={{ shrink: true, }} />
                             </div>
                             <div className="col-lg-3 mb-3 d-flex p-0" style={{ maxWidth : "18%"}}>
@@ -181,34 +175,32 @@ function TableComplaintComponent() {
                             <thead>
                                 <tr>
                                     <th scope="col">Image</th>
-                                    <th scope="col">User Name</th>
-                                    <th scope="col">Complaint Category</th>
-                                    <th scope="col">Complaint</th>
+                                    {/* <th scope="col">Reason Id</th> */}
+                                    <th scope="col">Report Reason </th>
+                                    <th scope="col">Reported User</th>
+                                    <th scope="col">Reporting User</th>
+                                    <th scope="col">Discription</th>
                                     <th scope="col">Date</th>
-                                    <th scope="col">Status</th>
+                                    {/* <th scope="col">Status</th> */}
                                     <th scope="col" className="text-end">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {data == '' ? <>
-                                    <tr>
-                                        <td className="text-center" colSpan='9'>
-                                            <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
-                                    </tr>
-                                </> : null}
+                                {/* {res.status == true ? <> */}
+                               
                                 {data.map((item) => {
                                     return (
                                         <tr key={item._id}>
-
                                             <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></>}</div></td>
-                                            <td>{item.user_id == null ? <></> : <>{item.user_id.name}</> }</td>
-                                            <td><div>{item.cat_id == null ? <><span className="text-red">Category Deleted</span></> : <>{item.cat_id.cat_name}</>}</div></td>
-                                            <td>{item.question}</td>
+                                            <td>{item.reason_id.name}</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>{item.discription}</td>
                                             <td>{Moment(item.date).format("DD/MM//YYYY")}</td>
-                                            <td>{item.admin_status == false ? <>Open</> : <>Closed</>}</td>
+                                            {/* <td>{item.admin_status == false ? <>Open</> : <>Closed</>}</td> */}
                                             <td className="text-end">
                                                 <div className="d-flex justtify-content-end">
-                                                    <IconButton onClick={(e) => { viewFun(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">
+                                                    <IconButton onClick={(e) => {  }} aria-label="delete"> <span className="material-symbols-outlined">
                                                         sms </span>
                                                     </IconButton>
 
@@ -217,8 +209,9 @@ function TableComplaintComponent() {
                                         </tr>
                                     );
 
-
-                                })}
+                                })} 
+                              
+                                
                             </tbody>
                         </table>
                     </div>
@@ -252,4 +245,4 @@ function TableComplaintComponent() {
     )
 }
 
-export default TableComplaintComponent
+export default TableUserReportList

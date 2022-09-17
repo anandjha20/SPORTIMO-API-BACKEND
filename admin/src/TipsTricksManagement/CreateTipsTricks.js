@@ -47,7 +47,9 @@ export default function CreateTipsTricks() {
     TipsTricksList()
   }, []);
 
- const columns =[   { title: 'Tips & Tricks', field: 'tips_trick' }, 
+ const columns =[   
+ { title: 'Tips & Tricks (English)', field: 'tips_trick' }, 
+  { title: 'Tips & Tricks (Arabic)', field: 'tips_trick_ara' }, 
   { title: 'Status', render: rowData => {
     if (rowData.active_status == true) {
         return (
@@ -99,10 +101,12 @@ export default function CreateTipsTricks() {
         try {
 
             let tips_trick = (e.target.elements.tips_trick !== 'undefined') ? e.target.elements.tips_trick.value : '';
+                let tips_trick_ara = (e.target.elements.tips_trick_ara !== 'undefined') ? e.target.elements.tips_trick_ara.value : '';
+                let dataToSend2 = {
+                    "tips_trick": tips_trick,
+                    "tips_trick_ara": tips_trick_ara,
+                }
 
-            let dataToSend2 = {
-                "tips_trick": tips_trick,
-            }
 
             console.log("new values == ", dataToSend2);
 
@@ -179,9 +183,11 @@ export default function CreateTipsTricks() {
     try {
 
         let tips_trick = (e.target.elements.tips_trick !== 'undefined') ? e.target.elements.tips_trick.value : '';
+        let tips_trick_ara = (e.target.elements.tips_trick_ara !== 'undefined') ? e.target.elements.tips_trick_ara.value : '';
         let id = (e.target.elements.id !== 'undefined') ? e.target.elements.id.value : '';
         let dataToSend2 = {
             "tips_trick": tips_trick,
+            "tips_trick_ara": tips_trick_ara,
             "id": id,
         }
         console.log("new values == ", dataToSend2);
@@ -244,12 +250,16 @@ export default function CreateTipsTricks() {
                                                 <form className="mt-3" onSubmit={(e) => saveFormData(e)}>
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Tips & Tricks</h6>
 
-                                                    <TextField id="categor" className="filter-input" name="tips_trick"
-                                                        label="Add Tips & Tricks" fullWidth type="text"
-                                                        InputLabelProps={{
-                                                            shrink: true,
-                                                        }}
-                                                    />
+                                                    
+                                                    <label className="title-col">Add Tips & Tricks <span className="text-blue">(English)</span></label>
+                                                       <input id="categor" autoComplete="off" className="form-control mb-4" name="tips_trick"
+                                                         type="text"
+                                                        />
+
+                                                      <label className="title-col">Add Tips & Tricks <span className="text-blue">(Arabic)</span></label>
+                                                      <input  id="categor" autoComplete="off" className="form-control mb-4" name="tips_trick_ara"
+                                                         type="text"
+                                                        />
 
                                                     <div className="mt-3">
                                                         <Button type='submit'  className="mr-3 btn-pd btnBg">Add</Button>
@@ -292,13 +302,23 @@ export default function CreateTipsTricks() {
                                         </div>
 
                                          <Modal open={open} onClose={onCloseModal} center>
-                                                      <h2 className="mb-4 text-white">Update Category</h2>
+                                                      <h2 className="mb-4 text-white">Update Tips & Tricks</h2>
                                                     <div className="mx-500">
                                                         <form className="mt-3 w-100"  onSubmit={(e) => UpdateFormData(e)}>
-                                                        <div className="form-group mb-4"> <label className="tx-medium">Update Category</label>
+                                                        <div className="form-group mb-4">
+
+                                                        <label className="title-col"> Tips & Tricks <span className="text-blue">(English)</span></label>
                                                           <input type="hidden" className="form-control" name="id" defaultValue={catView._id} />
-                                                          <input type="text" className="form-control" name="tips_trick" defaultValue={catView.tips_trick} /> </div>
-                                                            <div className="mt-3">
+                                                
+                                                          <input type="text" autoComplete="off" className="form-control" name="tips_trick" defaultValue={catView.tips_trick} /> 
+                                                          </div>
+
+                                                          <label className="title-col"> Tips & Tricks <span className="text-blue">(Arabic)</span></label>
+                                                          <input  id="categor" autoComplete="off" defaultValue={catView.tips_trick_ara} className="form-control mb-4" name="tips_trick_ara"
+                                                         type="text"
+                                                        />
+
+                                                            <div className="mt-3 mb-3">
                                                              <Button type='submit' className="mr-3 btn-pd btnBg">Update</Button>
                                                                 </div>
                                                         </form>

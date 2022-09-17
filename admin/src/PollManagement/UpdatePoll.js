@@ -19,9 +19,13 @@ import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
+import InputEmoji from 'react-input-emoji'
 import { fabClasses } from "@mui/material";
 
 export default function UpdatePoll() {
+
+
+
   const [showhide, setShowhide] = useState();
   const [showhide1, setShowhide1] = useState();
   const [npshow, setNpshow] = useState('');
@@ -221,15 +225,15 @@ export default function UpdatePoll() {
  }) :[];
  
  const leagueOptions = (league_lists.length >0) ? league_lists.map((item)=>{
-     return  { value: item._id, label: item.league_name };
+     return  { value: item._id, label: item.name };
  }) :[];
  
  const teamOptions = (team_lists.length >0) ? team_lists.map((item)=>{
-     return  { value: item._id, label: item.team_name };
+     return  { value: item._id, label: item.name };
  }) :[];
  
  const playersOptions = (player_lists.length >0) ? player_lists.map((item)=>{
-     return  { value: item._id, label: item.team_name };
+     return  { value: item._id, label: item.name };
  }) :[];
  
  const selectChange = (e,type)=>{
@@ -564,7 +568,15 @@ const secondOptions = [
    
 
 
-  
+///////////////emoji input value get
+const [answerOne, setAnswerOne] = useState("answerOne");
+const [answerTwo, setAnswerTwo] = useState('');
+const [answerThree, setAnswerThree] = useState('');
+const [answerFour, setAnswerFour] = useState('');
+const [answerFive, setAnswerFive] = useState('');
+
+/////////////// emoji input value get
+
 const polldetail = async () =>
       {
           const sendatds = {data1 : "data1"}
@@ -579,10 +591,16 @@ const polldetail = async () =>
             const second = res.data.body[0].time_duration.slice(-2);
 
             const sportsArrayOp = datadetail.sports;
+            const answerOne = datadetail.ops_1;
             const sportsOpt = sportsArrayOp.split(',');
 
-            setSportsOpt(sportsOpt);
+            // if(res.status)
+            // {
+            //   setAnswerOne(answerOne);
+            // console.log(answerOne)
+            // }
 
+            setSportsOpt(sportsOpt);
             console.log(sportsOpt);
 
             setDataDetail(datadetail);
@@ -895,29 +913,67 @@ const polldetail = async () =>
 
 
                             <div className="col-lg-12 mb-4">
-                              <label className="title-col">Question</label>
+                              <label className="title-col">Question <span className="text-blue">(English)</span></label>
                               <TextField id="filled-multiline-static" name='qus' label="Enter Question" multiline rows={4} fullWidth defaultValue={datadetail.qus} variant="filled" autoComplete="off" />
-
                             </div>
 
+                            
 
                             <div className="col-lg-6 mb-4">
+                            <label className="title-col">Answer 1 <span className="text-blue">(English)</span></label>
                               <TextField id="filled-basic" name='ops_1' fullWidth  defaultValue={datadetail.ops_1} label="Answer 1" variant="filled" autoComplete="off" />
                             </div>
 
                             <div className="col-lg-6 mb-4">
+                            <label className="title-col">Answer 2 <span className="text-blue">(English)</span></label>
                               <TextField id="filled-basic1" name='ops_2' fullWidth  defaultValue={datadetail.ops_2} label="Answer 2" variant="filled" autoComplete="off" />
                             </div>
 
                             <div className="col-lg-6 mb-4">
+                            <label className="title-col">Answer 3 <span className="text-blue">(English)</span></label>
                                     <TextField id="filled-basic1" name='ops_3' fullWidth label="Answer 3"  defaultValue={datadetail.ops_3} variant="filled" autoComplete="off" />
                                   </div>
                                   <div className="col-lg-6 mb-4">
+                                  <label className="title-col">Answer 4 <span className="text-blue">(English)</span></label>
                                     <TextField id="filled-basic1" name='ops_4' fullWidth label="Answer 4"  defaultValue={datadetail.ops_4} variant="filled" autoComplete="off" />
                                   </div>
                                   <div className="col-lg-6 mb-4">
+                                  <label className="title-col">Answer 5 <span className="text-blue">(English)</span></label>
                                     <TextField id="filled-basic1" name='ops_5' fullWidth label="Answer 5"  defaultValue={datadetail.ops_5} variant="filled" autoComplete="off" />
                                   </div>
+                                  <div className="col-lg-6 mb-4"></div>
+
+                                   {/* ////////////Arabic/////////// */}
+
+                                   <div className="col-lg-12 mb-4">
+                                 <label className="title-col">Question <span className="text-blue">(Arabic)</span></label>
+                                    <TextField id="filled-multiline-static" defaultValue={datadetail.qus_ara} name='qus_ara' label="Enter Question" multiline rows={4} fullWidth  variant="filled" autoComplete="off" />
+                                 </div>
+
+
+                                  <div className="col-lg-6 mb-4">
+                                  <label className="title-col">Answer 1 <span className="text-blue">(Arabic)</span></label>
+                                  <TextField id="filled-basic" name='ops_1_ara' defaultValue={datadetail.ops_1_ara} fullWidth  label="Answer 1" variant="filled" autoComplete="off" />
+                                </div>
+
+                                <div className="col-lg-6 mb-4">
+                                <label className="title-col">Answer 2 <span className="text-blue">(Arabic)</span></label>
+                                  <TextField id="filled-basic1" name='ops_2_ara' defaultValue={datadetail.ops_2_ara} fullWidth   label="Answer 2" variant="filled" autoComplete="off" />
+                                </div>
+
+                                <div className="col-lg-6 mb-4">
+                                <label className="title-col">Answer 3 <span className="text-blue">(Arabic)</span></label>
+                                    <TextField id="filled-basic1" name='ops_3_ara'  defaultValue={datadetail.ops_3_ara} fullWidth label="Answer 3"   variant="filled" autoComplete="off" />
+                                  </div>
+                                  <div className="col-lg-6 mb-4">
+                                  <label className="title-col">Answer 4 <span className="text-blue">(Arabic)</span></label>
+                                    <TextField id="filled-basic1" name='ops_4_ara' defaultValue={datadetail.ops_4_ara} fullWidth label="Answer 4"   variant="filled" autoComplete="off" />
+                                  </div>
+                                  <div className="col-lg-6 mb-4">
+                                  <label className="title-col">Answer 5 <span className="text-blue">(Arabic)</span></label>
+                                    <TextField id="filled-basic1" name='ops_5_ara' defaultValue={datadetail.ops_5_ara} fullWidth label="Answer 5"  variant="filled" autoComplete="off" />
+                                  </div>
+
 
 
                             <div className="col-lg-12 mb-4">

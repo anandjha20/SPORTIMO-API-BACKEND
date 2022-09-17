@@ -4,7 +4,7 @@ import App from './App';
 import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
 
-///axios.defaults.baseURL = 'http://192.168.1.95:3600';
+/// axios.defaults.baseURL = 'http://192.168.1.95:3600';
 axios.defaults.baseURL = "http://34.204.253.168:3000";
 
 // const token = localStorage.getItem("token")

@@ -29,6 +29,12 @@ export default function CreatePoll(props) {
   const [answerThree, setAnswerThree] = useState('');
   const [answerFour, setAnswerFour] = useState('');
   const [answerFive, setAnswerFive] = useState('');
+///////////////emoji input value get
+  const [answerOneAra, setAnswerOneAra] = useState('');
+  const [answerTwoAra, setAnswerTwoAra] = useState('');
+  const [answerThreeAra, setAnswerThreeAra] = useState('');
+  const [answerFourAra, setAnswerFourAra] = useState('');
+  const [answerFiveAra, setAnswerFiveAra] = useState('');
 /////////////// emoji input value get
 
   const navigate = useNavigate();
@@ -212,16 +218,16 @@ export default function CreatePoll(props) {
   }) : [];
 
   const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
-    return { value: item._id, label: item.league_name };
+    return { value: item._id, label: item.name };
   
   }) : [];
 
   const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
-    return { value: item._id, label: item.team_name };
+    return { value: item._id, label: item.name };
   }) : [];
 
   const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
-    return { value: item._id, label: item.team_name };
+    return { value: item._id, label: item.name };
   }) : [];
 
   const selectChange = (e, type) => {
@@ -772,23 +778,43 @@ export default function CreatePoll(props) {
 
 
                             <div className="col-lg-12 mb-4">
-                              <label className="title-col">Question</label>
+                              <label className="title-col">Question <span className="text-blue">(English)</span></label>
                               <TextField id="filled-multiline-static" name='qus' label="Enter Question" multiline rows={4} fullWidth defaultValue="" variant="filled" autoComplete="off" />
 
                             </div>
 
+                             {/* ///////Arbic////////// */}
+                            <div className="col-lg-12 mb-4">
+                              <label className="title-col">Question <span className="text-blue">(Arabic)</span></label>
+                              <TextField id="filled-multiline-static" name='qus_ara' label="Enter Question" multiline rows={4} fullWidth defaultValue="" variant="filled" autoComplete="off" />
+                            </div>
+
 
                             <div className="col-lg-6 mb-4">
-                              <label className="title-col mb-0">Answer 1</label>
+                              <label className="title-col mb-0">Answer 1 <span className="text-blue">(English)</span></label>
                               <InputEmoji  onChange={setAnswerOne} cleanOnEnter placeholder="Enter Answer"/>
                               <input type='hidden' value={answerOne} name='ops_1' />
                             </div>
 
 
                             <div className="col-lg-6 mb-4">
-                              <label className="title-col mb-0">Answer 2</label>
+                              <label className="title-col mb-0">Answer 2 <span className="text-blue">(English)</span></label>
                               <InputEmoji  onChange={setAnswerTwo} cleanOnEnter placeholder="Enter Answer"/>
                               <input type='hidden' value={answerTwo} name='ops_2' />
+                            </div>
+
+                             {/* ///////Arbic////////// */}
+                            <div className="col-lg-6 mb-4">
+                              <label className="title-col mb-0">Answer 1 <span className="text-blue">(Arabic)</span></label>
+                              <InputEmoji  onChange={setAnswerOneAra} cleanOnEnter placeholder="Enter Answer"/>
+                              <input type='hidden' value={answerOneAra} name='ops_1_ara' />
+                            </div>
+
+
+                            <div className="col-lg-6 mb-4">
+                              <label className="title-col mb-0">Answer 2 <span className="text-blue">(Arabic)</span></label>
+                              <InputEmoji  onChange={setAnswerTwoAra} cleanOnEnter placeholder="Enter Answer"/>
+                              <input type='hidden' value={answerTwoAra} name='ops_2_ara' />
                             </div>
 
                             <div className="col-lg-12">
@@ -797,21 +823,41 @@ export default function CreatePoll(props) {
                                 show ? <div className="row">
 
                                <div className="col-lg-6 mb-4">
-                                <label className="title-col mb-0">Answer 3</label>
+                                <label className="title-col mb-0">Answer 3 <span className="text-blue">(English)</span></label>
                                 <InputEmoji  onChange={setAnswerThree} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerThree} name='ops_3' />
                                </div>
 
                                <div className="col-lg-6 mb-4">
-                                <label className="title-col mb-0">Answer 4</label>
+                                <label className="title-col mb-0">Answer 4 <span className="text-blue">(English)</span></label>
                                 <InputEmoji  onChange={setAnswerFour} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerFour} name='ops_4' />
                                </div>
 
                                <div className="col-lg-6 mb-4">
-                                <label className="title-col mb-0">Answer 5</label>
+                                <label className="title-col mb-0">Answer 5 <span className="text-blue">(English)</span> </label>
                                 <InputEmoji  onChange={setAnswerFive} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerFive} name='ops_5' />
+                               </div>
+                               <div className="col-lg-6 mb-4"></div>
+
+                               {/* ///////Arbic////////// */}
+                               <div className="col-lg-6 mb-4">
+                                <label className="title-col mb-0">Answer 3 <span className="text-blue">(Arabic)</span></label>
+                                <InputEmoji  onChange={setAnswerThreeAra} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerThreeAra} name='ops_3_ara' />
+                               </div>
+
+                               <div className="col-lg-6 mb-4">
+                                <label className="title-col mb-0">Answer 4 <span className="text-blue">(Arabic)</span></label>
+                                <InputEmoji  onChange={setAnswerFourAra} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerFourAra} name='ops_4_ara' />
+                               </div>
+
+                               <div className="col-lg-6 mb-4">
+                                <label className="title-col mb-0">Answer 5 <span className="text-blue">(Arabic)</span></label>
+                                <InputEmoji  onChange={setAnswerFiveAra} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerFiveAra} name='ops_5_ara' />
                                </div>
 
                                 </div> : null

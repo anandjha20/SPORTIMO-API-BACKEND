@@ -79,10 +79,12 @@ function UpdateContent() {
 
           let type = (e.target.elements.type !== 'undefined') ? e.target.elements.type.value : '';
           let content_data = {value}
+          let content_data_ara = {value_ara}
 
           let dataToSend2 = {
            "type": type,
            "content_data": value,
+           "content_data_ara": value_ara,
           }
           console.log("new values == ", dataToSend2);
           
@@ -124,6 +126,11 @@ function UpdateContent() {
   const [value, setValue] = useState("");
   const getValue = (value) => {
     setValue(value);
+  };
+
+  const [value_ara, setValue_ara] = useState("");
+  const getValue_ara = (value_ara) => {
+    setValue_ara(value_ara);
   };
 
   return (
@@ -184,9 +191,16 @@ function UpdateContent() {
                             </div>
 
                             <div className="col-lg-12 mb-4">
-                              <label className="title-col">CONTENT</label>
+                              <label className="title-col">Page Content <span className="text-blue">(English)</span></label>
 
                              <RichTextEditor initialValue={data.content_data} getValue={getValue} />
+                            
+                            </div>
+
+                            <div className="col-lg-12 mb-4">
+                              <label className="title-col">Page Content <span className="text-blue">(Arabic)</span></label>
+
+                             <RichTextEditor initialValue={data.content_data_ara} getValue={getValue_ara} />
                             
                             </div>
 

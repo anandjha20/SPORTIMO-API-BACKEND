@@ -147,14 +147,11 @@ function PollDetailComponent() {
 
 
                               <div className="col-lg-12 mb-4">
-                                <label className="title-col">Question</label>
+                                <label className="title-col">Question <span className="text-blue">(English)</span></label>
                                 <TextField id="filled-multiline-static"
                                   label="Enter Question" multiline rows={3} InputProps={{ readOnly: true, }} fullWidth value={pollData.qus || ''} variant="filled" />
 
                               </div>
-
-
-
 
                               <div className="col-lg-6 mb-4">
                                 <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 1" value={pollData.ops_1 || ''} variant="filled" InputProps={{ readOnly: true }} />
@@ -175,6 +172,35 @@ function PollDetailComponent() {
                               <div className="col-lg-6 mb-4">
                                 <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 5" value={pollData.ops_5 || ''} variant="filled" InputProps={{ readOnly: true, }} />
                               </div>
+
+                              <div className="col-lg-12 mb-4">
+                                <label className="title-col">Question <span className="text-blue">(Arabic)</span></label>
+                                <TextField id="filled-multiline-static"
+                                  label="Enter Question" multiline rows={3} InputProps={{ readOnly: true, }} fullWidth value={pollData.qus_ara || ''} variant="filled" />
+
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 1" value={pollData.ops_1_ara || ''} variant="filled" InputProps={{ readOnly: true }} />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 2" value={pollData.ops_2_ara || ''} variant="filled" InputProps={{ readOnly: true }} />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 3" value={pollData.ops_3_ara || ''} variant="filled" InputProps={{ readOnly: true }} />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 4" value={pollData.ops_4_ara || ''} variant="filled" InputProps={{ readOnly: true }} />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 5" value={pollData.ops_5_ara || ''} variant="filled" InputProps={{ readOnly: true, }} />
+                              </div>
+
+
                             </div>
 
                           </form>

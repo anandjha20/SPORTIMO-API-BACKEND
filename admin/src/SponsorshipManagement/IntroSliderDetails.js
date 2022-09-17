@@ -57,6 +57,8 @@ export default function IntroSliderDetails() {
         let dataToSend2 = new FormData();
         dataToSend2.append('title', Formvlaues.title);
         dataToSend2.append('description', Formvlaues.description);
+        dataToSend2.append('title_ara', Formvlaues.title_ara);
+        dataToSend2.append('description_ara', Formvlaues.description_ara);
         dataToSend2.append('image', Formvlaues.image);
         dataToSend2.append('from_date', Formvlaues.from_date);
         dataToSend2.append('to_date', Formvlaues.to_date);
@@ -67,7 +69,7 @@ export default function IntroSliderDetails() {
                     let data = response.data;
                     console.log(data.msg)
                     if (data.status) {
-                        navigate(`/intro-slider`);
+                         //navigate(`/intro-slider`);
                         toast.success(data.msg);
                     } else {
                         toast.error('something went wrong please try again');
@@ -129,15 +131,33 @@ export default function IntroSliderDetails() {
                                                 <form className="mt-3" onSubmit={(e) => saveFormData(e)} encType="multipart/form-data">
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Update Introduction Slider</h6>
                                                    
+                                               
+                                                
                                                     <div className="col-lg-12 mb-4 p-0">
-                                                        <TextField multiline rows={1} defaultValue={ dataShow.title} id="categor" className="filter-input" name="title"
-                                                            label="Title" fullWidth type="text"
-                                                          
-                                                        />
+                                                         <label className="title-col">Title <span className="text-blue">(English)</span></label>
+                                                         <input  id="categor" defaultValue={ dataShow.title} autoComplete="off" className="form-control mb-4" name="title"
+                                                            type="text"
+                                                            />
                                                     </div>
+
                                                     <div className="col-lg-12 mb-4 p-0">
-                                                        <TextField defaultValue={ dataShow.description} id="filled-multiline-static" name='description' label="Enter Description" multiline rows={4} fullWidth variant="filled" />
+                                                         <label className="title-col">Title <span className="text-blue">(Arabic)</span></label>
+                                                         <input  id="categor" defaultValue={ dataShow.title_ara} autoComplete="off" className="form-control mb-4" name="title_ara"
+                                                            type="text"
+                                                            />
                                                     </div>
+
+
+                                                    <div className="col-lg-12 mb-4 p-0">
+                                                       <label className="title-col">Description <span className="text-blue">(English)</span></label>
+                                                        <TextField id="filled-multiline-static" defaultValue={ dataShow.description} name='description' label="Enter Description" multiline rows={4} fullWidth variant="filled" />
+                                                    </div>
+
+                                                    <div className="col-lg-12 mb-4 p-0">
+                                                       <label className="title-col">Description <span className="text-blue">(Arabic)</span></label>
+                                                        <TextField id="filled-multiline-static" defaultValue={ dataShow.description_ara} name='description_ara' label="Enter Description" multiline rows={4} fullWidth variant="filled" />
+                                                    </div>
+                                                   
 
                                                     <div className="col-lg-12 mb-4  p-0">
                                                         <label className="title-col">File Upload</label>
