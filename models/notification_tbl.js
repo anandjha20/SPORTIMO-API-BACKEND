@@ -6,6 +6,10 @@ const Schema = mongoose.Schema;
 const sprtschema = new Schema({
                          title : {type : String,trim:true, required : true},
                         message: { type: String,trim:true, required: true,  },
+                     
+                         title_ara : {type : String,trim:true,  default : ''},
+                        message_ara : { type: String,trim:true,  default : ''},
+                     
                         type_status: { type: String,enum:[0,1] ,default : 0 },   // 0 = in app Notification, 1 = Send Notification 
                         module_type :  {type :String,default : ''},
                         module_id :  {type :String, default : ''},

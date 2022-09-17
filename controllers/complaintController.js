@@ -26,24 +26,27 @@ class ComplaintController{
   
    static add_user_complaint_category = async(req,res)=>{
             try {
-                let user_data = req.body;
-            
-            let add = new user_complaint_cat_tbl({
-                cat_name: user_data.cat_name,
-                
-            });
+                let cat_name     = req.body.cat_name;
+                let cat_name_ara = req.body.cat_name_ara;
+                let cat_name_fr  = req.body.cat_name_fr;
+
+            if(isEmpty(cat_name) || isEmpty(cat_name_ara) || isEmpty(cat_name_fr) ){
+                return res.status(200).send({"status":false,"msg":'All Field Required' , "body": ''}) ;  
+            }
+
+         let add = new user_complaint_cat_tbl({cat_name,cat_name_ara,cat_name_fr});
           
           let response  =   await add.save();
-          if(response){
-                      return res.status(200).send({"status":true,"msg":'category added successfully' , "body": ''}) ;          
+           if( !isEmpty(response)){
+                      return res.status(200).send({"status":true,"msg":'category added successfully', "body": ''}) ;          
               }else{
-                    return res.status(200).send({"status":false,"msg":'category  not add' , "body": ''}) ;    
+                    return res.status(200).send({"status":false,"msg":'category not add' , "body": ''}) ;    
                   }
       
-        } catch (error) {
-            return res.status(200).send({"status":false,"msg":'No data add  ' , "body":''}) ;          
+        } catch (error) {  console.log(error); 
+            return res.status(200).send({"status":false,"msg":'No data add  ' , "body":error}) ;          
             }
-      }
+      }  
      
        
 
@@ -68,28 +71,26 @@ class ComplaintController{
  
     static user_complaint_cat_update = async (req,res)=>{
         try {
-            let  id = req.params.id;  let id_len = (id || '').length;
-            let cat_name = req.body.cat_name; let cat_name_len = (cat_name || '').length;
-            
-            if(cat_name_len == 0 || id_len == 0 ){
-            return   res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});
-            }  
-            
-            let whr = (cat_name_len == 0) ? {active_status:true} :{_id:id};
-        //////////////////////////////////////////
-        user_complaint_cat_tbl.findOneAndUpdate({_id: id},{$set : {cat_name:cat_name}},{new: true}, (err, updatedUser) => {
-        if(err) {  console.log(err);
-            return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
+            let  id = req.params.id; 
+            let cat_name     = req.body.cat_name;
+            let cat_name_ara = req.body.cat_name_ara;
+            let cat_name_fr  = req.body.cat_name_fr;
+
+        if(isEmpty(cat_name) || isEmpty(cat_name_ara) || isEmpty(cat_name_fr) ){
+            return res.status(200).send({"status":false,"msg":'All Field Required' , "body": ''}) ;  
         }
+          
+        user_complaint_cat_tbl.findOneAndUpdate({_id: id},{$set : {cat_name,cat_name_ara,cat_name_fr}},{new: true}, (err, updatedUser) => {
+         if(err) {  console.log(err);
+               return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
+            }
         
-        return res.status(200).json({  
-            "status":true,"msg": "success" , "body":updatedUser
-        });
-    });    
+           return res.status(200).json({ "status":true,"msg": "success" , "body":updatedUser });
+     });    
 
         
         } catch (error) { console.log(error);
-            res.status(200).send({'status':false,'msg':error,'body':''});
+           return   res.status(200).send({'status':false,'msg':error,'body':''});
         }
                 
             }     

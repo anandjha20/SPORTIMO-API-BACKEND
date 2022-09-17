@@ -168,12 +168,12 @@ class AdminController {
               
         
             }
-    static add_tips = async(req,res)=>{
+    static add_tips = async(req,res)=>{  
               try {
                 let user_data = req.body;
                 // console.log(req);
                   let addtips = new tips_trick({
-                    tips_trick: user_data.tips_trick,
+                    tips_trick: user_data.tips_trick, tips_trick_ara: user_data.tips_trick_ara,
                     active_status: user_data.active_status,
                   });
                let dd  = addtips.save();
@@ -182,15 +182,17 @@ class AdminController {
                   return res.status(200).send({"status":false,"msg":'no data add' , "body":''}) ;
               }
           }
-    static update_tips = async (req,res)=>{
+   
+          static update_tips = async (req,res)=>{
             try {
-                let  id = req.body.id;  let id_len = (id || '').length;
-                let tips = req.body.tips_trick; let tips_trick_len = (tips_trick || '').length;
-                
-                if(tips_trick_len == 0 || id_len == 0 ){
+                let  id = req.body.id;                  
+                let tips = req.body.tips_trick;         
+                let tips_trick_ara = req.body.tips_trick_ara;
+
+                if( isEmpty(id) ||  isEmpty(tips_trick) ||  isEmpty(tips_trick_ara)  ){
                 return   res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});
-                }
-            tips_trick.findOneAndUpdate({_id: id},{$set : {tips_trick:tips}},{new: true}, (err, updatedUser) => {
+                }    
+              tips_trick.findOneAndUpdate({_id: id},{$set : {tips_trick_ara,"content_add":tips}},{new: true}, (err, updatedUser) => {
             if(err) {  console.log(err);
                 return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
             }
@@ -198,11 +200,11 @@ class AdminController {
             return res.status(200).json({  
                 "status":true,"msg": "Tips updated successfully" , "body":updatedUser
             });
-        });    
+        });            
       
             
             } catch (error) { console.log(error);
-                res.status(200).send({'status':false,'msg':error,'body':''});
+              return  res.status(200).send({'status':false,'msg':error,'body':''});
             }
                     
                 } 
@@ -262,21 +264,21 @@ class AdminController {
             let user_data = req.body;
           
             let add = new faq_category_tbl({ 
-                cat_name: user_data.cat_name, cat_name_ara : user_data.cat_name_ara, 
-                cat_name_fr: user_data.cat_name_fr,
-                
-            });
+                    cat_name: user_data.cat_name, cat_name_ara : user_data.cat_name_ara, 
+                    cat_name_fr: user_data.cat_name_fr
+                }); 
           
            add.save( (err,datas)=>{
-              if(err){    return res.status(200).send({"status":false,"msg":'FAQ category  not add' , "body": ''}) ;        
+              if(err){ console.log(err);
+                    return res.status(200).send({"status":false,"msg":'FAQ category  not add' , "body": ''}) ;        
                 }else{     
                 return res.status(200).send({"status":true,"msg":'FAQ category added successfully' , "body": datas }) ;    }
           });
         
       
-        } catch (error) {
+        } catch (error) { console.log(error); 
             return res.status(200).send({"status":false,"msg":'No data add  ' , "body":''}) ;          
-            }
+            }  
       }
       static update_faq_category = async (req,res)=>{
         try {
@@ -295,9 +297,7 @@ class AdminController {
                 return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
              }
         
-        return res.status(200).json({  
-            "status":true,"msg": "success" , "body":updateddata
-        });
+        return res.status(200).json({ "status":true,"msg": "category update successfully ", "body":updateddata });
     });    
   
         
@@ -338,22 +338,24 @@ class AdminController {
             let cat_id    = req.body.cat_id;   let cat_id_lan   = (cat_id || '').length;
             let question  = req.body.question;   let question_lan = (question || '').length;
             let answer    = req.body.answer;   let answer_lan   = (answer || '').length;
-            if(cat_id_lan == 0 || cat_id_lan == 0 || cat_id_lan == 0){
-              return res.status(200).send({"status":false,"msg":'All Field Required' , "body":''}) ;   
+           
+            let question_ara  = req.body.question_ara; 
+            let answer_ara    = req.body.answer_ara;  
+
+            if(isEmpty(cat_id) || isEmpty(question) || isEmpty(answer) || 
+                  isEmpty(question_ara) || isEmpty(answer_ara) ){
+                    return res.status(200).send({"status":false,"msg":'All Field Required' , "body":''}) ;   
             }
-            let add = new faq_tbl({
+
             
-              question,
-              answer,
-              faq_cat_id: cat_id,
-            });
+            let add = new faq_tbl({question,answer,question_ara,answer_ara,faq_cat_id:cat_id});
           
           let response  =   await add.save();
           if(response){ 
                       return res.status(200).send({"status":true,"msg":'FAQ  added successfully' , "body": ''}) ;          
               }else{  console.log(' response == ',response);
                         return res.status(200).send({"status":false,"msg":'FAQ Not Add' , "body": ''}) ;    
-                  }
+                       }   
                               
         } catch (error) { console.log("error is == ", error);
             return res.status(200).send({"status":false,"msg":'No data add  ' , "body":''}) ;          
@@ -361,15 +363,22 @@ class AdminController {
       }
       static update_faq = async(req,res)=>{
         try {      
-            let id    = req.body.id;   let id_lan   = (id || '').length;
-            let cat_id    = req.body.cat_id;   let cat_id_lan   = (cat_id || '').length;
-            let question  = req.body.question;   let question_lan = (question || '').length;
-            let answer    = req.body.answer;   let answer_lan   = (answer || '').length;
-            if(cat_id_lan == 0 || cat_id_lan == 0 || cat_id_lan == 0){
-              return res.status(200).send({"status":false,"msg":'All Field Required' , "body":''}) ;   
-            }   
+                let id    = req.body.id;   
+                let cat_id    = req.body.cat_id;   
+                let question  = req.body.question;     let question_ara  = req.body.question_ara; 
+                let answer    = req.body.answer;       let answer_ara    = req.body.answer_ara;  
+            
+              
+          
+             if(isEmpty(id) || isEmpty(cat_id) || isEmpty(question) || isEmpty(question_ara) ||
+                   isEmpty(answer) ||isEmpty(answer_ara)){
+                   return res.status(200).send({"status":false,"msg":'All Field Required' , "body":''}) ;   
+
+                   }
+          
+       
                   
-            faq_tbl.findOneAndUpdate({_id: id},{$set : {faq_cat_id:cat_id,question:question,answer:answer}},{new: true}, (err, updateddata) => {
+            faq_tbl.findOneAndUpdate({_id: id},{$set : {question_ara,answer_ara,question,answer,faq_cat_id:cat_id}},{new: true}, (err, updateddata) => {
               if(err) {  console.log(err);
                   return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
               }
@@ -425,19 +434,16 @@ class AdminController {
   
         static faq_list = async (req,res)=>{
           try {
-              let  id = req.params.id;  let id_len = (id || '').length;
-              let whr = (id_len == 0) ? {active_status:true} :{_id:id};
-        
-             // let data = await faq_tbl.find(whr).populate('faq_cat_id' ).select({'_id':1,'question':1,'answer':1,'faq_cat_id':'faq_cat_id._id','cat_name':"faq_cat_id.cat_name"}).exec();
-              let data = await faq_tbl.find(whr).populate({path: 'faq_cat_id' ,"select":'cat_name _id'}).select({'_id':1,'question':1,'answer':1,'faq_cat_id': 1}).exec();
-               
-              if(data){ res.status(200).send({'status':true,'msg':"success",'body':data});
-                  }else{          
-                  res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
-                        
-               
-        
-          } catch (error) { console.log(error);
+                  let  id = req.params.id;  let id_len = (id || '').length;
+                  let whr = (id_len == 0) ? {active_status:true} :{_id:id};
+            
+                // let data = await faq_tbl.find(whr).populate('faq_cat_id' ).select({'_id':1,'question':1,'answer':1,'faq_cat_id':'faq_cat_id._id','cat_name':"faq_cat_id.cat_name"}).exec();
+                  let data = await faq_tbl.find(whr).populate({path: 'faq_cat_id' ,"select":'cat_name cat_name_ara cat_name_fr _id'}).select({'_id':1,'question':1,'answer':1,'question_ara':1,'answer_ara':1,'faq_cat_id': 1}).exec();
+                  console.log("faq_list == ", data); 
+                  if(!isEmpty(data)){ res.status(200).send({'status':true,'msg':"success",'body':data});
+                      }else{          
+                      res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
+            } catch (error) { console.log(error);
             res.status(200).send({'status':false,'msg':error,'body':''});
           }
       }     
@@ -447,12 +453,13 @@ class AdminController {
      static content_add = async(req,res)=> {
       try{    let type  = req.body.type;
               let content_data = req.body.content_data;
+              let content_data_ara = req.body.content_data_ara;  
    
-          if(isEmpty(type) || isEmpty(content_data)){
+          if(isEmpty(type) || isEmpty(content_data) || isEmpty(content_data_ara) ){
               return res.status(200).send({"status":false,"msg":'All Field Required '}) ;       
           }
-          
-          content_tbls.findOneAndUpdate({type} ,{$set: {type,content_data} },{new: true}, (err,updatedUser)=>{
+            
+          content_tbls.findOneAndUpdate({type} ,{$set: {type,content_data,content_data_ara} },{new: true}, (err,updatedUser)=>{
           if(err) {  console.log(err);
               return res.status(200).send({"status":false,"msg":'some errors '}) ;          
           }

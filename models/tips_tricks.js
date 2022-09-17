@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 
 const tips_tricks = new Schema({
          tips_trick: { type: String, required: true },
+         tips_trick_ara: { type: String, default: '' },
          active_status: { type: Boolean , default : 1 },
 });
   

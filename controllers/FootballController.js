@@ -29,7 +29,7 @@ static jks = async()=>{
             let id_len = (id || '').length;
             
             let whr = (id_len == 0)? {} : { "_id":id};
-            let response = await League_tbl.find(whr).select("_id league_name image").exec();
+            let response = await League_tbl.find(whr).select("_id name name_ara image").exec();
                     
             if(response){
                 let paths =MyBasePath(req,res);    
@@ -60,7 +60,7 @@ static jks = async()=>{
 
 
                     let whr = (isEmpty(id))? {}: {_id: id} ;
-                    let query =  sport_tbl.find(whr).select("_id name image").sort({_id:-1}) ;
+                    let query =  sport_tbl.find(whr).select("_id name name_ara image").sort({_id:-1}) ;
 
                     const query2 =  query.clone();
                     const counts = await query.countDocuments();
@@ -95,7 +95,7 @@ static jks = async()=>{
             let id_len = (id || '').length;
             
             let whr = (id_len == 0)? {} : { "_id":id};
-            let response = await Team_tbl.find(whr).select("_id team_name image").exec();
+            let response = await Team_tbl.find(whr).select("_id name name_ara image").exec();
                     
             if(response){
                  
@@ -123,7 +123,7 @@ static jks = async()=>{
             let id_len = (id || '').length;
             
             let whr = (id_len == 0)? {} : { "_id":id};
-            let response = await Player_tbl.find(whr).select("_id team_name image").exec();
+            let response = await Player_tbl.find(whr).select("_id name name_ara image").exec();
                     
             if(response){
                 let paths =MyBasePath(req,res);    

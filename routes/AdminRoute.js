@@ -71,7 +71,9 @@ const token_check =  require('../middleware/token_check');
     router.post('/add_faq_category/',AdminController.add_faq_category);
     router.put('/update_faq_category/',AdminController.update_faq_category);
     router.delete('/delete_faq_category/:id',AdminController.delete_faq_category);
-    router.post('/add_faq/',AdminController.add_faq);
+
+    router.post('/add_faq/',AdminController.add_faq);  
+
     router.put('/update_faq/',AdminController.update_faq);         
     router.delete('/delete_faq/:id?',AdminController.delete_faq);
     router.post('/add_tips/',AdminController.add_tips);
@@ -83,10 +85,10 @@ const token_check =  require('../middleware/token_check');
     router.delete('/delete_tip/:id?',AdminController.delete_tip);
     router.put("/tips_status_update/:id",AdminController.tips_status_update);
 
-   // user complaint Routes   
+   // user complaint Routes    
     router.post('/add_user_complaint_category/',complaintController.add_user_complaint_category);
     router.get('/user_complaint_cat_list/:id?', complaintController.user_complaint_cat_list);  
-    router.put('/user_complaint_cat_update/:id?',complaintController.user_complaint_cat_update);  
+    router.put('/user_complaint_cat_update/:id',complaintController.user_complaint_cat_update);  
     router.delete('/user_complaint_cat_delete/:id?',complaintController.user_complaint_cat_delete); 
     
       router.post('/user_complaint_list/:id?', complaintController.all_user_complaint_list);  

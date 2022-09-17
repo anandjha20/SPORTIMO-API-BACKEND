@@ -82,19 +82,24 @@ class notificationController {
       static addNotification = async(req,res) =>{
         let title = req.body.title;
         let message = req.body.message;
+        let title_ara = req.body.title_ara;
+        let message_ara = req.body.message_ara;
+       
         let type_status = req.body.type_status;
         let country = req.body.country;
         let sports = req.body.sports;
         let leagues = req.body.leagues;
         let team = req.body.team;
         let players = req.body.players;
-       if(isEmpty(title) || isEmpty(message)){
+     
+        if(isEmpty(title) || isEmpty(message) || isEmpty(title_ara) || isEmpty(message_ara) ){
              return res.status(200).send({'status':false,'msg':"All Field Required",'body':'' });
           }  
+
          if(type_status == 0 || type_status == 1){}else{ return res.status(200).send({'status':false,'msg':"Invalid status_type Field value",'body':'' }); }
-          let addData = new notification_tbl({ title,message,type_status,country,sports,leagues,team,players});
+          let addData = new notification_tbl({title,message,type_status,country,sports,leagues,team,players,message_ara,title_ara});
           let results = await addData.save();
-          if(isEmpty(results)){
+          if(isEmpty(results)){  
             return res.status(200).send({'status':false,'msg':"All Field Required",'body':'' });
           }else{
             return res.status(200).send({'status':true,'msg':"Notification Add Successfully",'body':results });

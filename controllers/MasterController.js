@@ -7,22 +7,23 @@ const  Team_tbl = require("../models/Team");
 const  country_tbl = require("../models/country");
 const  {MyBasePath} = require("../myModel/image_helper");
 
-class MasterController {
+class MasterController { 
 
     /// Sports function section 
     static  sports_add =  async(req,res) =>{
         let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-        let name = req.body.name;
-                if(isEmpty(name) ){
-                    return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
-                }
-                    let add = new sport_tbl({name,image}); 
+      let name = req.body.name;     let name_ara = req.body.name_ara;
+                
+          if(isEmpty(name) || isEmpty(name_ara)  ){
+                    return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+                } 
+             let add = new sport_tbl({name,name_ara,image}); 
                     add.save((err,data)=>{
-                        if(err){ console.log("sport err ==  ", err);    return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
+                        if(err){ console.log("sport err ==  ", err);  return res.status(200).send({"status":false,"msg":"something went wrong please try again","body":''});
                                 }else{
-                        return res.status(200).send({"status":true,"msg":"Sport Add Successfully","body": data });
+                         return res.status(200).send({"status":true,"msg":"Sport Add Successfully","body": data });
                      }
-           });     
+           });       
 
                 
          }
@@ -68,13 +69,14 @@ class MasterController {
                            let id = req.params.id;
                            let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
        
-                           let name = req.body.name;
-                           if(isEmpty(name)){
-                               return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
-                           }
-                     let updateData = isEmpty(image)? {name} : {name,image};       
+                           let name = req.body.name;  let name_ara = req.body.name_ara;
+                
+                           if(isEmpty(name) || isEmpty(name_ara)  ){
+                                     return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+                                 } 
+                     let updateData = isEmpty(image)? {name,name_ara} : {name,name_ara,image};       
 
-                sport_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new: true}, (err, updatedUser) => {
+                sport_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
                 if(err) {  console.log(err);
                     return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
                 }else if(!isEmpty(updatedUser)){
@@ -116,14 +118,14 @@ class MasterController {
     static  league_add =  async(req,res) =>{
         let name = req.body.name;
         let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-      
-        if(isEmpty(name)){
-            return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
-        }
+        let name_ara = req.body.name_ara;
+                
+          if(isEmpty(name) || isEmpty(name_ara)  ){
+                    return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+                } 
 
 
-
-            let add = new league_tbl({"league_name":name,image}); 
+            let add = new league_tbl({name,image,name_ara}); 
             add.save((err,data)=>{
                 if(err){   return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
                         }else{
@@ -141,7 +143,7 @@ class MasterController {
                 let name    = req.body.name;
                 let whr = {};
 
-                if(!isEmpty(name)){whr.league_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+                if(!isEmpty(name)){whr.name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
 
                 page = (isEmpty(page) || page == 0 )? 1 :page ; 
                  if(!isEmpty(id)){whr = {_id: id} ;} 
@@ -176,10 +178,13 @@ class MasterController {
                    let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
                    let id = req.params.id;
                    let name = req.body.name;
-                   if(isEmpty(name)){
-                       return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
-                   }
-            let updateData = isEmpty(image)? {"league_name":name} : {"league_name":name,image} ;     
+                   let name_ara = req.body.name_ara;
+                   
+                    if(isEmpty(name) || isEmpty(name_ara)  ){
+                                return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+                            } 
+
+            let updateData = isEmpty(image)? {name,name_ara} : {name,name_ara,image} ;     
                      
                league_tbl.findOneAndUpdate({_id: id},{$set :updateData },{new: true}, (err, updatedUser) => {
         if(err) {  console.log(err);
@@ -192,7 +197,7 @@ class MasterController {
             
         });
 
-         } catch (error) {
+         } catch (error) {  console.log(error); 
                  return res.status(200).send({"status":false,"msg":'Server error' , "body":''}) ;          
      
              }
@@ -223,11 +228,12 @@ class MasterController {
    static  team_add =  async(req,res) =>{
         let name = req.body.name;
         let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-      
-        if(isEmpty(name)){
-            return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
-        }
-            let add = new Team_tbl({"team_name":name,image}); 
+        let name_ara = req.body.name_ara;
+                
+          if(isEmpty(name) || isEmpty(name_ara)  ){
+                    return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+                } 
+            let add = new Team_tbl({name,name_ara,image}); 
             add.save((err,data)=>{
                 if(err){   return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
                         }else{
@@ -279,21 +285,22 @@ class MasterController {
                    let id = req.params.id;
                    let name = req.body.name;
                    let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-      
-                   if(isEmpty(name)){
-                       return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
-                   }
+                   let name_ara = req.body.name_ara;
+                
+                   if(isEmpty(name) || isEmpty(name_ara)  ){
+                             return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+                         } 
 
-        let updateData = (isEmpty(image))? {"team_name":name} : {"team_name":name,image} ;
-
+        let updateData = (isEmpty(image))? {name,name_ara} : {name,name_ara,image} ;
+  
                    Team_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new: true}, (err, updatedUser) => {
-        if(err) {  console.log(err);
-            return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
-        }else if(!isEmpty(updatedUser)){
-                    return res.status(200).send({"status":true,"msg":'Team Updated Successfully' , "body":updatedUser  }) ;   
-            }else{  return res.status(200).send({"status":false,"msg":'Invalid Team Id ' , "body": ''}) ;   
-                    }
-
+                    if(err) {  console.log(err);
+                        return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                    }else if(!isEmpty(updatedUser)){
+                                return res.status(200).send({"status":true,"msg":'Team Updated Successfully' , "body":updatedUser  }) ;   
+                        }else{  return res.status(200).send({"status":false,"msg":'Invalid Team Id ' , "body": ''}) ;   
+                                }
+            
             
         });
 
@@ -328,15 +335,16 @@ class MasterController {
       static  player_add =  async(req,res) =>{
                 let name = req.body.name;
                 let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-          
-                if(isEmpty(name)){            
-                    return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
-                }
+                let name_ara = req.body.name_ara;
+                
+                if(isEmpty(name) || isEmpty(name_ara)  ){
+                          return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+                      } 
 
-              let add = new Player_tbl({"team_name":name,image}); 
+              let add = new Player_tbl({name_ara,name,image}); 
                     add.save((err,data)=>{   
                         if(err){ console.log(err);     
-                                return res.status(200).send({"status":false,"msg":'something went wrong please try again' ,"body":''});
+                                return res.status(200).send({"status":false,"msg":'something went wrong please try again' ,"body":'' });
                                 }else{
                                    return res.status(200).send({"status":true,"msg":"Player Add Successfully","body": data });
                                 }  
@@ -352,7 +360,7 @@ class MasterController {
             let name    = req.body.name;
             let whr = {};
 
-            if(!isEmpty(name)){whr.team_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+            if(!isEmpty(name)){whr.name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
 
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
             if(!isEmpty(id)){whr = {_id: id} ;} 
@@ -384,11 +392,12 @@ class MasterController {
                     let id = req.params.id;
                     let name = req.body.name;
                     let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
+                    let name_ara = req.body.name_ara;
                 
-                    if(isEmpty(name)){
-                        return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
-                    }
-                 let updateData  = (isEmpty(image))? {"team_name":name} : {"team_name":name,image}            
+                    if(isEmpty(name) || isEmpty(name_ara)  ){
+                              return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+                          } 
+                 let updateData  = (isEmpty(image))? {name_ara,name} : {name_ara,name,image}            
 
 
                     Player_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new: true}, (err, updatedUser) => {

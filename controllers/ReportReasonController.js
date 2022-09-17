@@ -7,15 +7,16 @@ const report_reason_tbl = require('../models/report_reason');
 const user_reportings_tbl = require('../models/user_reportings');
 
   
-class ReportReasonController {
-        static  report_reason_add =  async(req,res) =>{
-             let name = req.body.name;
-                if(isEmpty(name) ){
+class ReportReasonController { 
+       
+       static  report_reason_add =  async(req,res) =>{  
+             let name = req.body.name;    let name_ara = req.body.name_ara;
+                if(isEmpty(name) || isEmpty(name_ara)){   
                     return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
                 }
-                    let add = new report_reason_tbl({name}); 
+                    let add = new report_reason_tbl({name,name_ara}); 
                     add.save((err,data)=>{
-                        if(err){ console.log("sport err ==  ", err);    return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
+                        if(err){ console.log("sport err ==  ", err);    return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
                                 }else{
                         return res.status(200).send({"status":true,"msg":"Report Reason  Add Successfully","body": data });
                      }
@@ -56,14 +57,14 @@ class ReportReasonController {
 
    static report_reason_update = async(req,res)=>{
                 try {
-                           let id = req.params.id;
-                          let name = req.body.name;
-                           if(isEmpty(name)){
-                               return res.status(200).send({"status":false,"msg":"Name Field Required","body":''});
+                           let id = req.params.id;   let name_ara = req.body.name_ara; 
+                          let name = req.body.name; 
+                           if(isEmpty(name)  || isEmpty(name_ara) ){  
+                               return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
                            }
                         
 
-                     report_reason_tbl.findOneAndUpdate({_id: id},{$set : {name} },{new: true}, (err, updatedUser) => {
+                     report_reason_tbl.findOneAndUpdate({_id: id},{$set : {name,name_ara} },{new: true}, (err, updatedUser) => {
                 if(err) {  console.log(err);
                     return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
                 }else if(!isEmpty(updatedUser)){
