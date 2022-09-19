@@ -25,6 +25,8 @@ static jks = async()=>{
 
     static league_list = async(req,res)=>{
         try {
+            let language = req.body.language;
+            language = isEmpty(language) ? '' : language ;
             let id = req.params.id ;
             let id_len = (id || '').length;
             
@@ -33,7 +35,7 @@ static jks = async()=>{
                     
             if(response){
                 let paths =MyBasePath(req,res);    
-                     response.map((item)=> { 
+                     response.map((item)=> {  if(language != '' && language == 'ar'){ item.name = item.name_ara }
                         item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
                                            return item;
                                  }); 
@@ -52,27 +54,25 @@ static jks = async()=>{
 
        
     static sport_list = async(req,res)=>{
-        try {
-           
+                 try {
+                    let language = req.body.language;
+                    language = isEmpty(language) ? '' : language ;
                     let  id = req.params.id;
                     let page  = req.body.page;
                     page = (isEmpty(page) || page == 0 )? 1 :page ; 
-
 
                     let whr = (isEmpty(id))? {}: {_id: id} ;
                     let query =  sport_tbl.find(whr).select("_id name name_ara image").sort({_id:-1}) ;
 
                     const query2 =  query.clone();
                     const counts = await query.countDocuments();
-    
                     let offest = (page -1 ) * 10 ; 
                     const records = await query2.skip(offest).limit(10);
-                  //  res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });       
-
+  
                     if(records){
 
                         let paths =MyBasePath(req,res);    
-                          records.map((item)=> { 
+                          records.map((item)=> {  if(language != '' && language == 'ar'){ item.name = item.name_ara }
                            item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
                                               return item; }); 
 
@@ -93,14 +93,16 @@ static jks = async()=>{
      try {
             let id = req.params.id ;
             let id_len = (id || '').length;
-            
+            let language = req.body.language;
+             language = isEmpty(language) ? '' : language ;
+
             let whr = (id_len == 0)? {} : { "_id":id};
             let response = await Team_tbl.find(whr).select("_id name name_ara image").exec();
                     
             if(response){
                  
                 let paths =MyBasePath(req,res);    
-                  response.map((item)=> { 
+                  response.map((item)=> { if(language != '' && language == 'ar'){ item.name = item.name_ara }
                       item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
                                       return item;
                             });      
@@ -121,13 +123,15 @@ static jks = async()=>{
         try {
             let id = req.params.id ;
             let id_len = (id || '').length;
-            
+            let language = req.body.language;
+            language = isEmpty(language) ? '' : language ;
+
             let whr = (id_len == 0)? {} : { "_id":id};
             let response = await Player_tbl.find(whr).select("_id name name_ara image").exec();
                     
             if(response){
                 let paths =MyBasePath(req,res);    
-                     response.map((item)=> { 
+                     response.map((item)=> { if(language != '' && language == 'ar'){ item.name = item.name_ara;  delete item.name_ara ; }
                         item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
                                            return item;
                                  }); 

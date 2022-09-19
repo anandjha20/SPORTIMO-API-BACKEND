@@ -52,13 +52,23 @@ class ComplaintController{
 
             static user_complaint_cat_list = async (req,res)=>{
                 try {
+                    let language = req.body.language;
+                    language = isEmpty(language) ? '' : language ;
                     let  id = req.params.id;  let id_len = (id || '').length;
                     let whr = (id_len == 0) ? {active_status:true} :{_id:id};
               
                     let data = await user_complaint_cat_tbl.find(whr);
-                      if(data){ res.status(200).send({'status':true,'msg':"success",'body':data});
+                      if(data){
+                        data.map((item)=> {  
+                                              if(language != '' && language == 'ar'){ 
+                                                    item.cat_name = item.cat_name_ara;  
+                                                 }else if(language != '' && language == 'fr'){
+                                                item.cat_name = item.cat_name_fr}
+                                            });   
+
+                  return res.status(200).send({'status':true,'msg':"success",'body':data});
                         }else{      
-                        res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
+                          return  res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
                             
                   
               

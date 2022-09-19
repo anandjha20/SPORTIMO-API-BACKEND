@@ -244,11 +244,19 @@ class AdminController {
                 }
       static get_tip_list = async (req,res)=>{
                   try {
+                       let language = req.body.language;
+                           language = isEmpty(language) ? '' : language ;
+
                       let tips = tips_trick.find({}, function(err, tips){
                         if(err){
                          console.log(err);
                         }
                         else {
+
+                          tips.map((item)=> {  if(language != '' && language == 'ar'){ item.tips_trick = item.tips_trick_ara }
+                                                    return item; }); 
+
+
                              res.json( {"status":true,"msg":'Success' , "body":tips });
                             // return res.status(200).send({"status":true,"msg":'Success' , "body":dd }) ;      
                         }

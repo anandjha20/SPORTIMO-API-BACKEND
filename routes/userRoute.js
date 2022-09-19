@@ -37,6 +37,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
  let IntroSliderController = require('../controllers/IntroSliderController');
  let NotificationController = require('../controllers/NotificationController');
  let ReportReasonController = require("../controllers/ReportReasonController");
+ let AdminController = require("../controllers/AdminController");
                                               
           router.get('/JK/',UserController.dashboardAllCount);
           router.get('/sendEmail/',UserController.User_sendEmail);
@@ -44,7 +45,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
           router.get('/sport_list/:id?',user_token_check,FootballController.sport_list);
           router.get('/team_list/:id?', user_token_check,FootballController.team_list);
           router.get('/player_list/:id?',user_token_check,FootballController.player_list);
-                       
+          router.get('/get_tip_list/:id?',AdminController.get_tip_list);
+                        
                                    
           router.post('/registration/',UserController.registration);
           router.post('/verify_nickName',UserController.verify_nickName);
@@ -76,6 +78,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
         router.get('/user_complaint_cat_list/:id?', user_token_check,complaintController.user_complaint_cat_list);  
         router.post('/user_complaint_add',user_token_check,uComplaintImgUpload, complaintController.user_complaint_add);  
         router.get('/user_complaint_list/:user_id/:id?',complaintController.user_complaint_list);  
+
         router.get('/user_complaint_all',complaintController.user_complaint_all);  
         router.post('/user_complaint_chat_add',complaintController.user_complaint_chat_add);  
         router.get('/user_complaint_chat_list/:id',complaintController.user_complaint_chat_list); 
