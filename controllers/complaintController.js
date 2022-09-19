@@ -20,6 +20,7 @@ const { poll_percent,all_list_come,sendNotificationAdd} = require('../myModel/he
     const user_complaint_tbl = require('../models/user_complaint');    
     const user_complaint_chat_tbl = require('../models/user_complaint_chat');    
     const complaint_categories = require('../models/user_complaint_cat');    
+const { all } = require('../routes/userRoute');
     
 class ComplaintController{
    
@@ -246,21 +247,44 @@ class ComplaintController{
   }     
         
     static user_complaint_list = async (req,res)=>{
-        try {
+        try {  
+            let language = req.body.language;
+                  language = isEmpty(language) ? '' : language ;
+
             let  user_id = req.params.user_id; 
             let  id = req.params.id;  let id_len =(id || '').length;
         let whr = (id_len == 0)? {user_id:user_id} : {_id:id} ;
           
-            let data = await user_complaint_tbl.find(whr).populate('cat_id','cat_name').sort({_id:-1}).exec() ;
+            let data = await user_complaint_tbl.find(whr).populate('cat_id').sort({_id:-1}).exec() ;
           
             console.log("whr value1111 == ",data );
            // let data = await user_complaint_tbl.find(whr).populate('cat_id' ).select({'_id':1,'question':1,'admin_status':1,'image':1,'cat_id':1}).exec();
               
            let paths =MyBasePath(req,res); 
-             
-     if(data){  let allData =  data.map( (item)=>{ item.image = (item.image == '')? '' : `${paths}/image/assets/userComplaint_img/${item.image}`; return item;});
+            const sumObjs = []; 
+     if(data){  let allData =  await Promise.all(  data.map( (item,i)=>{ 
+                                            if(language != '' && language == 'ar'){
+                                                            if (typeof item['cat_id'] === 'object') {
+                                                                item.JK = item.cat_id.cat_name_ara;
+                                                      item.cat_id.cat_name = item.cat_id.cat_name_ara;
+                                                     // sumObj.push(i);  
+                                                     sumObjs.push("Kiwi");
+                                                    }else{
+                                                        sumObjs.push("Kiwi");
+                                                      }
+
+
+                                                     }else if(language != '' && language == 'fr'){
+                                                        if (typeof item['cat_id'] === 'object') {
+                                                            item.JK = item.cat_id.cat_name_fr;
+                                                            item.cat_id.cat_name = item.cat_id.cat_name_fr;}
+                                                       
+                                                     }
+                                  item.image = (item.image == '')? '' : `${paths}/image/assets/userComplaint_img/${item.image}`;
+                                                    
+                                  return item;}));
                 
-                res.status(200).send({'status':true,'msg':"success",'body':allData});
+                res.status(200).send({'status':true,'msg':"success",'body':sumObjs});
                 }else{      
                 res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
                     

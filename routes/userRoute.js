@@ -41,12 +41,12 @@ const userReportImg =  img_upload('./assets/user_img','image');
                                               
           router.get('/JK/',UserController.dashboardAllCount);
           router.get('/sendEmail/',UserController.User_sendEmail);
-          router.get('/league_list/:id?',user_token_check,FootballController.league_list);
+          router.get('/league_list/:id?',FootballController.league_list);
           router.get('/sport_list/:id?',user_token_check,FootballController.sport_list);
           router.get('/team_list/:id?', user_token_check,FootballController.team_list);
           router.get('/player_list/:id?',user_token_check,FootballController.player_list);
           router.get('/get_tip_list/:id?',AdminController.get_tip_list);
-                        
+          router.get('/faq_list/:id?',AdminController.faq_list);                  
                                    
           router.post('/registration/',UserController.registration);
           router.post('/verify_nickName',UserController.verify_nickName);

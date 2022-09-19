@@ -442,13 +442,26 @@ class AdminController {
   
         static faq_list = async (req,res)=>{
           try {
+               let language = req.body.language;
+                    language = isEmpty(language) ? '' : language ; 
+            
                   let  id = req.params.id;  let id_len = (id || '').length;
                   let whr = (id_len == 0) ? {active_status:true} :{_id:id};
             
-                // let data = await faq_tbl.find(whr).populate('faq_cat_id' ).select({'_id':1,'question':1,'answer':1,'faq_cat_id':'faq_cat_id._id','cat_name':"faq_cat_id.cat_name"}).exec();
-                  let data = await faq_tbl.find(whr).populate({path: 'faq_cat_id' ,"select":'cat_name cat_name_ara cat_name_fr _id'}).select({'_id':1,'question':1,'answer':1,'question_ara':1,'answer_ara':1,'faq_cat_id': 1}).exec();
+            let data = await faq_tbl.find(whr).populate({path: 'faq_cat_id' ,"select":'cat_name cat_name_ara cat_name_fr _id'}).select({'_id':1,'question':1,'answer':1,'question_ara':1,'answer_ara':1,'faq_cat_id': 1}).exec();
                   console.log("faq_list == ", data); 
-                  if(!isEmpty(data)){ res.status(200).send({'status':true,'msg':"success",'body':data});
+                  if(!isEmpty(data)){
+                  
+                    data.map((item)=> {  if(language != '' && language == 'ar')
+                                            { item.question = item.question_ara;
+                                               item.answer = item.answer_ara; 
+                                                item.faq_cat_id.cat_name = item.faq_cat_id.cat_name_ara ;
+                                             }
+                   
+                                       return item;
+                             }); 
+                    
+                    res.status(200).send({'status':true,'msg':"success",'body':data});
                       }else{          
                       res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
             } catch (error) { console.log(error);

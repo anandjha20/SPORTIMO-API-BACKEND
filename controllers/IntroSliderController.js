@@ -2,6 +2,7 @@
  const{ isEmpty} = require("../myModel/common_modal");
  const IntroSlider_tbls = require("../models/IntroSlider_tbls");
 
+ const  {MyBasePath} = require("../myModel/image_helper");
 class IntroSliderController{
     
    static introSlider_add = async(req,res)=>{
@@ -122,8 +123,8 @@ class IntroSliderController{
                let whr = (isEmpty(id))? {}: {_id: id};
             
             let records =  await IntroSlider_tbls.find(whr);
-     
-             let sendData = (records)? await Promise.all( records.map((item)=>{ item.image = (item.image)? "http://192.168.1.95:3600/image/assets/introSlider_img/"+item.image:'';  return item;} )):[];
+            let paths =MyBasePath(req,res); 
+             let sendData = (records)? await Promise.all( records.map((item)=>{ item.image = (item.image)? `${paths}/image/assets/introSlider_img/${item.image}`:'';  return item;} )):[];
         
            return  res.status(200).send({'status':true,'msg':"success", 'body':sendData });
     
