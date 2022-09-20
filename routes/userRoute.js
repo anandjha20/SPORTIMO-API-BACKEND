@@ -51,6 +51,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
           router.post('/registration/',UserController.registration);
           router.post('/verify_nickName',UserController.verify_nickName);
           router.post('/user_profile_update',user_img , UserController.user_profile_update);
+          router.put('/user_profile_type_update/:id?', UserController.user_profile_type_update);
+   
           router.post('/block_user_add',user_token_check,UserController.block_user_add);  
           router.post('/user_profile_view',UserController.user_profile_view);
           router.get('/resend_otp/:id?',UserController.resend_otp_2); 
@@ -157,7 +159,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
    
 //  user reports route      
     router.get('/report_reason_types/:id?',ReportReasonController.report_reason_types);
-    router.post('/add_user_reports',userReportImg,ReportReasonController.add_user_reports);
+    router.post('/add_user_reports',userReportImg,ReportReasonController.add_user_reports);  
     router.get('/get_user_report_list/:id',ReportReasonController.get_user_report_list);
    
     router.get('/user_chatBlock_chacked/:id',chatController.user_chatBlock_chacked);

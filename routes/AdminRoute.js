@@ -172,9 +172,16 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
   // get autocomplete users name like route
    router.get('/get_autocomplete_users',UserController.get_autocomplete_users);
    router.get('/jk_noti',NotificationController.jk_noti);
+  
+   // blocked User List 
+   router.get('/blockedUserList/:id?',AdminController.blockedUserList);
 
+   
+   // chat block User LIst  
+   router.get('/chat_blockUserLIst/:id?',AdminController.chat_blockUserLIst);
+  
+   
    router.get('/jk_test',PollController.jk_test);                 
-
 
 
 module.exports = router;       

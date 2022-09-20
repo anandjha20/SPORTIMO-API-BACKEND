@@ -24,17 +24,23 @@ static chat_group_add = async(req,res)=>{
         if(isEmpty(group_name) || isEmpty(type) ){
            return res.status(200).send({status:false,"msg":"All Field Required"});
         }
+
+      let getRow =  await chat_groups_tbl.findOne({group_name});
+
+     if(! isEmpty(getRow)){
+        return res.status(200).send({status:true,"msg":"This group already exists","body":getRow});
+     }else{     
     let add = new chat_groups_tbl({ group_name,type})
           add.save((err, data)=>{
             if(err){console.log(err);  return res.status(200).send({status:false,"msg":"something went wrong please try again"}); 
                }else{
                          return res.status(200).send({"status":true,"msg":"group add Successfully","body":data});
                }
-          });
+          });   }
         } catch (error) { console.log(error); 
             return res.status(200).send({status:false,"msg":"Server error"});
         }
-    
+ 
 }
 
 

@@ -4,9 +4,9 @@ const Schema = mongoose.Schema;
 
             
 const pollschema = new Schema({
-         from_user: { type:Schema.Types.ObjectId,ref: 'user_tbls', required: true },
-         to_user:  { type:Schema.Types.ObjectId,ref: 'user_tbls', required: true },
-         date: { type: String },
+         from_user: { type:Schema.Types.ObjectId,ref: 'user_tbl', required: true },
+         to_user:  { type:Schema.Types.ObjectId,ref: 'user_tbl', required: true },
+         date: { type: Date , default: Date.now },
           
     });
 

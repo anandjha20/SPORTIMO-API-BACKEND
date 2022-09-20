@@ -41,7 +41,8 @@ const Userschema = new Schema({
          biometric  : { type: String,enum: [0,1], default: '0'},
          notifications : { type: String,enum: [0,1], default: '0' }, 
          chatBlockStatus :{type:Boolean,default: 0 },
-         firebase_token :  { type: String ,default: ''},  
+         firebase_token :  { type: String ,default: ''},
+         profile_type : {type:String, enum :["public","private"] ,default: "public" },  
 });
 
 

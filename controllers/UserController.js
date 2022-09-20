@@ -4,7 +4,7 @@
 
 
   
-const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime } = require('../myModel/common_modal');
+const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date } = require('../myModel/common_modal');
 const { autoincremental,sendNotificationAdd } = require('../myModel/helper_fun');
 
   const  {MyBasePath} = require("../myModel/image_helper");
@@ -446,17 +446,17 @@ user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUs
 
    
 static block_user_add = async(req,res)=>{
-
-    try {
+     try {
                 let user_data = req.body;
-         let from_user_len = (user_data.from_user || '').length;
-         let to_user_len = (user_data.to_user || '').length;
+                let from_user_len = (user_data.from_user || '').length;
+                let to_user_len = (user_data.to_user || '').length;
           
         if(from_user_len == 0 || to_user_len == 0  ){
             return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
            } 
 
         let date = getcurntDate();
+        let seven_dayDate = before_after_Date(-7);
         let fUser = mongoose.Types.ObjectId(user_data.from_user);
         let toUser = mongoose.Types.ObjectId(user_data.to_user);
        
@@ -466,44 +466,53 @@ static block_user_add = async(req,res)=>{
 
         let whr1 = { "from_user": fUser ,"to_user": toUser};
         let whr = { "from_user": fUser ,"to_user": toUser ,"date":date};
-        
-       
-      
-      let datas = await block_user_tbl.find(whr1);
-            if(datas.length >0 ){ 
-                     var query = block_user_tbl.remove(whr1);
-                                query.exec((err, data) => { 
-                                    if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
-                                }else{     
-                                    let type_status = 1; 
-                                    let title = `${to_name.name} you have unblocked by ${F_name.name}`;  
-                                      let msg   = `${to_name.name} you have unblocked by ${F_name.name}`;  
-                                  let demo = sendNotificationAdd({title,msg,type_status}); 
-                                     
-                                return res.status(200).send({"status":true,"msg":'this blocked user  Delete  Successfully' , "body":''  }) ; 
-                         } });
-                 
-            }else{     
-         
-         
-     let add = new block_user_tbl(whr);
-     let respose = await add.save((err, data) => {
-   
+        let whrRow = { "from_user": fUser ,"to_user": toUser,date :{ $gte: seven_dayDate } };
     
-      if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
-            }else{   
-                let type_status = 1; 
-                let title = `${to_name.name} you have blocked by ${F_name.name}`;  
-                  let msg   = `${to_name.name} you have blocked by ${F_name.name}`;  
-                 
-                let demo = sendNotificationAdd({title,msg,type_status});
+        let response = await rows_count(block_user_tbl,whrRow);   
+         
+        if(response>0){
+            return res.status(200).send({"status":false,"msg":'This user Not unblocked befor 7 days  ' , "body":''}) ; 
+        }else{
+                    let datas = await block_user_tbl.find(whr1);
+                            if(datas.length >0 ){ 
 
-            return res.status(200).send({"status":true,"msg":'this user blocked  Successfully' , "body":''  }) ; 
-     } });
-   
+                                    
 
-    }
 
+                                                var query = block_user_tbl.remove(whr1);
+
+
+                                                query.exec((err, data) => { 
+                                                    if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
+                                                }else{     
+                                                    let type_status = 1; 
+                                                    let title = `${to_name.name} you have unblocked by ${F_name.name}`;  
+                                                    let msg   = `${to_name.name} you have unblocked by ${F_name.name}`;  
+                                                let demo = sendNotificationAdd({title,msg,type_status}); 
+                                                return res.status(200).send({"status":true,"msg":'this blocked user  Delete  Successfully' , "body":''  }) ; 
+                                        } });
+                                
+                            }else{     
+                        
+                        
+                    let add = new block_user_tbl(whr);
+                    let respose = await add.save((err, data) => {
+                
+                    
+                    if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
+                            }else{   
+                                let type_status = 1; 
+                                let title = `${to_name.name} you have blocked by ${F_name.name}`;  
+                                let msg   = `${to_name.name} you have blocked by ${F_name.name}`;  
+                                
+                                let demo = sendNotificationAdd({title,msg,type_status});
+
+                            return res.status(200).send({"status":true,"msg":'this user blocked  Successfully' , "body":''  }) ; 
+                    } });
+                
+
+                    }
+                }
        
     } catch (error) {
         return res.status(200).send({"status":false,"msg":'no data add' , "body":''}) ;          
@@ -665,9 +674,28 @@ static verify_nickName = async(req,res)=>{
 
 
 
-  }       
+  }          
 
+  static user_profile_type_update = async(req,res)=>{
+        try{  
+            let user_id = req.params.id;
+             let profile_type  = req.body.profile_type;   
+             
+             if(isEmpty(user_id) || isEmpty(profile_type)){
+                         return res.status(200).send({"status":false,"msg":'All Field Required' }) ;
+                 }
+           user_tbl.findByIdAndUpdate({ _id:user_id},{$set: {profile_type }},{new: true},
+                    (err,updatedUser)=>{ if(err) {  console.log(err); return res.status(200).send({"status":false,"msg":'something went wrong please try again' }) ;
+                                                }else if (!isEmpty(updatedUser)){
+                                                    return res.status(200).send({"status":true,"msg":'Profile type update successfully' }) ;
+                                                  }else{
+                                                    return res.status(200).send({"status":false,"msg":'Invalid user' }) ;
+                                                  }});
+                    } catch (error) {  console.log('user_profile_type_update fun call ==  ',error); 
+                return res.status(200).send({"status":false,"msg":'Server error' }) ;
+                }             
 
+        }          
 
 }
        

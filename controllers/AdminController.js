@@ -12,7 +12,7 @@ const { rows_count,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = requ
     const faq_tbl = require('../models/faq');   
     const tips_trick = require('../models/tips_tricks'); 
     const content_tbls = require('../models/content_tbls');      // tips_status_update
-  
+   const block_user_tbl = require("../models/block_user");
 class AdminController { 
 
   static tips_status_update = async (req,res)=>{
@@ -442,22 +442,31 @@ class AdminController {
   
         static faq_list = async (req,res)=>{
           try {
-               let language = req.body.language;
-                    language = isEmpty(language) ? '' : language ; 
+                 let language = req.body.language;
+                    language  = isEmpty(language) ? '' : language ; 
             
                   let  id = req.params.id;  let id_len = (id || '').length;
-                  let whr = (id_len == 0) ? {active_status:true} :{_id:id};
+                  let whr = (id_len == 0) ? {} :{_id:id}; // active_status:true
             
             let data = await faq_tbl.find(whr).populate({path: 'faq_cat_id' ,"select":'cat_name cat_name_ara cat_name_fr _id'}).select({'_id':1,'question':1,'answer':1,'question_ara':1,'answer_ara':1,'faq_cat_id': 1}).exec();
                   console.log("faq_list == ", data); 
                   if(!isEmpty(data)){
                   
                     data.map((item)=> {  if(language != '' && language == 'ar')
-                                            { item.question = item.question_ara;
-                                               item.answer = item.answer_ara; 
-                                                item.faq_cat_id.cat_name = item.faq_cat_id.cat_name_ara ;
+                                            { item.question =   item.question_ara;
+                                               item.answer =   item.answer_ara;
+                                               if(typeof item.faq_cat_id === 'object' && item.faq_cat_id !== null){
+                                                item.faq_cat_id.cat_name =  item.faq_cat_id.cat_name_ara  ; 
+                                            
+                                              }else {
+                                                    item.faq_cat_id = {};
                                              }
-                   
+                                            }else  if(language != '' && language == 'fr'){
+                                              if(typeof item.faq_cat_id === 'object' && item.faq_cat_id !== null){
+                                                item.faq_cat_id.cat_name =  item.faq_cat_id.cat_name_fr  ; 
+                                            
+                                              }
+                                            }
                                        return item;
                              }); 
                     
@@ -523,7 +532,40 @@ class AdminController {
 
 
 }        
+    static blockedUserList = async(req,res)=>{
+        try{
+          let id = req.params.id;
 
+          let whr = isEmpty(id)? {} :{"_id":id}; 
+      let response =  await block_user_tbl.find(whr).populate({path:"from_user",select:"name"}).exec();
+        if( isEmpty(response)){
+             return res.status(200).send({status:false,msg: "No Data FOund!.. ",body:whr});
+            }else{
+                return res.status(200).send({status:true,msg: "Success", "body":response  });
+            }
+          } catch (error){  console.log(error); 
+            return res.status(200).send({status:false,msg: "Server error"});
+        }
+
+    }
+ 
+     /// chat_blockUserLIst
+     static chat_blockUserLIst = async(req,res)=>{
+            try{
+              let id = req.params.id;
+
+              let whr = isEmpty(id)? { "chatBlockStatus":true } :{"_id":id,"chatBlockStatus":true }; 
+          let response =  await user_tbl.find(whr,).select("name" ).exec();
+            if( isEmpty(response)){
+                return res.status(200).send({status:false,msg: "No Data FOund!.. ",body:whr});
+                }else{
+                    return res.status(200).send({status:true,msg: "Success", "body":response  });
+                }
+              } catch (error){  console.log(error); 
+                return res.status(200).send({status:false,msg: "Server error"});
+            }
+
+        }
 
 }
    

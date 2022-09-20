@@ -1,10 +1,11 @@
   const {isEmpty,getcurntDate,rows_count }  = require("./common_modal");   
+  const { userSentNotification }  = require("./Notification_helper");   
 
     const user_tbl = require('../models/user');    
     const admin_tbl = require('../models/admin');    
     const poll_tbl = require('../models/poll');    
     const poll_result_tbl = require('../models/poll_result'); 
-    const sport_tbl = require('../models/sport'); 
+    const sport_tbl = require('../models/sport');  
     const League_tbl = require('../models/League'); 
     const Team_tbl = require('../models/Team'); 
     const Player_tbl = require('../models/Player'); 
@@ -108,14 +109,20 @@ const sendNotificationAdd = (my_obj )=>{
                  let user_rows = await rows_count(user_reportings_tbl,{reported_user_id:user_id,autoBlockStatus:false});
                       console.log("userBlocked_fun row count == ",user_rows );
                       if(user_rows >= 5){
+                          /// send notification this user 
+                          let title = `your chat has been blocked`;  let details = `your chat has been blocked `;           
+                          let sentNoti =  userSentNotification({user_id,title,details});
+     
                             let block_status = 1;
                             let addData = new user_chat_blocks_tbl({ user_id,block_status,block_type: "auto"});
-                            let response = await addData.save();
+                           let response = await addData.save();
                             if(response){ 
                                 let dds = user_tbl.findByIdAndUpdate({ _id:user_id},{$set: {chatBlockStatus:block_status }},{new: true},
                                                     (err,updatedUser)=>{ if(err) {  console.log(err); } });
+                                                    
                             let dxsd = user_reportings_tbl.updateMany({reported_user_id:user_id,autoBlockStatus:false}, {"$set":{"autoBlockStatus": 1}}, {"multi": true}, (err, writeResult) => {if(err) { console.log(err); } })  ;     
                           }
+               
                  }
                 } catch (error) {
                         console.log(error); 

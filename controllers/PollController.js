@@ -17,19 +17,24 @@ const { poll_percent} = require('../myModel/helper_fun');
     const user_complaint_tbl = require('../models/user_complaint');     
 class PollController {   
       static jk_test = async(req,res)=>{
-        let complaint_id = req.body.complaint_id;
-        let title   =  'Your poll result Disclosed';  
-        let details =  'Admin has replied to your complaint';    
- 
-  
+        // let complaint_id = req.body.complaint_id;
+        // let title   =  'Your poll result Disclosed';  
+        // let details =  'Admin has replied to your complaint';    getDate 
+        let days = req.body.days;
+        var date = new Date();
+     
+        date.setDate(date.getDate() + parseInt(days));
+        
+        var finalDate = date.getFullYear()+'-'+ (date.getMonth()+1) +'-'+date.getDate();
+        
      ////////////////////////////////   
-     let data = await  user_complaint_tbl.findOne({"_id":complaint_id}).populate({path:"user_id",select:['firebase_token']}).exec();
-        if ( (!isEmpty(data)) && (! isEmpty(data.user_id)) && (! isEmpty(data.user_id.firebase_token) ))  {
-                 let sdd =  send_noti([data.user_id.firebase_token],title,details);
-        }
+    //  let data = await  user_complaint_tbl.findOne({"_id":complaint_id}).populate({path:"user_id",select:['firebase_token']}).exec();
+    //     if ( (!isEmpty(data)) && (! isEmpty(data.user_id)) && (! isEmpty(data.user_id.firebase_token) ))  {
+    //              let sdd =  send_noti([data.user_id.firebase_token],title,details);
+    //     }
       //let data = await pollDisclosed_noti_fun({poll_id,title,details});
 
-        return res.status(200).send({'status':false,'msg':'Success',"body":data });
+        return res.status(200).send({'status':false,'msg':'Success',"body":finalDate });
 
      
         

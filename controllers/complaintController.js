@@ -257,36 +257,22 @@ class ComplaintController{
           
             let data = await user_complaint_tbl.find(whr).populate('cat_id').sort({_id:-1}).exec() ;
           
-            console.log("whr value1111 == ",data );
-           // let data = await user_complaint_tbl.find(whr).populate('cat_id' ).select({'_id':1,'question':1,'admin_status':1,'image':1,'cat_id':1}).exec();
-              
+           // console.log("whr value1111 == ",data );
            let paths =MyBasePath(req,res); 
-            const sumObjs = []; 
-     if(data){  let allData =  await Promise.all(  data.map( (item,i)=>{ 
+     
+     if(data){  let allData =    data.map( (item,i)=>{ 
                                             if(language != '' && language == 'ar'){
-                                                            if (typeof item['cat_id'] === 'object') {
-                                                                item.JK = item.cat_id.cat_name_ara;
-                                                      item.cat_id.cat_name = item.cat_id.cat_name_ara;
-                                                     // sumObj.push(i);  
-                                                     sumObjs.push("Kiwi");
-                                                    }else{
-                                                        sumObjs.push("Kiwi");
-                                                      }
-
-
-                                                     }else if(language != '' && language == 'fr'){
-                                                        if (typeof item['cat_id'] === 'object') {
-                                                            item.JK = item.cat_id.cat_name_fr;
+                                                  if(typeof item.cat_id === 'object' && item.cat_id !== null){
+                                                        item.cat_id.cat_name = item.cat_id.cat_name_ara;
+                                                      }else{  item.cat_id = {};}
+                                                }else if(language != '' && language == 'fr'){
+                                                        if(typeof item.cat_id === 'object' && item.cat_id !== null){
                                                             item.cat_id.cat_name = item.cat_id.cat_name_fr;}
-                                                       
-                                                     }
-                                  item.image = (item.image == '')? '' : `${paths}/image/assets/userComplaint_img/${item.image}`;
-                                                    
-                                  return item;}));
-                
-                res.status(200).send({'status':true,'msg':"success",'body':sumObjs});
-                }else{      
-                res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
+                                                    }
+                                        item.image = (item.image == '')? '' : `${paths}/image/assets/userComplaint_img/${item.image}`;
+                                                return item;});
+                      res.status(200).send({'status':true,'msg':"success",'body':data});
+                }else{  res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
                     
             
         

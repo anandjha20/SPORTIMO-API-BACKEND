@@ -4,7 +4,7 @@ let mongoose = require('mongoose');
 var axios = require('axios');
 const user_tbl = require('../models/user');    
 const user_logs = require('../models/user_logs');  
-
+const user_reportings_tbl = require('../models/user_reportings');
 
 const sentEmail = async (req,res) => {
    var email =  req.email; 
@@ -80,6 +80,13 @@ function gen_str (length) {
     
     
   }  
+ const before_after_Date = (days)=>{
+        var date = new Date();
+     date.setDate(date.getDate() + parseInt(days));
+     var finalDate = date.getFullYear()+'-'+ (date.getMonth()+1) +'-'+date.getDate();
+     return finalDate;
+ }
+
 const send_mobile_otp = async (req,res)=>{
     console.log('common modal ==');
 let mobile = req.mobile;
@@ -166,4 +173,4 @@ const ArrChunks =  async (array, size = 1)=>{
                             return results;
                           };
 
-module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,rows_count,ArrChunks};
+module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,rows_count,ArrChunks,before_after_Date};
