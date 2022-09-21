@@ -59,15 +59,15 @@ function ChangePassword() {
                                                     <div className="row">
 
                                                         <div className="col-lg-12 mb-4">
-                                                            <TextField id="filled-basic" fullWidth label="Current Password" variant="filled" />
+                                                            <TextField id="filled-basic" type="password" fullWidth label="Current Password" variant="filled" />
                                                         </div>
 
                                                         <div className="col-lg-12 mb-4">
-                                                            <TextField id="filled-basic" fullWidth label="New Password" variant="filled" />
+                                                            <TextField id="filled-basic" type="password" fullWidth label="New Password" variant="filled" />
                                                         </div>
 
                                                         <div className="col-lg-12 mb-4">
-                                                            <TextField id="filled-basic1" fullWidth label="Confirm Password" variant="filled" />
+                                                            <TextField id="filled-basic1" type="password" fullWidth label="Confirm Password" variant="filled" />
                                                         </div>
 
 

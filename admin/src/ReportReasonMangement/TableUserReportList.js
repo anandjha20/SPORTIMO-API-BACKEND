@@ -45,8 +45,7 @@ function TableUserReportList() {
         let options1 = ({ headers: header });
         await axios.post(`/web_api/get_user_report_admin`, formData, options1)
         .then(res => {
-            if(res.status == true)
-                {
+           
             const data = res.data.body;
             const total = res.data.rows;
             const totalPage = (Math.ceil(total / limit));
@@ -55,10 +54,7 @@ function TableUserReportList() {
             const category = data.category;
             const image = res.data.body.image;
             console.log(data);
-        }
-        else{
-          setNoData(nodata)
-        }
+       
         })
     }
 
@@ -70,8 +66,7 @@ function TableUserReportList() {
         console.log(Formvlaues);
         axios.post(`/web_api/get_user_report_admin`, Formvlaues, options1)
             .then(res => {
-                if(res.status == true)
-                {
+               
                 const data = res.data.body;
                 const total = res.data.rows;
                 const totalPage = (Math.ceil(total / limit));
@@ -79,10 +74,7 @@ function TableUserReportList() {
                 setData(data);
                 const image = res.data.body.image;
                 console.log(data);
-                }
-                else{
-                    console.log("no data")
-                }
+               
             })
     }
 
@@ -191,10 +183,13 @@ function TableUserReportList() {
                                 {data.map((item) => {
                                     return (
                                         <tr key={item._id}>
-                                            <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></>}</div></td>
-                                            <td>{item.reason_id.name}</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>
+                                                <div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></>}</div>
+                                            </td>
+                                            
+                                            <td> {item.reason_id == null ? <></> : <>{item.reason_id.name}</>  }</td>
+                                            <td>  {item.reported_user_id == null ? <></> : <>{item.reported_user_id.name}</>  }</td>
+                                            <td>  {item.reporting_user_id == null ? <></> : <>{item.reporting_user_id.name}</>  }</td>
                                             <td>{item.discription}</td>
                                             <td>{Moment(item.date).format("DD/MM//YYYY")}</td>
                                             {/* <td>{item.admin_status == false ? <>Open</> : <>Closed</>}</td> */}

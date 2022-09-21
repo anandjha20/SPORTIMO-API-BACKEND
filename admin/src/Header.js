@@ -219,6 +219,16 @@ return (
 							<i className="fad fa-users-class sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Groups Chat Manage..</span></NavLink>
 						</li> 
+						 <li className="nav-item" >
+							<NavLink  to="/chat-blocked-user" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-users-slash sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">User Chat Blocked List</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
+							<NavLink  to="/cart-category" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-th sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">View Card Category</span></NavLink>
+						</li> 
 						
 					
 					</ul>

@@ -40,6 +40,9 @@ import ReportReason from "./ReportReasonMangement/ReportReason";
 import GroupList from "./GroupChatManagement/GroupList";
 import GroupChatManagement from "./GroupChatManagement/GroupChatManagement";
 import UserReportList from "./ReportReasonMangement/UserReportList";
+import UserChatBlockedList from "./ChatManagement/UserChatBlockedList";
+import ViewCartCategory from "./ViewCartCategory/ViewCartCategory";
+
 
 function App() {
   return (
@@ -117,6 +120,13 @@ function App() {
 
 
         {/*PreferenceMaster */} 
+        <Route path="/chat-blocked-user" element={ <UserChatBlockedList /> } />
+        {/*PreferenceMaster */} 
+
+        {/*ViewCartCategory */} 
+        <Route path="/cart-category" element={ <ViewCartCategory /> } />
+        {/*PreferenceMaster */} 
+
         <Route path="/preference/sports" element={ <SportsPreference /> } />
         <Route path="/preference/teams" element={ <TeamsPreference /> } />
         <Route path="/preference/leagues" element={ <LeaguesPreference /> } />
