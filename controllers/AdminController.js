@@ -245,26 +245,24 @@ class AdminController {
       static get_tip_list = async (req,res)=>{
                   try {
                        let language = req.body.language;
-                           language = isEmpty(language) ? '' : language ;
+                           
 
                       let tips = tips_trick.find({}, function(err, tips){
                         if(err){
                          console.log(err);
+                         res.status(200).send({'status':false,'msg': (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
                         }
                         else {
-
-                          tips.map((item)=> {  if(language != '' && language == 'ar'){ item.tips_trick = item.tips_trick_ara }
+                            tips.map((item)=> {  if(language == 'ar'){ item.tips_trick = item.tips_trick_ara }
                                                     return item; }); 
-
-
-                             res.json( {"status":true,"msg":'Success' , "body":tips });
+                            res.json( {"status":true,"msg": (language == 'ar')? "النجاح"  : "success"  , "body":tips });
                             // return res.status(200).send({"status":true,"msg":'Success' , "body":dd }) ;      
                         }
                     });
                   } catch (error) { console.log(error);
-                    res.status(200).send({'status':false,'msg':error,'body':''});
+                    res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error" });
                   }    
-        }
+        } 
    
       static add_faq_category = async(req,res)=>{
             try {
@@ -443,7 +441,7 @@ class AdminController {
         static faq_list = async (req,res)=>{
           try {
                  let language = req.body.language;
-                    language  = isEmpty(language) ? '' : language ; 
+                  
             
                   let  id = req.params.id;  let id_len = (id || '').length;
                   let whr = (id_len == 0) ? {} :{_id:id}; // active_status:true
@@ -452,7 +450,7 @@ class AdminController {
                   console.log("faq_list == ", data); 
                   if(!isEmpty(data)){
                   
-                    data.map((item)=> {  if(language != '' && language == 'ar')
+                    data.map((item)=> {  if( language == 'ar')
                                             { item.question =   item.question_ara;
                                                item.answer =   item.answer_ara;
                                                if(typeof item.faq_cat_id === 'object' && item.faq_cat_id !== null){
@@ -461,7 +459,7 @@ class AdminController {
                                               }else {
                                                     item.faq_cat_id = {};
                                              }
-                                            }else  if(language != '' && language == 'fr'){
+                                            }else  if(language == 'fr'){
                                               if(typeof item.faq_cat_id === 'object' && item.faq_cat_id !== null){
                                                 item.faq_cat_id.cat_name =  item.faq_cat_id.cat_name_fr  ; 
                                             
@@ -470,11 +468,11 @@ class AdminController {
                                        return item;
                              }); 
                     
-                    res.status(200).send({'status':true,'msg':"success",'body':data});
+                    res.status(200).send({'status':true,'msg':  (language == 'ar')? "النجاح"  : "success" ,'body':data});
                       }else{          
-                      res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
+                      res.status(200).send({'status':false,'msg': (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.." ,'body':''});}
             } catch (error) { console.log(error);
-            res.status(200).send({'status':false,'msg':error,'body':''});
+            res.status(200).send({'status':false,'msg':(language == 'ar')? "خطأ في الخادم" : "server error"});
           }
       }     
            

@@ -43,14 +43,14 @@ class defaultMsgController {
                         data.map((item)=> {if(language != '' && language == 'ar'){ item.d_msg = item.d_msg_ara }
                         return item;
                     }); 
-                        return res.status(200).send({"status":true,"msg": 'success' , "body":data }) ;  
+                        return res.status(200).send({"status":true,"msg": (language == 'ar')? "النجاح"  : "success", "body":data }) ;  
                     }else{
                             
-                        return res.status(200).send({"status":false,"msg":'No Data Found!.. ' }) ;
+                        return res.status(200).send({"status":false,"msg": (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."}) ;
                     }
 
                 } catch (error) { console.log(error);
-                    return res.status(200).send({"status":false,"msg":'something went wrong please try again' }) ;          
+                    return res.status(200).send({"status":false,"msg":  (language == 'ar')? "خطأ في الخادم" : "server error" }) ;          
                 }
 
     }

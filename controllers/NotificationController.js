@@ -41,6 +41,7 @@ class notificationController {
             } 
             static notification_list = async (req,res)=>{
               try {
+                   let language = req.body.language;
                       let  id = req.params.id;
                       let page  = req.body.page;
                     
@@ -55,10 +56,10 @@ class notificationController {
                    let offest = (page -1 ) * 10 ; 
                    const records = await query2.skip(offest).limit(10);
                            
-                return res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+                return res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
         
               } catch (error) { console.log(error);
-                return res.status(200).send({'status':false,'msg':'server error','body':''});
+                return res.status(200).send({'status':false,'msg':  (language == 'ar')? "خطأ في الخادم" : "server error" });
               }
                    
                   }          

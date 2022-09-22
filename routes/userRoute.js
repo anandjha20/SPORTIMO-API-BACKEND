@@ -41,12 +41,12 @@ const userReportImg =  img_upload('./assets/user_img','image');
                                               
           router.get('/JK/',UserController.dashboardAllCount);
           router.get('/sendEmail/',UserController.User_sendEmail);
-          router.get('/league_list/:id?',FootballController.league_list);
-          router.get('/sport_list/:id?',user_token_check,FootballController.sport_list);
-          router.get('/team_list/:id?', user_token_check,FootballController.team_list);
-          router.get('/player_list/:id?',user_token_check,FootballController.player_list);
-          router.get('/get_tip_list/:id?',AdminController.get_tip_list);
-          router.get('/faq_list/:id?',AdminController.faq_list);                  
+          router.post('/league_list/:id?',FootballController.league_list);
+          router.post('/sport_list/:id?',user_token_check,FootballController.sport_list);
+          router.post('/team_list/:id?', user_token_check,FootballController.team_list);
+          router.post('/player_list/:id?',user_token_check,FootballController.player_list);
+          router.post('/get_tip_list/:id?',AdminController.get_tip_list);
+          router.post('/faq_list/:id?',AdminController.faq_list);                  
                                    
           router.post('/registration/',UserController.registration);
           router.post('/verify_nickName',UserController.verify_nickName);
@@ -55,14 +55,14 @@ const userReportImg =  img_upload('./assets/user_img','image');
    
           router.post('/block_user_add',user_token_check,UserController.block_user_add);  
           router.post('/user_profile_view',UserController.user_profile_view);
-          router.get('/resend_otp/:id?',UserController.resend_otp_2); 
+          router.post('/resend_otp/:id?',UserController.resend_otp_2); 
           router.post('/verify_otp',UserController.verify_otp);         
           router.put('/user_preference_update/:id',UserController.user_preference_update);         
         
           /// PollController route list      
-          router.get('/poll_list/:id?',user_token_check,PollController.poll_list);      
+          router.post('/poll_list/:id?',user_token_check,PollController.poll_list);      
           router.post('/poll_participant',user_token_check,PollController.poll_participant);      
-          router.get('/poll_result_show/:poll_id ?',user_token_check,PollController.poll_result_show);      
+          router.post('/poll_result_show/:poll_id ?',user_token_check,PollController.poll_result_show);      
           router.get('/my_polls/:id ?',user_token_check,PollController.my_polls);      
         
 
@@ -71,23 +71,23 @@ const userReportImg =  img_upload('./assets/user_img','image');
        
            
       ///  all Sponsorship Routes
-        router.get('/sponsor_list',SponsorshipController.sponsor_list);
+        router.post('/sponsor_list',SponsorshipController.sponsor_list);
         router.get('/sponsor_detail/:id ?',SponsorshipController.sponsor_detail);
         router.put('/sponsorship_impressions_count_add',SponsorshipController.sponsorship_impressions_count_add);
         router.put('/sponsorship_clicks_count_add',SponsorshipController.sponsorship_clicks_count_add);
 
       // user complaint Routes  
-        router.get('/user_complaint_cat_list/:id?', user_token_check,complaintController.user_complaint_cat_list);  
+        router.post('/user_complaint_cat_list/:id?', user_token_check,complaintController.user_complaint_cat_list);  
         router.post('/user_complaint_add',user_token_check,uComplaintImgUpload, complaintController.user_complaint_add);  
-        router.get('/user_complaint_list/:user_id/:id?',complaintController.user_complaint_list);  
+        router.post('/user_complaint_list/:user_id/:id?',complaintController.user_complaint_list);  
 
         router.get('/user_complaint_all',complaintController.user_complaint_all);  
         router.post('/user_complaint_chat_add',complaintController.user_complaint_chat_add);  
-        router.get('/user_complaint_chat_list/:id',complaintController.user_complaint_chat_list); 
-
-         
+        router.post('/user_complaint_chat_list/:id',complaintController.user_complaint_chat_list); 
+  
+            
    // default msg  Routes
-    router.get('/get_defaultMsg/:id?',defaultMsgController.get_defaultMsg);  
+    router.post('/get_defaultMsg/:id?',defaultMsgController.get_defaultMsg);  
   
    // user logout Routes
     router.delete('/logout/:id?',user_token_check,UserController.logout);  
@@ -102,8 +102,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
      router.get('/get_content/:type?',UserController.get_content);  
      
     // chat group add   group participant 
-     router.post('/chat_group_add',chatController.chat_group_add);  
-     router.post('/group_participant_add',chatController.group_participant_add);  
+     router.post('/chat_group_add',chatController.chat_group_add);
+     router.post('/group_participant_add',chatController.group_participant_add);
      router.get('/chat_group_list/:id?',chatController.chat_group_list);                       
      router.get('/group_participant_list/:id?',chatController.group_participant_list);                       
    
@@ -112,8 +112,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
 
 
     // get introSlider list  
-    router.get('/get_introSlider/:id?',IntroSliderController.get_introSlider_user); 
-       
+    router.post('/get_introSlider/:id?',IntroSliderController.get_introSlider_user); 
+                                                           
    // get HomePageDemoApi list 
    router.get('/HomePageDemoApi', async(req,res) =>{
                 let sendData = [{ "date": "2022-09-06T00:00:00.000Z",
@@ -155,7 +155,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
 
           }); 
   // get notification list  
-  router.get('/notification_list/:id?',NotificationController.notification_list); 
+  router.post('/notification_list/:id?',NotificationController.notification_list); 
    
 //  user reports route      
     router.get('/report_reason_types/:id?',ReportReasonController.report_reason_types);
@@ -166,5 +166,11 @@ const userReportImg =  img_upload('./assets/user_img','image');
    
     // userFirebaseTokenUpdate route
     router.post('/userFirebaseTokenUpdate',UserController.userFirebaseTokenUpdate);
+    
+  // userLenguageAdd route  getUserLenguage
+      router.post('/userLenguageAdd',UserController.userLenguageAdd);
+                           
+  // getUserLenguage route  
+      router.get('/getUserLenguage/:id?',UserController.getUserLenguage);
                            
 module.exports = router;             

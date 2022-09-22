@@ -67,14 +67,14 @@ class ComplaintController{
                                                 item.cat_name = item.cat_name_fr}
                                             });   
 
-                  return res.status(200).send({'status':true,'msg':"success",'body':data});
+                  return res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success",'body':data});
                         }else{      
-                          return  res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
+                          return  res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!..",'body':''});}
                             
                   
               
                 } catch (error) { console.log(error);
-                  res.status(200).send({'status':false,'msg':error,'body':''});
+                  res.status(200).send({'status':false,'msg':  (language == 'ar')? "خطأ في الخادم" : "server error"  });
                 }
                       
                     }     
@@ -253,7 +253,7 @@ class ComplaintController{
 
             let  user_id = req.params.user_id; 
             let  id = req.params.id;  let id_len =(id || '').length;
-        let whr = (id_len == 0)? {user_id:user_id} : {_id:id} ;
+            let whr = (id_len == 0)? {user_id:user_id} : {_id:id} ;
           
             let data = await user_complaint_tbl.find(whr).populate('cat_id').sort({_id:-1}).exec() ;
           
@@ -271,13 +271,13 @@ class ComplaintController{
                                                     }
                                         item.image = (item.image == '')? '' : `${paths}/image/assets/userComplaint_img/${item.image}`;
                                                 return item;});
-                      res.status(200).send({'status':true,'msg':"success",'body':data});
-                }else{  res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});}
+                      res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success",'body':data});
+                }else{  res.status(200).send({'status':false,'msg': (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!..",'body':''});}
                     
             
         
         } catch (error) { console.log(error);
-            res.status(200).send({'status':false,'msg':error.name});
+            res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"   });
         }
                 
             }     
@@ -389,20 +389,18 @@ class ComplaintController{
      
     static user_complaint_chat_list = async (req,res)=>{
     try {
-           let  id = req.params.id;  let id_len = (id || '').length;
+            let language = req.body.language;
+        let  id = req.params.id;  let id_len = (id || '').length;
      
         let data = await user_complaint_chat_tbl.find({complaint_id:id});
 
             if(data){ 
-                      res.status(200).send({'status':true,'msg':"success",'body':data});
+                      res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,'body':data});
                 }else{      
-                   res.status(200).send({'status':false,'msg':"No Data Found!.."});}
-                
-        
-    
-    } catch (error) { console.log(error);
-        res.status(200).send({'status':false,'msg':error.name});
-    }
+                   res.status(200).send({'status':false,'msg': (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.." });}
+      } catch (error) { console.log(error);
+                res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error" });
+            }
             
         }    
   

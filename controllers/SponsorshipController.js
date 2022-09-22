@@ -18,7 +18,7 @@ class Sponsorship {
      
       static sponsor_list = async (req,res)=>{
         try {
-          
+           let language = req.body.language;
            let  match = req.body.match;           let match_len = (match || '').length;
            let  view_type = req.body.view_type;   let view_type_len = (view_type || '').length;
            let  Fdate = req.body.Fdate;           let Fdate_len = (Fdate || '').length;
@@ -32,10 +32,10 @@ class Sponsorship {
 
              let data = await Sponsorship_tbl.find(whr);
        
-          res.status(200).send({'status':true,'msg':"success",'body':data});
+          res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success",'body':data});
   
         } catch (error) { console.log(error);
-          res.status(200).send({'status':false,'msg':error,'body':''});
+          res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error" });
         }
              
             }     

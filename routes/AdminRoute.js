@@ -39,6 +39,9 @@ const token_check =  require('../middleware/token_check');
   let ReportReasonController = require('../controllers/ReportReasonController');
   const UserController = require('../controllers/UserController');
   let chatController = require("../controllers/chatController");
+  let predictionController = require("../controllers/predictionController");
+
+
   // admin login Routes  
   router.post('/admin_login/',AdminController.admin_login);
  
@@ -154,10 +157,10 @@ const token_check =  require('../middleware/token_check');
   router.put('/introSlider_update/:id',IntroSliderImgUpload,IntroSliderController.introSlider_update);             
   router.delete('/introSlider_delete/:id',IntroSliderController.introSlider_delete);       
 
-// get notification list  
-router.post('/notification_list/:id?',NotificationController.notification_list_admin); 
-router.delete('/notification_delete/:id',NotificationController.notification_delete); 
-router.post('/addNotification',NotificationController.addNotification); 
+  // get notification list  
+  router.post('/notification_list/:id?',NotificationController.notification_list_admin); 
+  router.delete('/notification_delete/:id',NotificationController.notification_delete); 
+  router.post('/addNotification',NotificationController.addNotification); 
 
 
 // ReportReason route  
@@ -180,6 +183,12 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    // chat block User LIst  
    router.get('/chat_blockUserLIst/:id?',AdminController.chat_blockUserLIst);
   
+   // chat block User LIst  
+   router.get('/get_prediction_card_Cat_list/:id?',predictionController.getprediction_card_Cat_list);
+  
+   //prediction_card_add
+   router.post('/prediction_card_add',predictionController.prediction_card_add);
+   router.post('/prediction_card_list',predictionController.prediction_card_list);
    
    router.get('/jk_test',PollController.jk_test);                 
 

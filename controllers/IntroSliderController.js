@@ -119,17 +119,21 @@ class IntroSliderController{
 
     static get_introSlider_user = async (req,res)=>{
         try {
+             let language = req.body.language;
                let  id = req.params.id;
                let whr = (isEmpty(id))? {}: {_id: id};
             
             let records =  await IntroSlider_tbls.find(whr);
             let paths =MyBasePath(req,res); 
-             let sendData = (records)? await Promise.all( records.map((item)=>{ item.image = (item.image)? `${paths}/image/assets/introSlider_img/${item.image}`:'';  return item;} )):[];
+             let sendData = (records)? await Promise.all( records.map((item)=>{
+                         if(language == 'ar'){ item.title = item.title_ara }
+                         if(language == 'ar'){ item.description = item.description_ara }
+                        item.image = (item.image)? `${paths}/image/assets/introSlider_img/${item.image}`:'';  return item;} )):[];
         
-           return  res.status(200).send({'status':true,'msg':"success", 'body':sendData });
+           return  res.status(200).send({'status':true,'msg':	 (language == 'ar')? "النجاح"  : "success" , 'body':sendData });
     
         } catch (error) { console.log(error);
-              return  res.status(200).send({'status':false,'msg':error,'body':''});
+              return  res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"});
         }
              
             }  

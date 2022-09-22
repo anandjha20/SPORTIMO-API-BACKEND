@@ -20,7 +20,7 @@ const { autoincremental,sendNotificationAdd } = require('../myModel/helper_fun')
     const default_massages_tbl = require('../models/default_massages');  
     const user_logs = require('../models/user_logs');  
     const content_tbls = require('../models/content_tbls'); 
-                  
+    const userLanguage = require("../models/userLanguage")            
 
 
 
@@ -192,6 +192,7 @@ class UserController {
     }
 
 static resend_otp_2 = async(req,res) =>{
+    let language = req.body.language;
     let otp = Math.floor(Math.random() * 900000) + 100000; 
     user_tbl.findByIdAndUpdate(req.params.id,{$set:{otp:otp}},{new:true}).then((docs)=>{
         if(docs) {
@@ -200,12 +201,12 @@ static resend_otp_2 = async(req,res) =>{
             if(docs.user_type == 1){
                 let mobile = docs.mobile;
                 let ddd =  send_mobile_otp({mobile,otp}); 
-                 msgtodiv = 'otp sent to your mobile please check know';
+                 msgtodiv = (language == 'ar')?  'otp أرسلت إلى هاتفك المحمول يرجى التحقق من العلم' : 'otp sent to your mobile please check know';
             }else{
                 let email = docs.email;
                 let ddd =   sentEmail({email,otp});
   
-                  msgtodiv = 'otp sent to your Email please check know';
+                  msgtodiv =   (language == 'ar')? 'otp أرسلت إلى البريد الإلكتروني الخاص بك يرجى التحقق من علم' : 'otp sent to your Email please check know';
             }
 
 
@@ -221,7 +222,7 @@ static resend_otp_2 = async(req,res) =>{
         
 
           return res.status(200).json({
-            title: "no such user exist",
+            title: (language == 'ar')? 'لا يوجد مثل هذا المستخدم' : "no such user exist",
             error: true,
             details: err
         });
@@ -229,7 +230,7 @@ static resend_otp_2 = async(req,res) =>{
         }
      }).catch((err)=>{
         return res.status(200).json({
-            title: "Error occured while adding question.",
+            title: (language == 'ar')? "حدث خطأ أثناء إضافة السؤال." :  "Error occured while adding question.",
             error: true,
             details: err
         });
@@ -696,7 +697,51 @@ static verify_nickName = async(req,res)=>{
                 }             
 
         }          
+    
+     
+     static  userLenguageAdd =  async(req,res) =>{
+            try {
+                    let user_id = req.body.user_id;     let lenguage = req.body.lenguage;
+                
+             if(isEmpty(user_id) || isEmpty(lenguage)){
+                    return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+                } 
 
+             let add = new userLanguage({user_id,lenguage});    
+                let response =   await add.save();
+                    if(isEmpty(response)){ console.log("sport err ==  ", err);  return res.status(200).send({"status":false,"msg":"something went wrong please try again","body":''});
+                                }else{
+
+                             let dxx = await userLanguage.updateMany({user_id,"_id" :{$ne :response._id }},{$set : {"active": false }});            
+
+
+                         return res.status(200).send({"status":true,"msg":"user Language Add Successfully","body": response });
+                     }
+             
+
+            } catch (error) { console.log(error); 
+                return res.status(200).send({"status":false,"msg":"Server error ","body":''});  
+            }     
+         }
+
+
+ static getUserLenguage = async(req,res) =>{
+            try {
+                    let user_id = req.params.id; 
+                    let response    = await userLanguage.findOne({user_id,"active":true });
+                    if(response){
+                        return res.status(200).send({"status":true,"msg":" Success","body": response });
+                
+                    }else{
+                        return res.status(200).send({"status":false,"msg":"No data Found1.." });
+               
+                    }
+            } catch (error) {
+                console.log(error); 
+                return res.status(200).send({"status":false,"msg":"Server error ","body":''});  
+            }     
+
+            }        
 }
        
 

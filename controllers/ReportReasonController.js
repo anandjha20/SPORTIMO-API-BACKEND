@@ -124,6 +124,7 @@ class ReportReasonController {
 
     static report_reason_types = async (req,res)=>{
             try {
+                    let language = req.body.language;
                     let  id = req.params.id;
                     let page  = req.body.page;
                     let name    = req.body.name;
@@ -137,15 +138,18 @@ class ReportReasonController {
                 let records =  await report_reason_tbl.find(whr).sort({_id:-1});
                     
               if(records.length >0){
-                         res.status(200).send({'status':true,'msg':"success",  'body':records });
+
+                 records.map((item)=> {  if(language == 'ar'){item.name = item.name_ara }
+                       return item;  })
+                         res.status(200).send({'status':true,'msg':(language == 'ar')? "النجاح"  : "success" ,  'body':records });
                     }else{
-                        res.status(200).send({'status':false,'msg':"No Data Found!..",  'body':'' });
+                        res.status(200).send({'status':false,'msg':(language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.." });
                     }    
             
                
 
             } catch (error) { console.log(error);
-                res.status(200).send({'status':false,'msg':error,'body':''});
+                res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error" });
             }
          }  
 

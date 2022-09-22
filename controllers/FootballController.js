@@ -40,13 +40,13 @@ static jks = async()=>{
                                            return item;
                                  }); 
 
-                return res.status(200).send({status:true,msg:'League Listed Successfully' , "body": response }) ;   
+                return res.status(200).send({status:true,msg: (language == 'ar')? "النجاح"  : "success" , "body": response }) ;   
                 }else{
-                    return res.status(200).send({status:false,msg:'No Data Found'}) ;  
+                    return res.status(200).send({status:false,msg: (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."}) ;  
                 }
 
          } catch (error) { console.log("some error is == ",error);
-                return res.status(200).send({status:false,msg:'some error' , "body":''}) ;          
+                return res.status(200).send({status:false,msg: (language == 'ar')? "خطأ في الخادم" : "server error" }) ;          
 
                 }
    
@@ -76,14 +76,14 @@ static jks = async()=>{
                            item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
                                               return item; }); 
 
-                       return  res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });       
+                       return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });       
 
                         }else{
-                            return res.status(200).send({status:false,msg:'No Data Found'}) ;  
+                            return res.status(200).send({status:false,msg: (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."}) ;  
                         }
        ////////////////////////////////////////
          } catch (error) { console.log("some error is == ",error);
-                return res.status(200).send({status:false,msg:'some error' , "body":''}) ;          
+                return res.status(200).send({status:false,msg:  (language == 'ar')? "خطأ في الخادم" : "server error" }) ;          
 
                 }
    
@@ -107,41 +107,41 @@ static jks = async()=>{
                                       return item;
                             });      
 
-                return res.status(200).send({status:true,msg:'Success' , "body": response }) ;   
+                return res.status(200).send({status:true,msg:  (language == 'ar')? "النجاح"  : "success" , "body": response }) ;   
                 }else{
-                    return res.status(200).send({status:false,msg:'No Data Found'}) ;  
+                    return res.status(200).send({status:false,msg:(language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.." }) ;  
                 }
 
          } catch (error) { console.log("some error is == ",error);
-                return res.status(200).send({status:false,msg:'some error' , "body":''}) ;          
+                return res.status(200).send({status:false,msg: (language == 'ar')? "خطأ في الخادم" : "server error" }) ;          
 
                 }
    
     } 
 
-    static player_list = async(req,res)=>{
+    static player_list = async(req,res)=>{    
         try {
             let id = req.params.id ;
             let id_len = (id || '').length;
             let language = req.body.language;
-            language = isEmpty(language) ? '' : language ;
+         
 
             let whr = (id_len == 0)? {} : { "_id":id};
             let response = await Player_tbl.find(whr).select("_id name name_ara image").exec();
                     
             if(response){
                 let paths =MyBasePath(req,res);    
-                     response.map((item)=> { if(language != '' && language == 'ar'){ item.name = item.name_ara;  delete item.name_ara ; }
+                     response.map((item)=> { if( language == 'ar'){ item.name = item.name_ara;  delete item.name_ara ; }
                         item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
                                            return item;
                                  }); 
-                return res.status(200).send({status:true,msg:'Success' , "body": response }) ;   
+                return res.status(200).send({status:true,msg:  (language == 'ar')? "النجاح"  : "success" , "body": response }) ;   
                 }else{
-                    return res.status(200).send({status:false,msg:'No Data Found'}) ;  
+                    return res.status(200).send({status:false,msg:(language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."}) ;  
                 }
 
          } catch (error) { console.log("some error is == ",error);
-                return res.status(200).send({status:false,msg:'some error' , "body":''}) ;          
+                return res.status(200).send({status:false,msg: (language == 'ar')? "خطأ في الخادم" : "server error" }) ;          
 
                 }
    

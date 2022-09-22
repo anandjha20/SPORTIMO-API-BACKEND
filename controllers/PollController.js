@@ -13,20 +13,30 @@ const { poll_percent} = require('../myModel/helper_fun');
     const admin_tbl = require('../models/admin');    
     const poll_tbl = require('../models/poll');    
     const poll_result_tbl = require('../models/poll_result');    
-    const poll_skips_tbl = require('../models/poll_skips');    
-    const user_complaint_tbl = require('../models/user_complaint');     
+    const poll_skips_tbl = require('../models/poll_skips');  
+    const prediction_cart_categories = require("../models/prediction_card_categories")     
 class PollController {   
       static jk_test = async(req,res)=>{
-        // let complaint_id = req.body.complaint_id;
-        // let title   =  'Your poll result Disclosed';  
-        // let details =  'Admin has replied to your complaint';    getDate 
-        let days = req.body.days;
-        var date = new Date();
-     
-        date.setDate(date.getDate() + parseInt(days));
-        
-        var finalDate = date.getFullYear()+'-'+ (date.getMonth()+1) +'-'+date.getDate();
-        
+              
+                let name = req.body.name;
+                let name_ara = req.body.name_ara;
+                let name_fr = req.body.name_fr;
+          
+              if(isEmpty(name) || isEmpty(name_ara) || isEmpty(name_fr) ){
+                    return  res.status(200).send({'status':false,'msg':"name Field Required",'body':''});
+                    }
+              let checkCount = await rows_count(prediction_cart_categories,{name}) ;     
+              if(checkCount>0){
+                return  res.status(200).send({'status':false,'msg':"name  already exists  Required",'body':''});
+              }else{
+              
+              let add = new prediction_cart_categories({name,name_ara,name_fr});
+                    add.save((err, data) => {
+                      if (err) {     console.log(err);
+                        return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                    }else{ return res.status(200).send({"status":true,"msg":'Poll Created Successfully' , "body":data  }) ;            
+                          }
+              } ); }
      ////////////////////////////////   
     //  let data = await  user_complaint_tbl.findOne({"_id":complaint_id}).populate({path:"user_id",select:['firebase_token']}).exec();
     //     if ( (!isEmpty(data)) && (! isEmpty(data.user_id)) && (! isEmpty(data.user_id.firebase_token) ))  {
@@ -34,7 +44,7 @@ class PollController {
     //     }
       //let data = await pollDisclosed_noti_fun({poll_id,title,details});
 
-        return res.status(200).send({'status':false,'msg':'Success',"body":finalDate });
+    //    return res.status(200).send({'status':false,'msg':'Success',"body":'' });
 
      
         
@@ -77,7 +87,8 @@ class PollController {
 
     static poll_list = async (req,res)=>{
         try {
-               
+             
+          let language =  req.body.language ; 
            let  id = req.params.id;
            let poll_type    = req.body.poll_type;
            let fee_type  = req.body.fee_type;
@@ -87,8 +98,6 @@ class PollController {
            let U_id =  req.body.user_id ; 
            let leagues =  req.body.leagues ; 
 
-          // console.log("poll list call == ", req.body.user_id);   
-      
            let page  = req.body.page;  
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
           
@@ -105,15 +114,26 @@ class PollController {
               
              const query2 =  query.clone();
              const counts = await query.countDocuments();   
-              
-
-              
+         
              let offest = (page -1 ) * 10 ; 
              const records = await query2.skip(offest).limit(10);
-          return res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+
+             records.map((item)=> { if(language != '' && language == 'ar'){
+                                      item.qus = item.qus_ara ;
+                                      item.ops_1 = item.ops_1_ara ;
+                                      item.ops_2 = item.ops_2_ara ;
+                                      item.ops_3 = item.ops_3_ara ;
+                                      item.ops_4 = item.ops_4_ara ;
+                                  
+                                  }
+            
+                             return item;
+                   });      
+
+          return res.status(200).send({'status':true,'msg':  (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
   
         } catch (error) { console.log(error);
-          return  res.status(200).send({'status':false,'msg':"server error",'body':''});
+          return  res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error" ,'body':''});
         }
                
             }     
@@ -357,39 +377,30 @@ class PollController {
             }
 
       static poll_result_show = async(req,res) =>{
-  try {
-
-         let poll_id = req.params.poll_id;
-
-      // console.log("poll_id == ",poll_id);
-
-////////////////////////////////////////////////////////////////////////
-              poll_result_tbl.aggregate()
+         
+          try {    let language = req.body.language;
+                    let poll_id = req.params.poll_id;
+                        poll_result_tbl.aggregate()
                                 .match({ poll_id :  mongoose.Types.ObjectId(poll_id)  })
                                 .append({ "$group" : {_id:"$user_ans",   count: { $sum: 1 }} })
                                 .allowDiskUse(true)
                                 .exec(function(err, data) {
                                     if (err) { console.log('err==', err); 
-                                    return res.status(200).send({"status":false,"msg":'No data Found!..' , "body":''}) ;    
+                                    return res.status(200).send({"status":false,"msg":(language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.." }) ;    
                                    }else{
                                        console.log( data);
 
                                     if(data.length>0){
                                   
-                                    return res.status(200).send({"status":true,"msg":'success' , "body":data}) ;     
+                                    return res.status(200).send({"status":true,"msg":(language == 'ar')? "النجاح"  : "success" , "body":data}) ;     
                                     }else{
-                                      return res.status(200).send({"status":false,"msg":'No data Found!..' , "body":''}) ; 
+                                      return res.status(200).send({"status":false,"msg": (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."}) ; 
                                     }
                                   }
                                });
-                
-
-////////////////////////////////////////////////////////////////
-//let datass =  poll_result_tbl.find({"poll_id":poll_id}).select({name:1}).countDocuments();
-       
-
+             
    } catch (error) {  console.log(error);
-    return res.status(200).send({"status":false,"msg":'no data add' , "body":''}) ;          
+    return res.status(200).send({"status":false,"msg": (language == 'ar')? "خطأ في الخادم" : "server error"  }) ;          
 
 }
 
