@@ -54,9 +54,10 @@ class predictionController {
                        "card_type": user_data.card_type,
                       
                        "card_cat_id":user_data.card_cat_id,
+                       "time_range":user_data.time_range,
                        
-                       "apperance_time": user_data.apperance_time,
-                       "time_duration": user_data.time_duration,             
+                     //  "apperance_time": user_data.apperance_time,
+                      // "time_duration": user_data.time_duration,             
 
                        "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
                        "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,
@@ -96,7 +97,6 @@ class predictionController {
                                        item.ops_2 = item.ops_2_ara;  
                                        item.ops_3 = item.ops_3_ara;  
                                        item.ops_4 = item.ops_4_ara;  
-
                                 }
                                return item; })}
             

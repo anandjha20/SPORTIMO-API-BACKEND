@@ -158,7 +158,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
   router.post('/notification_list/:id?',NotificationController.notification_list); 
    
 //  user reports route      
-    router.get('/report_reason_types/:id?',ReportReasonController.report_reason_types);
+    router.post('/report_reason_types/:id?',ReportReasonController.report_reason_types);
     router.post('/add_user_reports',userReportImg,ReportReasonController.add_user_reports);  
     router.get('/get_user_report_list/:id',ReportReasonController.get_user_report_list);
    
