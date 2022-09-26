@@ -1,0 +1,23 @@
+const mongoose = require("mongoose");
+
+const Schema = mongoose.Schema;
+
+const playMatchCard_schema = new Schema({ 
+                                           match_card_id    : {type:Schema.Types.ObjectId ,ref:"match_cards", required:true },  
+                                           user_id          : {type:Schema.Types.ObjectId,ref:"user_tbl",required:true },  
+                                           user_option      : {type:String,trim:true,default:'' }, 
+                                           ans              : {type:String , default:'' }, 
+                                           time_range_start :  {type:String , default:'' }, 
+                                           time_range_end   :  {type:String , default : '' }, 
+                                           dateTime         : {type:Date,default:Date.now  }
+                                        });
+ 
+ module.exports = mongoose.model("play_match_cards",playMatchCard_schema);
+
+
+
+
+
+
+
+

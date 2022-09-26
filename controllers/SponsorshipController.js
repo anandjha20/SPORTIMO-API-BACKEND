@@ -7,7 +7,7 @@ const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = requi
 const { poll_percent,all_list_come} = require('../myModel/helper_fun');
    
   
-  
+   
   // const state_tbl = require('../models/state_tbl');    
     const user_tbl = require('../models/user');    
     const admin_tbl = require('../models/admin');    

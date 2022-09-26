@@ -7,7 +7,7 @@ const match_card_schema = new Schema({
              match_id    : {type:String,require:true, unique: true},
              match_name  : {type:String ,require:true },
              card_id     : {type:Schema.Types.ObjectId,ref:"prediction_cards",require:true },
-            apperance_time  : { type : String,require:true  },time_duration : { type : String ,require:true },
+             apperance_times  : { type : String,require:true  },time_duration : { type : String ,require:true },
              date :{ type: Date, default: Date.now  },
           
          }) ;

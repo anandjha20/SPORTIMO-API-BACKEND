@@ -58,7 +58,7 @@ class defaultMsgController {
     static defaultMsg_delete = async(req,res)=>{
         try {   
               let d_msg_id = req.params.id;
-              let whr = (isEmpty(d_msg_id))? {} : {_id:d_msg_id };
+             let whr = (isEmpty(d_msg_id))? {} : {_id:d_msg_id };
                 
                 default_massages_tbl.findByIdAndRemove(d_msg_id, (err,data)=>{
                     if(err){     console.log("delete error is == ", err);

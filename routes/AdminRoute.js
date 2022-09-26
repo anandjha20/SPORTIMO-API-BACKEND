@@ -189,7 +189,14 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    //prediction_card_add
    router.post('/prediction_card_add',predictionController.prediction_card_add);
    router.post('/prediction_card_list',predictionController.prediction_card_list);
-   
+  
+  // match card add    
+   router.post('/match_card_add',predictionController.match_card_add);
+   router.post('/match_card_list',predictionController.match_card_list); 
+   router.put('/match_card_update/:id?',predictionController.match_card_update);
+   router.delete('/match_card_delete/:id?',predictionController.match_card_delete);
+ 
+       
    router.get('/jk_test',PollController.jk_test);                 
 
 

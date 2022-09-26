@@ -11,8 +11,10 @@ const { poll_percent} = require('../myModel/helper_fun');
   // const state_tbl = require('../models/state_tbl');
     const user_tbl = require('../models/user');    
     const prediction_cards_tbl = require('../models/prediction_cards');    
-   
-    const prediction_card_categories = require("../models/prediction_card_categories")     
+    const match_cards_tbl = require('../models/match_cards');   
+   const playMatchCards_tbl = require('../models/playMatchCards');   
+
+   const prediction_card_categories = require("../models/prediction_card_categories")     
 class predictionController {   
      
    
@@ -109,9 +111,256 @@ class predictionController {
                     
                 }    
 
+      static match_card_add = async(req,res)=>{
+                  try {   
+                    let match_name    = req.body.match_name;
+                    let match_id      = req.body.match_id;
+                    let card_id        = req.body.card_id;
+                    let apperance_times = req.body.apperance_times;    
+                    let time_duration  = req.body.time_duration;
+
+                 if( isEmpty(match_name) || isEmpty(match_id)  || 
+                      isEmpty(card_id)  || isEmpty(apperance_times)  ||
+                       isEmpty(time_duration) ){
+                       return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+                          }   
+                
+                         let add = new match_cards_tbl({ match_name,match_id,card_id,apperance_times,
+                                                      time_duration });
+                       
+                               add.save((err, data) => {
+                                     if (err) {     console.log(err);
+                                       return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                                   }else{ return res.status(200).send({"status":true,"msg":'Match Card Created Successfully' , "body":data  }) ;            
+                                  } } ) ;
+                     
+              }catch (error) {  console.log(error); 
+                         return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
+             
+                     }
+                   
+             
+                 }
+
+    
+       static match_card_list = async (req,res)=>{
+                  try {
+                      let language = req.body.language;    // 'name card_type'
+          
+                      let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
+                    
+                         
+                          if(records){ records.map((item)=> { 
+                                      if(language != '' && language == 'ar'){ 
+                                            
+                                        if(typeof item.card_id === 'object' && item.card_id !== null){
+                                          item.card_id.name = item.card_id.name_ara;
+                                        }else{  item.card_id = {};}
+                                        
+                                       // item.card_id.name = item.card_id.name_ara;  
+                                          
+                                      }
+                                     return item; })
+                                    
+                                     return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,  'body':records });
+                              }else{
+                                   return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
+                                    }
+                  
+                  
+              
+                       } catch (error) { console.log(error);
+                              return res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"});
+                          }
+                          
+                  }                 
+
+        static match_card_update = async(req,res)=>{
+                  try {   let id = req.params.id;
+                    let match_name      = req.body.match_name;
+                    let match_id        = req.body.match_id;
+                    let card_id         = req.body.card_id;
+                    let apperance_times = req.body.apperance_times;    
+                    let time_duration   = req.body.time_duration;
+
+                 if( isEmpty(match_name) || isEmpty(match_id)  || 
+                      isEmpty(card_id)  || isEmpty(apperance_times)  ||
+                       isEmpty(time_duration) ){
+                       return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+                          }   
+                
+            // let checkName = await rows_count({"name":""})             
+            let updateData = { match_name,match_id,card_id,apperance_times,time_duration };                
+                            
+              match_cards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
+                if(err) {  console.log(err);
+                    return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                }else if(!isEmpty(updatedUser)){
+                            return res.status(200).send({"status":true,"msg":'Match Card Updated Successfully' , "body":updatedUser  }) ;   
+                    }else{  return res.status(200).send({"status":false,"msg":'Invalid Match Card Id ' , "body": ''}) ;   
+                            } 
+                  });
 
 
 
+                     
+              }catch (error) {  console.log(error); 
+                         return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
+             
+                     }
+                   
+             
+                 }
+
+    static match_card_delete = async(req,res)=>{
+              try {
+                      let id = req.params.id;
+                      match_cards_tbl.findByIdAndDelete(id, function (err, docs) {
+                    if (err){  console.log("jjj === ",err);           //json(err)
+    
+                 let getError =  JSON.parse(JSON.stringify(err));
+                      return res.status(200).send({"status":false,"msg":getError.message , "body":''}) ; 
+                        }else if(!isEmpty(docs)){
+                          return res.status(200).send({"status":true,"msg":'match card Deleted Successfully' , "body":''}) ;   
+                    }else{
+                      return res.status(200).send({"status":false,"msg":'Invalid match card Id ' , "body":''}) ;  
+                    }
+                });
+    
+              } catch (error) { return res.status(200).send({"status":true,"msg":'server error' , "body":''}) ; }
+    
+          }   
+    
+    static playMatchCard_add = async(req,res)=>{
+        try {   
+              let match_card_id    = req.body.match_card_id;
+              let user_id          = req.body.user_id;
+              let user_option      = req.body.user_option;
+              let time_range_start = req.body.time_range_start;    
+              let time_range_end   = req.body.time_range_end;
+
+       if( isEmpty(match_card_id) || isEmpty(user_id)  || 
+            isEmpty(user_option)  || isEmpty(time_range_start)  ||
+             isEmpty(time_range_end) ){
+             return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+                }   
+              
+           let checkuserData = await playMatchCards_tbl.findOne({user_id});
+           if(checkuserData){
+               return res.status(200).send({"status":true,"msg":'user already play this card' , "body":checkuserData  }) ;  
+           }   
+
+        let add = new playMatchCards_tbl({ match_card_id,user_id,user_option,time_range_start,
+                                          time_range_end });
+             
+                     add.save((err, data) => {
+                           if (err) {  console.log(err);
+                             return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                         }else{ return res.status(200).send({"status":true,"msg":'Match Card Created Successfully' , "body":data  }) ;            
+                        } });
+           
+        }catch (error) {  console.log(error); 
+               return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
+   
+           }
+         
+   
+        }   
+    static my_playMatchCard_list = async (req,res)=>{
+      try {
+          let language = req.body.language;    
+          let user_id = req.body.user_id;    
+         
+         /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
+         
+          if(isEmpty(user_id)){
+            return res.status(200).send({'status':false,'msg':  (language == 'ar')? "مطلوب حقل معرف المستخدم" :  "User Id Field Required"});
+                }
+
+         let records = await playMatchCards_tbl.find({user_id}) ;
+              
+              if(! isEmpty(records)){ records.map((item)=> { 
+                          if(language != '' && language == 'ar'){ 
+                                
+                            if(typeof item.card_id === 'object' && item.card_id !== null){
+                              item.card_id.name = item.card_id.name_ara;
+                            }else{  item.card_id = {};}
+                            
+                            // item.card_id.name = item.card_id.name_ara;  
+                              
+                          }
+                          return item; })
+                        
+                          return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,  'body':records });
+                  }else{
+                        return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
+                        }
+      
+      
+  
+            } catch (error) { console.log(error);
+                  return res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"});
+              }
+              
+      }     
+    
+
+  static playMatchCard_update = async(req,res)=>{
+        try {   let id = req.params.id;
+                let match_card_id        = req.body.match_card_id;
+                    let user_id          = req.body.user_id;
+                    let user_option      = req.body.user_option;
+                    let time_range_start = req.body.time_range_start;    
+                    let time_range_end   = req.body.time_range_end;
+
+            if( isEmpty(match_card_id) || isEmpty(user_id)  || 
+                  isEmpty(user_option)  || isEmpty(time_range_start)  ||
+                  isEmpty(time_range_end) ){
+                  return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+                      }   
+      
+        // let checkName = await rows_count({"name":""})             
+          let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end };                
+                  
+       playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
+      if(err) {  console.log(err);
+          return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+      }else if(!isEmpty(updatedUser)){
+                  return res.status(200).send({"status":true,"msg":'Play Match Card Updated Successfully' , "body":updatedUser  }) ;   
+          }else{  return res.status(200).send({"status":false,"msg":'Invalid Play Match Card Id ' , "body": ''}) ;   
+                  } 
+        });
+
+
+
+           
+    }catch (error) {  console.log(error); 
+               return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
+   
+           }
+         
+   
+       }
+
+     
+       static playMatchCard_delete = async(req,res)=>{
+        try {
+                let id = req.params.id;
+                playMatchCards_tbl.findByIdAndDelete(id, function (err, docs) {
+              if (err){  console.log("playMatchCard_delete === ",err);        
+
+                      let getError =  JSON.parse(JSON.stringify(err));
+                return res.status(200).send({"status":false,"msg":getError.message , "body":''}) ; 
+                 }else if(!isEmpty(docs)){
+                    return res.status(200).send({"status":true,"msg":'play Match Card Deleted Successfully' , "body":''}) ;   
+              }else{
+                return res.status(200).send({"status":false,"msg":'Invalid play Match Card Id ' , "body":''}) ;  
+              }
+          });
+
+        } catch (error) { return res.status(200).send({"status":true,"msg":'Some error' , "body":''}) ; }
+
+    }
 
 
 

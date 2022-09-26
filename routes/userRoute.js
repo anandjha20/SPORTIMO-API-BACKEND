@@ -29,16 +29,19 @@ const userReportImg =  img_upload('./assets/user_img','image');
   const PollController = require('../controllers/PollController');    
   const SponsorshipController = require('../controllers/SponsorshipController');    
   const complaintController = require('../controllers/complaintController');    
-   
- let defaultMsgController = require('../controllers/defaultMsgController');
- let chatController = require('../controllers/chatController');
+        
+      let defaultMsgController = require('../controllers/defaultMsgController');
+      let chatController = require('../controllers/chatController');
 
- let FirebaseController = require('../controllers/FirebaseController');
- let IntroSliderController = require('../controllers/IntroSliderController');
- let NotificationController = require('../controllers/NotificationController');
- let ReportReasonController = require("../controllers/ReportReasonController");
- let AdminController = require("../controllers/AdminController");
-                                              
+      let FirebaseController = require('../controllers/FirebaseController');
+      let IntroSliderController = require('../controllers/IntroSliderController');
+      let NotificationController = require('../controllers/NotificationController');
+      let ReportReasonController = require("../controllers/ReportReasonController");
+      let AdminController = require("../controllers/AdminController");
+      let predictionController = require("../controllers/predictionController");                                            
+              
+        
+  
           router.get('/JK/',UserController.dashboardAllCount);
           router.get('/sendEmail/',UserController.User_sendEmail);
           router.post('/league_list/:id?',FootballController.league_list);
@@ -172,5 +175,16 @@ const userReportImg =  img_upload('./assets/user_img','image');
                            
   // getUserLenguage route  
       router.get('/getUserLenguage/:id?',UserController.getUserLenguage);
-                           
+   
+     // match_card_list route   
+      router.post('/match_card_list',predictionController.match_card_list); 
+
+      // play Match  card add    
+      router.post('/playMatchCard_add',predictionController.playMatchCard_add);
+      router.post('/my_playMatchCard_list',predictionController.my_playMatchCard_list);
+      router.put('/playMatchCard_update/:id?',predictionController.playMatchCard_update);
+      router.delete('/playMatchCard_delete/:id?',predictionController.playMatchCard_delete);
+
+ 
+    
 module.exports = router;             
