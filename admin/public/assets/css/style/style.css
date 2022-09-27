@@ -75314,3 +75314,38 @@ color : white  !important;
 {
     font-size: 1.2rem !important;
 }
+
+.form-control.card-input
+{
+    background: #3d454c !important;
+    border: 1px solid #dddddd0f !important;
+    height: 51px !important;
+}
+
+.card-select .css-1s2u09g-control
+{
+    background: #3d454c !important;
+    border: 1px solid #dddddd0f !important;
+    height: 51px !important;
+}
+
+.card-control
+{
+    margin: 5px 0px !important;
+    border-radius: 5px !important;
+    background: #3d454c !important;
+    height: 65px !important;
+    color: white !important;
+    border: none;
+}
+.card-control:focus{
+    background: #3d454c !important;
+}
+
+.cardImgage
+{
+    width: 100px;
+    display: block;
+    margin-bottom: 0.5rem;
+    border-radius: 11px;
+}

@@ -41,7 +41,13 @@ import GroupList from "./GroupChatManagement/GroupList";
 import GroupChatManagement from "./GroupChatManagement/GroupChatManagement";
 import UserReportList from "./ReportReasonMangement/UserReportList";
 import UserChatBlockedList from "./ChatManagement/UserChatBlockedList";
-import ViewCartCategory from "./ViewCartCategory/ViewCartCategory";
+import ViewCartCategory from "./PredictionManagement/ViewCartCategory";
+import CreatePredictionCard from "./PredictionManagement/CreatePredictionCard";
+import TablePredictionCardList from "./PredictionManagement/TablePredictionCardList";
+import UpdatePredictionCard from "./PredictionManagement/UpdatePredictionCard";
+import TableMatchCard from "./MatchCardManagement/TableMatchCard";
+import AddMatchCard from "./MatchCardManagement/AddMatchCard";
+
 
 
 function App() {
@@ -123,10 +129,18 @@ function App() {
         <Route path="/chat-blocked-user" element={ <UserChatBlockedList /> } />
         {/*PreferenceMaster */} 
 
-        {/*ViewCartCategory */} 
+        {/*Prediction Card */} 
         <Route path="/cart-category" element={ <ViewCartCategory /> } />
-        {/*PreferenceMaster */} 
+        <Route path="/cards" element={ <TablePredictionCardList /> } />
+        <Route path="/cards/create" element={ <CreatePredictionCard /> } />
+        <Route path="/cards/update/:_id" element={ <UpdatePredictionCard /> } />
 
+        {/*Match Card Management*/} 
+        <Route path="/matchcard" element={ <TableMatchCard /> } />
+        <Route path="/matchcard/add" element={ <AddMatchCard /> } />
+
+        
+        {/*PreferenceMaster */} 
         <Route path="/preference/sports" element={ <SportsPreference /> } />
         <Route path="/preference/teams" element={ <TeamsPreference /> } />
         <Route path="/preference/leagues" element={ <LeaguesPreference /> } />

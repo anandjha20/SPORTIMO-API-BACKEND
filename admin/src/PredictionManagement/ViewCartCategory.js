@@ -14,7 +14,7 @@ function ViewCardCategory() {
     const [data, setData] = useState([])
     
     const UserChatBlocked = async () => {
-        await axios.get(`/web_api/`)
+        await axios.get(`/web_api/get_prediction_card_Cat_list`)
             .then(res => {
                  const userData = res.data.body;
                  setData(userData)
@@ -29,7 +29,7 @@ function ViewCardCategory() {
     const columns =
         [
             { title: 'Category (English)', field: 'name' },
-            { title: 'Category (Arabic)', field: 'name' },
+            { title: 'Category (Arabic)', field: 'name_ara' },
         ]
 
 
@@ -61,10 +61,7 @@ function ViewCardCategory() {
                             </div>
 
                         </div>
-                        <div className="row justify-content-center">
-                            <div className="col-lg-12 table-responsive border border-bottom-0">
-                            <div className="card custom-card">
-                                    <div className="card-body">
+                     
                                     <div className="row justify-content-center">
                             <div className="col-lg-12 table-responsive border border-bottom-0">
                                 {/* <h5 className="text-white ml-3">View Card Category</h5> */}
@@ -117,10 +114,7 @@ function ViewCardCategory() {
 
                                 />
 
-                            </div>
-                            </div>
-                            </div>
-                            </div>
+                           
                         </div>
                         </div>
                     </div>

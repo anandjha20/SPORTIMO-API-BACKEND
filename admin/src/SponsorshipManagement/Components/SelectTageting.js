@@ -73,18 +73,18 @@ export default function SelectTageting() {
     
 
     const leagueOptions = (league_lists.length >0) ? league_lists.map((item)=>{
-        return  { value: item._id, label: item.league_name };
+        return  { value: item._id, label: item.name };
     }) :[];
     
     
     const teamOptions = (team_lists.length >0) ? team_lists.map((item)=>{
-        return  { value: item._id, label: item.team_name };
+        return  { value: item._id, label: item.name };
     }) :[];
     
     
     
     const playersOptions = (player_lists.length >0) ? player_lists.map((item)=>{
-        return  { value: item._id, label: item.team_name };
+        return  { value: item._id, label: item.name };
     }) :[];
     
     
@@ -150,6 +150,7 @@ export default function SelectTageting() {
              </div>
               <div className='reletive col-lg-12'>
                 <span className='react-select-title'>Select Country</span>
+                
                 <Select isMulti
                     closeMenuOnSelect={false}
                     name="country" 
