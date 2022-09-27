@@ -16,6 +16,9 @@
      const user_chat_blocks_tbl = require('../models/user_chat_blocks');
      const user_tokens_tbl = require('../models/user_tokens');
      const team_matches = require('../models/team_matches');
+    const block_user_tbl = require("../models/block_user");
+
+
     const mongoose = require('mongoose');
 
     const  poll_percent = async(poll_id) =>{
@@ -165,6 +168,21 @@ const sendNotificationAdd = (my_obj )=>{
             }     
       }
 
+  const myBlockUserIds = async (user_id) => {
+    try{
+        let id_arr = []; 
+      let data = await block_user_tbl.find({from_user:user_id},'to_user ');
+        if(! isEmpty(data)) {
+          data.map((item)=>{ id_arr.push(item.to_user.toString()) } );
+         return  id_arr;   
 
+        }else{
+          return id_arr;   
+        }
+      } catch (error) { console.log(error);
+        return [] ; 
+         }    
 
-module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne }
+  }   
+
+module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne,myBlockUserIds }

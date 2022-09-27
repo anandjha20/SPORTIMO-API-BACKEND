@@ -7,6 +7,9 @@ const  Team_tbl = require("../models/Team");
 const  country_tbl = require("../models/country");
 const  {MyBasePath} = require("../myModel/image_helper");
 
+
+const team_matches = require("../models/team_matches") ; 
+
 class MasterController { 
 
     /// Sports function section 
@@ -437,7 +440,60 @@ class MasterController {
             } catch (error) { return res.status(200).send({"status":true,"msg":'Some error' , "body":''}) ; }
 
         }
+   
+     
+  static live_upcoming_match_list = async (req,res)=>{
+    try {
+        let name    = req.body.name;
+        let date = getcurntDate(); 
       
+        let whr = {date_utc:{$gte : date}};     
+        
+       
+        if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+        let records = await team_matches.find(whr,'match_id _id match_name').sort({'date_utc': 1}) ;
+       
+        
+    res.status(200).send({'status':true,'msg':"success", 'body':records });
+
+    } catch (error) { console.log(error);
+    res.status(200).send({'status':false,'msg':error,'body':''});
+    }
+        
+        }        
+ static all_team_match_list = async (req,res)=>{
+            try {
+                let  id = req.params.id;
+                let page  = req.body.page;
+                let s_date  = req.body.s_date;
+                let e_date  = req.body.e_date;
+                let name    = req.body.name;
+                let whr = {};
+        
+                if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+                if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;} 
+                page = (isEmpty(page) || page == 0 )? 1 :page ; 
+                if(!isEmpty(id)){whr = {_id: id} ;} 
+            
+                let query =  team_matches.find(whr).sort({_id:-1}) ;
+                    const query2 =  query.clone();
+                const counts = await query.countDocuments();
+        
+        
+                
+                let offest = (page -1 ) * 10 ; 
+                const records = await query2.skip(offest).limit(10);
+                let paths =MyBasePath(req,res); 
+                  
+        
+            res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+        
+            } catch (error) { console.log(error);
+            res.status(200).send({'status':false,'msg':error,'body':''});
+            }
+                
+                }        
+        
 }
 
 module.exports = MasterController;

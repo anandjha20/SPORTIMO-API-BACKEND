@@ -76,7 +76,7 @@ class Sponsorship {
           
      
   
-     static add_sponsor = async(req,res)=>{
+     static add_sponsor_old = async(req,res)=>{
 
                 try {
                       let user_data = req.body;
@@ -130,7 +130,72 @@ class Sponsorship {
               
         
             }
+   /// updated date 2022-09-27          
+   static add_sponsor = async(req,res)=>{
+              try {
+                    let user_data = req.body;
+                     console.log(  'server get value == ',user_data);
+                let match_len = (user_data.match || '').length;
+         if(match_len == 0){
+          return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
 
+         }         
+
+         let img = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
+                        var sponseor={
+                                    
+                          "match":user_data.match,
+                          "image": img,
+                          "sports": user_data.sports,
+                          "league":user_data.league,
+                          "team": user_data.team,
+                          "players": user_data.players,
+                          "country": user_data.country,
+
+                          "skip_add": user_data.skip_add,
+                          "view_type":user_data.view_type,
+                          "Fdate": user_data.Fdate,
+                          "Ldate":user_data.Ldate,
+                          "reward_type":user_data.reward_type,
+                          "reward_quantity":user_data.reward_quantity,
+                          "created_date":getcurntDate()
+                      }         
+         if(user_data.cta==1){
+          sponseor={...sponseor,
+                      "cta":user_data.cta,
+                      "cta_label":user_data.cta_label,
+                      "cta_url":user_data.cta_url,
+                      "cta_module":user_data.cta_module,
+                      "cta_moduleID":user_data.cta_moduleID
+                    }
+                 }
+                  
+                  var add = new Sponsorship_tbl(sponseor)
+                     add.save((err, data) => {
+                              if (err) {     console.log(err);
+                                return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                            }else{
+                   
+                               return res.status(200).send({"status":true,"msg":'Sponsorship Created Successfully' , "body":data  }) ;            
+                          }
+              }   );
+              
+                
+
+
+
+
+                 
+              } catch (error) { console.log(error);
+                  return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;          
+      
+              }
+            
+      
+          }      
+
+
+            
  static update_sponsor = async(req,res)=>{
 
    try {

@@ -23,7 +23,13 @@ const sprtschema = new Schema({
          Fdate: { type: Date,required: true },
          Ldate: { type: Date,required: true },
          created_date: { type: Date,required: true },                   
-    
+         cta:{type:Boolean,default:false},
+         cta_label:{type:String , default:'' },
+         cta_url:{type:String , default:'' },
+         cta_module:{type:String , default:'' },
+         cta_moduleID:{type:String , default:'' },     
+
+
          active_status: { type: Boolean ,default : 1},
          impressions_count: { type: Number ,default : 0},
         clicks_count: { type: Number ,default : 0},

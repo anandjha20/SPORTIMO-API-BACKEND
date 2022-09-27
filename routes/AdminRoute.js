@@ -99,7 +99,7 @@ const token_check =  require('../middleware/token_check');
       router.get('/user_complaint_chat_list/:id?',complaintController.user_complaint_chat_list);   
       router.post('/user_complaint_chat_add', complaintController.user_complaint_chat_add); 
       router.delete('/user_complaint_chat_stop/:id',complaintController.user_complaint_chat_stop);
-
+ 
       router.post('/adminUserChatBlockUnblock',chatController.adminUserChatBlock); 
 
           // default msg  Routes
@@ -188,6 +188,8 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
   
    //prediction_card_add
    router.post('/prediction_card_add',predictionCardImgUpload,predictionController.prediction_card_add);
+   router.put('/prediction_card_update/:id?',predictionCardImgUpload,predictionController.prediction_card_update);
+
    router.post('/prediction_card_list',predictionController.prediction_card_list);
   
   // match card add    
@@ -196,7 +198,13 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.put('/match_card_update/:id?',predictionController.match_card_update);
    router.delete('/match_card_delete/:id?',predictionController.match_card_delete);
  
-       
+   // team_match_list
+   router.post('/live_upcoming_match_list',MasterController.live_upcoming_match_list);           
+   router.post('/all_team_match_list',MasterController.all_team_match_list);           
+  
+     
+  
+  
    router.get('/jk_test',PollController.jk_test);                 
 
 

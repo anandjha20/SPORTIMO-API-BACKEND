@@ -5,7 +5,7 @@
 
   
 const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date } = require('../myModel/common_modal');
-const { autoincremental,sendNotificationAdd } = require('../myModel/helper_fun');
+const { autoincremental,sendNotificationAdd,myBlockUserIds } = require('../myModel/helper_fun');
 
   const  {MyBasePath} = require("../myModel/image_helper");
   
@@ -20,7 +20,8 @@ const { autoincremental,sendNotificationAdd } = require('../myModel/helper_fun')
     const default_massages_tbl = require('../models/default_massages');  
     const user_logs = require('../models/user_logs');  
     const content_tbls = require('../models/content_tbls'); 
-    const userLanguage = require("../models/userLanguage")            
+    const userLanguage = require("../models/userLanguage");            
+    const follower_tbls = require("../models/follower_users");         
 
 
 
@@ -465,8 +466,8 @@ static block_user_add = async(req,res)=>{
         let to_name = await user_tbl.findById(toUser, 'name').exec();
 
 
-        let whr1 = { "from_user": fUser ,"to_user": toUser};
-        let whr = { "from_user": fUser ,"to_user": toUser ,"date":date};
+        let whr1   = { "from_user": fUser ,"to_user": toUser};
+        let whr    = { "from_user": fUser ,"to_user": toUser ,"date":date};
         let whrRow = { "from_user": fUser ,"to_user": toUser,date :{ $gte: seven_dayDate } };
     
         let response = await rows_count(block_user_tbl,whrRow);   
@@ -725,7 +726,7 @@ static verify_nickName = async(req,res)=>{
          }
 
 
- static getUserLenguage = async(req,res) =>{
+     static getUserLenguage = async(req,res) =>{
             try {
                     let user_id = req.params.id; 
                     let response    = await userLanguage.findOne({user_id,"active":true });
@@ -741,8 +742,94 @@ static verify_nickName = async(req,res)=>{
                 return res.status(200).send({"status":false,"msg":"Server error ","body":''});  
             }     
 
+            }   
+            
+      static userFollower_add = async (req,res)=>{
+                try{
+                            let follower_id=req.body.follower_id;
+                            let following_id=req.body.following_id;
+                            let date=getcurntDate()
+                            if(isEmpty(follower_id)||isEmpty(following_id)){
+                                return res.status(200).send({"status":false,"msg":"all field required","body":''});
+                            }
+                    let check_rows =  await rows_count(follower_tbls,{follower_id,following_id}) ;     
+
+                if(check_rows>0){
+                    return res.status(200).send({"status":false,"msg":"this data already added ","body":''});        
+                  }            
+
+                  let obj=new follower_tbls({follower_id,following_id,date});
+                    let response= await obj.save();
+                    if(isEmpty(response)){
+                        return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
+                    }
+                    else{
+                        return res.status(200).send({"status":true,"msg":"data saved","body": response });
+                    }
+                
+            }catch(error) { console.log(error);
+                return res.status(200).send({"status":false,"msg":"server error","body":''});
+            }
+            }      
+      static follower_list = async (req,res)=>{
+                try{
+                          /// block_user_tbls
+                let following_id=req.params.id;
+                if(isEmpty(following_id)){
+                    return res.status(200).send({"status":false,"msg":"all field required","body":''});
+                }
+
+                let blockIds = await myBlockUserIds(following_id);
+                           console.log("follower_list  == ",blockIds );
+                    let whr = (isEmpty(blockIds))? {following_id} : {following_id,follower_id :{$ne: blockIds }} ;
+
+                    
+                    let response= await follower_tbls.find({whr}).populate("follower_id","name mobile email")
+                    if(isEmpty(response)){  
+                        return res.status(200).send({"status":false,"msg":"No data found!..","body":''});        
+                    }        
+                    else{
+                        return res.status(200).send({"status":true,"msg":"data fetched","body": response });
+                    }
+                         
+            }catch(error){ console.log(error);
+                return res.status(200).send({"status":false,"msg":"server error","body":''});
+            }
+            }
+        
+     static following_list = async (req,res)=>{
+                try{
+
+                let follower_id=req.params.id;
+                if(isEmpty(follower_id)){
+                    return res.status(200).send({"status":false,"msg":"all field required","body":''});
+                }
+
+                let blockIds = await myBlockUserIds(follower_id);
+                     console.log("blockIds == ",blockIds );
+
+                let whr = (isEmpty(blockIds))? {follower_id} : {follower_id,following_id :{$ne: blockIds }} ;
+
+                    let response= await follower_tbls.find(whr ).populate("following_id","name mobile email")
+                    if(isEmpty(response)){
+                        return res.status(200).send({"status":false,"msg":"No Data Found!..","body":''});        
+                    }
+                    else{
+                        return res.status(200).send({"status":true,"msg":"data fetched","body": response });
+                    }
+                
+            }catch{
+                return res.status(200).send({"status":false,"msg":"server error","body":''});
+            }
             }        
+
+
+
 }
        
+
+
+
+
 
 module.exports = UserController ;      

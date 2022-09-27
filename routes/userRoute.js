@@ -40,7 +40,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
       let AdminController = require("../controllers/AdminController");
       let predictionController = require("../controllers/predictionController");                                            
               
-        
+      let MasterController = require('../controllers/MasterController');
   
           router.get('/JK/',UserController.dashboardAllCount);
           router.get('/sendEmail/',UserController.User_sendEmail);
@@ -184,7 +184,13 @@ const userReportImg =  img_upload('./assets/user_img','image');
       router.post('/my_playMatchCard_list',predictionController.my_playMatchCard_list);
       router.put('/playMatchCard_update/:id?',predictionController.playMatchCard_update);
       router.delete('/playMatchCard_delete/:id?',predictionController.playMatchCard_delete);
-
- 
-    
+     
+      // team_match_list  
+       router.post('/live_upcoming_match_list',MasterController.live_upcoming_match_list);           
+      ///userFollower_add    
+      router.post('/userFollower_add',UserController.userFollower_add);           
+      router.get('/follower_list/:id?',UserController.follower_list);           
+      router.get('/following_list/:id?',UserController.following_list);           
+     
+      
 module.exports = router;             
