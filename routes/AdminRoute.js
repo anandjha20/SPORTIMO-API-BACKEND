@@ -21,8 +21,8 @@ const sponsorImgUpload = sponsorImg.fields([{ name: 'image', maxCount: 1 }]);
 
 const IntroSliderImgUpload =  img_upload('./assets/introSlider_img','image');
 const MasterImgUpload =  img_upload('./assets/master','image');
-
-/// import user token middleware  
+const predictionCardImgUpload = img_upload('./assets/predictionCard_img','image');
+ /// import user token middleware  
 const token_check =  require('../middleware/token_check');                                                                                                 
  
 //   import controllers                 
@@ -187,7 +187,7 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.get('/get_prediction_card_Cat_list/:id?',predictionController.getprediction_card_Cat_list);
   
    //prediction_card_add
-   router.post('/prediction_card_add',predictionController.prediction_card_add);
+   router.post('/prediction_card_add',predictionCardImgUpload,predictionController.prediction_card_add);
    router.post('/prediction_card_list',predictionController.prediction_card_list);
   
   // match card add    

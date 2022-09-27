@@ -2,8 +2,8 @@ let  express_2 = require('express');
 const mongoose = require('mongoose');
 const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
 const { sendNotificationAdd } = require('../myModel/helper_fun');
-  const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
-
+const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
+const  {MyBasePath} = require("../myModel/image_helper");
 const { poll_percent} = require('../myModel/helper_fun');
    
   
@@ -43,22 +43,25 @@ class predictionController {
     static prediction_card_add = async(req,res)=>{
             try {   
               let user_data = req.body;
-           if(isEmpty(user_data.name)){
-                 return res.status(200).send({"status":false,"msg":'name filed Required' , "body":''}) ; 
+
+              console.log(user_data); 
+               if(isEmpty(user_data.name)){
+                          return res.status(200).send({"status":false,"msg":'name filed Required' , "body":''}) ; 
                     }   
           
-            
+       let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
+   
          let mydate = getcurntDate();
 
                    let add = new prediction_cards_tbl({
-                              "name":user_data.name,
+                                "name":user_data.name,
                        "name_ara": user_data.name_ara,
                        "card_type": user_data.card_type,
                       
                        "card_cat_id":user_data.card_cat_id,
                        "time_range":user_data.time_range,
                        
-                     //  "apperance_time": user_data.apperance_time,
+                           "image": image,
                       // "time_duration": user_data.time_duration,             
 
                        "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
@@ -89,9 +92,9 @@ class predictionController {
                 let language = req.body.language;
     
                 let records = await prediction_cards_tbl.find().sort({_id:-1});
-              
+                let paths =MyBasePath(req,res);    
                    
-                    if(records){ records.map((item)=> { 
+                    if(records){ records.map((item)=> {  item.image = (! isEmpty(item.image))?  `${paths}/image/assets/predictionCard_img/${item.image}` : '' ;
                                 if(language != '' && language == 'ar'){ 
                                      item.name = item.name_ara;  
                                      item.qus = item.qus_ara;  

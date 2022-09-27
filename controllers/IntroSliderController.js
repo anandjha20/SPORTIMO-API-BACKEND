@@ -51,8 +51,13 @@ class IntroSliderController{
           
          let offest = (page -1 ) * 10 ; 
          const records = await query2.skip(offest).limit(10);
-         let sendData = (records)?  await Promise.all( records.map((item)=>{ item.image = (item.image)? "http://192.168.1.95:3600/image/assets/introSlider_img/"+item.image:'';  return item;} )):[];
-      res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':sendData });
+         let paths =MyBasePath(req,res);    
+         let sendData = (records)?  await Promise.all( records.map((item)=>{
+           item.image = (item.image)?  `${paths}/image/assets/introSlider_img/${item.image}`:''; 
+          
+           return item;} )):[];
+   
+           res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':sendData });
 
     } catch (error) { console.log(error);
       res.status(200).send({'status':false,'msg':error,'body':''});

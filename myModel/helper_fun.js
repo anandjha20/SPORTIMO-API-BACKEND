@@ -15,7 +15,7 @@
      const user_reportings_tbl = require('../models/user_reportings');
      const user_chat_blocks_tbl = require('../models/user_chat_blocks');
      const user_tokens_tbl = require('../models/user_tokens');
-    
+     const team_matches = require('../models/team_matches');
     const mongoose = require('mongoose');
 
     const  poll_percent = async(poll_id) =>{
@@ -132,5 +132,39 @@ const sendNotificationAdd = (my_obj )=>{
 
         }       
      
+      const team_match_addOne = async(Item)=>{
+        try { 
+             let  match_id = Item.match_id;      
+             let  match_name = Item.team_a_short_name+' vs '+Item.team_b_short_name ; 
+             let  team_a_short_name = Item.team_a_short_name;  
+             let  team_b_short_name = Item.team_b_short_name; 
 
-module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun }
+            let  team_a_id = Item.team_a_id;    let  team_b_id = Item.team_b_id; 
+            let  team_a_name = Item.team_a_name;    let  team_b_name = Item.team_b_name; 
+            let  date_utc = `${Item.date_utc}  ${Item.time_utc}` ;    let  time_utc = Item.time_utc; 
+            let  last_updated = Item.last_updated;    let  status = Item.status; 
+          
+            let  score_a = Item.score_a;    let  score_b = Item.score_b; 
+            let  venue = Item.venue;    let  live = Item.live; 
+
+
+              //  if(isEmpty(name) || isEmpty(name_ara)  ){
+              //      return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
+              //       }  
+              //       }  
+                let add = new team_matches({match_id,match_name,team_a_short_name,team_b_short_name,
+                                  team_a_id,team_b_id,team_a_name,team_b_name,date_utc,time_utc,last_updated,
+                                  status, score_a,score_b,venue, live }); 
+                        add.save((err,data)=>{
+                            if(err){ console.log("sport err ==  ", err);  
+                            return  false; 
+                               }else{  return  data._id; }
+                  });  
+            } catch (error) { console.log(error);
+                     return false; 
+            }     
+      }
+
+
+
+module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne }

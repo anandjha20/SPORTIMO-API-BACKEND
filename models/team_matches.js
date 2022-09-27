@@ -13,7 +13,7 @@ const team_match_schema = new Schema({
              team_b_name  : { type : String,require:true  },
              team_b_short_name : { type : String ,require:true },
              date_utc :{ type: Date, require:true,  },
-             time_utc :{ type: Date, require:true,  },
+             time_utc :{ type: String, require:true,  },
              last_updated :{ type: Date, require:true,  },
 
              status :{type:String, default: '' },
