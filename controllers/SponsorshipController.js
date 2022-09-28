@@ -227,6 +227,22 @@ class Sponsorship {
                       "reward_quantity":user_data.reward_quantity,
                   };
 
+                  if(user_data.cta==1){
+                    setDataMy={...setDataMy,
+                    "cta":user_data.cta,
+                    "cta_label":user_data.cta_label,
+                    "cta_url":user_data.cta_url,
+                    "cta_module":user_data.cta_module,
+                    "cta_moduleID":user_data.cta_moduleID}
+                  }else{
+                    setDataMy={...setDataMy,
+                    "cta":0,
+                    "cta_label":'',
+                    "cta_url":'',
+                    "cta_module":'',
+                    "cta_moduleID":''}
+                  }
+
                   if( img != ''){setDataMy.image = img }
                 
               Sponsorship_tbl.findOneAndUpdate({_id: id},{$set : setDataMy},{new: true}, (err, updatedUser) => {

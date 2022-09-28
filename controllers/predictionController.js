@@ -203,8 +203,11 @@ class predictionController {
        static match_card_list = async (req,res)=>{
                   try {
                       let language = req.body.language;    // 'name card_type'
-          
-                      let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
+                      let condition_obj={};
+                      if(!isEmpty(req.body.match_name)){
+                        condition_obj={...condition_obj,match_name:req.body.match_name}
+                      }
+          let records = await match_cards_tbl.find(condition_obj).populate('card_id').sort({_id:-1});
                     
                          
                           if(records){ records.map((item)=> { 
@@ -296,9 +299,10 @@ class predictionController {
               let time_range_start = req.body.time_range_start;    
               let time_range_end   = req.body.time_range_end;
 
-       if( isEmpty(match_card_id) || isEmpty(user_id)  || 
-            isEmpty(user_option)  || isEmpty(time_range_start)  ||
-             isEmpty(time_range_end) ){
+              // || isEmpty(time_range_start)  ||  isEmpty(time_range_end)
+      
+              if( isEmpty(match_card_id) || isEmpty(user_id)  || 
+            isEmpty(user_option)   ){
              return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
                 }   
               

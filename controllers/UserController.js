@@ -826,10 +826,6 @@ static verify_nickName = async(req,res)=>{
 
 
 }
-       
-
-
-
-
+  
 
 module.exports = UserController ;      

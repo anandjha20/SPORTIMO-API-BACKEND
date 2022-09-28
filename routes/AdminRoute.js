@@ -114,6 +114,11 @@ const token_check =  require('../middleware/token_check');
     
           // get Firebase Chat Data 
     router.get('/firebase_group_chat_data/:id?',FirebaseController.firebase_group_chat_data);      
+    router.get('/getFirebaseUser_list/:id?',FirebaseController.getFirebaseUser_list);      
+    router.get('/getFirebaseUser/:id?',FirebaseController.getFirebaseUser);      
+    router.get('/firebase_group_list/:id?',FirebaseController.firebase_group_list);      
+    router.get('/getFirebaseChatData/:id?',FirebaseController.getFirebaseChatData);      
+    router.get('/getFirebaseChatData_new/:id?',FirebaseController.getFirebaseChatData_new);      
            
     /////   sports crud Route 
                       
@@ -196,13 +201,16 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.post('/match_card_add',predictionController.match_card_add);
    router.post('/match_card_list',predictionController.match_card_list); 
    router.put('/match_card_update/:id?',predictionController.match_card_update);
-   router.delete('/match_card_delete/:id?',predictionController.match_card_delete);
+   router.delete('/match_card_delete/:id?',predictionController.match_card_delete);  
  
    // team_match_list
    router.post('/live_upcoming_match_list',MasterController.live_upcoming_match_list);           
    router.post('/all_team_match_list',MasterController.all_team_match_list);           
   
-     
+   
+   // chat block User LIst  
+   router.post('/admin_settings_update',AdminController.admin_settings_update);
+   router.get('/admin_settings_get',AdminController.admin_settings_get);
   
   
    router.get('/jk_test',PollController.jk_test);                 

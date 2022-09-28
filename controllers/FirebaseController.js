@@ -18,8 +18,10 @@ class FirebaseController {
               if(isEmpty(group_id)){
                      return res.status(200).send({"status":false, "msg": "Group Id Field Required...", "body": ''}); 
               }
-                  let snaps = await FirebaseDB.collection('messages')
-                                .where('conversationId', '=',group_id)
+                 // let snaps = await FirebaseDB.collection('messages')
+                  let snaps = await FirebaseDB.collection('groups')
+                              //  .where('id', '=',group_id)
+                                //.where('uid', '=',group_id)
                                     //.orderBy('_createTime._seconds', 'desc')
                                 ///.limit(2)
                                 .get();
@@ -38,10 +40,44 @@ class FirebaseController {
 
  }
 
+
+ static firebase_group_list = async(req,res)=>{
+  try {
+        let group_id = req.params.id; 
+      
+         // let snaps = await FirebaseDB.collection('messages')
+           
+                        if(isEmpty(group_id)){
+                          var snaps = await FirebaseDB.collection('groups').get();    ///.doc('chats').collection('chats').get();    
+                        }else{
+                          var snaps = await FirebaseDB.collection('groups') .where('id', '=',group_id).get();   //collection('chats').get();   
+                        }
+          //  .where('id', '=',group_id)
+                        //.where('uid', '=',group_id)
+                            //.orderBy('_createTime._seconds', 'desc')
+                        ///.limit(2)
+                       // .get();
+                            
+                      let job = [];    
+                      snaps.forEach(doc => {
+                        job.push(doc.data());
+                         //  job.push(doc); 
+                            });
+              
+                      return  res.status(200).send({"status":true, "msg": "success", "body": job}); 
+              
+                } catch (error) {  console.log("demo tesing ==  ",error);
+                  return res.status(200).send({"status":false, "msg": error, "body": ''}); 
+                }
+
+}
+
+
+
  static getFirebaseChatData = async(req,res)=>{
   try {
    
-  let snaps = await admin.firestore().collection('messages').get();
+  let snaps = await admin.firestore().collection('chats').get();
   //   let snaps = await admin.firestore().collection('users').get()
         let job = []; 
         snaps.forEach(doc => {
@@ -57,9 +93,33 @@ class FirebaseController {
 }
 
 
+static getFirebaseChatData_new = async(req,res)=>{
+  try {
+              const sfRef = await admin.firestore().collection('groups').doc('28277767').collection('chats').orderBy('time').get();
+             // const collections = await sfRef.listCollections();
+               
+
+  let snaps = await admin.firestore().collection('chats').get();
+  //   let snaps = await admin.firestore().collection('users').get()
+        let job = []; 
+        sfRef.forEach(doc => {
+          job.push(doc.data());
+             //  job.push(doc); 
+               });
+
+    return  res.status(200).send({"status":true, "msg": "success", "body": sfRef}); 
+
+  } catch (error) {  console.log("demo tesing ==  ",error);
+    return res.status(200).send({"status":false, "msg": error, "body": ''}); 
+  }
+}
+
+
+
+
   static getFirebaseUser  = async(req,res)=>{
     try {
-      let snaps = await admin.auth().getUser("8lCERQgFzVP8I2NAxygCIEKEJ3N2");
+      let snaps = await admin.auth().getUser("To7ZMyCx8neykUBKyajX8UlgDbD3");
       return  res.status(200).send({"status":true, "msg": "success", "body": snaps}); 
 
     } catch (error) {  console.log("demo tesing ==  ",error);

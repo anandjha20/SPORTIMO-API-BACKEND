@@ -13,6 +13,7 @@ const { rows_count,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = requ
     const tips_trick = require('../models/tips_tricks'); 
     const content_tbls = require('../models/content_tbls');      // tips_status_update
    const block_user_tbl = require("../models/block_user");
+   const admin_settings= require('../models/admin_settings')
 class AdminController { 
 
   static tips_status_update = async (req,res)=>{
@@ -564,6 +565,50 @@ class AdminController {
             }
 
         }
+
+        static admin_settings_update = async (req,res)=>{
+          try{
+                let condition_obj={};
+                let unblock_period_days=req.body.unblock_period_days;
+                let auto_chat_blocking=req.body.auto_chat_blocking;
+                let guest_user_active_days=req.body.guest_user_active_days;
+                if(!isEmpty(unblock_period_days)){condition_obj={...condition_obj,"unblock_period_days":unblock_period_days}}
+                if(!isEmpty(auto_chat_blocking)){condition_obj={...condition_obj,"auto_chat_blocking":auto_chat_blocking}}
+                if(!isEmpty(guest_user_active_days)){condition_obj={...condition_obj,"guest_user_active_days":guest_user_active_days}}
+              
+        if(isEmpty(condition_obj)){
+               return res.status(200).send({"status":false,"msg":"All Field Required","body":''});         
+            }
+
+           admin_settings.findOneAndUpdate({},condition_obj, {new: true}, (err,data)=>{
+            if(err){  console.log(err); 
+              return res.status(200).send({"status":false,"msg":"No Data found!... ","body":''});  
+            }else{
+             
+              return res.status(200).send({"status":true,"msg":"settings updated successfully","body":data})
+            } });
+      
+          }catch (error){
+            console.log(error)
+            return res.status(200).send({"status":false,"msg":"server erroe","body":''})
+          }
+      
+        }
+    static admin_settings_get = async (req,res)=>{
+      try{
+        let response=await admin_settings.findOne();
+        if(!isEmpty(response)){
+        return res.status(200).send({"status":true,"msg":"Success","body":response})
+        }else{
+        return res.status(200).send({"status":false,"msg":"no data found!..","body":''})
+        }
+      }catch (error){
+        console.log(error)
+        return res.status(200).send({"status":false,"msg":"server erroe","body":''})
+      }
+  
+    }
+
 
 }
    
