@@ -1,13 +1,14 @@
-require('dotenv').config();
+require('dotenv').config(); 
     
-       
 const express = require('express');
 const app = express();
 const userRoute    = require('./routes/userRoute');
 const AdminRoute   = require('./routes/AdminRoute');
 const image_urls   = require('./routes/image_urls');
 const cronJobRoutes = require("./routes/cronJobRoute");
-const Port = process.env.Port || 3600; 
+ const local_default = require("./local_default.json");
+
+const Port =  local_default.port ;     //  process.env.Port || 3600; 
 //const Port =  3700; 
 const cors = require('cors'); 
 var bodyParser = require('body-parser');

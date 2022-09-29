@@ -12,8 +12,9 @@ class ConjobController{
           try {
                 let  match_id = 2701168 ; // 2701168;
                 ///  let  match_id = 2168;
-                 let data = await match_card_001(match_id);
-                
+            
+                let data = await match_card_001(match_id);
+                  
                  if(!isEmpty(data)){
                           if( data.team_a > 0 ||  data.team_b > 0 ){
                             return  res.status(200).send({'status':true,'msg':"success", 'body':data });
@@ -100,7 +101,7 @@ class ConjobController{
             }
       }
  
-        static pollResultNotification =  async(req,res)=>{
+     static pollResultNotification =  async(req,res)=>{
                try {
                          
 
@@ -111,10 +112,7 @@ class ConjobController{
                    }
            }
    
-
-
-
-                   
+           
 }
 
 

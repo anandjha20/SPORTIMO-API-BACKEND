@@ -1,7 +1,8 @@
                  
 var mongoose = require('mongoose'); 
+const local_default = require('./local_default.json')
 //mongoose.connect('mongodb://localhost:27017/football_db');
-mongoose.connect(process.env.DB_url);
+mongoose.connect(local_default.DB_url);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 

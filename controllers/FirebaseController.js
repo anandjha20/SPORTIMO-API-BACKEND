@@ -1,10 +1,11 @@
 const admin = require('firebase-admin');
 const { isEmpty } = require('../myModel/common_modal');
 const serviceAccount = require("../serviceAccountKey.json");
+const local_default = require("../local_default.json"); 
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    databaseURL: process.env.FIRBASEDBURL ,
+    databaseURL: local_default.FIRBASEDBURL, //   ..process.env.FIRBASEDBURL ,
   });
 
   const FirebaseDB = admin.firestore();
