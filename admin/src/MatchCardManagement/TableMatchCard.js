@@ -32,11 +32,10 @@ function TableMatchCard() {
         [
             // { title: 'Card Icon', render : rowData => <><img src={rowData.image} alt="card icon" width="60px" /></> },
             { title: 'Match/league', field: 'match_name' },
-            { title: 'Card Name (English)', render : rowData => <>{rowData.card_id.name}</> },
-            { title: 'Card Name (Arabic)', render : rowData => <>{rowData.card_id.name_ara}</> },
+            { title: 'Card Name', render : rowData => <>{rowData.card_id.name}</> },
             { title: 'Card Type ', render : rowData => <>{rowData.card_id.card_type}</> },
             { title: 'Appearance Time', field: 'apperance_times' },
-            { title: 'Duration', field: 'time_duration' },
+            { title: 'Time Duration', field: 'time_duration' },
             // { title: 'Question (Arabic)', field: 'qus_ara' },
         ]
 
@@ -68,9 +67,9 @@ function TableMatchCard() {
                             </div>
                             <div className="d-flex">
                                 <div className="justify-content-center">
-                                    {/* <Link  to="/matchcard/add">
+                                    <Link  to="/matchcard/add">
                                     <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add  Match Card</Button>
-                                    </Link> */}
+                                    </Link>
                                 </div>
                             </div>
 

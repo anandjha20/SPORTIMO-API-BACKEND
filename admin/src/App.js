@@ -47,7 +47,7 @@ import TablePredictionCardList from "./PredictionManagement/TablePredictionCardL
 import UpdatePredictionCard from "./PredictionManagement/UpdatePredictionCard";
 import TableMatchCard from "./MatchCardManagement/TableMatchCard";
 import AddMatchCard from "./MatchCardManagement/AddMatchCard";
-
+import AddminSetting from "./AdminSetting/AddminSetting";
 
 
 function App() {
@@ -139,6 +139,8 @@ function App() {
         <Route path="/matchcard" element={ <TableMatchCard /> } />
         <Route path="/matchcard/add" element={ <AddMatchCard /> } />
 
+        {/*Admin Setting*/} 
+        <Route path="/admin-setting" element={ <AddminSetting /> } />
         
         {/*PreferenceMaster */} 
         <Route path="/preference/sports" element={ <SportsPreference /> } />
