@@ -11,13 +11,17 @@ class ConjobController{
       static get_card_001 =  async(req,res)=>{
           try {
                 let  match_id = 2701168 ; // 2701168;
-                ///  let  match_id = 2168;
-            
-                let data = await match_card_001(match_id);
                   
+            
+               let data = await match_card_001(match_id);
+                
                  if(!isEmpty(data)){
-                          if( data.team_a > 0 ||  data.team_b > 0 ){
-                            return  res.status(200).send({'status':true,'msg':"success", 'body':data });
+                          if( data.team_a >  data.team_b ){
+                            return  res.status(200).send({'status':true,'msg':"tam_A win success", 'body':data });
+                          }else   if( data.team_b >  data.team_a  ){
+                            return  res.status(200).send({'status':true,'msg':"tam_B win success", 'body':data });
+                          }else  if( data.team_b == data.team_a  ){
+                            return  res.status(200).send({'status':true,'msg':"tam_B win success", 'body':data });
                           }else{
                             return  res.status(200).send({'status':false,'msg':"Result not show this time", 'body':'' });
                            }
@@ -33,6 +37,34 @@ class ConjobController{
                   return  res.status(200).send({'status':false,'msg':'servr error'});
               }
       }
+  
+      
+ static get_card_007 =  async(req,res)=>{
+        try {
+              let  match_id = 2701168 ; // 2701168;
+              ///  let  match_id = 2168;
+          
+              let data = await match_card_001(match_id);
+                
+               if(!isEmpty(data)){
+                        if( data.team_a > 0 ||  data.team_b > 0 ){
+                          return  res.status(200).send({'status':true,'msg':"success", 'body':data });
+                        }else{
+                          return  res.status(200).send({'status':false,'msg':"Result not show this time", 'body':'' });
+                         }
+               }else{
+                return  res.status(200).send({'status':false,'msg':"Match not show this time", 'body':'' });
+               }
+
+
+
+              
+
+            } catch (error) { console.log(error);
+                return  res.status(200).send({'status':false,'msg':'servr error'});
+            }
+    }
+
 
         static get_live_match_list =  async(req,res)=>{
           try {
@@ -83,7 +115,7 @@ class ConjobController{
               
                 if(! isEmpty(datas)){
                   let sum = [] ; 
-                  datas.map( (item)=>{  team_match_addOne(item);  sum.push(m_id);  return item; }) ;
+                  datas.map( (item,index)=>{  team_match_addOne(item);  sum.push(index);  return item; }) ;
                       return  res.status(200).send({'status':true,'msg':'success','body':sum});
                   
                 }else{
