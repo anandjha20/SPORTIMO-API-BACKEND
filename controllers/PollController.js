@@ -110,7 +110,7 @@ class PollController {
            
             if(!isEmpty(leagues)){whr.leagues = { $regex: '.*' + leagues + '.*' } ;} 
             if(!isEmpty(id)){whr = {_id: id} ;} 
-            let query =  poll_tbl.find(whr).sort({_id:-1});
+            let query =  poll_tbl.find(whr).populate('match','match_name').sort({_id:-1});
               
              const query2 =  query.clone();
              const counts = await query.countDocuments();   
@@ -156,6 +156,7 @@ class PollController {
                     let add = new poll_tbl({
                        
                         "match":user_data.match,
+                        "match_id":user_data.match_id,
                         "poll_type": user_data.poll_type,
                         "fee_type": user_data.fee_type,
                         "amount":user_data.amount,
@@ -253,6 +254,7 @@ class PollController {
                   let setDataMy = {
                      
                       "match":user_data.match,
+                      "match_id":user_data.match_id,
                       "poll_type": user_data.poll_type,
                       "fee_type": user_data.fee_type,
                       "amount":user_data.amount,

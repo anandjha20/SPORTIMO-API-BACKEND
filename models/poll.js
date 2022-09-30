@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
             
 const pollschema = new Schema({
          match: { type: String, required: true },
+         match_id: { type:Number, required: true },
          poll_type: { type: String,enum: ['Public Poll', 'Private Poll'],  default: 'Public Poll' },
          fee_type: { type: String,enum: ['Free', 'Paid'],default: 'Free' },
          result_type: { type: String,enum: ['Disclosed', 'Undisclosed'],default: 'Disclosed' },

@@ -203,9 +203,13 @@ class predictionController {
        static match_card_list = async (req,res)=>{
                   try {
                       let language = req.body.language;    // 'name card_type'
+                      let match_id = req.body.match_id;    // 'name card_type'
                       let condition_obj={};
                       if(!isEmpty(req.body.match_name)){
                         condition_obj={...condition_obj,match_name:req.body.match_name}
+                      }
+                      if(!isEmpty(match_id)){
+                        condition_obj={...condition_obj,match_id:match_id}
                       }
           let records = await match_cards_tbl.find(condition_obj).populate('card_id').sort({_id:-1});
                     
@@ -306,7 +310,7 @@ class predictionController {
              return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
                 }   
               
-           let checkuserData = await playMatchCards_tbl.findOne({user_id});
+           let checkuserData = await playMatchCards_tbl.findOne({user_id,match_card_id});
            if(checkuserData){
                return res.status(200).send({"status":true,"msg":'user already play this card' , "body":checkuserData  }) ;  
            }   
@@ -364,7 +368,38 @@ class predictionController {
               }
               
       }     
+      static playMatchCard_list = async (req,res)=>{
+        try {
+            let language = req.body.language;    
+            let match_card_id = req.body.match_card_id;    
+           
+           /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
+           
+           playMatchCards_tbl.aggregate([ {
+            $lookup: {
+                from: "match_cards_tbl", // collection to join
+                localField: "_id",//field from the input documents
+                foreignField: "match_card_id",//field from the documents of the "from" collection
+                as: "comments" // output array field
+            }
+        }, {
+            $lookup: {
+                from: "Post", // from collection name
+                localField: "_id",
+                foreignField: "user_id",
+                as: "posts"
+            }
+        }],function (error, data) {
+         return res.json(data);
+     //handle error case also
+});
+        
     
+              } catch (error) { console.log(error);
+                    return res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"});
+                }
+                
+        }  
 
   static playMatchCard_update = async(req,res)=>{
         try {   let id = req.params.id;
