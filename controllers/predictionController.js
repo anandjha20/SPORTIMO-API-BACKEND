@@ -304,18 +304,21 @@ class predictionController {
           if(isEmpty(user_id)){
             return res.status(200).send({'status':false,'msg':  (language == 'ar')? "مطلوب حقل معرف المستخدم" :  "User Id Field Required"});
                 }
-
-           let records = await playMatchCards_tbl.find({user_id}) ;
-          
-     //   let records = await playMatchCards_tbl.find({user_id}).populate('match_card_id').populate('match_card_id.card_id').papulate('').sort({_id:-1});
+    
+       let records = await playMatchCards_tbl.find({user_id}).populate({ path: 'match_card_id', populate: { path: 'card_id'}}).sort({_id:-1});
          
             
          if(! isEmpty(records)){ records.map((item)=> { 
                           if(language != '' && language == 'ar'){ 
                                 
-                            if(typeof item.card_id === 'object' && item.card_id !== null){
-                              item.card_id.name = item.card_id.name_ara;
-                            }else{  item.card_id = {};}
+                            if(typeof item.match_card_id.card_id === 'object' && item.match_card_id.card_id !== null){
+                              item.match_card_id.card_id.name = item.match_card_id.card_id.name_ara;
+                              item.match_card_id.card_id.qus = item.match_card_id.card_id.qus_ara;
+                              item.match_card_id.card_id.ops_1 = item.match_card_id.card_id.ops_1_ara;
+                              item.match_card_id.card_id.ops_2 = item.match_card_id.card_id.ops_2_ara;
+                              item.match_card_id.card_id.ops_3 = item.match_card_id.card_id.ops_3_ara;
+                              item.match_card_id.card_id.ops_4 = item.match_card_id.card_id.ops__ara;
+                            }else{  item.match_card_id.card_id = {};}
                             
                             // item.card_id.name = item.card_id.name_ara;  
                               
