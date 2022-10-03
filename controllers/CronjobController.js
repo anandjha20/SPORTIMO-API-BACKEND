@@ -5,7 +5,7 @@ const { rows_count,getcurntDate,getTime,isEmpty} = require("../myModel/common_mo
   const poll_tblD = require("../models/poll_result");
    const axios = require("axios");
   const team_matches = require('../models/team_matches');
-  const {match_card_number,match_card_0011,match_card_0013 } = require("../myModel/Live_match_api_helper"); 
+  const {match_card_number,match_card_0011,match_card_0013,matchCardAllData } = require("../myModel/Live_match_api_helper"); 
 
 class ConjobController{
       static get_card_001 =  async(req,res)=>{
@@ -294,7 +294,9 @@ class ConjobController{
         try {
           let  match_id = 2701168 ; // 2701168;
           let data = await match_card_number(match_id,2);          
-            
+                console.log("test fun call == ",data); 
+           // return data ; 
+
             if(!isEmpty(data)){
                     if( data.team_a >  data.team_b ){
                       return  res.status(200).send({'status':true,'msg':"tam_A win success",'body': "opt_1", 'data':data });
@@ -317,9 +319,26 @@ class ConjobController{
             return  res.status(200).send({'status':false,'msg':'servr error'});
         }
              } 
-                             
-
-
+      
+             
+             
+             
+             static get_test =  async(req,res)=>{
+              try {
+                     let  match_id = 2701168 ; // 2701168;
+                     let data = await matchCardAllData(match_id);  
+                    
+                     if(data){
+                       /// let dx = await  this.get_card_0036();  
+                       
+                        return  res.status(200).send({'status':true,'msg':"success", 'data':data });
+                     }
+                     
+                    
+                  } catch (error) {   console.log(error);
+                        return  res.status(200).send({'status':false,'msg':'servr error'});
+                  }
+              } 
 
    ///////////////////////////////////////////    
         static get_live_match_list =  async(req,res)=>{

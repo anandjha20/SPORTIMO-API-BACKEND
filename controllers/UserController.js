@@ -755,7 +755,8 @@ static verify_nickName = async(req,res)=>{
                     let check_rows =  await rows_count(follower_tbls,{follower_id,following_id}) ;     
 
                 if(check_rows>0){
-                    return res.status(200).send({"status":false,"msg":"this data already added ","body":''});        
+                            await follower_tbls.deleteOne({follower_id,following_id})
+                    return res.status(200).send({"status":false,"msg":"This user unfollowed","body":''});        
                   }            
 
                   let obj=new follower_tbls({follower_id,following_id,date});
@@ -764,7 +765,7 @@ static verify_nickName = async(req,res)=>{
                         return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
                     }
                     else{
-                        return res.status(200).send({"status":true,"msg":"data saved","body": response });
+                        return res.status(200).send({"status":true,"msg":"this user unfollowe","body": response });
                     }
                 
             }catch(error) { console.log(error);
@@ -823,7 +824,26 @@ static verify_nickName = async(req,res)=>{
             }
             }        
 
-
+     static remove_follower = async (req,res)=>{
+                try{
+                            let follower_id=req.body.follower_id;
+                            let following_id=req.body.following_id;
+                            if(isEmpty(follower_id)||isEmpty(following_id)){
+                                return res.status(200).send({"status":false,"msg":"all field required","body":''});
+                            }
+                    
+                    let response =await follower_tbls.deleteOne({follower_id,following_id})
+                    if(isEmpty(response)){
+                        return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
+                    }
+                    else{
+                        return res.status(200).send({"status":true,"msg":"removed",});
+                    }
+                
+            }catch(error) { console.log(error);
+                return res.status(200).send({"status":false,"msg":"server error","body":''});
+            }
+            }      
 
 }
   
