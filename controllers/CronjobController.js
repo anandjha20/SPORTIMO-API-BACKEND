@@ -2,10 +2,12 @@
 const { rows_count,getcurntDate,getTime,isEmpty} = require("../myModel/common_modal");
   const {team_match_addOne } = require('../myModel/helper_fun');  
   const poll_tbl  = require("../models/poll");
-  const poll_tblD = require("../models/poll_result");
+  const user_tbl = require('../models/user');    
+  const transactions_tbl = require('../models/transactions');    
+
    const axios = require("axios");
   const team_matches = require('../models/team_matches');
-  const {match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_004_demo } = require("../myModel/Live_match_api_helper"); 
+  const {match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_004_demo,add_win_point } = require("../myModel/Live_match_api_helper"); 
 
 class ConjobController{
       static get_card_001 =  async(req,res)=>{
@@ -339,6 +341,37 @@ class ConjobController{
                         return  res.status(200).send({'status':false,'msg':'servr error'});
                   }
               } 
+   
+     static jkk = async(req,res)=>{
+    try {    
+              
+               // let user_id = "6324454065b6d51b63bfa67f";
+               let user_id = "6323134a2bb4d975039fdf07";
+               let points = 10;
+               let match_id  = "63329e3ebba4aa21cd488679";
+               let card_id   = "632daebeb066c6fd7e1c4769";
+               if(isEmpty(user_id) || isEmpty(points) || isEmpty(match_id) || isEmpty(card_id)){
+                  return false ; 
+                 } 
+            let dss = await add_win_point({
+                                            "user_option": "opt_2",
+                                            "ans": "",
+                                            "user_play_card_id": "633be04439ce4a563c37387c",
+                                            "user_id": "63231748bac376ef300e1b70",
+                                            "card_id": "632daebeb066c6fd7e1c4769",
+                                            "match_id": "63329e3ebba4aa21cd488679"
+                                        },) ;
+
+          return  res.status(200).send({'status':true,'msg':"success", 'data':dss });
+          
+        } catch (error) { console.log(error); 
+               return false ; 
+            }
+
+      }
+
+
+
 
    ///////////////////////////////////////////    
         static get_live_match_list =  async(req,res)=>{

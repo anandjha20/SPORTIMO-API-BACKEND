@@ -43,6 +43,7 @@ const Userschema = new Schema({
          chatBlockStatus :{type:Boolean,default: 0 },
          firebase_token :  { type: String ,default: ''},
          profile_type : {type:String, enum :["public","private"] ,default: "public" },  
+         points: { type: Number, default: 0 }
 });
 
 

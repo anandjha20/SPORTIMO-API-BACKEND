@@ -21,6 +21,7 @@ Router.get("/get_card_0023",ConjobController.get_card_0023);
 Router.get("/get_card_0036",ConjobController.get_card_0036); 
 
 Router.get("/get_test",ConjobController.get_test);   
+Router.get("/jkk",ConjobController.jkk);   
 
   
 
