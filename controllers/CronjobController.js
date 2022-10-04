@@ -5,7 +5,7 @@ const { rows_count,getcurntDate,getTime,isEmpty} = require("../myModel/common_mo
   const poll_tblD = require("../models/poll_result");
    const axios = require("axios");
   const team_matches = require('../models/team_matches');
-  const {match_card_number,match_card_0011,match_card_0013,matchCardAllData } = require("../myModel/Live_match_api_helper"); 
+  const {match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_004_demo } = require("../myModel/Live_match_api_helper"); 
 
 class ConjobController{
       static get_card_001 =  async(req,res)=>{
@@ -321,7 +321,7 @@ class ConjobController{
              } 
       
              
-               
+              
              
              static get_test =  async(req,res)=>{
               try {
@@ -329,9 +329,9 @@ class ConjobController{
                      let data = await matchCardAllData(match_id);  
                     
                      if(data){
-                       /// let dx = await  this.get_card_0036();  
-                       
-                        return  res.status(200).send({'status':true,'msg':"success", 'data':data });
+                       let dx = await get_card_004_demo({data,match_id});  
+                        console.log("controller call == ",dx);
+                        return  res.status(200).send({'status':true,'msg':"success", 'data':dx });
                      }
                      
                     

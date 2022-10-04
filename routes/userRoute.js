@@ -186,7 +186,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
       router.delete('/playMatchCard_delete/:id?',predictionController.playMatchCard_delete);
      
       // team_match_list  
-       router.post('/all_team_match_list',MasterController.live_upcoming_match_list);           
+      // router.post('/all_team_match_list',MasterController.live_upcoming_match_list);           
+       router.post('/all_team_match_list',MasterController.all_team_match_list_mobile);           
       ///userFollower_add    
       router.post('/userFollower_add',UserController.userFollower_add);           
       router.get('/follower_list/:id?',UserController.follower_list);           

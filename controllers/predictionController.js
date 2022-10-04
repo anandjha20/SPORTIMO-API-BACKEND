@@ -258,7 +258,7 @@ class predictionController {
     
           }   
     
-    static playMatchCard_add = async(req,res)=>{
+    static playMatchCard_add  = async(req,res)=>{
         try {   
               let match_card_id    = req.body.match_card_id;
               let user_id          = req.body.user_id;
@@ -266,10 +266,13 @@ class predictionController {
               let time_range_start = req.body.time_range_start;    
               let time_range_end   = req.body.time_range_end;
 
-              // || isEmpty(time_range_start)  ||  isEmpty(time_range_end)
-      
-              if( isEmpty(match_card_id) || isEmpty(user_id)  || 
-            isEmpty(user_option)   ){
+              let match_id         = req.body.match_id;
+              let card_id          = req.body.card_id;
+              let card_cat_id      = req.body.card_cat_id;  
+               // || isEmpty(time_range_start)  ||  isEmpty(time_range_end)
+         
+              if( isEmpty(match_card_id) || isEmpty(user_id) || isEmpty(user_option) ||
+                       isEmpty(match_id) || isEmpty(card_id)  ){
              return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
                 }   
               
@@ -279,7 +282,7 @@ class predictionController {
            }   
 
         let add = new playMatchCards_tbl({ match_card_id,user_id,user_option,time_range_start,
-                                          time_range_end });
+                                          time_range_end,match_id,card_id,card_cat_id });
              
                      add.save((err, data) => {
                            if (err) {  console.log(err);
@@ -318,7 +321,7 @@ class predictionController {
                               item.match_card_id.card_id.ops_2 = item.match_card_id.card_id.ops_2_ara;
                               item.match_card_id.card_id.ops_3 = item.match_card_id.card_id.ops_3_ara;
                               item.match_card_id.card_id.ops_4 = item.match_card_id.card_id.ops__ara;
-                            }else{  item.match_card_id.card_id = {};}
+                            }else{  item.match_card_id = {};}
                             
                             // item.card_id.name = item.card_id.name_ara;  
                               
@@ -377,15 +380,19 @@ class predictionController {
                     let user_option      = req.body.user_option;
                     let time_range_start = req.body.time_range_start;    
                     let time_range_end   = req.body.time_range_end;
+                    let match_id         = req.body.match_id;
+                    let card_id          = req.body.card_id;
+                    let card_cat_id      = req.body.card_cat_id;
 
             if( isEmpty(match_card_id) || isEmpty(user_id)  || 
-                  isEmpty(user_option)  || isEmpty(time_range_start)  ||
-                  isEmpty(time_range_end) ){
+                  isEmpty(user_option) || isEmpty(match_id) || isEmpty(card_id) || 
+                  isEmpty(card_cat_id)  ){
                   return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
                       }   
       
         // let checkName = await rows_count({"name":""})             
-          let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end };                
+          let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end ,match_id,
+                               card_id, card_cat_id };                
                   
        playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
       if(err) {  console.log(err);
@@ -469,7 +476,7 @@ class predictionController {
               
       }       
 
-
+ 
     }
 
 
