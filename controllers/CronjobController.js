@@ -4,10 +4,15 @@ const { rows_count,getcurntDate,getTime,isEmpty} = require("../myModel/common_mo
   const poll_tbl  = require("../models/poll");
   const user_tbl = require('../models/user');    
   const transactions_tbl = require('../models/transactions');    
-
-   const axios = require("axios");
+  const playMatchCards_tbl = require('../models/playMatchCards');   
+  
+  
+  const axios = require("axios");
   const team_matches = require('../models/team_matches');
-  const {match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_result_add_4,get_card_result_add_7 } = require("../myModel/Live_match_api_helper"); 
+  const {match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_result_add_4,
+    get_card_result_add_7,get_card_result_add_1, get_card_result_add_11,get_card_result_add_13,
+    get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
+    get_card_result_add_36}   = require("../myModel/Live_match_api_helper"); 
 
 class ConjobController{
       static get_card_001 =  async(req,res)=>{
@@ -328,9 +333,21 @@ class ConjobController{
                   let data = await matchCardAllData(match_id);  
                 
                   if(data){
-                    let dx  = await get_card_result_add_4({data,match_id});  
-                    let dx2 = await get_card_result_add_7({data,match_id});  
-                          console.log("controller call == ",dx2);
+                    let dx  = await get_card_result_add_4({data});  
+                    let dx7 = await get_card_result_add_7({data});  
+                    let dx1 = await get_card_result_add_1({data});  
+
+                    let dx11  = await get_card_result_add_11({data});  
+                    let dx13 = await get_card_result_add_13({data});  
+                    let dx15 = await get_card_result_add_15({data}); 
+
+                    let dx17  = await get_card_result_add_17({data});  
+                    let dx20 = await get_card_result_add_20({data});  
+                    let dx23 = await get_card_result_add_23({data}); 
+
+                    let dx36  = await get_card_result_add_36({data});  
+                   
+                          console.log("controller call == ",dx);
                       return  res.status(200).send({'status':true,'msg':"success", 'data':dx });
                   }
                   
@@ -340,22 +357,26 @@ class ConjobController{
               }
           } 
    
-
+  
 
      static jkk = async(req,res)=>{
-    try {    
-              
-               // let user_id = "6324454065b6d51b63bfa67f";
-               let user_id = "6323134a2bb4d975039fdf07";
-               let points = 10;
-               let match_id  = "63329e3ebba4aa21cd488679";
-               let card_id   = "632daebeb066c6fd7e1c4769";
-               if(isEmpty(user_id) || isEmpty(points) || isEmpty(match_id) || isEmpty(card_id)){
-                  return false ; 
-                 } 
-           
+    try {   
+                   // let updateData = { point: "10" };
+                    let updateData = { active: true };
 
-          return  res.status(200).send({'status':true,'msg':"success", 'body':'' });
+              let response =  await playMatchCards_tbl.updateMany({ }, updateData ,(err,result) => {
+                  if (err) {
+                    return  res.status(200).send({'status':false,'msg':'servr error'});
+                  } else {
+                    res.json(result);
+                    return  res.status(200).send({'status':true,'msg':'success',"body":result });
+                  }
+                });
+             
+
+
+
+        
           
         } catch (error) { console.log(error); 
                return false ; 

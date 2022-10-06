@@ -867,7 +867,20 @@ static verify_nickName = async(req,res)=>{
         }
     }
 
-
+    static block_user_list = async (req,res)=>{
+        try{
+            let from_user=req.body.user_id
+            let response=await block_user_tbl.find({from_user}).populate("to_user")
+            if(response.length>0){
+                return res.status(200).send({"status":true,"msg":"data found","body":response});
+            }else{
+                return res.status(200).send({"status":false,"msg":"no data found"})
+            }
+        }catch (err){
+            console.log(err)
+            return res.status(200).send({"status":false,"msg":"server error"});
+        }
+    }
 
 }
   

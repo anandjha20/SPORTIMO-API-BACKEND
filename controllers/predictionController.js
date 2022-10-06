@@ -276,6 +276,7 @@ class predictionController {
               let match_id         = req.body.match_id;
               let card_id          = req.body.card_id;
               let card_cat_id      = req.body.card_cat_id;  
+              let point            = req.body.point;  
                // || isEmpty(time_range_start)  ||  isEmpty(time_range_end)
          
               if( isEmpty(match_card_id) || isEmpty(user_id) || isEmpty(user_option) ||
@@ -289,7 +290,7 @@ class predictionController {
            }   
 
         let add = new playMatchCards_tbl({ match_card_id,user_id,user_option,time_range_start,
-                                          time_range_end,match_id,card_id,card_cat_id });
+                                          time_range_end,match_id,card_id,card_cat_id,point });
              
                      add.save((err, data) => {
                            if (err) {  console.log(err);

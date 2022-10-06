@@ -194,7 +194,9 @@ const userReportImg =  img_upload('./assets/user_img','image');
       router.get('/following_list/:id?',UserController.following_list);           
       router.post('/remove_follower',UserController.remove_follower);           
       router.delete('/delete_user/:id?',UserController.delete_user)
-
+     
+    // user block list 
+      router.post('/block_user_list',UserController.block_user_list);
 
 
 module.exports = router;             
