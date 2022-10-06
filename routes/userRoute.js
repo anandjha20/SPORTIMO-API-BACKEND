@@ -10,7 +10,7 @@ const storage = multer.diskStorage({
   },                             
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now();
-    cb(null, uniqueSuffix+'-' + file.originalname ) 
+    cb(null, uniqueSuffix+'-' + file.originalname) 
   }
 });
  
@@ -193,6 +193,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
       router.get('/follower_list/:id?',UserController.follower_list);           
       router.get('/following_list/:id?',UserController.following_list);           
       router.post('/remove_follower',UserController.remove_follower);           
-    
+      router.delete('/delete_user/:id?',UserController.delete_user)
+
+
 
 module.exports = router;             

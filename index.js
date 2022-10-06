@@ -31,6 +31,16 @@ app.use('/image/',image_urls);
 
 app.use("/open_api/",cronJobRoutes);
 
+
+app.get('/privacy-policy',function(req,res){
+  res.sendFile(path.join(__dirname+'/privacy_policy.html'));
+});
+
+app.get('/terms-conditions',function(req,res){
+  res.sendFile(path.join(__dirname+'/term_and_condition.html'));
+});
+
+
 app.get('/demo/v2/', (req,res)=>{
   return res.status(200).send({"status":true,"msg":'user address already exists ' , "body":''}) ;          
 

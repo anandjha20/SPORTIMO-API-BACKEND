@@ -11,8 +11,8 @@ const { poll_percent} = require('../myModel/helper_fun');
   // const state_tbl = require('../models/state_tbl');
     const user_tbl = require('../models/user');    
     const prediction_cards_tbl = require('../models/prediction_cards');    
-    const match_cards_tbl = require('../models/match_cards');   
-   const playMatchCards_tbl = require('../models/playMatchCards');   
+    const match_cards_tbl      = require('../models/match_cards');   
+    const playMatchCards_tbl   = require('../models/playMatchCards');   
 
    const prediction_card_categories = require("../models/prediction_card_categories")     
 class predictionController {   
@@ -69,6 +69,8 @@ class predictionController {
                        "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,
                        "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,
                        "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,
+                       "point_1": user_data.point_1, "point_2": user_data.point_2,
+                       "point_3": user_data.point_3, "point_4": user_data.point_4,
                        "date": mydate
             });
                  
@@ -181,7 +183,12 @@ class predictionController {
                        isEmpty(time_duration) ){
                        return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
                           }   
-                
+                       let  checkRows = await rows_count(match_cards_tbl , {match_id,card_id});
+                    
+                   if(checkRows > 0 ){
+                           return res.status(200).send({"status":false,"msg":' this card add arleady',"body":''}) ; 
+                        }
+
                          let add = new match_cards_tbl({ match_name,match_id,card_id,apperance_times,
                                                       time_duration });
                        

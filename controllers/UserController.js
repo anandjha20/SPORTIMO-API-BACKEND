@@ -290,6 +290,8 @@ static user_profile_view = async(req,res)=>{
 
 const checkusers = await block_user_tbl.find({ 'from_user': user_id,'to_user': view_user_id}).countDocuments();
 
+const checkFollowStatus = await follower_tbls.find({ follower_id : user_id,following_id: view_user_id}).countDocuments();
+
 var query = user_tbl.findOne({ '_id': user_id});
 
 
@@ -306,7 +308,7 @@ query.exec(function (err, person) {
                     person.block_status = checkusers;
                 }   
               
-                return res.status(200).send({"status":true,"msg":'Success' , "body": person,'blockuser':checkusers }) ;  
+                return res.status(200).send({"status":true,"msg":'Success' , "body": person,'blockuser':checkusers,'followStatus':checkFollowStatus }) ;  
       } });
 
 
@@ -844,6 +846,28 @@ static verify_nickName = async(req,res)=>{
                 return res.status(200).send({"status":false,"msg":"server error","body":''});
             }
             }      
+
+    static delete_user= async (req,res)=>{
+        try{
+            let _id=req.params.id;
+            if(!isEmpty(_id)){
+                let response= await user_tbl.findOneAndUpdate({_id},{$set:{is_deleted:1}},{new: true})
+                if(!isEmpty(response)){
+                    return res.status(200).send({"status":true,"msg":"this user account deleted","body":''});        
+                }else{
+                    return res.status(200).send({"status":false,"msg":"Invalid user id ","body":''});
+                }
+            }else{
+                return res.status(200).send({"status":false,"msg":"userID required","body":''});
+            }
+
+        }catch (error){
+            console.log(error);
+            return res.status(200).send({"status":false,"msg":"server error","body":''});
+        }
+    }
+
+
 
 }
   

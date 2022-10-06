@@ -7,7 +7,7 @@ const { rows_count,getcurntDate,getTime,isEmpty} = require("../myModel/common_mo
 
    const axios = require("axios");
   const team_matches = require('../models/team_matches');
-  const {match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_004_demo,add_win_point } = require("../myModel/Live_match_api_helper"); 
+  const {match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_result_add_4,get_card_result_add_7 } = require("../myModel/Live_match_api_helper"); 
 
 class ConjobController{
       static get_card_001 =  async(req,res)=>{
@@ -322,26 +322,26 @@ class ConjobController{
         }
              } 
       
-             
-              
-             
-             static get_test =  async(req,res)=>{
-              try {
-                     let  match_id = 2701168 ; // 2701168;
-                     let data = await matchCardAllData(match_id);  
-                    
-                     if(data){
-                       let dx = await get_card_004_demo({data,match_id});  
-                        console.log("controller call == ",dx);
-                        return  res.status(200).send({'status':true,'msg':"success", 'data':dx });
-                     }
-                     
-                    
-                  } catch (error) {   console.log(error);
-                        return  res.status(200).send({'status':false,'msg':'servr error'});
+      static get_test =  async(req,res)=>{
+          try {
+                  let  match_id = 2701168 ; // 2701168;
+                  let data = await matchCardAllData(match_id);  
+                
+                  if(data){
+                    let dx  = await get_card_result_add_4({data,match_id});  
+                    let dx2 = await get_card_result_add_7({data,match_id});  
+                          console.log("controller call == ",dx2);
+                      return  res.status(200).send({'status':true,'msg':"success", 'data':dx });
                   }
-              } 
+                  
+                              
+              } catch (error) {   console.log(error);
+                    return  res.status(200).send({'status':false,'msg':'servr error'});
+              }
+          } 
    
+
+
      static jkk = async(req,res)=>{
     try {    
               
@@ -353,16 +353,9 @@ class ConjobController{
                if(isEmpty(user_id) || isEmpty(points) || isEmpty(match_id) || isEmpty(card_id)){
                   return false ; 
                  } 
-            let dss = await add_win_point({
-                                            "user_option": "opt_2",
-                                            "ans": "",
-                                            "user_play_card_id": "633be04439ce4a563c37387c",
-                                            "user_id": "63231748bac376ef300e1b70",
-                                            "card_id": "632daebeb066c6fd7e1c4769",
-                                            "match_id": "63329e3ebba4aa21cd488679"
-                                        },) ;
+           
 
-          return  res.status(200).send({'status':true,'msg':"success", 'data':dss });
+          return  res.status(200).send({'status':true,'msg':"success", 'body':'' });
           
         } catch (error) { console.log(error); 
                return false ; 

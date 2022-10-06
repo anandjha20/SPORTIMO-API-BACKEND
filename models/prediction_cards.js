@@ -16,6 +16,8 @@ const prediction_card_schema = new Schema({
              ops_2: { type: String, required: false },  ops_2_ara: { type: String, required: false },
              ops_3: { type: String, required: false },  ops_3_ara: { type: String, required: false },
              ops_4: { type: String, required: false },  ops_4_ara: { type: String, required: false },
+             point_1 : { type: Number, default: 0 },    point_2 : { type: Number, default: 0 },
+             point_3 : { type: Number, default: 0 },    point_4 : { type: Number, default: 0 },
              date :{ type: Date, default: Date.now },
              time_range: { type: Number,datault: 0},
          }) ;
