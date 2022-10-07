@@ -67,7 +67,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
           router.post('/poll_participant',user_token_check,PollController.poll_participant);      
           router.post('/poll_result_show/:poll_id ?',user_token_check,PollController.poll_result_show);      
           router.get('/my_polls/:id ?',user_token_check,PollController.my_polls);      
-        
+          router.post('/my_polls_history/',user_token_check,PollController.my_polls_history);  
 
         //  block_user_add
          router.post('/block_user_add',user_token_check,UserController.block_user_add);
@@ -197,6 +197,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
      
     // user block list 
       router.post('/block_user_list',UserController.block_user_list);
-
+     // mobile and email update routes     
+      router.post('/user_mobile_email_update', UserController.user_mobile_email_update);
+      router.post('/verify_update_otp', UserController.verify_update_otp);  
 
 module.exports = router;             

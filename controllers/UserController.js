@@ -881,6 +881,122 @@ static verify_nickName = async(req,res)=>{
             return res.status(200).send({"status":false,"msg":"server error"});
         }
     }
+     /// this function make by moh
+    static user_mobile_email_update = async (req,res)=>{
+        try{
+        let _id=req.body.user_id;
+        let new_email=req.body.email;
+      
+        let new_mobile=req.body.mobile;
+        let userDetails= await user_tbl.find({"_id":_id});
+        if(!isEmpty(new_email)){
+            if(userDetails[0].email!=new_email){
+                let data=await user_tbl.find({email:new_email});
+                if(data.length==0){
+                    let otp = Math.floor(Math.random() * 900000) + 100000;
+                    let save=await user_tbl.findOneAndUpdate({_id},{$set:{otp:otp}},{new:true});
+                    if(save){
+                        let ddd = sentEmail({email:new_email,otp});
+                        return res.status(200).send({status:true,msg:'otp sent to user email , please verify userself by otp'}); 
+                    }else{
+                        return res.status(200).send({status:false,msg:'something went wrong , please try again!!!'});
+                    }
+    
+                }else{
+                    return res.status(200).send({status:false,msg:'email already exist , please try with different email!!'});    
+                }
+    
+            }else{
+                return res.status(200).send({status:false,msg:'new email and old email matched'});
+            }
+    
+        }else if(!isEmpty(new_mobile)){
+            if(userDetails[0].mobile!=new_mobile){
+                let data=await user_tbl.find({mobile:new_mobile});
+                if(data.length==0){
+                    let otp = Math.floor(Math.random() * 900000) + 100000;
+                    let save=await user_tbl.findOneAndUpdate({_id},{$set:{otp:otp}},{new:true});
+                    if(save){
+                        send_mobile_otp({mobile:new_mobile,otp});
+                        return res.status(200).send({status:true,msg:'otp sent to your mobile , please verify userself by otp'}); 
+                    }else{
+                        return res.status(200).send({status:false,msg:'something went wrong , please try again!!!'});
+                    }
+    
+                }else{
+                    return res.status(200).send({status:false,msg:'mobile already exist , please try with different mobile!!'});    
+                }
+    
+            }else{
+                return res.status(200).send({status:false,msg:'new mobile and old mobile matched'});
+            }
+    
+        }else{
+            return res.status(200).send({status:false,msg:'please send the data which has to be update!!'}) ; 
+        }
+      }catch (error){
+        console.log(error)
+        return res.status(200).send({status:false,msg:'server error'}) ; 
+      }
+    
+    }
+    /// this function make by moh
+    static verify_update_otp = async(req,res)=>{
+        try {
+          
+            const _id    = req.body.user_id;
+            const new_otp = req.body.otp;
+            const new_email=req.body.email;
+            const new_mobile=req.body.mobile;
+          
+            let otp_len = (new_otp || '').length;    let user_id_len = (_id || '').length;
+         
+            if(otp_len == 0 || user_id_len == 0){
+                return res.status(200).send({"status":false,"msg":'All Field Required ' }) ;     
+            }else{
+                let userDetails =await user_tbl.find({"_id":_id});
+                console.log(userDetails[0].otp)
+                if(!isEmpty(new_email)){
+                    if(userDetails[0].otp==new_otp){
+                        let result=await user_tbl.findOneAndUpdate({"_id":_id},{$set:{email:new_email}},{new:true})
+                        if(result){
+                            return res.status(200).send({status:true,msg:'email updated',body:result});    
+                        }else{
+                            return res.status(200).send({status:false,msg:'something went wrong , please try again!!!'});
+                        }
+            
+                    }else{
+                        return res.status(200).send({status:false,msg:'incorrect otp'});
+                    }
+            
+                }else if(!isEmpty(new_mobile)){
+                    if(userDetails[0].otp==new_otp){
+                        let result=await user_tbl.findOneAndUpdate({"_id":_id},{$set:{mobile:new_mobile}},{new:true})
+                        if(result){
+                            return res.status(200).send({status:true,msg:'mobile updated',body:result});    
+                        }else{
+                            return res.status(200).send({status:false,msg:'something went wrong , please try again!!!'});
+                        }
+            
+                    }else{
+                        return res.status(200).send({status:false,msg:'incorrect otp'});
+                    }
+            
+                }else{
+                    return res.status(200).send({status:false,msg:'please send the data which has to be update!!'}) ; 
+                }
+            }
+            
+    } catch (error) { console.log("some error is == ",error);
+        return res.status(200).send({status:false,msg:'server error' }) ;          
+    
+    }
+           
+    
+    
+    
+    }
+
 
 }
   

@@ -20,8 +20,9 @@ Router.get("/get_card_0020",ConjobController.get_card_0020);
 Router.get("/get_card_0023",ConjobController.get_card_0023); 
 Router.get("/get_card_0036",ConjobController.get_card_0036); 
 
-Router.get("/get_test",ConjobController.get_test);   
+Router.get("/matchResult_show",ConjobController.matchResult_show);   
 Router.get("/jkk",ConjobController.jkk);   
+Router.get("/match_run",ConjobController.match_run);   
 
   
 

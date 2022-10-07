@@ -1,7 +1,7 @@
 const axios     = require("axios");
 const mongoose = require('mongoose');
 
-const { ArrChunks,isEmpty } = require('../myModel/common_modal'); 
+const { ArrChunks,isEmpty,getcurntDate } = require('../myModel/common_modal'); 
 
 const playMatchCards_tbl = require('../models/playMatchCards');   
 const match_cards_tbl = require('../models/match_cards');   
@@ -299,14 +299,14 @@ const add_win_point = async(req,res)=>{
             /// this function used by red card 
          // const  data = req.data.team_stats.stat[6] ;
          
-          let team_a = req.data.match.score_a;
-          let team_b = req.data.match.score_b;
+          let team_a = req.data.score_a;
+          let team_b = req.data.score_b;
            let data = {team_a,team_b};
 
           if(!isEmpty(data)){
               let  live_match_id = req.data.match_id;
 
-              let card_id =  mongoose.Types.ObjectId("633ea20266b303f06a409917");
+              let card_id =  mongoose.Types.ObjectId("633ea26166b303f06a40991b");
               
            
           let pipeline  = [] ;
@@ -327,7 +327,7 @@ const add_win_point = async(req,res)=>{
          
                 let result_pass = 0;  let result_fail = 0; 
            if (! isEmpty(allUsersData) ){
-            let allData = await Promise.all( allUsersData.map( async (item)=>{ let right_ans = '';  
+            let allData = await Promise.allSettled( allUsersData.map( async (item)=>{ let right_ans = '';  
             if( data.team_a >0 &&  data.team_b == 0 ){ right_ans = "opt_1";}else 
             if( data.team_b >0 && data.team_a == 0){ right_ans = "opt_2";}else 
             if( data.team_b >0 && data.team_a >0  ){ right_ans = "opt_3";}
@@ -356,7 +356,7 @@ const add_win_point = async(req,res)=>{
 
  const get_card_result_add_13  =  async(req,res)=>{
   try { 
-          let winner = req.data.match.winner;
+          let winner = req.data.winner;
          
           if(!isEmpty(winner)){
               let  live_match_id = req.data.match_id;
@@ -383,8 +383,8 @@ const add_win_point = async(req,res)=>{
                 let result_pass = 0;  let result_fail = 0; 
            if (! isEmpty(allUsersData) ){
             let allData = await Promise.all( allUsersData.map( async (item)=>{ let right_ans = '';  
-            if( data.winner == 'team_A'){ right_ans = "opt_1";}else 
-            if( data.winner == 'team_B'){ right_ans = "opt_2";
+            if( winner == 'team_A'){ right_ans = "opt_1";}else 
+            if( winner == 'team_B'){ right_ans = "opt_2";
                 }else { right_ans = "opt_3";    }
               
               if( right_ans == item.user_option ){  result_pass += 1 ;
@@ -412,10 +412,10 @@ const add_win_point = async(req,res)=>{
             /// this function used by red card 
          // const  data = req.data.team_stats.stat[6] ;
          
-          let team_a = req.data.match.score_a;
-          let team_b = req.data.match.score_b;
+          let team_a = req.data.score_a;
+          let team_b = req.data.score_b;
            let data = {team_a,team_b};
-
+        console.log("data == ",data); 
           if(!isEmpty(data)){
                   let x = data.team_a - data.team_b  ;
                    let resultx =  Math.abs(x); 
@@ -750,7 +750,60 @@ const add_win_point = async(req,res)=>{
 
 
 
+  //////////////////////////// extrat function /////////////////////////////////
 
+   
+  const day_match_getID = async(match_id) =>{
+    try {   
+        let date = getcurntDate();
+       const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
+      // const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
+       const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches_day?day=${date}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
+      
+      
+            // console.log("session_url == ",session_url);
+               var config = {  
+                 method: 'get',
+                 url: session_url,
+                 headers: { 'Authorization': 'Basic '+ encodedToken }
+               };
+                   
+               let response = await axios(config);
+                
+
+         if(response){
+            let datas = response.data.datasportsgroup.competition.season.discipline.gender.round.match;
+            if(datas ){
+                    
+                   let match_id_arr = [];  
+                   let time_u = Math.floor(Date.now() / 1000); 
+                   datas.map((item)=>{
+                    let date = new Date(item.date_utc+' '+ item.time_utc);
+                    let seconds = date.getTime() / 1000 ; 
+                       /// 92 min = 5,520 sec add on 
+                        seconds = seconds + 5520;
+                      console.log("fun call == ",{time_u,seconds});
+
+                    if(time_u == seconds) {
+                          match_id_arr.push(item.match_id);    
+                        }      
+                    
+                    }); 
+                   
+                  return match_id_arr;         
+            }
+            //  response.data ;
+         
+         }else{   return false;
+                  
+         }    
+
+
+     
+         } catch (error) { console.log( "modal match_card_001 call == ", error);
+             return false ; 
+         }
+  }
 
 
 
@@ -789,7 +842,7 @@ const add_win_point = async(req,res)=>{
 
 
 
-module.exports = {match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_result_add_4,
+module.exports = {day_match_getID,match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_result_add_4,
                     get_card_result_add_7,get_card_result_add_1, get_card_result_add_11,get_card_result_add_13,
                     get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
                     get_card_result_add_36}
