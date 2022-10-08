@@ -9,9 +9,19 @@ import Select from 'react-select';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import {useLocation} from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
-export default function AddMatchCard() {
+
+export default function UpdateMatch() {
   const navigate = useNavigate();
+
+  const location = useLocation();
+  console.log(location.state.rowData);
+  
+  
+
+  const {_id} = useParams();
 
   let token = localStorage.getItem("token");
   let header = ({ 'token': `${token}` });
@@ -33,7 +43,7 @@ export default function AddMatchCard() {
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
       let options1 = ({ headers: header });
-      let response = await axios.post('/web_api/match_card_add', Formvlaues, options1);
+      let response = await axios.put(`/web_api/match_card_update/${_id}`, Formvlaues, options1);
       console.log('my fun call', response);
       if (response.status) {
         let data = response.data;
@@ -41,11 +51,11 @@ export default function AddMatchCard() {
            navigate(`/matchcard`);
           toast.success(data.msg);
         } else {
-          toast.error('something went wrong please try again');
+          toast.error(data.msg);
         }
       }
       else {
-        toast.error('something went wrong please try again..');
+        toast.error(data.msg);
       }
 
     } catch (err) { console.error(err); toast.error('some errror'); return false; }
@@ -447,6 +457,28 @@ const handleMatchName = (event) => {
   setMatchLegue(matchLegue);
 }
 
+
+
+// setMatchLegue(location.state.rowData.match_name);
+
+useEffect(() => {
+    const hminute = location.state.rowData.apperance_times.substring(0, 2);
+    const hsinute = location.state.rowData.apperance_times.slice(-2);
+
+    const minute = location.state.rowData.time_duration.substring(0, 2);
+    const second = location.state.rowData.time_duration.slice(-2);
+
+    setHminute(hminute);
+    setHSecond(hsinute);
+    setMinute(minute);
+    setSecond(second);
+
+    setMatchLegue(location.state.rowData.match_name);
+    //  setHSecond(location.state.rowData.apperance_times);
+    //  setMinute(location.state.rowData.time_duration);
+}, [])
+
+
   return (
     <>
 
@@ -458,7 +490,7 @@ const handleMatchName = (event) => {
 
             <div className="page-header">
               <div>
-                <h2 className="main-content-title tx-24 mg-b-5">Add Match Card</h2>
+                <h2 className="main-content-title tx-24 mg-b-5">Update Match Card</h2>
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <Link to="/home">Home</Link>
@@ -488,13 +520,17 @@ const handleMatchName = (event) => {
                             <div className="col-lg-6 reletive mb-4">
                             <label className="title-col">Select Match/league</label>
                               <Select name="match_id" className="card-select" menuPortalTarget={document.body} onChange={handleMatchName}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={SelectMatchOption} />
+                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={SelectMatchOption} 
+                                defaultValue={ {label: location.state.rowData.match_name, value : location.state.rowData.match_id} }
+                                />
                             </div>
                          
                             <div className="col-lg-6 reletive mb-4">
                             <label className="title-col">Select Prediction Card</label>
                               <Select name="card_id" className="card-select" menuPortalTarget={document.body}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={CardCategoryOption} />
+                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={CardCategoryOption}
+                                defaultValue={ {label: location.state.rowData.card_id.name, value : location.state.rowData.card_id._id} }
+                                />
                             </div>
 
                             <div className="col-lg-12 mb-0">
@@ -504,11 +540,13 @@ const handleMatchName = (event) => {
                                 <div className="col-lg-6 reletive mb-4">
                                   <span className='title-col'>Minute</span>
                                   <Select labelId="hminute" className="card-select" menuPortalTarget={document.body}
+                                  defaultValue={{ label : location.state.rowData.apperance_times.substring(0, 2), value: location.state.rowData.apperance_times.substring(0, 2) }}
                                     styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
                                 </div>
                                 <div className="col-lg-6 reletive mb-4">
                                   <span className='title-col'>Second</span>
                                   <Select labelId="hminute" className="card-select" menuPortalTarget={document.body}
+                                  defaultValue={{ label : location.state.rowData.apperance_times.slice(-2), value: location.state.rowData.apperance_times.slice(-2) }}
                                     styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond} options={hsecondOptions} />
                                 </div>
 
@@ -522,19 +560,18 @@ const handleMatchName = (event) => {
                                 <div className="col-lg-6 reletive mb-4">
                                   <span className='title-col'>Minute</span>
                                   <Select menuPortalTarget={document.body} className="card-select"
+                                  defaultValue={{ label : location.state.rowData.time_duration.substring(0, 2), value: location.state.rowData.time_duration.substring(0, 2) }}
                                     styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
                                 </div>
                                 <div className="col-lg-6 reletive mb-4">
                                   <span className='title-col'>Second</span>
                                   <Select menuPortalTarget={document.body} className="card-select"
+                                  defaultValue={{ label : location.state.rowData.time_duration.slice(-2), value: location.state.rowData.time_duration.slice(-2) }}
                                     styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeSecond} options={secondOptions} />
                                 </div>
-
-
                               </div>
                             </div>
 
-                     
 
                             <div className="col-lg-12 text-start">
                               <Button type='submit' className="mr-3 btn-pd btnBg">Submit</Button>

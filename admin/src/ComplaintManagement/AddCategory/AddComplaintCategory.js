@@ -9,7 +9,7 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
+import Swal from 'sweetalert2'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from "react";
@@ -73,36 +73,43 @@ export default function AddComplaintCategory() {
 
     /////////////////delete complaint /////////////////
     const deleteCategory = (_id) => {
-        axios.delete(`/web_api/user_complaint_cat_delete/${_id}`)
-            .then(res => {
-                if (res.status) {
-                    let data = res.data;
-
-                    if (data.status) { 
-                        toast.success(data.msg);
-                         return axios.get("/web_api/user_complaint_cat_list")
-                            .then(res => {
-                                const userData = res.data.body;
-                                setData(userData);
-                            })
-                    } else {
-                        toast.error('something went wrong please try again');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {         
+                axios.delete(`/web_api/user_complaint_cat_delete/${_id}`)
+                .then(res => {
+                    if (res.status) {
+                        let data = res.data;
+                        if (data.status) { 
+                            Swal.fire(
+                                'Deleted!',
+                                 data.msg,
+                                'success'
+                              )
+                             return ComplaintList();
+                        } else {
+                            toast.error(data.msg);
+                        }
                     }
-                }
-                else {
-                    toast.error('something went wrong please try again..');
-                }
-
-            })
-            .catch(error => {
-                console.log(this.state);
-            })
+                    else {
+                        toast.error(data.msg);
+                    }
+                })
+            }
+          })
     }
 
     /////////////////complaint list/////////////////
     const onCloseModal = () => setOpen(false);
 
-    const FaqCategoryList = async () => {
+    const ComplaintList = async () => {
         await axios.get(`/web_api/user_complaint_cat_list`)
             .then(res => {
                 const userData = res.data.body;
@@ -110,7 +117,7 @@ export default function AddComplaintCategory() {
             })  }
 
     useEffect(() => {
-        FaqCategoryList();
+        ComplaintList();
         // const timer = setInterval(() => {
         //   setData();
         // }, 500);

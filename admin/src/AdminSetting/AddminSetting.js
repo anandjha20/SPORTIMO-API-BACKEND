@@ -42,7 +42,7 @@ function AddminSetting() {
     }
     
     const userlist = async () => {
-      await axios.get(`/web_api//admin_settings_get`)
+      await axios.get(`/web_api/admin_settings_get`)
       .then(resp =>{
         const data = resp.data.body
         setData(data);

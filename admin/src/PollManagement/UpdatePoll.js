@@ -151,6 +151,7 @@ export default function UpdatePoll() {
       // Formvlaues.poll_type = p_type;
       Formvlaues.noti_status = notis;
       Formvlaues.players = plrArray;
+      Formvlaues.match = matchLegue;
       Formvlaues.teams = teamArray;
       Formvlaues.leagues = leaguesArray;
       Formvlaues.sports = sportsArray;
@@ -304,12 +305,41 @@ const rewardsOptions = [
           {value : 'Diamonds' , label : 'Diamonds'},
       ]
       
-const matchOptions = [
-                {value : 'Bali' , label : 'Bali Utd vs Rans Nusantara'},
-                {value : 'Persija' , label : 'Persija vs Persita'},
-                {value : 'Dewa' , label : 'Dewa United vs Arema'},
-                {value : 'demo' , label : 'Demo'},
-      ]
+// const matchOptions = [
+//                 {value : 'Bali' , label : 'Bali Utd vs Rans Nusantara'},
+//                 {value : 'Persija' , label : 'Persija vs Persita'},
+//                 {value : 'Dewa' , label : 'Dewa United vs Arema'},
+//                 {value : 'demo' , label : 'Demo'},
+//       ]
+
+
+///////////////vender list api call////////////
+const [matchname, setMatchs] = useState([]);
+const SelectMatch = async () =>
+  {
+      axios.post(`/web_api/live_upcoming_match_list`)
+      .then(res => {
+        const match = res.data.body;
+        setMatchs(match);
+        console.log(match); 
+      })
+  }
+
+const matchOptions = (matchname.length > 0) ? matchname.map((item) => {
+  return { value: item.match_id, label: item.match_name };
+}) : [];
+useEffect(() => {
+  SelectMatch();
+}, [])
+
+
+
+const [matchLegue, setMatchLegue] = React.useState('');
+const handleMatchName = (event) => {
+  const matchLegue = event.label
+  console.log(matchLegue);
+  setMatchLegue(matchLegue);
+}
       
 const hminuteOptions = [
                 {value : '01' , label : '01'},
@@ -360,13 +390,13 @@ const hminuteOptions = [
                 {value : '47' , label : '47'},
                 {value : '48' , label : '48'},
                 {value : '49' , label : '49'},
-                {value : '51' , label : '50'},
-                {value : '52' , label : '51'},
-                {value : '53' , label : '52'},
-                {value : '54' , label : '53'},
-                {value : '55' , label : '54'},
+                {value : '50' , label : '50'},
+                {value : '51' , label : '51'},
+                {value : '52' , label : '52'},
+                {value : '53' , label : '53'},
+                {value : '54' , label : '54'},
                 {value : '55' , label : '55'},
-                {value : '55' , label : '56'},
+                {value : '56' , label : '56'},
                 {value : '57' , label : '57'},
                 {value : '58' , label : '58'},
                 {value : '59' , label : '59'},
@@ -423,13 +453,13 @@ const hsecondOptions = [
                 {value : '47' , label : '47'},
                 {value : '48' , label : '48'},
                 {value : '49' , label : '49'},
-                {value : '51' , label : '50'},
-                {value : '52' , label : '51'},
-                {value : '53' , label : '52'},
-                {value : '54' , label : '53'},
-                {value : '55' , label : '54'},
+                {value : '50' , label : '50'},
+                {value : '51' , label : '51'},
+                {value : '52' , label : '52'},
+                {value : '53' , label : '53'},
+                {value : '54' , label : '54'},
                 {value : '55' , label : '55'},
-                {value : '55' , label : '56'},
+                {value : '56' , label : '56'},
                 {value : '57' , label : '57'},
                 {value : '58' , label : '58'},
                 {value : '59' , label : '59'},
@@ -486,17 +516,17 @@ const minuteOptions = [
                 {value : '47' , label : '47'},
                 {value : '48' , label : '48'},
                 {value : '49' , label : '49'},
-                {value : '51' , label : '50'},
-                {value : '52' , label : '51'},
-                {value : '53' , label : '52'},
-                {value : '54' , label : '53'},
-                {value : '55' , label : '54'},
+                {value : '50' , label : '50'},
+                {value : '51' , label : '51'},
+                {value : '52' , label : '52'},
+                {value : '53' , label : '53'},
+                {value : '54' , label : '54'},
                 {value : '55' , label : '55'},
-                {value : '55' , label : '56'},
+                {value : '56' , label : '56'},
                 {value : '57' , label : '57'},
                 {value : '58' , label : '58'},
                 {value : '59' , label : '59'},
-                {value : '00' , label : '00'}, 
+                {value : '00' , label : '00'},  
       ]
 const secondOptions = [
                 {value : '01' , label : '01'},
@@ -548,13 +578,13 @@ const secondOptions = [
                 {value : '47' , label : '47'},
                 {value : '48' , label : '48'},
                 {value : '49' , label : '49'},
-                {value : '51' , label : '50'},
-                {value : '52' , label : '51'},
-                {value : '53' , label : '52'},
-                {value : '54' , label : '53'},
-                {value : '55' , label : '54'},
+                {value : '50' , label : '50'},
+                {value : '51' , label : '51'},
+                {value : '52' , label : '52'},
+                {value : '53' , label : '53'},
+                {value : '54' , label : '54'},
                 {value : '55' , label : '55'},
-                {value : '55' , label : '56'},
+                {value : '56' , label : '56'},
                 {value : '57' , label : '57'},
                 {value : '58' , label : '58'},
                 {value : '59' , label : '59'},
@@ -584,6 +614,7 @@ const polldetail = async () =>
           .then(res => {
             const datadetail = res.data.body[0];
             const polltypeSet = res.data.body[0].poll_type;
+            const matchname = res.data.body[0].match;
             const hminute = res.data.body[0].apperance_time.substring(0, 2);
             const hsinute = res.data.body[0].apperance_time.slice(-2);
 
@@ -594,6 +625,8 @@ const polldetail = async () =>
             const answerOne = datadetail.ops_1;
             const sportsOpt = sportsArrayOp.split(',');
 
+
+            setMatchLegue(matchname)
             // if(res.status)
             // {
             //   setAnswerOne(answerOne);
@@ -685,10 +718,11 @@ const polldetail = async () =>
                             </div>
 
                             <div className="col-lg-12 reletive mb-4">
-                                <span className='react-select-title'>Second</span>
-                                  <Select labelId="hminute" name="match" id="hminute" 
-                                  defaultValue={{ label : datadetail.match, value: datadetail.match }}
+                                <span className='react-select-title'>Match/League</span>
+                                  <Select labelId="hminute" name="match_id" id="hminute" 
+                                  defaultValue={{ label : datadetail.match, value: datadetail.match_id }}
                                   menuPortalTarget={document.body}
+                                  onChange={handleMatchName}
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={matchOptions} />
                               </div>
 

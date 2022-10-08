@@ -18,6 +18,7 @@ import { useState } from "react";
 import InputAdornment from '@mui/material/InputAdornment';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import {useEffect} from 'react';
+// import Map from "./Map";
 
 
 function GameEngagementQuestions() {
@@ -70,6 +71,7 @@ return (
         <div className="page-header">
           <div>
             <h2 className="main-content-title tx-24 mg-b-5">Add GEQ</h2>
+            
             <ol className="breadcrumb">
               <li className="breadcrumb-item">
                 <Link to="/home">Home</Link>
@@ -97,7 +99,7 @@ return (
 
                     <form>
                       <div className="row">
-                       
+                      {/* <Map /> */}
                         <div className="col-lg-12 mb-3">
                         <label className="title-col mb-3">Match/league</label>
                           <FormControl fullWidth>

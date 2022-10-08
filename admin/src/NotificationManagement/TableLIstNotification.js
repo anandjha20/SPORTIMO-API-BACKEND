@@ -15,7 +15,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-
+import Swal from 'sweetalert2'
 function TableLIstNotification() {
 
 
@@ -105,31 +105,40 @@ function TableLIstNotification() {
     }, [])
 
 
-
-    /////////////////delete complaint /////////////////
-    const deleteCategory = (_id) => {
-
-        axios.delete(`/web_api/notification_delete/${_id}`)
+    /////////////////delete api call /////////////////
+   const deleteCategory = (_id) => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {         
+            axios.delete(`/web_api/notification_delete/${_id}`)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
-
-                    if (data.status) {
-                        toast.success(data.msg);
-                        return NotificationList();
+                    if (data.status) { 
+                        Swal.fire(
+                            'Deleted!',
+                             data.msg,
+                            'success'
+                          )
+                         return NotificationList();
                     } else {
-                        toast.error('something went wrong please try again');
+                        toast.error(data.msg);
                     }
                 }
                 else {
-                    toast.error('something went wrong please try again..');
+                    toast.error(data.msg);
                 }
-
             })
-            .catch(error => {
-                console.log(this.state);
-            })
-    }
+        }
+      })
+}
 
 
     ///////////////pagenestion///////////////

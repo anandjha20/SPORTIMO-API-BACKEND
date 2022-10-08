@@ -21,7 +21,6 @@ export default function UpdatePredictionCard() {
  const navigate = useNavigate();
  
  const location = useLocation();
- console.log("sunilganwaen");
  console.log(location.state.rowData);
 
  ///////////////emoji input value get
@@ -245,63 +244,83 @@ const handleTypeSelect = e => {
 
                             <div className="col-lg-12 mb-4">
                               <label className="title-col">Question <span className="text-blue">(English)</span></label>
-                              <TextField  name='qus'  defaultValue={location.state.rowData.qus} label="Enter Question" multiline rows={4} fullWidth  variant="filled" autoComplete="off" />
+                              <TextField  name='qus' InputProps={{ readOnly: true }} defaultValue={location.state.rowData.qus} label="Enter Question" multiline rows={4} fullWidth  variant="filled" autoComplete="off" />
 
                             </div>
 
                              {/* ///////Arbic////////// */}
                             <div className="col-lg-12 mb-4">
                               <label className="title-col">Question <span className="text-blue">(Arabic)</span></label>
-                              <TextField  name='qus_ara'  defaultValue={location.state.rowData.qus_ara} label="Enter Question" multiline rows={4} fullWidth  variant="filled" autoComplete="off" />
+                              <TextField  name='qus_ara'  InputProps={{ readOnly: true }} defaultValue={location.state.rowData.qus_ara} label="Enter Question" multiline rows={4} fullWidth  variant="filled" autoComplete="off" />
                             </div>
 
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(English)</span></label>
-                              <input type='text' autoComplete="off" defaultValue={location.state.rowData.ops_1}  name='ops_1' placeholder="Enter Answer" className="card-control form-control"/>
+                              <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_1}  name='ops_1' placeholder="Enter Answer" className="card-control form-control"/>
                             </div>
                             
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(Arabic)</span></label>
-                              <input type='text' autoComplete="off" defaultValue={location.state.rowData.ops_1_ara}  name='ops_1_ara' placeholder="Enter Answer" className="card-control form-control"/>
+                              <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_1_ara}  name='ops_1_ara' placeholder="Enter Answer" className="card-control form-control"/>
                             </div>
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(English)</span></label>
-                              <input type='text' autoComplete="off" defaultValue={location.state.rowData.ops_2}  name='ops_2' placeholder="Enter Answer" className="card-control form-control"/>
+                              <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_2}  name='ops_2' placeholder="Enter Answer" className="card-control form-control"/>
                             </div>
 
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(Arabic)</span></label>
-                              <input type='text' autoComplete="off" defaultValue={location.state.rowData.ops_2_ara}  name='ops_2_ara' placeholder="Enter Answer" className="card-control form-control"/>
+                              <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_2_ara}  name='ops_2_ara' placeholder="Enter Answer" className="card-control form-control"/>
                             </div>
 
                                <div className="col-lg-6 mb-4">
                                 <label className="title-col mb-0">Answer 3 <span className="text-blue">(English)</span></label>
-                                <input type='text' autoComplete="off" defaultValue={location.state.rowData.ops_3}  name='ops_3' placeholder="Enter Answer" className="card-control form-control"/>
+                                <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_3}  name='ops_3' placeholder="Enter Answer" className="card-control form-control"/>
                           
                                </div>
 
                                <div className="col-lg-6 mb-4">
                                 <label className="title-col mb-0">Answer 3 <span className="text-blue">(Arabic)</span></label>
-                                <input type='text' autoComplete="off" defaultValue={location.state.rowData.ops_3_ara}  name='ops_3_ara' placeholder="Enter Answer" className="card-control form-control"/>
+                                <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_3_ara}  name='ops_3_ara' placeholder="Enter Answer" className="card-control form-control"/>
                           
                                </div>
 
                                <div className="col-lg-6 mb-4">
                                 <label className="title-col mb-0">Answer 4 <span className="text-blue">(English)</span></label>
-                                <input type='text' autoComplete="off" defaultValue={location.state.rowData.ops_4}  name='ops_4' placeholder="Enter Answer" className="card-control form-control"/>
+                                <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_4}  name='ops_4' placeholder="Enter Answer" className="card-control form-control"/>
                           
                                </div>                       
                                
 
                                <div className="col-lg-6 mb-4">
-                                <label className="title-col mb-0">Answer 4 <span className="text-blue">(Arabic)</span></label>
-                                <input type='text' autoComplete="off" defaultValue={location.state.rowData.ops_4_ara}  name='ops_4_ara' placeholder="Enter Answer" className="card-control form-control"/>
+                                <label  className="title-col mb-0">Answer 4 <span className="text-blue">(Arabic)</span></label>
+                                <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_4_ara}  name='ops_4_ara' placeholder="Enter Answer" className="card-control form-control"/>
                           
                                </div>
+
+                               <div className="col-lg-6 mb-4">
+                              <label className="title-col mb-0">Point (Answer 1) </label>
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_1} readOnly placeholder="Enter Point" className="card-control form-control" />
+                            </div>
+
+                            <div className="col-lg-6 mb-4">
+                              <label className="title-col mb-0">Point (Answer 2) </label>
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_2} readOnly placeholder="Enter Point" className="card-control form-control" />
+                            </div>
+
+                            <div className="col-lg-6 mb-4">
+                              <label className="title-col mb-0">Point (Answer 3) </label>
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_3} readOnly placeholder="Enter Point" className="card-control form-control" />
+                            </div>
+
+                            <div className="col-lg-6 mb-4">
+                              <label className="title-col mb-0">Point (Answer 4) </label>
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_4} readOnly placeholder="Enter Point" className="card-control form-control" />
+                            </div>
 
 
                             <div className="col-lg-12 text-start">

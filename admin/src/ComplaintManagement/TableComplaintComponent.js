@@ -180,6 +180,7 @@ function TableComplaintComponent() {
                         <table className="table ">
                             <thead>
                                 <tr>
+                                  <th scope="col">Complaint ID</th>
                                     <th scope="col">Image</th>
                                     <th scope="col">User Name</th>
                                     <th scope="col">Complaint Category</th>
@@ -199,7 +200,7 @@ function TableComplaintComponent() {
                                 {data.map((item) => {
                                     return (
                                         <tr key={item._id}>
-
+                                            <td>{item._id}</td>
                                             <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></>}</div></td>
                                             <td>{item.user_id == null ? <></> : <>{item.user_id.name}</> }</td>
                                             <td><div>{item.cat_id == null ? <><span className="text-red">Category Deleted</span></> : <>{item.cat_id.cat_name}</>}</div></td>

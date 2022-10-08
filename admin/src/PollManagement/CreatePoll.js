@@ -143,6 +143,7 @@ export default function CreatePoll(props) {
       Formvlaues.sports = sportsArray;
 
       Formvlaues.noti_in_App_status = innotis;
+      Formvlaues.match = matchLegue;
       Formvlaues.time_duration = minute + ':' + second;
       Formvlaues.apperance_time = hminute + ':' + hsecond;
 
@@ -157,11 +158,11 @@ export default function CreatePoll(props) {
           // navigate(`/poll`);
           toast.success(data.msg);
         } else {
-          toast.error('something went wrong please try again');
+          toast.error('Please fill all fields before Submit');
         }
       }
       else {
-        toast.error('something went wrong please try again..');
+        toast.error('Please fill all fields before Submit');
       }
 
     } catch (err) { console.error(err); toast.error('some errror'); return false; }
@@ -300,12 +301,38 @@ export default function CreatePoll(props) {
     { value: 'Diamonds', label: 'Diamonds' },
   ]
 
-  const matchOptions = [
-    { value: 'Bali', label: 'Bali Utd vs Rans Nusantara' },
-    { value: 'Persija', label: 'Persija vs Persita' },
-    { value: 'Dewa', label: 'Dewa United vs Arema' },
-    { value: 'demo', label: 'Demo' },
-  ]
+
+	///////////////vender list api call////////////
+	const [matchname, setMatchs] = useState([]);
+	const SelectMatch = async () =>
+    {
+        axios.post(`/web_api/live_upcoming_match_list`)
+        .then(res => {
+          const match = res.data.body;
+          setMatchs(match);
+          console.log(match); 
+        })
+    }
+ 
+  const matchOptions = (matchname.length > 0) ? matchname.map((item) => {
+    return { value: item.match_id, label: item.match_name };
+  }) : [];
+  useEffect(() => {
+    SelectMatch();
+}, [])
+
+
+const [matchLegue, setMatchLegue] = React.useState('');
+const handleMatchName = (event) => {
+  const matchLegue = event.label
+  console.log(matchLegue);
+  setMatchLegue(matchLegue);
+}
+
+
+
+	///////////////vender list api call////////////
+
 
   const hminuteOptions = [
     { value: '01', label: '01' },
@@ -634,7 +661,8 @@ export default function CreatePoll(props) {
 
                             <div className="col-lg-12 reletive mb-4">
                               <span className='react-select-title'>Match/League</span>
-                              <Select labelId="hminute" name="match" id="hminute" menuPortalTarget={document.body}
+                              <Select labelId="hminute" name="match_id" id="hminute" menuPortalTarget={document.body}
+                              onChange={handleMatchName}
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={matchOptions} />
                             </div>
 
@@ -817,6 +845,13 @@ export default function CreatePoll(props) {
                               <input type='hidden' value={answerOne} name='ops_1' />
                             </div>
 
+                             {/* ///////Arbic////////// */}
+                             <div className="col-lg-6 mb-4">
+                              <label className="title-col mb-0">Answer 1 <span className="text-blue">(Arabic)</span></label>
+                              <InputEmoji  onChange={setAnswerOneAra} cleanOnEnter placeholder="Enter Answer"/>
+                              <input type='hidden' value={answerOneAra} name='ops_1_ara' />
+                            </div>
+
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(English)</span></label>
@@ -824,14 +859,7 @@ export default function CreatePoll(props) {
                               <input type='hidden' value={answerTwo} name='ops_2' />
                             </div>
 
-                             {/* ///////Arbic////////// */}
-                            <div className="col-lg-6 mb-4">
-                              <label className="title-col mb-0">Answer 1 <span className="text-blue">(Arabic)</span></label>
-                              <InputEmoji  onChange={setAnswerOneAra} cleanOnEnter placeholder="Enter Answer"/>
-                              <input type='hidden' value={answerOneAra} name='ops_1_ara' />
-                            </div>
-
-
+                            
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(Arabic)</span></label>
                               <InputEmoji  onChange={setAnswerTwoAra} cleanOnEnter placeholder="Enter Answer"/>
@@ -849,25 +877,19 @@ export default function CreatePoll(props) {
                                 <input type='hidden' value={answerThree} name='ops_3' />
                                </div>
 
+                                {/* ///////Arbic////////// */}
+                                <div className="col-lg-6 mb-4">
+                                <label className="title-col mb-0">Answer 3 <span className="text-blue">(Arabic)</span></label>
+                                <InputEmoji  onChange={setAnswerThreeAra} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerThreeAra} name='ops_3_ara' />
+                               </div>
+
                                <div className="col-lg-6 mb-4">
                                 <label className="title-col mb-0">Answer 4 <span className="text-blue">(English)</span></label>
                                 <InputEmoji  onChange={setAnswerFour} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerFour} name='ops_4' />
                                </div>
 
-                               <div className="col-lg-6 mb-4">
-                                <label className="title-col mb-0">Answer 5 <span className="text-blue">(English)</span> </label>
-                                <InputEmoji  onChange={setAnswerFive} cleanOnEnter placeholder="Enter Answer"/>
-                                <input type='hidden' value={answerFive} name='ops_5' />
-                               </div>
-                               <div className="col-lg-6 mb-4"></div>
-
-                               {/* ///////Arbic////////// */}
-                               <div className="col-lg-6 mb-4">
-                                <label className="title-col mb-0">Answer 3 <span className="text-blue">(Arabic)</span></label>
-                                <InputEmoji  onChange={setAnswerThreeAra} cleanOnEnter placeholder="Enter Answer"/>
-                                <input type='hidden' value={answerThreeAra} name='ops_3_ara' />
-                               </div>
 
                                <div className="col-lg-6 mb-4">
                                 <label className="title-col mb-0">Answer 4 <span className="text-blue">(Arabic)</span></label>
@@ -875,6 +897,15 @@ export default function CreatePoll(props) {
                                 <input type='hidden' value={answerFourAra} name='ops_4_ara' />
                                </div>
 
+
+
+                               <div className="col-lg-6 mb-4">
+                                <label className="title-col mb-0">Answer 5 <span className="text-blue">(English)</span> </label>
+                                <InputEmoji  onChange={setAnswerFive} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerFive} name='ops_5' />
+                               </div>
+                               
+                              
                                <div className="col-lg-6 mb-4">
                                 <label className="title-col mb-0">Answer 5 <span className="text-blue">(Arabic)</span></label>
                                 <InputEmoji  onChange={setAnswerFiveAra} cleanOnEnter placeholder="Enter Answer"/>

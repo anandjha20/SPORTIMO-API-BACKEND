@@ -86,7 +86,7 @@ export default function CreateDefaultMessage() {
 
                         if (data.status) {
 
-                            toast.success(data.msg);
+                            toast.success("Status message added successfully");
 
                             e.target.reset();
                             return axios.get("/web_api/get_defaultMsg", options1)
@@ -114,33 +114,43 @@ export default function CreateDefaultMessage() {
 
     ///////////////// delete tips tricks api call  /////////////////
     const deleteCategory = (_id) => {
-
-
-        let sendData = { id: _id }
-        axios.delete(`/web_api/defaultMsg_delete/${_id}`, options1)
-            .then(res => {
-                if (res.status) {
-                    let data = res.data;
-
-                    if (data.status) {
-                        toast.success(data.msg);
-                        return axios.get("/web_api/get_defaultMsg", options1)
-                            .then(res => {
-                                const userData = res.data.body;
-                                setData(userData);
-                            })
-                    } else {
-                        toast.error('something went wrong please try again');
-                    }
-                }
-                else {
-                    toast.error('something went wrong please try again..');
-                }
-
-            })
-            .catch(error => {
-                console.log(this.state);
-            })
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {         
+            //   let sendData = { id: _id }
+              axios.delete(`/web_api/defaultMsg_delete/${_id}`, options1)
+                  .then(res => {
+                      if (res.status) {
+                          let data = res.data;
+                          if (data.status) {
+                              Swal.fire(
+                                'Deleted!',
+                                 "Default message deleted successfully",
+                                'success'
+                              )
+                              return axios.get("/web_api/get_defaultMsg", options1)
+                                  .then(res => {
+                                      const userData = res.data.body;
+                                      setData(userData);
+                                  })
+                          } else {
+                              toast.error(data.msg);
+                          }
+                      }
+                      else {
+                        toast.error(data.msg);
+                      }
+      
+                  })
+            }
+          })
     }
 
 
@@ -186,26 +196,6 @@ export default function CreateDefaultMessage() {
     }
 
 
-
-    function handleClick(){
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              Swal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-              )
-            }
-          })
-    }
 
     return (
         <>
@@ -261,8 +251,8 @@ export default function CreateDefaultMessage() {
                                             {/* <div className="col-lg-1"></div> */}
                                             <div className="col-lg-7">
                                                 <div className="row">
-                                                    <div className="col-lg-12">
-                                                        <MaterialTable
+                                                    <div className="col-lg-12 title-small">
+                                                        <MaterialTable 
                                                             title="Default Status Message"
                                                             columns={columns}
                                                             data={data}
@@ -287,7 +277,7 @@ export default function CreateDefaultMessage() {
                                                                 pageSize: 5,
                                                                 pageSizeOptions: [5, 20, 50]
                                                             }}
-
+                                                           
                                                         />
                                                     </div>
                                                 </div>

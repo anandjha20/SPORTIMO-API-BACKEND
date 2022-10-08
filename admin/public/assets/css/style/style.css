@@ -74383,10 +74383,8 @@ html.fullscreen .main-content {
 {
     color : white !important;
 }
-
-.form-control:disabled, .form-control[readonly]
-{
-  background-color: #313941 !important;
+.form-control:disabled, .form-control[readonly] {
+    background-color: #3d454c !important;
 }
 .tx-medium {
     font-weight: 500;
@@ -75348,4 +75346,40 @@ color : white  !important;
     display: block;
     margin-bottom: 0.5rem;
     border-radius: 11px;
+}
+
+.title-small .MuiTypography-root h6
+{
+    font-size: 18px !important;
+}
+.MuiTableRow-root
+{
+    height: auto !important;
+}
+
+.MuiTableRow-root[style="height: 245px;"]
+{
+    height: 245px !important;
+}
+.swal2-popup
+{
+     width: 22em !important;
+}
+.swal2-popup
+{
+     background: #313941 !important;
+     color: white !important;
+}
+.swal2-styled.swal2-confirm
+{
+    background-color: #1976d2 !important;
+}
+.swal2-html-container
+{
+    line-height: 27px !important;
+    margin-bottom: 0rem !important;
+}
+.swal2-confirm.swal2-styled
+{
+    padding: 0.5rem 3rem !important;
 }

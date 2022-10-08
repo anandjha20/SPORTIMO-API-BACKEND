@@ -48,6 +48,7 @@ import UpdatePredictionCard from "./PredictionManagement/UpdatePredictionCard";
 import TableMatchCard from "./MatchCardManagement/TableMatchCard";
 import AddMatchCard from "./MatchCardManagement/AddMatchCard";
 import AddminSetting from "./AdminSetting/AddminSetting";
+import UpdateMatch from "./MatchCardManagement/UpdateMatch";
 
 
 function App() {
@@ -138,6 +139,7 @@ function App() {
         {/*Match Card Management*/} 
         <Route path="/matchcard" element={ <TableMatchCard /> } />
         <Route path="/matchcard/add" element={ <AddMatchCard /> } />
+        <Route path="/matchcard/update/:_id" element={ <UpdateMatch /> } />
 
         {/*Admin Setting*/} 
         <Route path="/admin-setting" element={ <AddminSetting /> } />

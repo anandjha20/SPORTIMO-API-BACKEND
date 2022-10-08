@@ -13,6 +13,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Moment from 'moment';
+import Swal from 'sweetalert2'
 
 function TableListComponent(props) {
 
@@ -91,6 +92,8 @@ function TableListComponent(props) {
                 setpageCount(totalPage);
                 setData(data);
                 console.log(data);
+                setValue("");
+                setValue1("");
             })
     }
     useEffect(() => {
@@ -142,23 +145,44 @@ const pollfee = [
 
 /////////////////delete poll /////////////////
     const delPoll = (_id) => {
-        axios.delete(`/web_api/delete_poll/${_id}`)
-            .then(res => {
-                if (res.status) {
-                    let data = res.data;
-                    if (data.status) { 
-                        toast.success(data.msg);
-                        return polllist();
-                        
-                    } else {
-                        toast.error('something went wrong please try again');
-                    }
-                }
-                else {
-                    toast.error('something went wrong please try again..');
-                }
 
-            })
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {         
+                
+                  axios.delete(`/web_api/delete_poll/${_id}`)
+                  .then(res => {
+                      if (res.status) {
+                          let data = res.data;
+                          if (data.status) { 
+                            Swal.fire(
+                                'Deleted!',
+                                 data.msg,
+                                'success'
+                              )
+            
+                              return polllist();
+                              
+                          } else {
+                              toast.error('something went wrong please try again');
+                          }
+                      }
+                      else {
+                          toast.error('something went wrong please try again..');
+                      }
+      
+                  })
+            }
+          })
+
+       
            
     }
 
@@ -184,6 +208,8 @@ const pollfee = [
     }
       
 
+    const [value, setValue] = useState("");
+    const [value1, setValue1] = useState("");
 
     return (
 
@@ -211,7 +237,7 @@ const pollfee = [
                         </div>
                         <div className="col-lg-4 reletive mb-3">
                             <span className="react-select-title">Poll Type</span>
-                            <Select  name='poll_type'
+                            <Select  name='poll_type' onChange={setValue} value={value}
                                 options={polltype}
                                 className="basic-multi-select"
                                 classNamePrefix="select" />
@@ -219,7 +245,7 @@ const pollfee = [
                         </div>
                         <div className="col-lg-4 reletive mb-3">
                             <span className="react-select-title">Poll Fee</span>
-                            <Select  name='fee_type'
+                            <Select  name='fee_type' onChange={setValue1} value={value1}
                                 options={pollfee}
                                 className="basic-multi-select"
                                 classNamePrefix="select" />
@@ -286,7 +312,7 @@ const pollfee = [
                                             { item.result_type == "Undisclosed" && item.disclosed_status == "1" ? <> <span>Poll Result Disclosed</span></> : null}
                                             {item.result_type == "Undisclosed" && item.disclosed_status == "0" ? <><Button onClick={() => { disclosedPoll(item._id);}}  type='submit' className="mr-3 btn-pd btnBg">Disclose</Button></> : null }
                                             </td>
-                                            <td>{Moment(item.date).format("DD/MM//YYYY")}</td>
+                                            <td>{Moment(item.date).format("DD/MM/YYYY")}</td>
                                             <td className="text-end">
                                                 <div className="d-flex justtify-content-end">
                                                     <IconButton onClick={(e) => { detailFun(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">

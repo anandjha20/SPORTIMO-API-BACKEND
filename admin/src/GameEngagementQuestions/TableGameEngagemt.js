@@ -43,7 +43,7 @@ function TableGameEngagemt() {
               <div className="card-body">
                     <div className="row align-items-center">
                         <div className="col-lg-4">
-                        <input type="text" className="form-control" placeholder="Search Match/league" style={{    height: "45px"}}></input>
+                        <input type="text" className="form-control" placeholder="Search Match/league" style={{height: "45px"}}></input>
                         {/* <TextField id="outlined-basic" fullWidth label="Search Match/league" variant="outlined" style={{ padding : " 11.5px 14px !important"}} /> */}
                         </div>
                         <div className="col-lg-4">

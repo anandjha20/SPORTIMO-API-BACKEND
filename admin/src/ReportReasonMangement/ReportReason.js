@@ -15,7 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from "react";
 import useForm from "../useForm";
 import IconButton from '@mui/material/IconButton';
-
+import Swal from 'sweetalert2'  
 
 export default function ReportReason() {
 
@@ -59,35 +59,50 @@ export default function ReportReason() {
             })
     }
 
-    /////////////////delete complaint /////////////////
-    const deleteCategory = (_id) => {
+   
 
-        axios.delete(`/web_api/report_reason_delete/${_id}`)
+  /////////////////delete api call /////////////////
+  const deleteCategory = (_id) => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {         
+            axios.delete(`/web_api/report_reason_delete/${_id}`)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
-
-                    if (data.status) {
-                        toast.success(data.msg);
-                        return SportPreferenceList();
+                    if (data.status) { 
+                        Swal.fire(
+                            'Deleted!',
+                             data.msg,
+                            'success'
+                          )
+                         return ReportReasonList();
                     } else {
-                        toast.error('something went wrong please try again');
+                        toast.error(data.msg);
                     }
                 }
                 else {
-                    toast.error('something went wrong please try again..');
+                    toast.error(data.msg);
                 }
             })
-            .catch(error => {
-                console.log(this.state);
-            })
-    }
+        }
+      })
+}
+
+
 
     /////////////////complaint list/////////////////
     const onCloseModal = () => setOpen(false);
 
     const limit = 10;
-    const SportPreferenceList = async (page) => {
+    const ReportReasonList = async (page) => {
         const sanData = { page: page }
         await axios.post(`/web_api/report_reason_get`,)
             .then(res => {
@@ -99,7 +114,7 @@ export default function ReportReason() {
             })
     }
     useEffect(() => {
-        SportPreferenceList();
+        ReportReasonList();
     }, []);
 
 
@@ -130,7 +145,7 @@ export default function ReportReason() {
                         if (data.status) {
                             toast.success(data.msg);
                             setOpen(false);
-                            return SportPreferenceList();
+                            return ReportReasonList();
                         } else {
                             toast.error('something went wrong please try again');
                         }
@@ -168,7 +183,7 @@ export default function ReportReason() {
                         if (data.status) {
                             toast.success(data.msg);
                             e.target.reset();
-                            return SportPreferenceList();
+                            return ReportReasonList();
                         } else {
                             toast.error('something went wrong please try again');
                         }

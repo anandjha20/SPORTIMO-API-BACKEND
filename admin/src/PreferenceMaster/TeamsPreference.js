@@ -15,7 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from "react";
 import useForm from "../useForm";
 import IconButton from '@mui/material/IconButton';
-
+import Swal from 'sweetalert2'
 
 export default function TeamsPreference() {
 
@@ -68,33 +68,43 @@ export default function TeamsPreference() {
             })
     }
 
-    /////////////////delete complaint /////////////////
-    const deleteCategory = (_id) => {
-
-        axios.delete(`/web_api/teams/${_id}`)
+    /////////////////delete api call /////////////////
+   const deleteCategory = (_id) => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {         
+            axios.delete(`/web_api/teams/${_id}`)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
-
-                    if (data.status) {
-                        toast.success(data.msg);
-                        return PreferenceList();
+                    if (data.status) { 
+                        Swal.fire(
+                            'Deleted!',
+                             data.msg,
+                            'success'
+                          )
+                         return PreferenceList();
                     } else {
-                        toast.error('something went wrong please try again');
+                        toast.error(data.msg);
                     }
                 }
                 else {
-                    toast.error('something went wrong please try again..');
+                    toast.error(data.msg);
                 }
             })
-            .catch(error => {
-                console.log(this.state);
-            })
-    }
+        }
+      })
+}
 
     /////////////////complaint list/////////////////
     const onCloseModal = () => setOpen(false);
-
     const limit = 10;
     const PreferenceList = async (page) => {
         const sanData = { page: page }
@@ -136,11 +146,11 @@ export default function TeamsPreference() {
                                 setOpen(false);
                                 return PreferenceList();
                             } else {
-                                toast.error('something went wrong please try again');
+                                toast.error(data.msg);
                             }
                         }
                         else {
-                            toast.error('something went wrong please try again..');
+                            toast.error(data.msg);
                         }
                     })
                     .catch(error => {
@@ -168,11 +178,11 @@ export default function TeamsPreference() {
                             e.target.reset();
                             return PreferenceList();
                         } else {
-                            toast.error('something went wrong please try again');
+                            toast.error(data.msg);
                         }
                     }
                     else {
-                        toast.error('something went wrong please try again..');
+                        toast.error(data.msg);
                     }
                 })
                 .catch(error => {

@@ -10,6 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import Moment from 'moment';
+import Swal from 'sweetalert2'
 
 export default function IntroSliderTable() {
 
@@ -62,27 +63,42 @@ export default function IntroSliderTable() {
    
     ///////////////// delete Introduction Slider api call  /////////////////
     const deleteCategory = (_id) => {
-        let sendData = { id: _id }
-        axios.delete(`/web_api/introSlider_delete/${_id}`, options1)
+
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {         
+            //let sendData = { id: _id }
+            axios.delete(`/web_api/introSlider_delete/${_id}`, options1)
             .then(res => {
-                if (res.status) {
-                    let data = res.data;
-
-                    if (data.status) {
-                        toast.success(data.msg);
-                        return IntroSliderList();
-                    } else {
-                        toast.error('something went wrong please try again');
-                    }
+            if (res.status) {
+                let data = res.data;
+                if (data.status) {
+                    Swal.fire(
+                        'Deleted!',
+                         data.msg,
+                        'success'
+                      )
+                    return IntroSliderList();
+                } else {
+                    toast.error('something went wrong please try again');
                 }
-                else {
-                    toast.error('something went wrong please try again..');
-                }
+            }
+            else {
+                toast.error('something went wrong please try again..');
+            }
 
-            })
-            .catch(error => {
-                console.log(this.state);
-            })
+        })
+            }
+          })
+
     }
 
  

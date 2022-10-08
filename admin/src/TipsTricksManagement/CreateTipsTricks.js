@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-
+import Swal from 'sweetalert2'
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import 'react-toastify/dist/ReactToastify.css';
@@ -55,14 +55,14 @@ export default function CreateTipsTricks() {
         return (
             <>
             
-             <Button onClick={() => { disclosedPoll(rowData._id, rowData.statusTips="0");}} className="mr-3 btn-pd btnBg">Active</Button>
+             <Button onClick={() => { TipsActiveDeactive(rowData._id, rowData.statusTips="0");}} className="mr-3 btn-pd btnBg">Active</Button>
             </>
         );
       }
       if (rowData.active_status == false) {
         return (
             <>
-            <Button onClick={() => { disclosedPoll(rowData._id, rowData.statusTips="1");}} className="mr-3 btn-pd deactive">Deactive</Button>
+            <Button onClick={() => { TipsActiveDeactive(rowData._id, rowData.statusTips="1");}} className="mr-3 btn-pd deactive">Deactive</Button>
             </>
         );
       }
@@ -72,7 +72,7 @@ export default function CreateTipsTricks() {
 
 
  /////////////////status update/////////////////////
- const disclosedPoll = (_id, statusTips) =>
+ const TipsActiveDeactive = (_id, statusTips) =>
 { 
            const setDataForm = { tips_status : statusTips } 
             axios.put(`/web_api/tips_status_update/${_id}`, setDataForm , options1)
@@ -146,36 +146,40 @@ export default function CreateTipsTricks() {
         } catch (err) { console.error(err); toast.error('some errror'); return false; }
     }
 
-
-///////////////// delete tips tricks api call  /////////////////
-    const deleteCategory = (_id) => {  
-        let sendData = { id : _id  }
-        axios.delete(`/web_api/delete_tip/${_id}`, options1)
+  /////////////////delete api call /////////////////
+   const deleteCategory = (_id) => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {         
+            axios.delete(`/web_api/delete_tip/${_id}`)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
-
                     if (data.status) { 
-                        toast.success(data.msg);
-                         return axios.get("/web_api/get_tip_list", options1)
-                            .then(res => {
-                                const userData = res.data.body;
-                                setData(userData);
-                            })
+                        Swal.fire(
+                            'Deleted!',
+                             data.msg,
+                            'success'
+                          )
+                         return TipsTricksList();
                     } else {
-                        toast.error('something went wrong please try again');
+                        toast.error(data.msg);
                     }
                 }
                 else {
-                    toast.error('something went wrong please try again..');
+                    toast.error(data.msg);
                 }
-
             })
-            .catch(error => {
-                console.log(this.state);
-            })
-    }
-
+        }
+      })
+}
 
  ///////////////// Update complaint category /////////////////
  const UpdateFormData = async (e) => {

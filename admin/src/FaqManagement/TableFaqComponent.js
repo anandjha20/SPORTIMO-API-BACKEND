@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useState, useEffect } from "react";
-
+import Swal from 'sweetalert2'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -62,31 +62,42 @@ function TableFaqComponent() {
 
 ///////////////// delete api call  /////////////////
 const deleteFaq = (_id) => {  
-    let sendData = { id : _id  }
-    axios.delete(`/web_api/delete_faq/${_id}`,options1)
+
+
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {         
+            axios.delete(`/web_api/delete_faq/${_id}`,options1)
         .then(res => {
             if (res.status) {
                 let data = res.data;
-
                 if (data.status) { 
-                    toast.success(data.msg);
-                     return axios.get("/web_api/faq_list")
-                        .then(res => {
-                            const userData = res.data.body;
-                            setData(userData);
-                        })
+                    Swal.fire(
+                        'Deleted!',
+                         data.msg,
+                        'success'
+                      )
+                     return FaqList();
                 } else {
-                    toast.error('something went wrong please try again');
+                    toast.error(data.msg);
                 }
             }
             else {
-                toast.error('something went wrong please try again..');
+                toast.error(data.msg);
             }
 
         })
-        .catch(error => {
-            console.log(this.state);
-        })
+        }
+      })
+
 }
 
 

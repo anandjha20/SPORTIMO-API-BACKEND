@@ -8,15 +8,16 @@ import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-responsive-modal/styles.css";
 import { useNavigate } from 'react-router-dom';
-
+import Swal from 'sweetalert2' 
 function TableMatchCard() {
 
+    
     const token = localStorage.getItem("token");
     const header = ({ 'token': `${token}` });
     const options = ({ headers: header });
 
     const [data, setData] = useState([])
-    const UserChatBlocked = async () => {
+    const MatchcardList = async () => {
        const setdaata = {}
         await axios.post(`/web_api/match_card_list`, setdaata, options)
             .then(res => {
@@ -25,7 +26,7 @@ function TableMatchCard() {
             })
     }
     useEffect(() => {
-        UserChatBlocked()
+        MatchcardList()
     }, []);
 
     const columns =
@@ -40,12 +41,51 @@ function TableMatchCard() {
         ]
 
         const navigate = useNavigate();
+
         const viewFun = (_id, rowData) => {
-            navigate(`/cards/update/${_id}` , {state:{rowData}});
+            navigate(`/matchcard/update/${_id}`, {state:{rowData}});
             return false;
         }    
 
         
+
+  /////////////////delete api call /////////////////
+  const deleteCategory = (_id) => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {         
+            axios.delete(`/web_api/match_card_delete/${_id}`)
+            .then(res => {
+                if (res.status) {
+                    let data = res.data;
+                    if (data.status) { 
+                        Swal.fire(
+                            'Deleted!',
+                             data.msg,
+                            'success'
+                          )
+                         return MatchcardList();
+                    } else {
+                        toast.error(data.msg);
+                    }
+                }
+                else {
+                    toast.error(data.msg);
+                }
+            })
+        }
+      })
+}
+
+
+
     return (
         <>
             <Header />
@@ -92,8 +132,14 @@ function TableMatchCard() {
                                         {
                                             icon: 'edit',
                                             iconProps: { style: { color: "#6259ca" } },
-                                            tooltip: 'View Detail',
-                                            // onClick: (event, rowData) => { viewFun(rowData._id, rowData); }
+                                            tooltip: 'Update',
+                                            onClick: (event, rowData) => { viewFun(rowData._id, rowData); }
+                                        },
+                                        {
+                                            icon: 'delete',
+                                            iconProps: { style: { color: "#ff0000" } },
+                                            tooltip: 'Delete',
+                                            onClick: (event, setData) => { deleteCategory(setData._id); }
                                         },
                                     ]}
                                 />

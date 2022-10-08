@@ -236,6 +236,12 @@ return (
 						</li> 
 
 						<li className="nav-item" >
+							<NavLink  to="/cards" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-th sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">View Prediction Cards</span></NavLink>
+						</li> 
+
+						<li className="nav-item" >
 							<NavLink  to="/admin-setting" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
 							<i className="fe fe-settings sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Admin Settings</span></NavLink>
