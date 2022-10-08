@@ -64,7 +64,7 @@ class UserController {
     }
 
 
-    static registration = async(req,res)=>{
+    static registration_old = async(req,res)=>{
         try {  
             let  mobile = req.body.mobile;      let email     = req.body.email;
             let address = req.body.address;     let user_type = req.body.user_type;
@@ -191,6 +191,147 @@ class UserController {
       
 
     }
+
+    static registration = async(req,res)=>{
+        try {  
+            let  mobile = req.body.mobile;      let email     = req.body.email;
+            let address = req.body.address;     let user_type = req.body.user_type;
+            let name    = req.body.name;        let device_id = req.body.device_id;
+           let firebase_token    = req.body.firebase_token;
+              
+            let user_type_len = (user_type || '').length;    let device_id_len = (device_id || '').length;
+            let name_len = (name || '').length;              let mobile_len    = (mobile || '').length;
+           
+            let email_len = (email || '').length;            //let device_id_len = (device_id || '').length;
+           
+            if(user_type_len == 0 || device_id_len == 0){
+                return res.status(200).send({"status":false,"msg":'All Field Required ' , "body":''}) ;     
+            }
+
+            let otp = Math.floor(Math.random() * 900000) + 100000; 
+            let date = getcurntDate(); 
+            
+            let token = gen_str(99);
+           
+            let seq_id = await autoincremental('seq_id',user_tbl);
+            //console.log("seq_id is ==",seq_id);
+            
+         if(user_type == 1 || user_type == 2 || user_type == 3 || user_type == 4 || user_type == 5 ){ }else{
+                return res.status(200).send({"status":false,"msg":'Invalid User type Field Value '}) ;     
+            }
+//ckecking of delete user account
+let condition_obj={user_type};
+if(user_type==1){condition_obj={...condition_obj,mobile}};
+if(user_type==2){condition_obj={...condition_obj,email}};
+
+let user=await user_tbl.find(condition_obj);
+if(user[0].is_deleted==1){
+    return res.status(200).send({"status":false,"msg":'your account was deleted..register yourself first!!! '}) ;
+}else{
+
+    // case 1 if user type == 5 (guest user )  and  device_id id arready exists then
+       if(user_type == 5){
+        let check_d_id = '';
+
+
+            ///////////////////////////////////////////////////////////////////////////////      
+           let myobjs = { token};
+            user_tbl.findOneAndUpdate({user_type: 5,device_id,is_deleted :{$ne : 1}},{$set : myobjs},{new: true}, (err, updatedUser) => {
+                if(err) {  console.log(err);
+                   return  res.status(200).send({"status":false,"msg":'some errors '}) ;   
+                }
+        //console.log(updatedUser.is_deleted,"------------------------------------------------")
+               if(updatedUser){
+                              let ddsq = user_logs_add(updatedUser._id,'login');  
+                return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
+               }else{
+                let add =new user_tbl({ user_type, date,device_id,token,otp,seq_id,firebase_token});
+    
+                         add.save( (err, data) => {
+                              if (err) {        
+
+                                return res.status(200).send({"status":false,"msg":'An error occurred'}) ;            
+                                      }else{        let ddsqq = user_logs_add(data._id,'login');   
+                                      return res.status(200).send({"status":true,"msg":'Guset user add successfully' , "body":data  }) ; 
+                               } });
+                             
+                      
+                      
+                      
+                            }
+               
+            });       
+                
+            ///////////////////////////////////////////////////////////////////////////
+        }
+
+
+    let checkuser = ( user_type == 2 || user_type == 3 || user_type == 4 )? await user_tbl.find({email }).exec() : await user_tbl.find({mobile}).exec() ;
+    let sendmsg = ( user_type == 2 || user_type == 3 || user_type == 4 )? "Email already exists" :  "Mobile already exists" ;
+
+
+    console.log('checkuser == ',checkuser)  ;         
+           
+     if(checkuser.length >0 ){
+        let check_user_id = checkuser[0]._id;   
+        const doc = await user_tbl.findOneAndUpdate({ _id: check_user_id},{ otp: otp },
+                                     { upsert: true, useFindAndModify: false });
+         
+              let check_type = checkuser[0].user_type;  let msgtodiv = '';   
+                if(check_type == 1){
+                    send_mobile_otp({mobile,otp}); 
+                    msgtodiv = 'otp sent to your mobile please check know ';
+                }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
+                    sentEmail({email,otp}); 
+                    msgtodiv = 'otp sent to your Email please check know ';
+                }  
+
+   
+                return res.status(200).send({"status":true,"msg":msgtodiv, "body":checkuser[0]._id }) ;     
+         }
+              
+            let add =new user_tbl({
+                name: name,
+                email: email,
+                 user_type:user_type,
+                address: address,
+                  date: date,  
+                 mobile:mobile,
+                 device_id:device_id,
+                 otp : otp,
+                 token : token,
+                 seq_id : seq_id,
+                 firebase_token : firebase_token
+            });             
+
+           
+                    let allsaveData =  await add.save();
+            if(allsaveData){
+
+                 let msgtodiv2 = '';
+
+                if(user_type == 1){
+                    send_mobile_otp({mobile,otp}); 
+                      msgtodiv2 = 'otp sent to your mobile please check know ';
+                }else  if(user_type == 2 || user_type == 3 || user_type == 4 ){
+                    sentEmail({email,otp}); 
+                    msgtodiv2 = 'otp sent to your Email please check know ';
+                }  
+                    console.log('add == ', add);    
+                 return res.status(200).send({"status":true,"msg": msgtodiv2 , "body":add._id }) ;      
+                }else{
+                    return res.status(200).send({"status":false,"msg":'no data add ' }) ;           
+                } 
+            }   
+        } catch (error) { console.log("user register api == ",error);
+            return res.status(200).send({"status":false,"msg":'Server errror' }) ;          
+               
+        }           
+      
+
+    }
+
+
 
 static resend_otp_2 = async(req,res) =>{
     let language = req.body.language;
