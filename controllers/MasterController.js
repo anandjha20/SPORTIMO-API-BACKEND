@@ -539,6 +539,26 @@ class MasterController {
         res.status(200).send({'status':true,'msg':"success",'body':result });
             
     }
+
+    static past_match_list = async (req,res)=>{
+        try {
+            let name    = req.body.name;
+            let date = getcurntDate(); 
+            
+            let whr = {date_utc:{$lt : date}};     
+            
+            
+            if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+            let records = await team_matches.find(whr,'match_id _id match_name').sort({'date_utc': 1}) ;
+            
+            
+        res.status(200).send({'status':true,'msg':"success", 'body':records });
+    
+        } catch (error) { console.log(error);
+        res.status(200).send({'status':false,'msg':error,'body':''});
+        }
+            
+            }   
 }
 
 module.exports = MasterController;

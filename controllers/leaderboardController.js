@@ -271,7 +271,29 @@ static user_point_details= async (req,res)=>{
 	}
 }
 
+static all_matches_leaderboard = async (req,res)	=>{		
+		try{
+            let response = await transaction_tbls.aggregate(
+							 [{ $group: {"_id": "$match_id"}},
+							// { $unwind: "$match_list" },
+							// { $lookup: {from: 'transaction_tbls', localField : '_id', foreignField: 'match_id', as: 'play_match_user'} },
+							// { $project: {"match_id":"$play_match_user.match_id","user_id":"$play_match_user.user_id",
+							// "points":"$play_match_user.points"} } 
+							],);	
+			
+		 if(response){
+			return res.status(200).send({"status":false,"msg":"success","body":response});
+		}else{
+			return res.status(200).send({"status":false,"msg":"server error"});
+		}				 	
+							 
+		}catch (error){
+			console.log(error)
+			return res.status(200).send({"status":false,"msg":"server error"});
+		}
+
 }
 
+}
 
 module.exports = leaderboardController ;      

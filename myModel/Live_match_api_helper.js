@@ -9,8 +9,6 @@ const team_matches_tbl = require('../models/team_matches');
 const user_tbl = require('../models/user');    
 const transactions_tbl = require('../models/transactions'); 
 
-
-
   const match_card_number  = async(match_id,no) =>{
     try {   
               no  = (no >= 0)? no : 0 ;     /// this is a read card qus 
@@ -472,9 +470,8 @@ const add_win_point = async(req,res)=>{
    const get_card_result_add_1  =  async(req,res)=>{
     try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[6] ;
-         
-
+           const  data = req.data.team_stats.stat[6] ;
+        
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
@@ -755,7 +752,9 @@ const add_win_point = async(req,res)=>{
    
   const day_match_getID = async(match_id) =>{
     try {   
-        let date = getcurntDate();
+           let date = getcurntDate();
+            //  let date = "2022-10-07";
+
        const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
       // const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
        const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches_day?day=${date}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
@@ -773,43 +772,44 @@ const add_win_point = async(req,res)=>{
 
          if(response){
             let datas = response.data.datasportsgroup.competition.season.discipline.gender.round.match;
-            if(datas ){
-                    
-                   let match_id_arr = [];  
-                   let time_u = Math.floor(Date.now() / 1000); 
-                 
+            let match_id_arr = [];  
+            let time_u = Math.floor(Date.now() / 1000); 
+              console.log("res data type == ", typeof datas );
+              console.log("datas values  == ", datas.length );
+             if(datas.length >0 ) {
+                    datas.map((item)=>{
+                   let date = new Date(item.date_utc+' '+ item.time_utc);
+                   let seconds = date.getTime() / 1000 ; 
+                      /// 92 min = 5,520 sec add on 
+                       seconds = seconds + 5520;
+                     console.log("fun call == ",{time_u,seconds});
 
-                   datas.map((item)=>{
-                    let date = new Date(item.date_utc+' '+ item.time_utc);
-                    let seconds = date.getTime() / 1000 ; 
-                       /// 92 min = 5,520 sec add on 
-                        seconds = seconds + 5520;
-                      console.log("fun call == ",{time_u,seconds});
-
-                    if(time_u >= seconds){
-                          match_id_arr.push(item.match_id);    
-                        }      
-                    
-                    }); 
-                   
-                  return match_id_arr;         
-            }
-            //  response.data ;
-         
-         }else{   return false;
+                   if(time_u >= seconds){
+                         match_id_arr.push(item.match_id);    
+                       }      
+                                             
+                  }); 
                   
-         }    
+                 return match_id_arr;  
+            }else if(typeof datas === 'object'){
+          let date = new Date(datas.date_utc+' '+ datas.time_utc);
+        let seconds = date.getTime() / 1000 ; 
+           /// 92 min = 5,520 sec add on    
+            seconds = seconds + 5520;
+          console.log("fun call == ",{time_u,seconds});
 
+        if(time_u >= seconds){
+              match_id_arr.push(datas.match_id);    
+            }      
+              return match_id_arr;         
 
-     
+      }else{  return false; }    
+        }
          } catch (error) { console.log( "modal match_card_001 call == ", error);
              return false ; 
          }
   }
 
-
-
-  
   const match_card_00_working  = async(match_id,my_path) =>{
     try {
       // let my_sports = my_path.split(".");
@@ -840,9 +840,6 @@ const add_win_point = async(req,res)=>{
              return false ; 
          }
   }
-
-
-
 
 module.exports = {day_match_getID,match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_result_add_4,
                     get_card_result_add_7,get_card_result_add_1, get_card_result_add_11,get_card_result_add_13,

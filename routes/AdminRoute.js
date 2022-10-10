@@ -218,7 +218,11 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    
    
    //leaderboard api
-   router.post('/user_point_details',leaderboardController.user_point_details)
+   router.post('/user_point_details',leaderboardController.user_point_details);
+    // past_match_list 
+   router.post('/past_match_list',MasterController.past_match_list);          
+
+   router.post('/all_matches_leaderboard',leaderboardController.all_matches_leaderboard);
 
 
 module.exports = router;       

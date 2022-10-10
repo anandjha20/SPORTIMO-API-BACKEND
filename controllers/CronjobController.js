@@ -6,6 +6,7 @@ const { rows_count,getcurntDate,getTime,isEmpty} = require("../myModel/common_mo
   const transactions_tbl = require('../models/transactions');    
   const playMatchCards_tbl = require('../models/playMatchCards');   
   
+ const  {MyBasePath} = require("../myModel/image_helper");
   
  
   const team_matches = require('../models/team_matches');
@@ -333,7 +334,7 @@ class ConjobController{
                     console.log("matchResult_show == ",req.body.match_id );
                   let  match_id =  req.body.match_id ; // 2701168;  
                   let data = await matchCardAllData(match_id);  
-                  console.log("data22222222 == ", data); 
+                 // console.log("data22222222 == ", data); 
                   if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
                     let dx1 = await get_card_result_add_1({data});  
                     let dx  = await get_card_result_add_4({data});  
@@ -462,26 +463,30 @@ class ConjobController{
            }
        static match_run =  async(req,res)=>{
             try {
-                  let response = await day_match_getID();     
+                  let paths    = MyBasePath(req,res); 
+                  let response = await day_match_getID();
                    let sumArr = [];
             if(response){  
                  let allData =  await Promise.all( response.map( async (item)=>{
-                      var config = { method: 'get',url: `http://localhost:3600/open_api/matchResult_show`,
-                                         data: {"match_id" :item } };
+                      var config = { method: 'get',url: `${paths}/open_api/matchResult_show`,
+                                          data: {"match_id" :item } };
           
                       let resp = await axios(config);
                       sumArr.push(resp);
                     })) ;      
                   }
-                        console.log("new fun call == ", sumArr);
+                       // console.log("new fun call == ", sumArr);
 
                  return  res.status(200).send({'status':true, 'msg':"success", 'body': '' });
             
-                } catch (error) { console.log(error);
+                } catch(error){ console.log(error);
                     return  res.status(200).send({'status':false,'msg':error,'body':''});
-                }
+                } 
         }
-           
+     
+        
+
+        
 }
 
 
