@@ -224,8 +224,8 @@ let condition_obj={user_type};
 if(user_type==1){condition_obj={...condition_obj,mobile}};
 if(user_type==2){condition_obj={...condition_obj,email}};
 
-let user=await user_tbl.find(condition_obj);
-if(user[0].is_deleted==1){
+let user = await user_tbl.find(condition_obj);
+    if( ! isEmpty(user) &&  user[0].is_deleted==1){
     return res.status(200).send({"status":false,"msg":'your account was deleted..register yourself first!!! '}) ;
 }else{
 
@@ -734,17 +734,19 @@ static verify_nickName = async(req,res)=>{
                                 let chat         = req.body.chat;
                                 let biometric    = req.body.biometric;
                                 let notifications = req.body.notifications;
-                            
+                                let follower = req.body.follower;
+
                                 music_sound = (music_sound == 1)? 1 : 0;
                                 haptics     = (haptics == 1)? 1 : 0;
                                 chat        = (chat == 1)? 1 : 0;
                                 biometric   = (biometric == 1)? 1 : 0;
                                 notifications = (notifications == 1)? 1 : 0;
+                                follower       = (follower == 1)? 1 : 0;
                     
                                 console.log("get all data ==  ",req.body);
 
 
-                        user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {music_sound,haptics,chat,biometric,notifications }},{new: true}, (err,updatedUser)=>{
+                        user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {music_sound,haptics,chat,biometric,notifications,follower }},{new: true}, (err,updatedUser)=>{
                         if(err) {  console.log(err);
                             return res.status(200).send({"status":false,"msg":'some errors '}) ;          
                         }

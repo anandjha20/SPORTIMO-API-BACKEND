@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const match_card_schema = new Schema({
               match_name  : {type:String ,require:true, unique: true},
-            //  match_id    : {type:Schema.Types.ObjectId,ref:"team_matches",require:true },
+              match_id    : {type:Schema.Types.ObjectId,ref:"team_matches",require:true },
             // live_match_id    : {type:Number,require:true, unique: true},
              match_name  : {type:String ,require:true },
              card_id     : {type:Schema.Types.ObjectId,ref:"prediction_cards",require:true },

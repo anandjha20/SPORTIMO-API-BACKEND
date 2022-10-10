@@ -544,47 +544,50 @@ static my_polls_old = async(req,res)=>{
                   }
 
                     }
-  static my_polls_history = async (req,res)=>{
-    try{
-      const user_id=req.body.id;
-      console.log(user_id)
-      var language=req.body.language;
-      let s_date  = req.body.s_date;
-      let e_date  = req.body.e_date;
-      let date={};
-      if(!isEmpty(s_date) && !isEmpty(e_date)){date={...date,date: {$gte: s_date , $lte: e_date }}};
-      if(isEmpty(s_date) && !isEmpty(e_date)){date={...date,date: { $lte: e_date }}};
-      if(!isEmpty(s_date) && isEmpty(e_date)){date={...date,date: {$gte: s_date }}};
-      if(!isEmpty(user_id)){
-          let history= await poll_result_tbl.find({user_id}).populate('poll_id', null, date ).sort({_id:-1});
-        if(!isEmpty(history) && history[0].poll_id!=null){
-          history.map((item)=> { if(language != '' && language == 'ar'){
-                            item.poll_id.qus = item.poll_id.qus_ara ;
-                            item.poll_id.ops_1 = item.poll_id.ops_1_ara ;
-                            item.poll_id.ops_2 = item.poll_id.ops_2_ara ;
-                            item.poll_id.ops_3 = item.poll_id.ops_3_ara ;
-                            item.poll_id.ops_4 = item.poll_id.ops_4_ara ;
-                        
-                        }
+    static my_polls_history = async (req,res)=>{
+      try{
+        const user_id=req.body.id;
+        console.log(user_id)
+        var language=req.body.language;
+        let s_date  = req.body.s_date;
+        let e_date  = req.body.e_date;
+        let date={};
+        if(!isEmpty(s_date) && !isEmpty(e_date)){date={...date,date: {$gte: s_date , $lte: e_date }}};
+        if(isEmpty(s_date) && !isEmpty(e_date)){date={...date,date: { $lte: e_date }}};
+        if(!isEmpty(s_date) && isEmpty(e_date)){date={...date,date: {$gte: s_date }}};
+        if(!isEmpty(user_id)){
+            let history= await poll_result_tbl.find({user_id}).populate('poll_id', null, date );
+          var detailsData = [];
+            if(!isEmpty(history) ){
+            history.map((item)=> {
+              if(item.poll_id != null){
+                          if(language != '' && language == 'ar'){
+                              item.poll_id.qus = item.poll_id.qus_ara ;
+                              item.poll_id.ops_1 = item.poll_id.ops_1_ara ;
+                              item.poll_id.ops_2 = item.poll_id.ops_2_ara ;
+                              item.poll_id.ops_3 = item.poll_id.ops_3_ara ;
+                              item.poll_id.ops_4 = item.poll_id.ops_4_ara ;
+                          
+                          }
+                      detailsData.push(item);
+                    }
+                      return item;
+            });      
+            
   
-                    return item;
-          });      
-          
-
-          return res.status(200).send({"status":true,"msg":(language == 'ar')? "تم العثور على تاريخ الاستطلاع" :"poll history found","body":history})
+            return res.status(200).send({"status":true,"msg":(language == 'ar')? "تم العثور على تاريخ الاستطلاع" :"poll history found","body":detailsData})
+          }else{
+            return res.status(200).send({"status":false,"msg":(language == 'ar')? "لا يوجد سجل" :"no history found"})
+          }
         }else{
-          return res.status(200).send({"status":false,"msg":(language == 'ar')? "لا يوجد سجل" :"no history found"})
+          return res.status(200).send({"status":false,"msg":(language == 'ar')? "كل الحقول مطلوبة" :"All field required"})  
         }
-      }else{
-        return res.status(200).send({"status":false,"msg":(language == 'ar')? "كل الحقول مطلوبة" :"All field required"})  
+  
+      }catch (error){
+        console.log(error)
+        return  res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"}); 
       }
-
-    }catch (error){
-      console.log(error)
-      return  res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"}); 
     }
-  }
-
 
 
 }

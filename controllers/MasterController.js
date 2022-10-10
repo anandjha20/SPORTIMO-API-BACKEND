@@ -1,4 +1,4 @@
- const  express = require("express");
+const  express = require("express");
 const {getcurntDate,isEmpty,gen_str} = require('../myModel/common_modal');
 const  sport_tbl = require("../models/sport");
 const  league_tbl = require("../models/League");
@@ -512,7 +512,7 @@ class MasterController {
                 page = (isEmpty(page) || page == 0 )? 1 :page ; 
                 if(!isEmpty(id)){whr = {_id: id} ;} 
             
-                let query =  team_matches.find(whr).sort({_id:-1}) ;
+                let query =  team_matches.find(whr).sort({date_utc:1}) ;
                     const query2 =  query.clone();
                 const counts = await query.countDocuments();
         

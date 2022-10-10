@@ -191,7 +191,7 @@ class predictionController {
 
                          let add = new match_cards_tbl({ match_name,match_id,card_id,apperance_times,
                                                       time_duration });
-                       
+                         
                                add.save((err, data) => {
                                      if (err) {     console.log(err);
                                        return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
@@ -391,6 +391,7 @@ class predictionController {
                     let match_id         = req.body.match_id;
                     let card_id          = req.body.card_id;
                     let card_cat_id      = req.body.card_cat_id;
+                    let point            = req.body.point;
 
             if( isEmpty(match_card_id) || isEmpty(user_id)  || 
                   isEmpty(user_option) || isEmpty(match_id) || isEmpty(card_id) || 
@@ -400,7 +401,7 @@ class predictionController {
       
         // let checkName = await rows_count({"name":""})             
           let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end ,match_id,
-                               card_id, card_cat_id };                
+                               card_id, card_cat_id,point };                
                   
        playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
       if(err) {  console.log(err);
@@ -444,8 +445,8 @@ class predictionController {
 
     static match_card_list = async (req,res)=>{
       try {
-          let language = req.body.language;    // 'name card_type'
-          let condition_obj={};
+           let language = req.body.language;    // 'name card_type'
+           let condition_obj={};
           if(!isEmpty(req.body.match_id)){
             condition_obj={...condition_obj,match_id:req.body.match_id}
           }
