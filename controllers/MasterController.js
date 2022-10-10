@@ -1,4 +1,4 @@
-const  express = require("express");
+ const  express = require("express");
 const {getcurntDate,isEmpty,gen_str} = require('../myModel/common_modal');
 const  sport_tbl = require("../models/sport");
 const  league_tbl = require("../models/League");
@@ -506,9 +506,9 @@ class MasterController {
                 let whr = {};
                 let date = getcurntDate(); 
                 if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
-                if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}else{
-                    whr.date_utc ={$gte : date}; 
-                } 
+                // if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}else{
+                //     whr.date_utc ={$gte : date}; 
+                // } 
                 page = (isEmpty(page) || page == 0 )? 1 :page ; 
                 if(!isEmpty(id)){whr = {_id: id} ;} 
             
