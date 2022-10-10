@@ -39,7 +39,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
       let ReportReasonController = require("../controllers/ReportReasonController");
       let AdminController = require("../controllers/AdminController");
       let predictionController = require("../controllers/predictionController");                                            
-              
+      let leaderboardController= require("../controllers/leaderboardController");       
       let MasterController = require('../controllers/MasterController');
   
           router.get('/JK/',UserController.dashboardAllCount);
@@ -201,7 +201,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
       router.post('/user_mobile_email_update', UserController.user_mobile_email_update);
       router.post('/verify_update_otp', UserController.verify_update_otp);  
 
-
+    //leaderboard api
+    router.post('/leaderboard',leaderboardController.leaderboard);
 
 ////////////////////////////////////////////
       router.post('/deleteOne',MasterController.deleteOne)

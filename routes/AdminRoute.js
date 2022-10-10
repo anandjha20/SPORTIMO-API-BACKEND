@@ -40,6 +40,7 @@ const token_check =  require('../middleware/token_check');
   const UserController = require('../controllers/UserController');
   let chatController = require("../controllers/chatController");
   let predictionController = require("../controllers/predictionController");
+  let leaderboardController= require("../controllers/leaderboardController");
 
 
   // admin login Routes  
@@ -213,7 +214,11 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.get('/admin_settings_get',AdminController.admin_settings_get);
   
   
-   router.get('/jk_test',PollController.jk_test);                 
+   router.get('/jk_test',PollController.jk_test);    
+   
+   
+   //leaderboard api
+   router.post('/user_point_details',leaderboardController.user_point_details)
 
 
 module.exports = router;       

@@ -777,6 +777,8 @@ const add_win_point = async(req,res)=>{
                     
                    let match_id_arr = [];  
                    let time_u = Math.floor(Date.now() / 1000); 
+                 
+
                    datas.map((item)=>{
                     let date = new Date(item.date_utc+' '+ item.time_utc);
                     let seconds = date.getTime() / 1000 ; 
@@ -784,7 +786,7 @@ const add_win_point = async(req,res)=>{
                         seconds = seconds + 5520;
                       console.log("fun call == ",{time_u,seconds});
 
-                    if(time_u == seconds) {
+                    if(time_u >= seconds){
                           match_id_arr.push(item.match_id);    
                         }      
                     
