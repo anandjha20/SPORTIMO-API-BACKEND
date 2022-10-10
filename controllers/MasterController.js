@@ -530,6 +530,15 @@ class MasterController {
             }
                 
                 }          
+
+
+
+    static deleteOne=async (req,res)=>{
+        let _id=req.body._id
+        let result=await team_matches.findOneAndDelete({_id})
+        res.status(200).send({'status':true,'msg':"success",'body':result });
+            
+    }
 }
 
 module.exports = MasterController;

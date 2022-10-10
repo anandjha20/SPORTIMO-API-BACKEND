@@ -201,4 +201,9 @@ const userReportImg =  img_upload('./assets/user_img','image');
       router.post('/user_mobile_email_update', UserController.user_mobile_email_update);
       router.post('/verify_update_otp', UserController.verify_update_otp);  
 
+
+
+////////////////////////////////////////////
+      router.post('/deleteOne',MasterController.deleteOne)
+
 module.exports = router;             
