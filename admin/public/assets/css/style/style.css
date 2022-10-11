@@ -75383,3 +75383,13 @@ color : white  !important;
 {
     padding: 0.5rem 3rem !important;
 }
+
+.MuiTableCell-alignLeft
+{
+    text-transform: capitalize;
+}
+
+label, span, svg
+{
+color: #ffffffd1 !important;
+}

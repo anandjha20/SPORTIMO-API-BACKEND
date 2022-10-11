@@ -49,7 +49,7 @@ import TableMatchCard from "./MatchCardManagement/TableMatchCard";
 import AddMatchCard from "./MatchCardManagement/AddMatchCard";
 import AddminSetting from "./AdminSetting/AddminSetting";
 import UpdateMatch from "./MatchCardManagement/UpdateMatch";
-
+import Leaderboard from "./LeaderBoard/Leaderboard";
 
 function App() {
   return (
@@ -143,6 +143,9 @@ function App() {
 
         {/*Admin Setting*/} 
         <Route path="/admin-setting" element={ <AddminSetting /> } />
+
+        {/*Leader Board*/} 
+        <Route path="/leaderboard" element={ <Leaderboard /> } />
         
         {/*PreferenceMaster */} 
         <Route path="/preference/sports" element={ <SportsPreference /> } />

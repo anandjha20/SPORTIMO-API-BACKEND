@@ -14,7 +14,7 @@ function GameEngagementList() {
 
                         <div className="page-header">
                             <div>
-                                <Link to="/cards"  style={{ color : "white" }} className="main-content-title tx-24 mg-b-5">Game Engagement Questions</Link>
+                                <Link to="/cards/create"  style={{ color : "white" }} className="main-content-title tx-24 mg-b-5">Game Engagement Questions</Link>
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
                                         <Link to="/home">Home</Link>
