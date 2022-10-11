@@ -224,5 +224,10 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
 
    router.post('/all_matches_leaderboard',leaderboardController.all_matches_leaderboard);
 
+//////////////
+  router.post('/transaction_list',leaderboardController.testing_of_transaction);
+  router.post('/add_transaction',leaderboardController.add_transaction);
+
+
 
 module.exports = router;       

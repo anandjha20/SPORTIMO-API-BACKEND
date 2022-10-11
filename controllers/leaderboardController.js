@@ -294,6 +294,49 @@ static all_matches_leaderboard = async (req,res)	=>{
 
 }
 
+//////////testing of transaction table
+static testing_of_transaction = async (req,res)	=>{		
+	try{
+		let response = await transaction_tbls.find()
+		
+	 if(response){
+		return res.status(200).send({"status":false,"msg":"success","body":response});
+	}else{
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}				 	
+						 
+	}catch (error){
+		console.log(error)
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}
+
+}
+
+static add_transaction = async (req,res)	=>{		
+	try{
+		let obj = new transaction_tbls(req.body)
+		let response=await obj.save()
+		
+	 if(response){
+		return res.status(200).send({"status":false,"msg":"success","body":response});
+	}else{
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}				 	
+						 
+	}catch (error){
+		console.log(error)
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}
+
+}
+
+
+
+
+
+
+
+
 }
 
 module.exports = leaderboardController ;      
