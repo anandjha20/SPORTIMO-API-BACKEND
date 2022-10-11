@@ -41,6 +41,7 @@ const token_check =  require('../middleware/token_check');
   let chatController = require("../controllers/chatController");
   let predictionController = require("../controllers/predictionController");
   let leaderboardController= require("../controllers/leaderboardController");
+  let geqController= require("../controllers/geqController");
 
 
   // admin login Routes  
@@ -227,6 +228,20 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
 //////////////
   router.post('/transaction_list',leaderboardController.testing_of_transaction);
   router.post('/add_transaction',leaderboardController.add_transaction);
+ //geq routers
+ router.post('/add_geq',geqController.add_geq);
+ router.put('/update_geq',geqController.update_geq);
+ router.post('/geq_list',geqController.geq_list);
+ router.delete('/delete_geq',geqController.delete_geq);
+ 
+  
+
+
+
+
+
+
+
 
 
 

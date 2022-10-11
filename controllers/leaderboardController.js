@@ -5,7 +5,7 @@ let mongoose = require('mongoose');
 
 
 const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date } = require('../myModel/common_modal');
-const { autoincremental,sendNotificationAdd,myBlockUserIds } = require('../myModel/helper_fun');
+const { autoincremental,sendNotificationAdd,myBlockUserIds,matchWinUsersRank } = require('../myModel/helper_fun');
 
 const  {MyBasePath} = require("../myModel/image_helper");
 
@@ -30,72 +30,28 @@ const prediction_card_tbl = require("../models/prediction_cards")
 
 class leaderboardController { 
 
-// static leaderboard = async (req,res)=>{
-//     try{
-//         //let match_id=req.body.match_id
-// 				const data = await transaction_tbls.find().sort({user_id:-1}).populate('user_id') ;
-// 				let total_point=0;
-// 				//console.log(data[0].user_id._id)
-// 				let all_matches=[];
-// 				let users=[];
-// 				let match=[];
-// 				let user;
-// 				for(let i=0;i<data.length;i++){
-// 					let value=users.includes(data[i].user_id)
-// 					if(!users.includes(data[i].user_id)){users.push(data[i].user_id)}
-// 				}
-// 				const match_data = await transaction_tbls.find().sort({user_id:-1}).populate('match_id') ;
-// 				for(let i=0;i<match_data.length;i++){
-// 					let value=users.includes(match_data[i].user_id)
-// 					if(!users.includes(match_data[i].user_id)){users.push(match_data[i].user_id)}
-// 				}
-// 				let match_id=''
-// 				for(let i=0;i<users.length;i++)
-// 				{
-// 					var user_points=await transaction_tbls.find().populate('user_id',null,{mobile:users[i].mobile})
-// 					//console.log(user_points)
-// 					user='';
-// 					total_point=0;
-// 					let user_id='';
-// 					let image='';
-					
-// 					if(user_points )
-// 					{
-// 						for(let i=0;i<user_points.length;i++)
-// 						{
-// 							if(user_points[i].user_id!=null){
+static leaderboard = async (req,res)=>{
+    try{
+        let match_id =  req.body.match_id;
+		if(isEmpty(match_id)){
+			return res.status(200).send({"status":false,"msg":"Match Id Field Required"});
+		}
 
-// 								total_point+=user_points[i].points;
-// 								user=user_points[i].user_id.name;
-// 								user_id=user_points[i].user_id._id;
-// 								image=user_points[i].user_id.image;
-								
-// 							}
-// 						}
-						
-// 							all_matches.push({user_name:user,total_score:total_point,user_id:user_id,image:image})
-						
-// 					}
-// 				}
-// 				//console.log(all_matches)
-// 				let all_match_result=[]
-// 				all_matches.map((item)=>{
-// 					if(item.user_id!=""){
-// 						all_match_result.push(item)
-// 					}
-// 				});
-
-// 				let data1=await transaction_tbls.aggregate([{$group:{match_id}}])
-// 				console.log(data1)
-
-// 				res.status(200).send({status:true,msg:"data found",body:data1})
+		   let response =  await matchWinUsersRank(match_id);     
+		   if(response){
+			return res.status(200).send({"status":false,"msg":"success","body":response});
+		}else{
+			return res.status(200).send({"status":false,"msg":"server error"});
+		}
         
-// 			}catch (error){
-//         console.log(error)
-//         return res.status(200).send({"status":false,"msg":"server error","body":''});
-//     }
-// }
-static leaderboard = async (req, res) => {
+			}catch (error){
+        console.log(error)
+        return res.status(200).send({"status":false,"msg":"server error","body":''});
+    }
+}
+
+
+static leaderboard2 = async (req, res) => {
 	try {
 		let finduserID = await transaction_tbls.find();
 
@@ -273,16 +229,15 @@ static user_point_details= async (req,res)=>{
 
 static all_matches_leaderboard = async (req,res)	=>{		
 		try{
-            let response = await transaction_tbls.aggregate(
-							 [{ $group: {"_id": "$match_id"}},
-							// { $unwind: "$match_list" },
-							// { $lookup: {from: 'transaction_tbls', localField : '_id', foreignField: 'match_id', as: 'play_match_user'} },
-							// { $project: {"match_id":"$play_match_user.match_id","user_id":"$play_match_user.user_id",
-							// "points":"$play_match_user.points"} } 
-							],);	
-			
+            let response = await transaction_tbls.aggregate([{ $group: {"_id": "$match_id"}} ],);   
+
 		 if(response){
-			return res.status(200).send({"status":false,"msg":"success","body":response});
+				let sumdata = []; 
+			let forGat = await Promise.all(response.map( async(item)=>{ let dx =  await matchWinUsersRank( item._id.toString() ); 
+											  sumdata.push(dx ) } ));
+      		//let response2 = await matchWinUsersRank(response[0]._id.toString());
+
+			return res.status(200).send({"status":false,"msg":"success","body":sumdata});
 		}else{
 			return res.status(200).send({"status":false,"msg":"server error"});
 		}				 	
@@ -318,6 +273,8 @@ static add_transaction = async (req,res)	=>{
 		let response=await obj.save()
 		
 	 if(response){
+
+
 		return res.status(200).send({"status":false,"msg":"success","body":response});
 	}else{
 		return res.status(200).send({"status":false,"msg":"server error"});
@@ -331,6 +288,22 @@ static add_transaction = async (req,res)	=>{
 }
 
 
+static add_transaction2 = async (req,res)	=>{		
+	try{
+		let response = matchWinUsersRank()
+		
+	 if(response){
+		return res.status(200).send({"status":false,"msg":"success","body":response});
+	}else{
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}				 	
+						 
+	}catch (error){
+		console.log(error)
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}
+
+}
 
 
 

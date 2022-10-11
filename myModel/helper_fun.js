@@ -17,8 +17,7 @@
      const user_tokens_tbl = require('../models/user_tokens');
      const team_matches = require('../models/team_matches');
     const block_user_tbl = require("../models/block_user");
-
-
+   const transaction_tbls = require("../models/transactions")    
     const mongoose = require('mongoose');
 
     const  poll_percent = async(poll_id) =>{
@@ -183,6 +182,40 @@ const sendNotificationAdd = (my_obj )=>{
         return [] ; 
          }    
 
-  }   
+  } 
+  
+  const matchWinUsersRank = async (match_id) => {
+    try{
+          let obj_match_id =  mongoose.Types.ObjectId(match_id);
+           let pipeline  = [] ;
+               pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_info'} });
+               pipeline.push({ $unwind: "$user_info" });
+               pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_info'} });
+               pipeline.push({ $unwind: "$match_info" });
+               pipeline.push({$match: {"match_id": obj_match_id }});
+               
+              pipeline.push({ $project: {"_id":0,"user_name":"$user_info.name","points": 1,
+                               "match_name":"$match_info.match_name",match_id:1,user_id:1 } });
+             
+              pipeline.push({ $group: {"_id": { user_id : "$user_id",user_name : "$user_name",match_name : "$match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
+            
+              pipeline.push({ $project: {"_id":0,"user_name":"$_id.user_name","points": 1,
+              "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });
 
-module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne,myBlockUserIds }
+                 pipeline.push({ $sort : { "points": -1}});  
+                 pipeline.push({ $limit :3});  
+
+    let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
+       // console.log("allUsersData call ===  ",allUsersData );
+       
+            return  (allUsersData)? allUsersData : false ; 
+
+      } catch (error) { console.log(error);
+        return false ; 
+         }    
+
+  } 
+
+
+
+module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne,myBlockUserIds,matchWinUsersRank }

@@ -185,7 +185,7 @@ const add_win_point = async(req,res)=>{
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("633e9151968c30669dedbe21");
+                let card_id =  mongoose.Types.ObjectId("63453ab5bbdbacfeab46c4fd");
                 
              
             let pipeline  = [] ;
@@ -239,7 +239,7 @@ const add_win_point = async(req,res)=>{
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("633ea16866b303f06a409912");
+                let card_id =  mongoose.Types.ObjectId("63453b97bbdbacfeab46c519");
                 
              
             let pipeline  = [] ;
@@ -294,9 +294,6 @@ const add_win_point = async(req,res)=>{
  
  const get_card_result_add_11  =  async(req,res)=>{
   try {  
-            /// this function used by red card 
-         // const  data = req.data.team_stats.stat[6] ;
-         
           let team_a = req.data.score_a;
           let team_b = req.data.score_b;
            let data = {team_a,team_b};
@@ -304,7 +301,7 @@ const add_win_point = async(req,res)=>{
           if(!isEmpty(data)){
               let  live_match_id = req.data.match_id;
 
-              let card_id =  mongoose.Types.ObjectId("633ea26166b303f06a40991b");
+              let card_id =  mongoose.Types.ObjectId("632b13b83fdfc0f533c51dea");
               
            
           let pipeline  = [] ;
@@ -359,7 +356,7 @@ const add_win_point = async(req,res)=>{
           if(!isEmpty(winner)){
               let  live_match_id = req.data.match_id;
 
-              let card_id =  mongoose.Types.ObjectId("633ea41866b303f06a409927");
+              let card_id =  mongoose.Types.ObjectId("63454475bbdbacfeab46c563");
               
            
           let pipeline  = [] ;
@@ -421,7 +418,7 @@ const add_win_point = async(req,res)=>{
 
               let  live_match_id = req.data.match_id;
 
-              let card_id =  mongoose.Types.ObjectId("633ea20266b303f06a409917");
+              let card_id =  mongoose.Types.ObjectId("63454628bbdbacfeab46c567");
               
            
           let pipeline  = [] ;
@@ -475,7 +472,7 @@ const add_win_point = async(req,res)=>{
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("633e9e5666b303f06a40990e");
+                let card_id =  mongoose.Types.ObjectId("634542edbbdbacfeab46c55e");
                 
              
             let pipeline  = [] ;
@@ -529,7 +526,7 @@ const add_win_point = async(req,res)=>{
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("633ea16866b303f06a409912");
+                let card_id =  mongoose.Types.ObjectId("6345406abbdbacfeab46c53b");
                 
              
             let pipeline  = [] ;
@@ -586,7 +583,7 @@ const add_win_point = async(req,res)=>{
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("633ea461a33a84c65ab7e27b");
+                let card_id =  mongoose.Types.ObjectId("6345416fbbdbacfeab46c547");
                 
              
             let pipeline  = [] ;
@@ -640,7 +637,7 @@ const add_win_point = async(req,res)=>{
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("633ea1bb66b303f06a409915");
+                let card_id =  mongoose.Types.ObjectId("63453ccebbdbacfeab46c520");
                 
              
             let pipeline  = [] ;
@@ -697,7 +694,7 @@ const add_win_point = async(req,res)=>{
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("633ea39766b303f06a409924");
+                let card_id =  mongoose.Types.ObjectId("63453eaabbdbacfeab46c530");
                 
              
             let pipeline  = [] ;
