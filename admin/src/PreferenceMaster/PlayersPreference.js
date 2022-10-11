@@ -173,7 +173,7 @@ export default function TeamsPreference() {
                         let data = response.data;
                         console.log(data.msg)
                         if (data.status) {
-                            toast.success(data.msg);
+                            toast.success("Players preference added successfully");
                             e.target.reset();
                             return PreferenceList();
                         } else {

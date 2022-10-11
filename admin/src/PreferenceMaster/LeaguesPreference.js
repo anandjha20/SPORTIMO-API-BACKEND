@@ -75,7 +75,7 @@ export default function LeaguesPreference() {
    const deleteCategory = (_id) => {
     Swal.fire({
         title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        text: "Are you sure you want to delete selected Player Preference ?",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -90,7 +90,7 @@ export default function LeaguesPreference() {
                     if (data.status) { 
                         Swal.fire(
                             'Deleted!',
-                             data.msg,
+                             "Player preference deleted successfully",
                             'success'
                           )
                          return PreferenceList();
@@ -225,7 +225,7 @@ export default function LeaguesPreference() {
 
                         <div className="page-header">
                             <div>
-                                <h2 className="main-content-title tx-24 mg-b-5">LeaguesPreference</h2>
+                                <h2 className="main-content-title tx-24 mg-b-5">Leagues Preference</h2>
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
                                         <Link to="/home">Home</Link>
@@ -280,7 +280,7 @@ export default function LeaguesPreference() {
                                                     <div className="col-lg-12">
 
                                                         <div className="table-card MuiPaper-root MuiPaper-elevation2 MuiPaper-rounded">
-                                                            <h6 className="MuiTypography-root MuiTypography-h6 padd1rem">LeaguesPreference List</h6>
+                                                            <h6 className="MuiTypography-root MuiTypography-h6 padd1rem">Leagues Preference List</h6>
                                                             <table className="table ">
                                                                 <thead>
                                                                     <tr>
