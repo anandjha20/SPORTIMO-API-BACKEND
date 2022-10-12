@@ -384,12 +384,7 @@ static user_point_details= async (req,res)=>{
 		if(!isEmpty(match_id)){condition_obj={...condition_obj,"match_id":match_id}};
 
 		const response=await transaction_tbls.find(condition_obj).populate('user_id match_id card_id','name image match_name match_id name card_type').sort({date:-1})
-		let path=MyBasePath(req,res);
-		response.map((item)=>{
-			if(!isEmpty(item.user_id.image)){
-				item.user_id.image=`${path}/image/assets/user_img/${item.user_id.image}`
-			}
-		})
+		
 		if(!isEmpty(response)){
 			return res.status(200).send({"status":true,"msg":"success","body":response});
 		}else{
@@ -423,6 +418,25 @@ static all_matches_leaderboard = async (req,res)	=>{
 
 }
 
+
+static bonus_points = async (req,res)	=>{		
+	try{
+		let obj = new transaction_tbls(req.body)
+		let response=await obj.save()
+		
+		if(!isEmpty(response)){
+			return res.status(200).send({"status":true,"msg":"bonus points add","body":response});
+		}else{
+			return res.status(200).send({"status":false,"msg":"something went wrong"});
+		}				 	
+		
+	}catch (error){
+		console.log(error)
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}
+	
+}
+
 //////////testing of transaction table
 static testing_of_transaction = async (req,res)	=>{		
 	try{
@@ -449,7 +463,7 @@ static add_transaction = async (req,res)	=>{
 	 if(response){
 
 
-		return res.status(200).send({"status":false,"msg":"success","body":response});
+		return res.status(200).send({"status":true,"msg":"success","body":response});
 	}else{
 		return res.status(200).send({"status":false,"msg":"server error"});
 	}				 	

@@ -20,6 +20,7 @@ const sponsorImg = multer({ storage: storage });
 const sponsorImgUpload = sponsorImg.fields([{ name: 'image', maxCount: 1 }]);
 
 const IntroSliderImgUpload =  img_upload('./assets/introSlider_img','image');
+const avatarImgUpload =  img_upload('./assets/avatar_img','image');
 const MasterImgUpload =  img_upload('./assets/master','image');
 const predictionCardImgUpload = img_upload('./assets/predictionCard_img','image');
  /// import user token middleware  
@@ -42,7 +43,7 @@ const token_check =  require('../middleware/token_check');
   let predictionController = require("../controllers/predictionController");
   let leaderboardController= require("../controllers/leaderboardController");
   let geqController= require("../controllers/geqController");
-
+  let avatarController= require("../controllers/avatarController");
 
   // admin login Routes  
   router.post('/admin_login/',AdminController.admin_login);
@@ -220,6 +221,16 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    
    //leaderboard api
    router.post('/user_point_details',leaderboardController.user_point_details);
+   router.post('/leaderboard',leaderboardController.leaderboard);
+   router.post('/bonus_points',leaderboardController.bonus_points);
+
+
+   //avatar api 
+   router.post('/avatar_add',avatarImgUpload,avatarController.avatar_add); 
+   router.get('/avatar_get',avatarController.avatar_get); 
+   router.delete('/avatar_delete/:id',avatarController.avatar_delete);       
+ 
+
     // past_match_list 
    router.post('/past_match_list',MasterController.past_match_list);          
 

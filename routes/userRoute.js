@@ -41,6 +41,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
       let predictionController = require("../controllers/predictionController");                                            
       let leaderboardController= require("../controllers/leaderboardController");       
       let MasterController = require('../controllers/MasterController');
+      let avatarController = require('../controllers/avatarController');
   
           router.get('/JK/',UserController.dashboardAllCount);
           router.get('/sendEmail/',UserController.User_sendEmail);
@@ -201,6 +202,9 @@ const userReportImg =  img_upload('./assets/user_img','image');
       router.post('/user_mobile_email_update', UserController.user_mobile_email_update);
       router.post('/verify_update_otp', UserController.verify_update_otp);  
 
+    //avatar api
+   router.get('/avatar_get',avatarController.avatar_get); 
+   
     //leaderboard api
     router.post('/leaderboard',leaderboardController.leaderboard);
     router.post('/user_point_details',leaderboardController.user_point_details);

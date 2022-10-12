@@ -22,6 +22,7 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds } = require('../myMod
     const content_tbls = require('../models/content_tbls'); 
     const userLanguage = require("../models/userLanguage");            
     const follower_tbls = require("../models/follower_users");         
+    const avatars_tbl = require("../models/avatars");         
 
 
 
@@ -1140,8 +1141,12 @@ static verify_nickName = async(req,res)=>{
 
     static add_avatar = async (req,res)=>{
         try{
-            let img=req.files
-
+            console.log(req.files); 
+            console.log(req.body.name); 
+        
+            let img = ((req.files) && (req.files.user_image != undefined ) && (req.files.user_image.length >0) )? req.files.user_image[0].filename : '';
+        console.log('img ==', img); 
+        
         }catch (error){
             console.log(error);
         return res.status(200).send({status:false,msg:'server error' }) ;          
