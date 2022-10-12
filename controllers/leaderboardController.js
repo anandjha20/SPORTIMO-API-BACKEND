@@ -100,6 +100,7 @@ static leaderboard = async (req, res) => {
 				let obj = {
 					_id: i._id,
 					name: i.name,
+					Image:i.image,
 					points: sum
 				}
 				final12.push(obj)
@@ -178,6 +179,7 @@ static leaderboard = async (req, res) => {
 				let obj = {
 					_id: i._id,
 					name: i.name,
+					Image:i.image,
 					points: sum,
 					//match_id: findmatchID
 				}
@@ -380,7 +382,7 @@ static user_point_details= async (req,res)=>{
 		if(!isEmpty(user_id)){condition_obj={...condition_obj,"user_id":user_id}};
 		if(!isEmpty(match_id)){condition_obj={...condition_obj,"match_id":match_id}};
 
-		const response=await transaction_tbls.find({}).populate('match_id card_id','match_name match_id name card_type').sort({date:-1})
+		const response=await transaction_tbls.find({}).populate('user_id match_id card_id','name image match_name match_id name card_type').sort({date:-1})
 		if(response){
 			return res.status(200).send({"status":false,"msg":"success","body":response});
 		}else{

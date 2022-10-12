@@ -1136,9 +1136,20 @@ static verify_nickName = async(req,res)=>{
     }
            
     
-    
-    
     }
+
+    static add_avatar = async (req,res)=>{
+        try{
+            let img=req.files
+
+        }catch (error){
+            console.log(error);
+        return res.status(200).send({status:false,msg:'server error' }) ;          
+        }
+    }
+
+
+
 
 
 }
