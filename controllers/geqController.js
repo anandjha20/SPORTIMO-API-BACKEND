@@ -44,7 +44,7 @@ class geqController {
              }
 
          }else{
-            res.status(200).send({'status':true,'msg':'all field required'});
+            res.status(200).send({'status':false,'msg':'all field required'});
          }
         
     } catch (error) { console.log(error);
@@ -117,7 +117,7 @@ static update_geq = async (req,res)=>{
                     }
     
                 }else{
-                res.status(200).send({'status':true,'msg':'all field required'});
+                res.status(200).send({'status':false,'msg':'all field required'});
                 }
             
         } catch (error) { console.log(error);
@@ -129,12 +129,12 @@ static update_geq = async (req,res)=>{
 static geq_list = async (req,res)=>{
     try {
         let page=req.body.page;
-        let match_name=req.body.match_name;
+        let match_id=req.body.match_id;
         let event=req.body.event;
         let reward_type=req.body.reward_type;
 
         let condition_obj={};
-        if(!isEmpty(match_name)){condition_obj={...condition_obj,match_name}};
+        if(!isEmpty(match_id)){condition_obj={...condition_obj,match_id}};
         if(!isEmpty(event)){condition_obj={...condition_obj,event}};
         if(!isEmpty(reward_type)){condition_obj={...condition_obj,reward_type}};
 
@@ -159,7 +159,7 @@ static geq_list = async (req,res)=>{
 static delete_geq = async (req,res)=>{
     try {
     
-            let _id=req.body._id
+            let _id=req.params.id
             
                 if(!isEmpty(_id) ){
                     
@@ -171,7 +171,7 @@ static delete_geq = async (req,res)=>{
                     }
     
                 }else{
-                res.status(200).send({'status':true,'msg':'all field required'});
+                res.status(200).send({'status':false,'msg':'all field required'});
                 }
             
         } catch (error) { console.log(error);

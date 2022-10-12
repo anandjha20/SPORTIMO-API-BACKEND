@@ -232,7 +232,7 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
  router.post('/add_geq',geqController.add_geq);
  router.put('/update_geq',geqController.update_geq);
  router.post('/geq_list',geqController.geq_list);
- router.delete('/delete_geq',geqController.delete_geq);
+ router.delete('/delete_geq/:id?',geqController.delete_geq);
  
   
 

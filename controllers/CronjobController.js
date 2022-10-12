@@ -5,6 +5,7 @@ const { rows_count,getcurntDate,getTime,isEmpty} = require("../myModel/common_mo
   const user_tbl = require('../models/user');    
   const transactions_tbl = require('../models/transactions');    
   const playMatchCards_tbl = require('../models/playMatchCards');   
+  const team_matches_tbl = require('../models/team_matches');   
   
  const  {MyBasePath} = require("../myModel/image_helper");
   
@@ -21,22 +22,27 @@ class ConjobController{
           try {
                 let  match_id = 2701168 ; // 2701168;
                 // yellow card no == 6    
-            
-               let data = await match_card_number(match_id,6);          
+                let dates =  req.body.date ; ///  "2022-10-07" ;    /// getcurntDate();
+                let whr =  {date_utc: { $te: dates } } ;
                 
-                 if(!isEmpty(data)){
-                          if( data.team_a >  data.team_b ){
-                            return  res.status(200).send({'status':true,'msg':"tam_A win success",'body': "opt_1", 'data':data });
-                          }else   if( data.team_b >  data.team_a  ){
-                            return  res.status(200).send({'status':true,'msg':"tam_B win success",'body': "opt_2",  'data':data });
-                          }else  if( data.team_b == data.team_a  ){
-                            return  res.status(200).send({'status':true,'msg':"equal to equal ( Equal )  success",'body': "opt_3", 'data':data });
-                          }else{
-                            return  res.status(200).send({'status':false,'msg':"Result not show this time", 'body':'' });
-                           }
-                 }else{
-                  return  res.status(200).send({'status':false,'msg':"Match not show this time", 'body':'' });
-                 }
+                     console.log(whr); 
+                let data = await team_matches_tbl.find(whr);
+
+                   return  res.status(200).send({'status':true,'msg':'success','body':data});
+              
+                      //  if(!isEmpty(data)){
+                //           if( data.team_a >  data.team_b ){
+                //             return  res.status(200).send({'status':true,'msg':"tam_A win success",'body': "opt_1", 'data':data });
+                //           }else   if( data.team_b >  data.team_a  ){
+                //             return  res.status(200).send({'status':true,'msg':"tam_B win success",'body': "opt_2",  'data':data });
+                //           }else  if( data.team_b == data.team_a  ){
+                //             return  res.status(200).send({'status':true,'msg':"equal to equal ( Equal )  success",'body': "opt_3", 'data':data });
+                //           }else{
+                //             return  res.status(200).send({'status':false,'msg':"Result not show this time", 'body':'' });
+                //            }
+                //  }else{
+                //   return  res.status(200).send({'status':false,'msg':"Match not show this time", 'body':'' });
+                //  }
 
 
 
