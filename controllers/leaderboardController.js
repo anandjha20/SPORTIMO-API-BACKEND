@@ -382,11 +382,11 @@ static user_point_details= async (req,res)=>{
 		if(!isEmpty(user_id)){condition_obj={...condition_obj,"user_id":user_id}};
 		if(!isEmpty(match_id)){condition_obj={...condition_obj,"match_id":match_id}};
 
-		const response=await transaction_tbls.find({}).populate('user_id match_id card_id','name image match_name match_id name card_type').sort({date:-1})
-		if(response){
-			return res.status(200).send({"status":false,"msg":"success","body":response});
+		const response=await transaction_tbls.find(condition_obj).populate('user_id match_id card_id','name image match_name match_id name card_type').sort({date:-1})
+		if(!isEmpty(response)){
+			return res.status(200).send({"status":true,"msg":"success","body":response});
 		}else{
-			return res.status(200).send({"status":false,"msg":"server error"});
+			return res.status(200).send({"status":false,"msg":"no data found"});
 		}
 	}catch (error){
 		console.log(error)
@@ -459,10 +459,10 @@ static add_transaction2 = async (req,res)	=>{
 	try{
 		let response = matchWinUsersRank()
 		
-	 if(response){
-		return res.status(200).send({"status":false,"msg":"success","body":response});
+	 if(!isEmpty(response)){
+		return res.status(200).send({"status":true,"msg":"success","body":response});
 	}else{
-		return res.status(200).send({"status":false,"msg":"server error"});
+		return res.status(200).send({"status":false,"msg":"something went wrong"});
 	}				 	
 						 
 	}catch (error){
