@@ -59,7 +59,7 @@ static leaderboard = async (req, res) => {
 
 
 
-
+		const path=MyBasePath(req,res);
 
 		if (isEmpty(matchID)) {
 
@@ -100,9 +100,9 @@ static leaderboard = async (req, res) => {
 				let obj = {
 					_id: i._id,
 					name: i.name,
-					Image:i.image,
 					points: sum
 				}
+				if(!isEmpty(i.image)){obj={...obj,image:`${path}/image/assets/user_img/${i.image}`}}else{obj={...obj,image:''}}
 				final12.push(obj)
 
 			}
@@ -183,6 +183,7 @@ static leaderboard = async (req, res) => {
 					points: sum,
 					//match_id: findmatchID
 				}
+				if(!isEmpty(i.image)){obj={...obj,image:`${path}/image/assets/user_img/${i.image}`}}else{obj={...obj,image:''}}
 				final12.push(obj)
 
 
@@ -383,6 +384,12 @@ static user_point_details= async (req,res)=>{
 		if(!isEmpty(match_id)){condition_obj={...condition_obj,"match_id":match_id}};
 
 		const response=await transaction_tbls.find(condition_obj).populate('user_id match_id card_id','name image match_name match_id name card_type').sort({date:-1})
+		let path=MyBasePath(req,res);
+		response.map((item)=>{
+			if(!isEmpty(item.user_id.image)){
+				item.user_id.image=`${path}/image/assets/user_img/${item.user_id.image}`
+			}
+		})
 		if(!isEmpty(response)){
 			return res.status(200).send({"status":true,"msg":"success","body":response});
 		}else{
