@@ -203,6 +203,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
 
     //leaderboard api
     router.post('/leaderboard',leaderboardController.leaderboard);
+    router.post('/user_point_details',leaderboardController.user_point_details);
+   
 
 ////////////////////////////////////////////
       router.post('/deleteOne',MasterController.deleteOne)

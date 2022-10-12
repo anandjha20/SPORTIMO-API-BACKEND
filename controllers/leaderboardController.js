@@ -30,25 +30,190 @@ const prediction_card_tbl = require("../models/prediction_cards")
 
 class leaderboardController { 
 
-static leaderboard = async (req,res)=>{
-    try{
-        let match_id =  req.body.match_id;
-		if(isEmpty(match_id)){
-			return res.status(200).send({"status":false,"msg":"Match Id Field Required"});
+// static leaderboard = async (req,res)=>{
+//     try{
+//         let match_id =  req.body.match_id;
+// 		if(isEmpty(match_id)){
+// 			return res.status(200).send({"status":false,"msg":"Match Id Field Required"});
+// 		}
+
+// 		   let response =  await matchWinUsersRank(match_id);     
+// 		   if(response){
+// 			return res.status(200).send({"status":false,"msg":"success","body":response});
+// 		}else{
+// 			return res.status(200).send({"status":false,"msg":"server error"});
+// 		}
+        
+// 			}catch (error){
+//         console.log(error)
+//         return res.status(200).send({"status":false,"msg":"server error","body":''});
+//     }
+//}
+
+static leaderboard = async (req, res) => {
+	try {
+		let finduserID = await transaction_tbls.find()
+		console.log(finduserID)
+
+		var matchID = req.body.matchID
+
+
+
+
+
+		if (isEmpty(matchID)) {
+
+			let userIDs = []
+			for (let items of finduserID) {
+				//console.log(items)
+				let finduser = await user_tbl.find({ _id: items.user_id })
+				userIDs.push(finduser)
+			}
+
+			let finduser = await user_tbl.find()
+
+			var trans = []
+			for (let userr of finduser) {
+
+				let findtransections = await transaction_tbls.find({ user_id: userr._id })
+
+				trans.push({ ...userr._doc, transections: findtransections })
+			}
+
+
+			let final = []
+			let final1 = []
+			for (let ele of trans) {
+				if (ele.transections) {
+					final1.push(ele)
+				}
+
+			}
+
+			let final12 = []
+			for (let i of final1) {
+				var sum = 0;
+				for (let j of i.transections) {
+					sum += j.points
+				}
+
+				let obj = {
+					_id: i._id,
+					name: i.name,
+					points: sum
+				}
+				final12.push(obj)
+
+			}
+
+			let sorted = final12.sort(function (c1, c2) {
+				if (c1.points < c2.points) {
+					return 1;
+				} else {
+					return -1;
+				}
+			})
+
+
+			let findthree = [];
+			sorted.map((item)=>{
+				if(item.points>0){
+					findthree.push(item)
+				}
+			})
+			//.slice(0,3);
+
+			//console.log(findthree)
+
+			return res.status(200).send({ status: true, data: findthree })
+
+		} else {
+
+			let findtrans = await transaction_tbls.find({ match_id: matchID })
+
+			//console.log(findtrans)
+
+			if (findtrans.length == 0) {
+				return res.status(200).send({ status: false, msg: "No data found" })
+			}
+
+
+
+			let userIDs = []
+			for (let items of finduserID) {
+				//console.log(items)
+				let finduser = await user_tbl.find({ _id: items.user_id })
+				userIDs.push(finduser)
+			}
+
+			let finduser = await user_tbl.find()
+
+			var trans = []
+			for (let userr of finduser) {
+
+				let findtransections = await transaction_tbls.find({ match_id: matchID, user_id: userr._id })
+
+				trans.push({ ...userr._doc, transections: findtransections })
+			}
+
+
+			let final = []
+			let final1 = []
+			for (let ele of trans) {
+				if (ele.transections) {
+					final1.push(ele)
+				}
+
+			}
+
+			let final12 = []
+			for (let i of final1) {
+				var sum = 0;
+				let matchdata = []
+				for (let j of i.transections) {
+					matchdata.push(j)
+					sum += j.points
+				}
+
+				let obj = {
+					_id: i._id,
+					name: i.name,
+					points: sum,
+					//match_id: findmatchID
+				}
+				final12.push(obj)
+
+
+			}
+
+			let sorted = final12.sort(function (c1, c2) {
+				if (c1.points < c2.points) {
+					return 1;
+				} else {
+					return -1;
+				}
+			})
+
+			let findthree = [];
+			sorted.map((item)=>{
+				if(item.points>0){
+					findthree.push(item)
+				}
+			})
+			
+
+			//console.log(findthree)
+
+			return res.status(200).send({ status: true,msg:"data found", body: findthree })
+
 		}
 
-		   let response =  await matchWinUsersRank(match_id);     
-		   if(response){
-			return res.status(200).send({"status":false,"msg":"success","body":response});
-		}else{
-			return res.status(200).send({"status":false,"msg":"server error"});
-		}
-        
-			}catch (error){
-        console.log(error)
-        return res.status(200).send({"status":false,"msg":"server error","body":''});
-    }
+	} catch (error) {
+		console.log(error)
+		return res.status(200).send({ status: false,msg:"server error"})
+	}
 }
+
 
 
 static leaderboard2 = async (req, res) => {
