@@ -214,6 +214,7 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    // chat block User LIst  
    router.post('/admin_settings_update',AdminController.admin_settings_update);
    router.get('/admin_settings_get',AdminController.admin_settings_get);
+   router.post('/admin_settings_set',AdminController.admin_settings_set);
   
   
    router.get('/jk_test',PollController.jk_test);    

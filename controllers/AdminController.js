@@ -572,21 +572,26 @@ class AdminController {
                 let unblock_period_days=req.body.unblock_period_days;
                 let auto_chat_blocking=req.body.auto_chat_blocking;
                 let guest_user_active_days=req.body.guest_user_active_days;
+                let default_prediction_period=req.body.default_prediction_period;
+                let default_prediction_update_period=req.body.default_prediction_update_period;
+                
                 if(!isEmpty(unblock_period_days)){condition_obj={...condition_obj,"unblock_period_days":unblock_period_days}}
                 if(!isEmpty(auto_chat_blocking)){condition_obj={...condition_obj,"auto_chat_blocking":auto_chat_blocking}}
                 if(!isEmpty(guest_user_active_days)){condition_obj={...condition_obj,"guest_user_active_days":guest_user_active_days}}
+                if(!isEmpty(default_prediction_period)){condition_obj={...condition_obj,"default_prediction_period":default_prediction_period}}
+                if(!isEmpty(default_prediction_update_period)){condition_obj={...condition_obj,"default_prediction_update_period":default_prediction_update_period}}
               
         if(isEmpty(condition_obj)){
                return res.status(200).send({"status":false,"msg":"All Field Required","body":''});         
             }
 
-           admin_settings.findOneAndUpdate({},condition_obj, {new: true}, (err,data)=>{
-            if(err){  console.log(err); 
+          let response =  await admin_settings.updateMany(condition_obj);
+            if(isEmpty(response)){  console.log(err); 
               return res.status(200).send({"status":false,"msg":"No Data found!... ","body":''});  
             }else{
              
-              return res.status(200).send({"status":true,"msg":"settings updated successfully","body":data})
-            } });
+              return res.status(200).send({"status":true,"msg":"settings updated successfully","body":response})
+            } ;
       
           }catch (error){
             console.log(error)
@@ -597,6 +602,21 @@ class AdminController {
     static admin_settings_get = async (req,res)=>{
       try{
         let response=await admin_settings.findOne();
+        if(!isEmpty(response)){
+        return res.status(200).send({"status":true,"msg":"Success","body":response})
+        }else{
+        return res.status(200).send({"status":false,"msg":"no data found!..","body":''})
+        }
+      }catch (error){
+        console.log(error)
+        return res.status(200).send({"status":false,"msg":"server erroe","body":''})
+      }
+  
+    }
+    static admin_settings_set = async (req,res)=>{
+      try{
+        let obj=new admin_settings(req.body)
+        let response=await obj.save()
         if(!isEmpty(response)){
         return res.status(200).send({"status":true,"msg":"Success","body":response})
         }else{
