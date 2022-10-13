@@ -47,7 +47,7 @@ class notificationController {
                     
                       let whr = {};
                   page = (isEmpty(page) || page == 0 )? 1 :page ; 
-                       if(!isEmpty(id)){whr = {_id: id} ;} 
+                       if(!isEmpty(id)){whr = {...whr, user_id: [id, ""]  }}; 
       
                   let query =  notification_tbl.find(whr).sort({_id:-1});
                     const query2 =  query.clone();

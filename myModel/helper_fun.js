@@ -75,6 +75,8 @@ const sendNotificationAdd = (my_obj )=>{
                 try {
                        // console.log("fun call ==  ",my_obj);  
                        // return false;        
+                    let user_id=my_obj.toUser;
+                    console.log(my_obj.toUser)
                      let title = my_obj.title ;  
                      let msg = my_obj.msg ;  
                      let type_status = my_obj.type_status ;  
@@ -85,16 +87,17 @@ const sendNotificationAdd = (my_obj )=>{
                      
 
                        let m_id =  String(module_id);
-                       console.log("sendNotificationAdd == ", module_id);
-                   // let date = getcurntDate(); 
-                       let addData =  {title:title,message:msg,type_status:type_status };
+                      // console.log("sendNotificationAdd == ", module_id);
+                    let date = getcurntDate(); 
+                       let addData =  {title:title,message:msg,type_status:type_status,user_id:user_id };
                        
                        if(! isEmpty(category_type)){addData.category_type = category_type ; }
                        if(! isEmpty(m_id)){addData.module_id = m_id  }
                        if(! isEmpty(module_type)){addData.module_type = module_type ; }
                      
                        if(addData.module_id == 'undefined' ){ addData.module_id = '' }
-                       console.log("sendData == ", addData);
+                       if(addData.user_id == 'undefined' ){ addData.user_id = '' }
+                       //console.log("sendData == ", addData);
                           
                         let add = new notification_tbl(addData);
                             add.save((err,data)=>{

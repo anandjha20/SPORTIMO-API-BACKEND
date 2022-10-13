@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
             
 const sprtschema = new Schema({
+                         user_id : {type : String},     
                          title : {type : String,trim:true, required : true},
                         message: { type: String,trim:true, required: true,  },
                      
