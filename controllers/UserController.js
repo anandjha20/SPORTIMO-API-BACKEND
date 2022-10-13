@@ -432,6 +432,7 @@ static user_profile_view = async(req,res)=>{
 
 const checkusers = await block_user_tbl.find({ 'from_user': user_id,'to_user': view_user_id}).countDocuments();
 
+
 const checkFollowStatus = await follower_tbls.find({ follower_id : user_id,following_id: view_user_id}).countDocuments();
 
 var query = user_tbl.findOne({ '_id': user_id});

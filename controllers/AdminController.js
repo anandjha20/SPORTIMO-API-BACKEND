@@ -613,21 +613,41 @@ class AdminController {
       }
   
     }
-    static admin_settings_set = async (req,res)=>{
-      try{
-        let obj=new admin_settings(req.body)
-        let response=await obj.save()
-        if(!isEmpty(response)){
-        return res.status(200).send({"status":true,"msg":"Success","body":response})
-        }else{
-        return res.status(200).send({"status":false,"msg":"no data found!..","body":''})
-        }
-      }catch (error){
-        console.log(error)
-        return res.status(200).send({"status":false,"msg":"server erroe","body":''})
-      }
+    // static admin_settings_set = async (req,res)=>{
+    //   try{
+    //     let obj=new admin_settings(req.body)
+    //     let response=await obj.save()
+    //     if(!isEmpty(response)){
+    //     return res.status(200).send({"status":true,"msg":"Success","body":response})
+    //     }else{
+    //     return res.status(200).send({"status":false,"msg":"no data found!..","body":''})
+    //     }
+    //   }catch (error){
+    //     console.log(error)
+    //     return res.status(200).send({"status":false,"msg":"server erroe","body":''})
+    //   }
   
+    // }
+
+  static user_delete = async (req,res)=>{
+    try {
+     
+       let _id = req.body._id;
+   if(!isEmpty(_id)){
+    let result=await user_tbl.findOneAndDelete({_id})
+    res.status(200).send({'status':true,'msg':"user deleted",body:result});
+   }else{     
+       //  let data2 = await user_tbl.find(whr).sort({ _id: -1 }) ;
+        
+      res.status(200).send({'status':false,'msg':"all field required"});
     }
+    } catch (error) { console.log(error);  // JSON.parse(json.stringify(error))
+      res.status(200).send({'status':false,'msg':'','body':''});
+    }
+         
+        }     
+
+
 
 
 }
