@@ -1,84 +1,62 @@
-import React ,{ useState, useEffect} from "react";
-import  Chart  from "react-apexcharts";
-import axios from "axios";
-import { useParams } from "react-router-dom";
-import Button from "@mui/material/Button";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useEffect } from "react";
+import * as am4core from "@amcharts/amcharts4/core";
+import * as am4charts from "@amcharts/amcharts4/charts";
+import am4themes_material from "@amcharts/amcharts4/themes/material";
+import am4themes_animated from "@amcharts/amcharts4/themes/animated";
 
-function UserAnswerPieChart()
-{
-   const [stdudentSubject, setStudentsubject]= useState([]);
-   const [studentMarks, setStudentMarks]= useState([]);
-   const [datachart, setData]= useState([]);
-  
-   const { id } = useParams();
+am4core.useTheme(am4themes_material);
+am4core.useTheme(am4themes_animated);
 
+export default function UserAnswerPieChart(props) {
+    useEffect(() => {
+        var chart = am4core.create("piediv", am4charts.PieChart3D);
+        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
+        chart.legend = new am4charts.Legend();
 
-const disclosedPoll = ()=>
-{
-    const OptionCount=[];
-    const optionName=[];
-   axios.get(`/web_api/poll_result_show/${id}`)
-    .then(res => {
-          const datachart = res.data.body;
-          setData(datachart)
-          console.log(datachart);
-          if(res.status)
-          {
-            for(let i=0; i< datachart.length; i++)
-                {
-                optionName.push(datachart[i]._id);
-                OptionCount.push((datachart[i].count));
-                }
-                setStudentsubject(optionName);
-                setStudentMarks(OptionCount);
-                console.log(optionName); 
-                console.log(OptionCount); 
-                console.log(datachart); 
-         }
-         else {
-            toast.error('something went wrong please try again');
-        }
-        })
-       
-}
+        chart.data = [
+            {
+                country: "Answer 1",
+                litres: 501.9
+            },
+            {
+                country: "Answer 2",
+                litres: 301.9
+            },
+            {
+                country: "Answer 3",
+                litres: 201.1
+            },
+            {
+                country: "Answer 4",
+                litres: 165.8
+            },
+            {
+                country: "Answer 5",
+                litres: 139.9
+            },
+        ];
 
-   useEffect( ()=>
-    {
-    disclosedPoll();
+        var series = chart.series.push(new am4charts.PieSeries3D());
+        series.dataFields.value = "litres";
+        series.dataFields.category = "country";
 
-   },[]);
+        return () => {
+            chart && chart.dispose();
+        };
+    });
 
-   
     return(
         <>
-           <ToastContainer position="top-right" />
-
-            <div className="container-fluid mb-3" >
-                <h3 className="text-center mt-3 title-pie">USER ANSWERS CHART</h3>
-
-
-                {!datachart ? <><h2 className="text-white text-center mt-5">No Answer Available!</h2></>  : null}
-                {/* <Button type='submit' variant="contained" className="mr-3 btn-filter btnBg" onClick={() => { disclosedPoll();}}>Show Pie Chart</Button> */}
-                <Chart 
-                type="pie"
+            <div
+                id="piediv"
+                className={props.className}
                 style={{ width: "100%", height: "380px", marginTop: "40px" , }}
-                series={ studentMarks}                
-                 options={{
-                        // title:{ text:"Student PieChart"
-                        // } , 
-                  noData:{text:"Empty Data"},                        
-                  labels:stdudentSubject                     
+            >
+            
 
-                 }}
-                >  
-
-              
-                </Chart>
             </div>
         </>
+
     );
 }
-export default UserAnswerPieChart;

@@ -11,7 +11,6 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
 import SelectTageting from "./Components/SelectTageting";
-import { useNavigate } from 'react-router-dom';
 
 import axios from "axios";
 
@@ -20,15 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function AddSponsorship() {
-  
 
-  const navigate = useNavigate();
-  useEffect(() => {
-    document.body.className = "main-body leftmenu sponer_list";
-    return () => {
-      document.body.className = "main-body leftmenu";
-    }
-  }, []);
   const [alignment, setAlignment] = React.useState("banner");
   const [alignmentSkip, setAlignmentSkip] = React.useState("skip");
   const [skip_add, setSkip_add] = React.useState("1");
@@ -106,14 +97,14 @@ export default function AddSponsorship() {
 
       // let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
 
-      let response = await axios.post('/web_api/add_sponsor',dataToSend2, options1);
+      let response = await axios.post('/add_sponsor',dataToSend2, options1);
 
       if (response.status) {
 
         let data = response.data;
 
         if (data.status) {
-          navigate(`/sponsorship`);
+
           toast.success(data.msg);
         } else {
           toast.error('something went wrong please try again');
@@ -182,7 +173,6 @@ export default function AddSponsorship() {
                                   <MenuItem value="Bali">Bali Utd vs Rans Nusantara</MenuItem>
                                   <MenuItem value="Persija">Persija vs Persita	</MenuItem>
                                   <MenuItem value="Dewa">Dewa United vs Arema</MenuItem>
-                                  <MenuItem value="Football">Football</MenuItem>
                                 </Select>
                                 {/* <FormHelperText>Without label</FormHelperText> */}
                               </FormControl>

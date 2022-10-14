@@ -13,14 +13,9 @@ import { ToastContainer, toast } from 'react-toastify';
 
     
 function SponsorshipDetails() {
-    useEffect(() => {
-        document.body.className = "main-body leftmenu sponer_list";
-        return () => {
-          document.body.className = "main-body leftmenu";
-        }
-      }, []);     
-     const { id } = useParams();
-     console.log("params idsdd == ",id);
+            
+            const { id } = useParams();
+                console.log("params idsdd == ",id);
 
     const[sponsorData,setSponsorData] = useState([]);
     const get_data = async(id)=>{
@@ -30,7 +25,7 @@ function SponsorshipDetails() {
           let token = localStorage.getItem("token");
           let header = ({ 'token': `${token}` });
           let options1 = ({ headers: header });
-          let response = await axios.get('/web_api/sponsor_detail/'+id,options1, formData);
+          let response = await axios.get('/sponsor_detail/'+id,options1, formData);
          let t_data = response.data;
           
     

@@ -14,24 +14,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
-function SponsorshipList() {
 
-    useEffect(() => {
-        document.body.className = "main-body leftmenu sponer_list";
-        return () => {
-          document.body.className = "main-body leftmenu";
-        }
-      }, []);
+function SponsorshipList() {
+   
 
     const [sponsor_list, setSponsor_list] = React.useState([]);
 
     const get_data = async(sendData) =>{
         try {
          
-            let token = localStorage.getItem("token");
-            let header = ({ 'token': `${token}` });
-            let options1 = ({ headers: header });
-            let response = await axios.post( '/web_api/sponsor_list', sendData, options1);
+          let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
+          let response = await axios.post( '/sponsor_list', sendData, options1);
     
           if (response.status) {
     
@@ -52,6 +45,8 @@ function SponsorshipList() {
         } catch (err) { console.error(err); toast.error('some errror'); return false; }
     
     }
+    
+    
     
       useEffect(() => {
         get_data({});
@@ -77,13 +72,13 @@ function SponsorshipList() {
                                 </ol>
                             </div>
                             <div className="d-flex">
-                          
                                 <div className="justify-content-center">
                                     <Link to="/sponsorship/add">
                                         <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add  Sponsorship</Button>
                                     </Link>
-                                </div>                              
+                                </div>
                             </div>
+
                         </div>
                         <div className="row justify-content-center">
                             <div className="col-lg-12 table-responsive border border-bottom-0">

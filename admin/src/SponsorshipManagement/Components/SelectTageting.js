@@ -53,11 +53,11 @@ export default function SelectTageting() {
     
     
       useEffect(() => {
-        get_data('/web_api/sport_list',setSport_lists);
-        get_data('/web_api/league_list',setLeague_lists);
-        get_data('/web_api/team_list',setTeam_lists);
-        get_data('/web_api/player_list',setPlayer_lists);
-        get_data('/web_api/country_list',setCountry_lists);
+        get_data('/sport_list',setSport_lists);
+        get_data('/league_list',setLeague_lists);
+        get_data('/team_list',setTeam_lists);
+        get_data('/player_list',setPlayer_lists);
+        get_data('/country_list',setCountry_lists);
 
 
         // 👇 add class to body element
@@ -73,18 +73,18 @@ export default function SelectTageting() {
     
 
     const leagueOptions = (league_lists.length >0) ? league_lists.map((item)=>{
-        return  { value: item._id, label: item.name };
+        return  { value: item._id, label: item.league_name };
     }) :[];
     
     
     const teamOptions = (team_lists.length >0) ? team_lists.map((item)=>{
-        return  { value: item._id, label: item.name };
+        return  { value: item._id, label: item.team_name };
     }) :[];
     
     
     
     const playersOptions = (player_lists.length >0) ? player_lists.map((item)=>{
-        return  { value: item._id, label: item.name };
+        return  { value: item._id, label: item.team_name };
     }) :[];
     
     
@@ -146,11 +146,10 @@ export default function SelectTageting() {
             </div>
 
             <div className="col-lg-12  mb-4">
-                <label className="title-col mb-2">Targeted Country</label>
+                <label className="title-col mb-3">Targeted Country</label>
              </div>
               <div className='reletive col-lg-12'>
                 <span className='react-select-title'>Select Country</span>
-                
                 <Select isMulti
                     closeMenuOnSelect={false}
                     name="country" 

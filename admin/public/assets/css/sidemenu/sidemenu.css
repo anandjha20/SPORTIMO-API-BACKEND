@@ -479,7 +479,3 @@
 .main-sidebar {
     transition: left .4s ease, width .4s ease
 }
-
-.css-j204z7-MuiFormControlLabel-root .MuiFormControlLabel-label {
-    margin-left: 6px;
-}

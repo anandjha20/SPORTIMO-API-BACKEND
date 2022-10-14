@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { useState, useEffect } from "react";
-import Swal from 'sweetalert2'
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -29,7 +29,7 @@ function TableFaqComponent() {
 
     const FaqList = async () =>
     {
-        await axios.get(`/web_api/faq_list`, options1)
+        await axios.get(`/faq_list`, options1)
         .then(res => {
           const userData = res.data.body;
           setData(userData);
@@ -48,56 +48,41 @@ function TableFaqComponent() {
     const columns =
         [
 
-            { title: 'Category (English)',  render: rowData => <div>{rowData.faq_cat_id == null ? <><span className="text-red">Category Deleted</span></> : <>{rowData.faq_cat_id.cat_name}</>}</div> },
+            { title: 'Category Name',  render: rowData => <div>{rowData.faq_cat_id.cat_name}</div> },
             // { title: 'Date', field: 'date' },
-            { title: 'Questions(English)', render: rowData => <>{rowData.question.slice(0, 30)} </> },
-            { title: 'Answer (English)',  render: rowData => <>{rowData.answer.slice(0, 30)} </> },
-            { title: 'Category (Arabic)',  render: rowData => <div>{rowData.faq_cat_id == null ? <><span className="text-red">Category Deleted</span></> : <>{rowData.faq_cat_id.cat_name_ara}</>}</div> },
-            { title: 'Questions (Arabic)', render: rowData => <>{rowData.question_ara.slice(0, 30)} </> },
-            { title: 'Answer (Arabic)', render: rowData => <> {rowData.answer_ara.slice(0, 30)} </>},
-           
+            { title: 'Questions', field: 'question' },
+            { title: 'Answer', field: 'answer' },
 
         ]
 
 
 ///////////////// delete api call  /////////////////
 const deleteFaq = (_id) => {  
-
-
-
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-      }).then((result) => {
-        if (result.isConfirmed) {         
-            axios.delete(`/web_api/delete_faq/${_id}`,options1)
+    let sendData = { id : _id  }
+    axios.delete(`/delete_faq/${_id}`,options1)
         .then(res => {
             if (res.status) {
                 let data = res.data;
+
                 if (data.status) { 
-                    Swal.fire(
-                        'Deleted!',
-                         data.msg,
-                        'success'
-                      )
-                     return FaqList();
+                    toast.success(data.msg);
+                     return axios.get("/faq_list")
+                        .then(res => {
+                            const userData = res.data.body;
+                            setData(userData);
+                        })
                 } else {
-                    toast.error(data.msg);
+                    toast.error('something went wrong please try again');
                 }
             }
             else {
-                toast.error(data.msg);
+                toast.error('something went wrong please try again..');
             }
 
         })
-        }
-      })
-
+        .catch(error => {
+            console.log(this.state);
+        })
 }
 
 

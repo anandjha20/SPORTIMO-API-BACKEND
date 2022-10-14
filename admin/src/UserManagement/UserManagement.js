@@ -2,14 +2,35 @@ import React from "react";
 import Header from "../Header";
 import UserListTable from "./UserTableComponent";
 import {Link} from 'react-router-dom';
-// import UserFilterComponent from "./Components/UserFilterComponent";
+import UserFilterComponent from "./Components/UserFilterComponent";
 
-export default function UserManagement() {
+class UserManagement extends React.Component {
+
+    // constructor(props) {
+    //     super(props);
+    
+    //     this.state = {
+    //         items: [],
+    //         DataisLoaded: false
+    //     };
+    // }
+
+    
+    // componentDidMount() {
+    //     fetch("http://192.168.1.95:3500/web_api/user_list")
+    //         .then((resp) => resp.json()).then((result) => {
+    //             console.log(result);
+    //         })
+    // }
+    
+    render() {
+
 
     return (
         <>
+        
       <Header />
-
+       
      <div className="main-content side-content pt-0">
 				<div className="container-fluid">
 					<div className="inner-body">
@@ -24,7 +45,14 @@ export default function UserManagement() {
 							</div>
 						
 					</div>
-                  
+                    <div className="row">
+                        <div className="col-lg-12 table-responsive border border-bottom-0">
+                       
+                       
+                        <UserFilterComponent />
+                        </div>
+                       
+                    </div>
                 </div>
 
 
@@ -37,6 +65,9 @@ export default function UserManagement() {
 
         </>
     );
+}
 
 }
 
+
+export default UserManagement;
