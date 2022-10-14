@@ -23,7 +23,8 @@ const content_tbls = require('../models/content_tbls');
 const userLanguage = require("../models/userLanguage");            
 const follower_tbls = require("../models/follower_users");   
 const transaction_tbls = require("../models/transactions")      
-const prediction_card_tbl = require("../models/prediction_cards")      
+const prediction_card_tbl = require("../models/prediction_cards");      
+const team_matches = require('../models/team_matches');
 
 
 
@@ -396,25 +397,92 @@ static user_point_details= async (req,res)=>{
 	}
 }
 
-static all_matches_leaderboard = async (req,res)	=>{		
-		try{
-            let response = await transaction_tbls.aggregate([{ $group: {"_id": "$match_id"}} ],);   
+// static all_matches_leaderboard = async (req,res)	=>{		
+// 		try{
+//             let response = await transaction_tbls.aggregate([{ $group: {"_id": "$match_id"}} ],);   
 
-		 if(response){
-				let sumdata = []; 
-			let forGat = await Promise.all(response.map( async(item)=>{ let dx =  await matchWinUsersRank( item._id.toString() ); 
-											  sumdata.push(dx ) } ));
-      		//let response2 = await matchWinUsersRank(response[0]._id.toString());
+// 		 if(response){
+// 				let sumdata = []; 
+// 			let forGat = await Promise.all(response.map( async(item)=>{ let dx =  await matchWinUsersRank( item._id.toString() ); 
+// 											  sumdata.push(dx ) } ));
+//       		//let response2 = await matchWinUsersRank(response[0]._id.toString());
 
-			return res.status(200).send({"status":false,"msg":"success","body":sumdata});
-		}else{
-			return res.status(200).send({"status":false,"msg":"server error"});
-		}				 	
+// 			return res.status(200).send({"status":false,"msg":"success","body":sumdata});
+// 		}else{
+// 			return res.status(200).send({"status":false,"msg":"server error"});
+// 		}				 	
 							 
-		}catch (error){
-			console.log(error)
-			return res.status(200).send({"status":false,"msg":"server error"});
+// 		}catch (error){
+// 			console.log(error)
+// 			return res.status(200).send({"status":false,"msg":"server error"});
+// 		}
+
+// }
+
+
+static all_matches_leaderboard = async (req,res)	=>{		
+	try{
+		let response
+		let date=getcurntDate()
+		let matches = await transaction_tbls.find().distinct("match_id");   
+		let result=[]
+		for(let i of matches){
+			let data=await transaction_tbls.aggregate([{ 
+						"$match": { 
+							"match_id": mongoose.Types.ObjectId(i) 
+						} 
+					},
+					{
+						"$lookup": {
+							from : "team_matches",
+							foreignField : "_id",
+							localField : "match_id",
+							as : "match_details",
+						}
+					},
+					{
+						"$lookup": {
+							from : "user_tbls",
+							foreignField : "_id",
+							localField : "user_id",
+							as : "user_details",
+						}
+					},
+					{
+						$setWindowFields: {
+						   partitionBy: "$user_id",
+						   output: {
+							  score: {
+								 $sum: "$points",
+								}
+								
+						   }
+						}
+					 }
+					// {
+					// 	"$group": {
+					// 		_id:"$user_id",
+					// 		score:{$sum:"$points"} 
+					// 	}
+					// }
+				])
+			if(!isEmpty(data)){
+				result.push(data)
+			}
 		}
+
+
+	 if(true){
+		
+		return res.status(200).send({"status":false,"msg":"success","body":result,"matches":matches});
+	}else{
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}				 	
+						 
+	}catch (error){
+		console.log(error)
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}
 
 }
 
