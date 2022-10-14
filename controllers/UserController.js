@@ -22,7 +22,10 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds } = require('../myMod
     const content_tbls = require('../models/content_tbls'); 
     const userLanguage = require("../models/userLanguage");            
     const follower_tbls = require("../models/follower_users");         
-    const avatars_tbl = require("../models/avatars");         
+    //const avatars_tbl = require("../models/avatars");     
+    const play_match_cards_tbl = require("../models/playMatchCards");     
+const team_matches = require('../models/team_matches');
+        
 
 
 
@@ -1140,17 +1143,47 @@ static verify_nickName = async(req,res)=>{
     
     }
 
-    static add_avatar = async (req,res)=>{
+    // static add_avatar = async (req,res)=>{
+    //     try{
+    //         console.log(req.files); 
+    //         console.log(req.body.name); 
+        
+    //         let img = ((req.files) && (req.files.user_image != undefined ) && (req.files.user_image.length >0) )? req.files.user_image[0].filename : '';
+    //     console.log('img ==', img); 
+        
+    //     }catch (error){
+    //         console.log(error);
+    //     return res.status(200).send({status:false,msg:'server error' }) ;          
+    //     }
+    // }
+    static my_match_list = async (req,res)=>{
         try{
-            console.log(req.files); 
-            console.log(req.body.name); 
-        
-            let img = ((req.files) && (req.files.user_image != undefined ) && (req.files.user_image.length >0) )? req.files.user_image[0].filename : '';
-        console.log('img ==', img); 
-        
-        }catch (error){
-            console.log(error);
-        return res.status(200).send({status:false,msg:'server error' }) ;          
+            let user_id=req.body.id
+            if(isEmpty(user_id)){
+                return res.status(200).send({"status":true,"msg":"userID required"});
+            }else{
+             let response=await play_match_cards_tbl.find({user_id}).populate("match_id","match_id match_name")
+             
+             let data=[]
+            response.map((item)=>{
+                if(data.length==0){
+                    data.push(item);
+                }
+                data.map((i)=>{
+                    if(item.match_id._id!=i.match_id._id){
+                        data.push(item);
+                    }
+                })
+            })
+            if(response.length>0){
+                return res.status(200).send({"status":true,"msg":"data found","body":data});
+            }else{
+                return res.status(200).send({"status":false,"msg":"no data found"})
+            }
+        }
+        }catch (err){
+            console.log(err)
+            return res.status(200).send({"status":false,"msg":"server error"});
         }
     }
 
