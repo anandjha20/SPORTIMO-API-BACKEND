@@ -397,27 +397,27 @@ static user_point_details= async (req,res)=>{
 	}
 }
 
-// static all_matches_leaderboard = async (req,res)	=>{		
-// 		try{
-//             let response = await transaction_tbls.aggregate([{ $group: {"_id": "$match_id"}} ],);   
+static all_matches_leaderboard_old = async (req,res)	=>{		
+		try{
+            let response = await transaction_tbls.aggregate([{ $group: {"_id": "$match_id"}} ],);   
 
-// 		 if(response){
-// 				let sumdata = []; 
-// 			let forGat = await Promise.all(response.map( async(item)=>{ let dx =  await matchWinUsersRank( item._id.toString() ); 
-// 											  sumdata.push(dx ) } ));
-//       		//let response2 = await matchWinUsersRank(response[0]._id.toString());
+		 if(response){
+				let sumdata = []; 
+			let forGat = await Promise.all(response.map( async(item)=>{ let dx =  await matchWinUsersRank( item._id.toString() ); 
+											  sumdata.push(dx ) } ));
+      		//let response2 = await matchWinUsersRank(response[0]._id.toString());
 
-// 			return res.status(200).send({"status":false,"msg":"success","body":sumdata});
-// 		}else{
-// 			return res.status(200).send({"status":false,"msg":"server error"});
-// 		}				 	
+			return res.status(200).send({"status":false,"msg":"success","body":sumdata});
+		}else{
+			return res.status(200).send({"status":false,"msg":"server error"});
+		}				 	
 							 
-// 		}catch (error){
-// 			console.log(error)
-// 			return res.status(200).send({"status":false,"msg":"server error"});
-// 		}
+		}catch (error){
+			console.log(error)
+			return res.status(200).send({"status":false,"msg":"server error"});
+		}
 
-// }
+}
 
 
 static all_matches_leaderboard = async (req,res)	=>{		
