@@ -472,11 +472,11 @@ static all_matches_leaderboard = async (req,res)	=>{
 		}
 
 
-	 if(true){
+	 if(!isEmpty(result)){
 		
-		return res.status(200).send({"status":false,"msg":"success","body":result,"matches":matches});
+		return res.status(200).send({"status":true,"msg":"success","body":result});
 	}else{
-		return res.status(200).send({"status":false,"msg":"server error"});
+		return res.status(200).send({"status":false,"msg":"no data found"});
 	}				 	
 						 
 	}catch (error){
