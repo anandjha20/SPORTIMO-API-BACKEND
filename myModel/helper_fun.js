@@ -191,25 +191,26 @@ const sendNotificationAdd = (my_obj )=>{
     try{
           let obj_match_id =  mongoose.Types.ObjectId(match_id);
            let pipeline  = [] ;
+              pipeline.push({$match: {"points_by": "match" }});
                pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_info'} });
                pipeline.push({ $unwind: "$user_info" });
-               pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_info'} });
-               pipeline.push({ $unwind: "$match_info" });
-               pipeline.push({$match: {"match_id": obj_match_id }});
+              pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_info'} });
+              pipeline.push({ $unwind: "$match_info" });
+              pipeline.push({$match: {"match_id": obj_match_id }});
                
-              pipeline.push({ $project: {"_id":0,"user_name":"$user_info.name","points": 1,
-                               "match_name":"$match_info.match_name",match_id:1,user_id:1 } });
+             pipeline.push({ $project: {"_id":false,"user_name":"$user_info.name","points":true,
+                       "match_name":"$match_info.match_name",match_id: true,user_id:true } });
              
-              pipeline.push({ $group: {"_id": { user_id : "$user_id",user_name : "$user_name",match_name : "$match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
+          pipeline.push({ $group: {"_id": { user_id : "$user_id",user_name : "$user_name",match_name : "$match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
             
-              pipeline.push({ $project: {"_id":0,"user_name":"$_id.user_name","points": 1,
-              "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });
+             pipeline.push({ $project: {"_id":false ,"user_name":"$_id.user_name","points": true,
+               "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });
 
-                 pipeline.push({ $sort : { "points": -1}});  
+               pipeline.push({ $sort : { "points": -1}});  
                  pipeline.push({ $limit :3});  
 
     let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
-       // console.log("allUsersData call ===  ",allUsersData );
+       console.log("allUsersData call ===  ",allUsersData );
        
             return  (allUsersData)? allUsersData : false ; 
 
