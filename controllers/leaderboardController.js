@@ -399,7 +399,7 @@ static user_point_details = async (req,res)=>{
 
 static  all_matches_leaderboard = async (req,res)	=>{		
 		try{
-            let response = await transaction_tbls.aggregate([  { $group: {"_id": "$match_id"}} ],);   
+            let response = await transaction_tbls.aggregate([ {$match: {points_by: 'match'}}, { $group: {"_id": "$match_id"}} ],);   
 
 		 if(response){
 				let sumdata = [];     
