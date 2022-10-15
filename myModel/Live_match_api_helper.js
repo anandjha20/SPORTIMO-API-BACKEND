@@ -104,10 +104,12 @@ const transactions_tbl = require('../models/transactions');
     try {   
             
        const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
-       const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
-         //  console.log("session_url == ",session_url);
+       //const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
+       const session_url = `https://dsg-api.com/custom/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
+             
+       //  console.log("session_url == ",session_url);
                var config = {  
-                 method: 'get',
+                 method: 'get',           
                  url: session_url,
                  headers: { 'Authorization': 'Basic '+ encodedToken }
                };
@@ -148,7 +150,7 @@ const add_win_point = async(req,res)=>{
           let userinfo =  await  user_tbl.findOne({_id: user_id},'points');
           if(! isEmpty(userinfo)){
                
-               let add = new transactions_tbl({user_id,points,match_id,card_id,type:"credit",description :"game win"}); 
+               let add = new transactions_tbl({user_id,points,match_id,card_id,type:"credit",points_by:"match",description :"game win"}); 
                  let datas = await add.save();
               let new_point = userinfo.points + points;
                let updata  =  user_tbl.findOneAndUpdate({_id: user_id},{$set : {points :  new_point } },{new: true}, (err, updatedUser) => {
@@ -417,8 +419,9 @@ const add_win_point = async(req,res)=>{
 
 
               let  live_match_id = req.data.match_id;
-
-              let card_id =  mongoose.Types.ObjectId("63454628bbdbacfeab46c567");
+             // console.log("live_match_id == ",live_match_id);       
+            let card_id =  mongoose.Types.ObjectId("63454628bbdbacfeab46c567");
+             // let card_id =  mongoose.Types.ObjectId("633ea2a466b303f06a40991d");
               
            
           let pipeline  = [] ;
@@ -428,7 +431,7 @@ const add_win_point = async(req,res)=>{
 
                   pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
                   pipeline.push({ $unwind: "$play_match_user" });
-                  pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
+                   pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
                  pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
                                   "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
                                   "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
@@ -436,15 +439,15 @@ const add_win_point = async(req,res)=>{
           
 
        let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
-         
+      
                 let result_pass = 0;  let result_fail = 0; 
            if (! isEmpty(allUsersData) ){
             let allData = await Promise.all( allUsersData.map( async (item)=>{ let right_ans = '';  
-                  if( resultx == 1 || resultx == 2 ){  right_ans = "opt_1";}else 
-                  if( resultx == 3 || resultx == 4 ){ right_ans = "opt_2";}else 
-                  if( resultx > 4 ){ right_ans = "opt_3";}else{ right_ans = "opt_4";}
-              
-              if( right_ans == item.user_option ){  result_pass += 1 ;
+            if( resultx == 1 || resultx == 2 ){  right_ans = "opt_1";}else 
+            if( resultx == 3 || resultx == 4 ){ right_ans = "opt_2";}else 
+            if( resultx > 4 ){ right_ans = "opt_3";}else{ right_ans = "opt_4";}
+           
+            if( right_ans == item.user_option ){  result_pass += 1 ;
                         let demo_1  =  await add_win_point(item); 
                     }else{      result_fail += 1 ;
                       let demo_2  =   await playMatchCard_remove(item);
@@ -462,7 +465,7 @@ const add_win_point = async(req,res)=>{
           
          }
      } catch (error) { console.log(error); return false ;  }
- } 
+ }         
 
    const get_card_result_add_1  =  async(req,res)=>{
     try {  

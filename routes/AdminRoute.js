@@ -237,6 +237,7 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.post('/past_match_list',MasterController.past_match_list);          
 
    router.post('/all_matches_leaderboard',leaderboardController.all_matches_leaderboard);
+   router.post('/all_matches_leaderboard_old',leaderboardController.all_matches_leaderboard_old);
 
 //////////////
   router.post('/transaction_list',leaderboardController.testing_of_transaction);

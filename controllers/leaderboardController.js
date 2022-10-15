@@ -375,7 +375,7 @@ static leaderboard2 = async (req, res) => {
 
 
 
-static user_point_details= async (req,res)=>{
+static user_point_details = async (req,res)=>{
 	try{
 		let user_id=req.body.user;
 	  let match_id=req.body.match;
@@ -397,20 +397,22 @@ static user_point_details= async (req,res)=>{
 	}
 }
 
-static all_matches_leaderboard_old = async (req,res)	=>{		
+static  all_matches_leaderboard = async (req,res)	=>{		
 		try{
-            let response = await transaction_tbls.aggregate([{ $group: {"_id": "$match_id"}} ],);   
+            let response = await transaction_tbls.aggregate([  { $group: {"_id": "$match_id"}} ],);   
 
 		 if(response){
-				let sumdata = []; 
-			let forGat = await Promise.all(response.map( async(item)=>{ let dx =  await matchWinUsersRank( item._id.toString() ); 
-											  sumdata.push(dx ) } ));
+				let sumdata = [];     
+
+				console.log("jk === ",response);
+			let forGat = await Promise.all(response.map( async(item)=>{  let dx =  await matchWinUsersRank( item._id.toString() ); 
+										if(! isEmpty(dx)) { sumdata.push(dx ) } } ));
       		//let response2 = await matchWinUsersRank(response[0]._id.toString());
 
 			return res.status(200).send({"status":false,"msg":"success","body":sumdata});
 		}else{
 			return res.status(200).send({"status":false,"msg":"server error"});
-		}				 	
+		}				 	   
 							 
 		}catch (error){
 			console.log(error)
@@ -420,7 +422,7 @@ static all_matches_leaderboard_old = async (req,res)	=>{
 }
 
 
-static all_matches_leaderboard = async (req,res)	=>{		
+static all_matches_leaderboard_old = async (req,res)	=>{		
 	try{
 		let response
 		let date=getcurntDate()
@@ -449,32 +451,99 @@ static all_matches_leaderboard = async (req,res)	=>{
 						}
 					},
 					{
-						$setWindowFields: {
-						   partitionBy: "$user_id",
-						   output: {
-							  score: {
-								 $sum: "$points",
-								}
-								
-						   }
-						}
-					 }
+						$set: {
+						   Score: { $add: "$points" } }
+					  },
 					// {
-					// 	"$group": {
-					// 		_id:"$user_id",
-					// 		score:{$sum:"$points"} 
+					// 	$setWindowFields: {
+					// 	   partitionBy: "$user_id",
+					// 	   output: {
+					// 		  score: {
+					// 			 $sum: "$points",
+					// 			}
+								
+					// 	   }
 					// 	}
-					// }
+					//  }
+					{
+						"$group": {
+							_id:"$user_id",
+							score:{$sum:"$points"} 
+						}
+					}
 				])
 			if(!isEmpty(data)){
 				result.push(data)
 			}
 		}
+		response=await transaction_tbls.aggregate([
+		
+			{
+				"$group": {
+					_id:["$match_id","$user_id"],
+					total_score:{$sum:"$points"},
+					user_id:{$push:"$user_id"} 
+				}
+				
+			},
+			{
+				$lookup:{
+					from:"user_tbls",
+					foreignField:"_id",
+					localField:"user_id",
+					as:"data"
+				}
+			}
+		
+		
+			// 	{ 
+		// 	"$match": { 
+		// 		"match_id": mongoose.Types.ObjectId(i) 
+		// 	} 
+		// },
+		// {
+		// 	"$lookup": {
+		// 		from : "team_matches",
+		// 		foreignField : "_id",
+		// 		localField : "match_id",
+		// 		as : "match_details",
+		// 	}
+		// },
+		// {
+		// 	"$lookup": {
+		// 		from : "user_tbls",
+		// 		foreignField : "_id",
+		// 		localField : "user_id",
+		// 		as : "user_details",
+		// 	}
+		// },
+		// {
+		// 	$set: {
+		// 	   Score: { $add: "$points" } }
+		//   },
+		// {
+		// 	$setWindowFields: {
+		// 	   partitionBy: "$user_id",
+		// 	   output: {
+		// 		  score: {
+		// 			 $sum: "$points",
+		// 			}
+					
+		// 	   }
+		// 	}
+		//  }
+		// {
+		// 	"$group": {
+		// 		_id:"$user_id",
+		// 		score:{$sum:"$points"} 
+		// 	}
+		// }
+	])
 
 
 	 if(!isEmpty(result)){
 		
-		return res.status(200).send({"status":true,"msg":"success","body":result});
+		return res.status(200).send({"status":true,"msg":"success","body":response});
 	}else{
 		return res.status(200).send({"status":false,"msg":"no data found"});
 	}				 	
@@ -486,25 +555,33 @@ static all_matches_leaderboard = async (req,res)	=>{
 
 }
 
-
 static bonus_points = async (req,res)	=>{		
 	try{
-		let obj = new transaction_tbls(req.body)
-		let response=await obj.save()
-		
-		if(!isEmpty(response)){
-			return res.status(200).send({"status":true,"msg":"bonus points add","body":response});
+		let points = req.body.points;
+		let type = req.body.type;
+		let description = req.body.description;
+		let user_id = req.body.user_id;
+		let points_by ="admin"
+		if(isEmpty(points) || isEmpty(type) || isEmpty(description) || isEmpty(user_id) ){
+			return res.status(200).send({"status":false,"msg":"all field required"});
 		}else{
-			return res.status(200).send({"status":false,"msg":"something went wrong"});
-		}				 	
-		
+			let details={points,type,points_by,description,user_id}
+			console.log(details)
+			let obj = new transaction_tbls(details)
+			let response=await obj.save()
+			
+			if(!isEmpty(response)){
+				return res.status(200).send({"status":true,"msg":"bonus points add","body":response});
+			}else{
+				return res.status(200).send({"status":false,"msg":"something went wrong"});
+			}				 	
+	    }
 	}catch (error){
 		console.log(error)
 		return res.status(200).send({"status":false,"msg":"server error"});
 	}
 	
 }
-
 //////////testing of transaction table
 static testing_of_transaction = async (req,res)	=>{		
 	try{

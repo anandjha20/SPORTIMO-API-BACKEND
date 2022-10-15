@@ -337,26 +337,26 @@ class ConjobController{
       
       static matchResult_show =  async(req,res)=>{
           try {
-                    console.log("matchResult_show == ",req.body.match_id );
+                    //console.log("matchResult_show == ",req.body.match_id );
                   let  match_id =  req.body.match_id ; // 2701168;  
                   let data = await matchCardAllData(match_id);  
-                 // console.log("data22222222 == ", data); 
+                  //  console.log("data22222222 == ", match_id); 
                   if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
                     let dx1 = await get_card_result_add_1({data});  
                     let dx  = await get_card_result_add_4({data});  
                     let dx7 = await get_card_result_add_7({data});  
-
+      
                     let dx11  = await get_card_result_add_11({data});  
                     let dx13 = await get_card_result_add_13({data});  
                     let dx15 = await get_card_result_add_15({data}); 
 
-                    let dx17  = await get_card_result_add_17({data});  
+                     let dx17  = await get_card_result_add_17({data});  
                     let dx20 = await get_card_result_add_20({data});  
                     let dx23 = await get_card_result_add_23({data}); 
 
                   let dx36  = await get_card_result_add_36({data});  
-                   
-                            console.log("controller call == ",dx);
+                               
+                           console.log("controller call == ",dx);
                       return  res.status(200).send({'status':true,'msg':"success", 'data':'' });
                   }else{
                     return  res.status(200).send({'status':false,'msg':'This match result not show time '}); 
