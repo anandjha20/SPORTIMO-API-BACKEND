@@ -203,11 +203,11 @@ const sendNotificationAdd = (my_obj )=>{
              
           pipeline.push({ $group: {"_id": { user_id : "$user_id",user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
             
-             pipeline.push({ $project: {"_id":false ,"user_name":"$_id.user_name","points": true,
-               "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });
+            // pipeline.push({ $project: {"_id":false ,"user_name":"$_id.user_name","points": true,
+           //    "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });
 
                pipeline.push({ $sort : { "points": -1}});  
-                 pipeline.push({ $limit :3});  
+                pipeline.push({ $limit :3});  
 
     let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
        console.log("allUsersData call ===  ",allUsersData );
