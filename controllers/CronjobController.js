@@ -1,36 +1,46 @@
 const axios  = require("axios");
-const { rows_count,getcurntDate,getTime,isEmpty} = require("../myModel/common_modal");
+const mongoose = require("mongoose");
+const {ArrChunks, rows_count,getcurntDate,getTime,isEmpty,before_after_Date} = require("../myModel/common_modal");
   const {team_match_addOne } = require('../myModel/helper_fun');  
   const poll_tbl  = require("../models/poll");
   const user_tbl = require('../models/user');    
   const transactions_tbl = require('../models/transactions');    
   const playMatchCards_tbl = require('../models/playMatchCards');   
   const team_matches_tbl = require('../models/team_matches');   
+  const match_cards_tbl = require('../models/match_cards');   
   
+  const match_event_shot_tbl = require('../models/match_event_shots');   
  const  {MyBasePath} = require("../myModel/image_helper");
   
- 
+  
   const team_matches = require('../models/team_matches');
-  const {day_match_getID,match_card_number,match_card_0011,match_card_0013,matchCardAllData,get_card_result_add_4,
+  const {day_match_getID,match_card_number,match_card_0011,match_card_0013,matchCardAllData,matchCardEventAllData,get_card_result_add_4,
     get_card_result_add_7,get_card_result_add_1, get_card_result_add_11,get_card_result_add_13,
     get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
-    get_card_result_add_36}   = require("../myModel/Live_match_api_helper"); 
+    get_card_result_add_36,get_card_result_add_10,get_card_result_add_18}   = require("../myModel/Live_match_api_helper"); 
 const { Promise } = require("mongoose");
 
 class ConjobController{
-      static get_card_001 =  async(req,res)=>{
+      static get_card_00122 =  async(req,res)=>{
           try {
                 let  match_id = 2701168 ; // 2701168;
                 // yellow card no == 6    
-                let dates =  req.body.date ; ///  "2022-10-07" ;    /// getcurntDate();
-                let whr =  {date_utc: { $te: dates } } ;
+                let dates =  req.body.date ;  /// getcurntDate();
+                let tomarro_date  =  before_after_Date(1) ;      
+               console.log("tomarro_date == ",tomarro_date );
+                let whr =  {date_utc: { $gte: dates, $lte: tomarro_date } } ;
                 
                      console.log(whr); 
-                let data = await team_matches_tbl.find(whr);
-
-                   return  res.status(200).send({'status':true,'msg':'success','body':data});
+                let data =   await team_matches_tbl.find(whr);
+              if(data){
+                let data2 = await matchCardAllData(data[0].match_id);  
               
-                      //  if(!isEmpty(data)){
+                   return  res.status(200).send({'status':true,'msg':'success','body':data2});
+                  }else{
+                    return  res.status(200).send({'status':false,'msg':'No Data Found!..','body':'' });
+                     
+                  }
+                //  if(!isEmpty(data)){
                 //           if( data.team_a >  data.team_b ){
                 //             return  res.status(200).send({'status':true,'msg':"tam_A win success",'body': "opt_1", 'data':data });
                 //           }else   if( data.team_b >  data.team_a  ){
@@ -51,8 +61,145 @@ class ConjobController{
               } catch (error) { console.log(error);
                   return  res.status(200).send({'status':false,'msg':'servr error'});
               }
-      }
-  
+      }         
+      static get_card_001 =  async(req,res)=>{
+        try {
+                let  match_id = '2701198' ; // 2701168;
+
+                let card_id =  mongoose.Types.ObjectId("634e5c528f16160a62ea586a");
+                
+             
+                let pipeline  = [] ;
+                 
+                     pipeline.push({$match: {match_id: match_id}});
+                      pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
+                        pipeline.push({ $unwind: "$play_match_user" });
+                         pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
+                        pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
+                                        "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
+                                        "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
+                                        "match_id": "$play_match_user.match_id","active": "$play_match_user.active" } });
+                
+    
+             let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
+               
+
+             return  res.status(200).send({'status':true,'msg':'Success','body':allUsersData });
+
+   } catch (error) { console.log(error);
+              return  res.status(200).send({'status':false,'msg':'servr error'});
+          }
+        }
+
+      static get_card_0018 =  async(req,res)=>{
+        try {
+              let  match_id = '2701198' ; // 2701168;
+             
+              let data = await matchCardEventAllData(match_id);  
+            if(data){
+              let sum    = data.events.shots_on_target.event;           
+             
+              let team_a_original_name = data.team_a_original_name;
+              let team_b_original_name = data.team_b_original_name;
+                 
+            // check event count     
+              let shots_count =   await match_event_shot_tbl.find({"match_id":match_id,"event_type":"shots_on_target"},"shots_count" );
+              let right_ans = ''; 
+         if( isEmpty(shots_count)) {
+          // add event count row   for  match_event_shot table   
+          let add = new match_event_shot_tbl({
+                     match_id,"event_type":"shots_on_target","shots_count" :sum.length });
+                let add_rows = await add.save(); 
+                 
+                 
+            if(sum.length >0){
+              if(team_a_original_name == sum[0].team){
+                right_ans = "opt_1";
+              }else  if(team_b_original_name == sum[0].team ){  right_ans = "opt_2";
+                }else{  right_ans = "opt_3"; }
+                  console.log("first function call == " );
+             // this function use for user card result set  on  
+                  let resss =  await get_card_result_add_18( {right_ans,match_id} );
+         }          
+
+         return  res.status(200).send({'status':true,'msg':'success33','body': shots_count });
+        
+          }else{
+            let num_my =   shots_count[0].shots_count;
+            let all_arr =   sum[num_my];   
+           
+           
+            if(all_arr){
+                if(team_a_original_name == all_arr.team){
+                  right_ans = "opt_1";
+                }else  if(team_b_original_name == all_arr.team){  right_ans = "opt_2";
+                  }else{  right_ans = "opt_3"; }
+              
+                  // this function use for user card result set  on  
+                  let resss =  await get_card_result_add_18( {right_ans,match_id} );
+                 
+                 // match_event count update 
+                  let match_eventUpdate  =  match_event_shot_tbl.findOneAndUpdate({"match_id":match_id,"event_type":"shots_on_target"},{$set : {"shots_count" :sum.length } },{new: true}, (err, updatedUser) => {
+                    if(err) { console.log(err); return false}else{   return true }  }); 
+
+
+
+           }          
+
+            return  res.status(200).send({'status':true,'msg':'success 11','body':all_arr });
+          }
+            }else{
+                  return  res.status(200).send({'status':false,'msg':'No Data Found!..','body':'' });
+                   
+                }
+         
+            } catch (error) { console.log(error);
+                return  res.status(200).send({'status':false,'msg':'servr error'});
+            }
+    }
+
+ static get_card_008 =  async(req,res)=>{
+        try {
+              let  match_id = '2701198' ; // 2701168;
+             
+              let data = await team_matches_tbl.findOne({match_id},'match_id date_utc ');  
+            if(data){
+              var date_cur    = new Date();                        var date_old    = new Date(data.date_utc);
+              var seconds_cur = Math.floor(date_cur.getTime() / 1000);         var seconds_old = Math.floor(date_old.getTime() / 1000); 
+               
+              let apperance_times_data = await match_cards_tbl.findOne({match_id: data._id} , 'apperance_times' );  
+                 let card_apperance_times = parseInt(apperance_times_data.apperance_times)*60;
+               let match_time =   seconds_old +card_apperance_times;
+             
+               
+              console.log("seconds_cur == ",seconds_cur);
+                console.log("seconds_old == ",seconds_old);
+                console.log("match_time == ",match_time);
+
+                   if(seconds_cur > match_time){
+                    console.log("this card active ");
+
+                   }else{
+                    console.log("this card  Not active ");
+                   }
+
+
+
+             // let sum    = data.events.fouls.event;     
+               return  res.status(200).send({'status':true,'msg':'Success','body':data });
+
+            }else{
+              
+              return  res.status(200).send({'status':false,'msg':'Success', });
+            }    
+
+          } catch (error) { console.log(error);
+                     return  res.status(200).send({'status':false,'msg':'servr error'});
+                 }
+               }
+
+
+
       static get_card_004 =  async(req,res)=>{
         try {
                   ///  Which team will receive most Red Cards?
@@ -355,6 +502,7 @@ class ConjobController{
                     let dx23 = await get_card_result_add_23({data}); 
 
                   let dx36  = await get_card_result_add_36({data});  
+                  let dx10  = await get_card_result_add_10({data});  
                                
                            console.log("controller call == ",dx);
                       return  res.status(200).send({'status':true,'msg':"success", 'data':'' });
@@ -366,6 +514,8 @@ class ConjobController{
               } catch (error){   console.log(error);
                     return  res.status(200).send({'status':false,'msg':'servr error'}); }
           } 
+
+
    
      static jkk = async(req,res)=>{
          try {   

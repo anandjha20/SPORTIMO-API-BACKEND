@@ -13,7 +13,7 @@ const { poll_percent} = require('../myModel/helper_fun');
     const prediction_cards_tbl = require('../models/prediction_cards');    
     const match_cards_tbl      = require('../models/match_cards');   
     const playMatchCards_tbl   = require('../models/playMatchCards');   
-
+    const play_match_cards = require ("../models/playMatchCards");
    const prediction_card_categories = require("../models/prediction_card_categories")     
 class predictionController {   
      
@@ -484,6 +484,31 @@ class predictionController {
               }
               
       }       
+
+      static user_prediction = async (req,res)=>{
+        try {
+            let match_id = req.body.match_id;
+            if(!isEmpty(match_id)){
+            let records = await play_match_cards.find({match_id}).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
+            records.map( (item)=>{
+              console.log(item)
+              if(item.ans=="ops_1"){item.ans=item.card_id.ops_1};
+              if(item.ans=="ops_2"){item.ans=item.card_id.ops_2};
+              if(item.ans=="ops_3"){item.ans=item.card_id.ops_3};
+              if(item.ans=="ops_4"){item.ans=item.card_id.ops_4};
+            })
+                res.status(200).send({'status':true,'msg':"success",  'body':records });
+          }else{
+            res.status(200).send({'status':true,'msg':"all field required" });
+          }
+        } catch (error) { console.log(error);
+            res.status(200).send({'status':false,'msg':"Server error",'body':''});
+        }
+                
+            }    
+
+
+
 
  
     }

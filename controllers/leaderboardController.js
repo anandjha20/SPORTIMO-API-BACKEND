@@ -407,7 +407,8 @@ static  all_matches_leaderboard = async (req,res)	=>{
 				console.log("jk === ",response);
 			let forGat = await Promise.all(response.map( async(item)=>{  let dx =  await matchWinUsersRank( item._id.toString() ); 
 										if(! isEmpty(dx)) { sumdata.push(dx ) } } ));
-      		//let response2 = await matchWinUsersRank(response[0]._id.toString());
+      		
+										///let response2 = await matchWinUsersRank(response[0]._id.toString());
 
 			return res.status(200).send({"status":true ,"msg":"success","body":sumdata});
 		}else{

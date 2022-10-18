@@ -208,7 +208,7 @@ const sendNotificationAdd = (my_obj )=>{
 
                pipeline.push({ $sort : { "points": -1}});  
                 pipeline.push({ $limit :3});  
-
+ 
     let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
        console.log("allUsersData call ===  ",allUsersData );
        

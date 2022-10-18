@@ -200,6 +200,7 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.put('/prediction_card_update/:id?',predictionCardImgUpload,predictionController.prediction_card_update);
 
    router.post('/prediction_card_list',predictionController.prediction_card_list);
+   router.post('/user_prediction',predictionController.user_prediction);
   
   // match card add    
    router.post('/match_card_add',predictionController.match_card_add);
