@@ -15,7 +15,7 @@ const playMatchCard_schema = new Schema({
                                            time_range_end   :  {type:String , default : '' }, 
                                            dateTime         : {type:Date,default:Date.now  },
                                            active           : {type:Boolean,default: 1 },
-                                           result           : { type: String,enum: ['','win', 'lose'],default:'' },
+                                           result           : { type: String,enum: ['pending','win', 'lose'],default:'pending' },
                                         });
  
  module.exports = mongoose.model("play_match_cards",playMatchCard_schema);

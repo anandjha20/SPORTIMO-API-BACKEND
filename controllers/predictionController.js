@@ -492,10 +492,11 @@ class predictionController {
             let records = await play_match_cards.find({match_id}).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
             records.map( (item)=>{
               console.log(item)
-              if(item.ans=="ops_1"){item.ans=item.card_id.ops_1};
-              if(item.ans=="ops_2"){item.ans=item.card_id.ops_2};
-              if(item.ans=="ops_3"){item.ans=item.card_id.ops_3};
-              if(item.ans=="ops_4"){item.ans=item.card_id.ops_4};
+              if(item.user_option=="ops_1"){item.user_option=item.card_id.ops_1};
+              if(item.user_option=="ops_2"){item.user_option=item.card_id.ops_2};
+              if(item.user_option=="ops_3"){item.user_option=item.card_id.ops_3};
+              if(item.user_option=="ops_4"){item.user_option=item.card_id.ops_4};
+            
             })
                 res.status(200).send({'status':true,'msg':"success",  'body':records });
           }else{

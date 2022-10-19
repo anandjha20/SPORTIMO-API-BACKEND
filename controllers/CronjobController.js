@@ -17,7 +17,8 @@ const {ArrChunks, rows_count,getcurntDate,getTime,isEmpty,before_after_Date} = r
   const {day_match_getID,match_card_number,match_card_0011,match_card_0013,matchCardAllData,matchCardEventAllData,get_card_result_add_4,
     get_card_result_add_7,get_card_result_add_1, get_card_result_add_11,get_card_result_add_13,
     get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
-    get_card_result_add_36,get_card_result_add_10,get_card_result_add_18}   = require("../myModel/Live_match_api_helper"); 
+    get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,fouls_data_add,get_card_result_add_08,
+    get_card_result_add_37,card_39_befor_call,get_card_result_add_39,get_card_result_add_34 }   = require("../myModel/Live_match_api_helper"); 
 const { Promise } = require("mongoose");
 
 class ConjobController{
@@ -90,7 +91,7 @@ class ConjobController{
               return  res.status(200).send({'status':false,'msg':'servr error'});
           }
         }
-
+       // importent code for cronjob  
       static get_card_0018 =  async(req,res)=>{
         try {
               let  match_id = '2701198' ; // 2701168;
@@ -156,9 +157,9 @@ class ConjobController{
             } catch (error) { console.log(error);
                 return  res.status(200).send({'status':false,'msg':'servr error'});
             }
-    }
-
- static get_card_008 =  async(req,res)=>{
+          }
+  // importent code for cronjob get_card_008 
+ static get_card_0082 =  async(req,res)=>{
         try {
               let  match_id = '2701198' ; // 2701168;
              
@@ -167,21 +168,19 @@ class ConjobController{
               var date_cur    = new Date();                        var date_old    = new Date(data.date_utc);
               var seconds_cur = Math.floor(date_cur.getTime() / 1000);         var seconds_old = Math.floor(date_old.getTime() / 1000); 
                
-              let apperance_times_data = await match_cards_tbl.findOne({match_id: data._id} , 'apperance_times' );  
-                 let card_apperance_times = parseInt(apperance_times_data.apperance_times)*60;
-               let match_time =   seconds_old +card_apperance_times;
-             
+              let apperance_times_data = await match_cards_tbl.findOne({ match_id : data._id} , 'apperance_times' );  
+              let card_apperance_times = parseInt(apperance_times_data.apperance_times)*60;
+              let match_time           = seconds_old +card_apperance_times;
+              let matchEnd_seconds     = seconds_old*9000;
                
-              console.log("seconds_cur == ",seconds_cur);
+                console.log("seconds_cur == ",seconds_cur);
                 console.log("seconds_old == ",seconds_old);
                 console.log("match_time == ",match_time);
 
-                   if(seconds_cur > match_time){
-                    console.log("this card active ");
-
-                   }else{
-                    console.log("this card  Not active ");
-                   }
+                   if(seconds_cur >= match_time){
+                      console.log("this card active");
+                         fouls_data_add(match_id);
+                  }else{ console.log("this card Not active "); }
 
 
 
@@ -193,13 +192,52 @@ class ConjobController{
               return  res.status(200).send({'status':false,'msg':'Success', });
             }    
 
-          } catch (error) { console.log(error);
+          }catch (error) { console.log(error);
                      return  res.status(200).send({'status':false,'msg':'servr error'});
                  }
                }
+  // importent code for cronjob get_card_008 
+    static get_card_008 =  async(req,res)=>{
+      try {
+            let  match_id = '2701198' ; // 2701168;
+            
+            let data = await team_matches_tbl.findOne({match_id},'match_id date_utc ');  
+          if(data){
+            var date_cur    = new Date();                        var date_old    = new Date(data.date_utc);
+            var seconds_cur = Math.floor(date_cur.getTime() / 1000);         var seconds_old = Math.floor(date_old.getTime() / 1000); 
+              
+            let apperance_times_data = await match_cards_tbl.findOne({ match_id : data._id} , 'apperance_times' );  
+            let card_apperance_times = parseInt(apperance_times_data.apperance_times)*60;
+            let match_time           = seconds_old +card_apperance_times;
+            let matchEnd_seconds     = seconds_old*9000;
+              
+              console.log("seconds_cur == ",seconds_cur);
+              console.log("seconds_old == ",seconds_old);
+              console.log("match_time == ",match_time);
+
+                  if(seconds_cur >= match_time){
+                    console.log("this card active");
+                        fouls_data_add(match_id);
+                        card_39_befor_call(match_id);
+                }else{ console.log("this card Not active "); }
 
 
 
+            // let sum    = data.events.fouls.event;     
+              return  res.status(200).send({'status':true,'msg':'Success','body':data });
+
+          }else{
+            
+            return  res.status(200).send({'status':false,'msg':'Success', });
+          }    
+
+        }catch (error) { console.log(error);
+                    return  res.status(200).send({'status':false,'msg':'servr error'});
+                }
+              }
+         
+               
+               
       static get_card_004 =  async(req,res)=>{
         try {
                   ///  Which team will receive most Red Cards?
@@ -485,14 +523,16 @@ class ConjobController{
       static matchResult_show =  async(req,res)=>{
           try {
                     //console.log("matchResult_show == ",req.body.match_id );
-                  let  match_id =  req.body.match_id ; // 2701168;  
+                  let  match_id =  req.body.match_id ; // 2701168;  status : "Played" 
                   let data = await matchCardAllData(match_id);  
-                  //  console.log("data22222222 == ", match_id); 
-                  if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
+                //  if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
+                  if( (!isEmpty( data))  && ( data.status != 'Played')){
                     let dx1 = await get_card_result_add_1({data});  
-                    let dx  = await get_card_result_add_4({data});  
+                    let dx4  = await get_card_result_add_4({data});  
                     let dx7 = await get_card_result_add_7({data});  
-      
+
+                    let dx8 =   await get_card_result_add_08({data});
+
                     let dx11  = await get_card_result_add_11({data});  
                     let dx13 = await get_card_result_add_13({data});  
                     let dx15 = await get_card_result_add_15({data}); 
@@ -501,7 +541,11 @@ class ConjobController{
                     let dx20 = await get_card_result_add_20({data});  
                     let dx23 = await get_card_result_add_23({data}); 
 
+                  let dx34  = await get_card_result_add_34({data});  
                   let dx36  = await get_card_result_add_36({data});  
+                  let dx37  = await get_card_result_add_37({data});  
+                  let dx39  = await get_card_result_add_39({data});  
+                      
                   let dx10  = await get_card_result_add_10({data});  
                                
                            console.log("controller call == ",dx);

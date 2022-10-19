@@ -915,7 +915,7 @@ static verify_nickName = async(req,res)=>{
                         return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
                     }
                     else{
-                        return res.status(200).send({"status":true,"msg":"this user unfollowe","body": response });
+                        return res.status(200).send({"status":true,"msg":"This user unfollowed","body": response });
                     }
                 
             }catch(error) { console.log(error);
