@@ -935,7 +935,7 @@ static verify_nickName = async(req,res)=>{
                     let whr = (isEmpty(blockIds))? {following_id} : {following_id,follower_id :{$ne: blockIds }} ;
 
                     
-                    let response= await follower_tbls.find({whr}).populate("follower_id","name mobile email")
+                    let response= await follower_tbls.find(whr).populate("follower_id","name mobile email")
                     if(isEmpty(response)){  
                         return res.status(200).send({"status":false,"msg":"No data found!..","body":''});        
                     }        
@@ -1187,6 +1187,24 @@ static verify_nickName = async(req,res)=>{
         }
     }
 
+    static match_details = async (req,res)=>{
+        try{
+            let _id=req.body.id;
+            let condition_obj={};
+            if(!isEmpty(_id)){condition_obj={...condition_obj,_id}}
+             let response=await team_matches.find(condition_obj)
+             
+            if(response.length>0){
+                return res.status(200).send({"status":true,"msg":"data found","body":response});
+            }else{
+                return res.status(200).send({"status":false,"msg":"no data found"})
+            }
+        
+        }catch (err){
+            console.log(err)
+            return res.status(200).send({"status":false,"msg":"server error"});
+        }
+    }
 
 
 

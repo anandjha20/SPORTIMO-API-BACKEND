@@ -190,6 +190,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
       // router.post('/all_team_match_list',MasterController.live_upcoming_match_list);           
        router.post('/all_team_match_list',MasterController.all_team_match_list_mobile);           
        router.post('/my_match_list:id?',UserController.my_match_list);           
+       router.post('/match_details:id?',UserController.match_details);           
       
       
        //userFollower_add    

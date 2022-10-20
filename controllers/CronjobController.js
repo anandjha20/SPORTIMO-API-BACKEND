@@ -199,16 +199,19 @@ class ConjobController{
   // importent code for cronjob get_card_008 
     static get_card_008 =  async(req,res)=>{
       try {
-            let  match_id = '2701198' ; // 2701168;
+             //console.log( "get_card_008 call == ",  req.body ) ; 
+           // return false ; 
+
+            let  match_id = req.body.match_id ; // '2701198' ;    // 2701168;
             
-            let data = await team_matches_tbl.findOne({match_id},'match_id date_utc ');  
+             let data = await team_matches_tbl.findOne({match_id},'match_id date_utc ');  
           if(data){
             var date_cur    = new Date();                        var date_old    = new Date(data.date_utc);
             var seconds_cur = Math.floor(date_cur.getTime() / 1000);         var seconds_old = Math.floor(date_old.getTime() / 1000); 
               
             let apperance_times_data = await match_cards_tbl.findOne({ match_id : data._id} , 'apperance_times' );  
             let card_apperance_times = parseInt(apperance_times_data.apperance_times)*60;
-            let match_time           = seconds_old +card_apperance_times;
+            let match_time           = seconds_old + card_apperance_times;
             let matchEnd_seconds     = seconds_old*9000;
               
               console.log("seconds_cur == ",seconds_cur);
