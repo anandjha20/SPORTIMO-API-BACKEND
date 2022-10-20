@@ -76,7 +76,6 @@ const sendNotificationAdd = (my_obj )=>{
                        // console.log("fun call ==  ",my_obj);  
                        // return false;        
                     let user_id=my_obj.toUser;
-                    console.log(my_obj.toUser)
                      let title = my_obj.title ;  
                      let msg = my_obj.msg ;  
                      let type_status = my_obj.type_status ;  

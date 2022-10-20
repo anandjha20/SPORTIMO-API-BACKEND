@@ -638,7 +638,7 @@ static block_user_add = async(req,res)=>{
                                                     let type_status = 1; 
                                                     let title = `${to_name.name} you have unblocked by ${F_name.name}`;  
                                                     let msg   = `${to_name.name} you have unblocked by ${F_name.name}`;  
-                                                let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user}); 
+                                                let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile"}); 
                                                 return res.status(200).send({"status":true,"msg":'this blocked user  Delete  Successfully' , "body":''  }) ; 
                                         } });
                                 
@@ -655,7 +655,7 @@ static block_user_add = async(req,res)=>{
                                 let title = `${to_name.name} you have blocked by ${F_name.name}`;  
                                 let msg   = `${to_name.name} you have blocked by ${F_name.name}`;  
                                 
-                                let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user});
+                                let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile"});
                                 
                             return res.status(200).send({"status":true,"msg":'this user blocked  Successfully' , "body":''  }) ; 
                     } });
