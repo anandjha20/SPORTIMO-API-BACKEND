@@ -565,9 +565,10 @@ const add_win_point = async(req,res)=>{
 
               let  live_match_id = req.data.match_id;
              // console.log("live_match_id == ",live_match_id);       
-            let card_id =  mongoose.Types.ObjectId("63454628bbdbacfeab46c567");
-             // let card_id =  mongoose.Types.ObjectId("633ea2a466b303f06a40991d");
-              
+            let card_id =  mongoose.Types.ObjectId("6345406abbdbacfeab46c53b");
+            
+             
+   
            
           let pipeline  = [] ;
            if(! isEmpty(req.data.match_id)){
@@ -668,13 +669,11 @@ const add_win_point = async(req,res)=>{
   const get_card_result_add_17  =  async(req,res)=>{
     try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[4] ;
-         
-
-            if(!isEmpty(data)){
+            const  data = req.data.team_stats.stat[6] ;
+          if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
-
-                let card_id =  mongoose.Types.ObjectId("6345406abbdbacfeab46c53b");
+                let card_id =  mongoose.Types.ObjectId("634542edbbdbacfeab46c55e");
+                
                 
              
             let pipeline  = [] ;
@@ -776,15 +775,11 @@ const add_win_point = async(req,res)=>{
     try {  
               /// this function used by red card 
             const  data = req.data.team_stats.stat[0] ;
-         
-
-            if(!isEmpty(data)){
+          if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("6345416fbbdbacfeab46c547");
-                
-             
-            let pipeline  = [] ;
+                let card_id =  mongoose.Types.ObjectId("63454475bbdbacfeab46c563");
+          let pipeline  = [] ;
              if(! isEmpty(req.data.match_id)){
                  pipeline.push({$match: {match_id: live_match_id}});
                 }
@@ -798,7 +793,7 @@ const add_win_point = async(req,res)=>{
                            "match_id": "$play_match_user.match_id","active": "$play_match_user.active" } });
 
 
-        let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
+                let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
            
                   let result_pass = 0;  let result_fail = 0; 
              if (! isEmpty(allUsersData) ){
@@ -826,16 +821,15 @@ const add_win_point = async(req,res)=>{
            }
        } catch (error) { console.log(error); return false ;  }
    }    
-  const get_card_result_add_23  =  async(req,res)=>{
-    try {  
+      const get_card_result_add_23  =  async(req,res)=>{
+        try {  
               /// this function used by red card 
             const  data = req.data.team_stats.stat[2] ;
-         
-
+           
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("63453ccebbdbacfeab46c520");
+                let card_id =  mongoose.Types.ObjectId("63454628bbdbacfeab46c567");
                 
 
              
@@ -890,11 +884,12 @@ const get_card_result_add_34  =  async(req,res)=>{
           let team_b_name=req.data.team_b_name;
 
           const  data = req.data.events.saves.event ;
-          
+              console.log("===jk===  ", data); 
             if(!isEmpty(data)){
               let  live_match_id = req.data.match_id;
               
-              let card_id =  mongoose.Types.ObjectId("634fe9428ff22506cf6c0c26");
+ 
+              let card_id =  mongoose.Types.ObjectId("6352762a0148247cf84bc758");
           
             let pipeline  = [] ;
             if(! isEmpty(live_match_id)){
@@ -951,13 +946,14 @@ const get_card_result_add_34  =  async(req,res)=>{
    const get_card_result_add_36  =  async(req,res)=>{
     try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[3] ;
-         
+            const  data = req.data.team_stats.stat[5] ;
+            
+
 
             if(!isEmpty(data)){
                 let  live_match_id = req.data.match_id;
 
-                let card_id =  mongoose.Types.ObjectId("63453eaabbdbacfeab46c530");
+                let card_id =  mongoose.Types.ObjectId("634546cebbdbacfeab46c58c");
                 
              
             let pipeline  = [] ;
@@ -1069,7 +1065,7 @@ const get_card_result_add_34  =  async(req,res)=>{
                                return false ;  }
   }
 
-const fouls_data_add = async(match_id)=>{
+const card_08_befor_call = async(match_id)=>{
     try {
           //let id = match_id; 
           let data = await matchCardAllData(match_id); 
@@ -1139,9 +1135,7 @@ if(data){
 
 const get_card_result_add_08  =  async(req,res)=>{
   try {  
-   const  data = req.data.team_stats.stat[1] ;
-       
-
+          const  data = req.data.team_stats.stat[1] ;
           if(!isEmpty(data)){
               let  live_match_id = req.data.match_id;
               let live_team_a = parseInt(data.team_a) ;
@@ -1211,21 +1205,30 @@ const get_card_result_add_08  =  async(req,res)=>{
  const get_card_result_add_37  =  async(req,res)=>{
   try {  
             /// this function used by red card 
-          const  red = req.data.team_stats.stat[8] ;
-          const  yellow = req.data.team_stats.stat[6] ;
+          const  red = req.data.team_stats.stat[12] ;
+          const  yellow = req.data.team_stats.stat[10] ;
           let team_a_total_card = parseInt(red.team_a)+parseInt(yellow.team_a); 
-           let team_b_total_card = parseInt(red.team_b)+parseInt(yellow.team_b); 
+          let team_b_total_card = parseInt(red.team_b)+parseInt(yellow.team_b); 
        
+          
+
           if(!isEmpty(red) && !isEmpty(yellow)){
               let  live_match_id = req.data.match_id;
 
               let card_id =  mongoose.Types.ObjectId("634fcfb28ff22506cf6c0a6a");
-              
+       
+              /// check right condition option       
+              let right_ans = '';  
+              if( team_a_total_card >  team_b_total_card ){ right_ans = "opt_1";}else 
+              if( team_a_total_card <  team_b_total_card  ){ right_ans = "opt_2";}else 
+              if( team_a_total_card == 0 &&  team_b_total_card == 0 ){ right_ans = "opt_3";}else 
+              if( team_a_total_card ==  team_b_total_card   ){ right_ans = "opt_4";} 
+   
            
           let pipeline  = [] ;
-           if(! isEmpty(req.data.match_id)){
+        
                pipeline.push({$match: {match_id: live_match_id}});
-              }
+              
 
                   pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
                   pipeline.push({ $unwind: "$play_match_user" });
@@ -1237,13 +1240,10 @@ const get_card_result_add_08  =  async(req,res)=>{
 
 
        let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
-       let result_pass = 0;  let result_fail = 0;            
+      
+       let result_pass = 0;  let result_fail = 0;              
            if (! isEmpty(allUsersData) ){
-            let allData = await Promise.all( allUsersData.map( async (item)=>{ let right_ans = '';  
-            if( team_a_total_card >  team_b_total_card ){ right_ans = "opt_1";}else 
-            if( team_a_total_card <  team_b_total_card  ){ right_ans = "opt_2";}else 
-            if( team_a_total_card == 0 &&  team_b_total_card == 0 ){ right_ans = "opt_3";}else 
-            if( team_a_total_card ==  team_b_total_card   ){ right_ans = "opt_4";} 
+            let allData = await Promise.all( allUsersData.map( async (item)=>{
             
           
                if( right_ans == item.user_option ){  result_pass += 1 ;
@@ -1258,7 +1258,7 @@ const get_card_result_add_08  =  async(req,res)=>{
          let obj = {result_pass,result_fail }; 
          console.log(obj)
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{  console.log( "no data found!.. ",{live_match_id});  return false ;   }
 
 
          }else{  console.log( "Result not show ");   return false ; 
@@ -1338,5 +1338,5 @@ const get_card_result_add_08  =  async(req,res)=>{
 module.exports = {day_match_getID,match_card_number,match_card_0011,match_card_0013,matchCardAllData,matchCardEventAllData,get_card_result_add_4,
                     get_card_result_add_7,get_card_result_add_1, get_card_result_add_11,get_card_result_add_13,
                     get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
-                    get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,fouls_data_add,get_card_result_add_08,
+                    get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,card_08_befor_call,get_card_result_add_08,
                     get_card_result_add_37,card_39_befor_call,get_card_result_add_39,get_card_result_add_34}

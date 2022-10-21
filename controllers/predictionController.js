@@ -146,7 +146,7 @@ class predictionController {
     static prediction_card_list = async (req,res)=>{
             try {
                 let language = req.body.language;
-    
+                console.log('prediction_card_list is call ==',  language );
                 let records = await prediction_cards_tbl.find().sort({_id:-1});
                 let paths =MyBasePath(req,res);    
                    

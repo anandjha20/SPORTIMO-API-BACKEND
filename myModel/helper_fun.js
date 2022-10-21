@@ -106,7 +106,7 @@ const sendNotificationAdd = (my_obj )=>{
                             });   
                     } catch (error){ console.log('some error====',error); return false; }
 
-        }    
+        }      
 
      const userBlocked_fun = async( user_id)=>{
           try {
