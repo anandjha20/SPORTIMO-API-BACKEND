@@ -532,26 +532,26 @@ class ConjobController{
                 //  if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
               
                 if( (!isEmpty( data))  && ( data.status = 'Played')){
-                  //  let dx1 = await get_card_result_add_1({data});  ///
-                  //  let dx4  = await get_card_result_add_4({data});  //
-                  //   let dx7 = await get_card_result_add_7({data});  //
+                   let dx1 = await get_card_result_add_1({data});  ///
+                   let dx4  = await get_card_result_add_4({data});  //
+                    let dx7 = await get_card_result_add_7({data});  //
 
-                 // let dx8 =   await get_card_result_add_08({data});  ******
+                 let dx8 =   await get_card_result_add_08({data}); // ******
 
-                //   let dx11  = await get_card_result_add_11({data});  ///
-                //  let dx13 = await get_card_result_add_13({data});     ///
-                  //   let dx15 = await get_card_result_add_15({data}); 
+                  let dx11  = await get_card_result_add_11({data});  ///
+                 let dx13 = await get_card_result_add_13({data});     ///
+                    let dx15 = await get_card_result_add_15({data}); 
 
-                  //    let dx17  = await get_card_result_add_17({data});    
-                  //   let dx20 = await get_card_result_add_20({data});  
-                  //   let dx23 = await get_card_result_add_23({data}); 
+                     let dx17  = await get_card_result_add_17({data});    
+                    let dx20 = await get_card_result_add_20({data});  
+                    let dx23 = await get_card_result_add_23({data}); 
 
-                  // let dx34  = await get_card_result_add_34({data});  
-                  // let dx36  = await get_card_result_add_36({data});  
-                  // let dx37  = await get_card_result_add_37({data});  
-                  // let dx39  = await get_card_result_add_39({data}); *******  
+                  let dx34  = await get_card_result_add_34({data});  
+                  let dx36  = await get_card_result_add_36({data});  
+                  let dx37  = await get_card_result_add_37({data});  
+                  let dx39  = await get_card_result_add_39({data}); //*******  
                       
-                  // let dx10  = await get_card_result_add_10({data});  
+                  let dx10  = await get_card_result_add_10({data});  
                                
                         
                       return  res.status(200).send({'status':true,'msg':"success", 'data':'' });
