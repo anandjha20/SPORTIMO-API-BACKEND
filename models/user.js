@@ -35,6 +35,7 @@ const Userschema = new Schema({
           seq_id : { type: Number,unique: true , default : 1  },
           is_deleted : { type: Number, default : 0 },
           facebook_id : { type: String ,default: ''},
+          google_id  : { type: String ,default: ''},
           music_sound : { type: String,enum: [0,1], default: '0' },
           haptics : { type: String,enum: [0,1], default: '0' },
           chat : { type: String,enum: [0,1], default: '0' },          

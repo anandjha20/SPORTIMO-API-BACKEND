@@ -218,4 +218,9 @@ const userReportImg =  img_upload('./assets/user_img','image');
 ////////////////////////////////////////////
       router.post('/deleteOne',MasterController.deleteOne)
 
+   // make by mhn
+      router.put('/update_google_id/',UserController.update_google_id); 
+
+
+
 module.exports = router;             

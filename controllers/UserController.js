@@ -1206,7 +1206,29 @@ static verify_nickName = async(req,res)=>{
         }
     }
 
+    static update_google_id = async(req,res)=> {
+        try{   
+             let user_id  = req.body.user_id;
+             let google_id = req.body.google_id;
+     
+            if(isEmpty(user_id) || isEmpty(google_id)){
+                return res.status(200).send({"status":false,"msg":'All Field Required '}) ;       
+            }
 
+            user_tbl.findByIdAndUpdate({_id:user_id} ,{$set: {'google_id':google_id }},{new: true}, (err,updatedUser)=>{
+            if(err) {  console.log(err);
+                return res.status(200).send({"status":false,"msg":'some errors '}) ;          
+            }
+            if(isEmpty(updatedUser)){
+                return res.status(200).send({"status":false,"msg":'Invalid user '}) ;  
+            }else{
+                return res.status(200).send({"status":true,"msg":'google_id add  successfully',"body":updatedUser }) ;  
+            }
+        
+                       });
+           }catch (error) { console.log(error);  return res.status(200).send({"status":false,"msg":'no data add' }) ; }
+                   
+      }     
 
 
 }

@@ -203,7 +203,9 @@ class ConjobController{
            // return false ; 
 
             let  match_id = req.body.match_id ; // '2701198' ;    // 2701168;
-            
+
+            console.log( "get_card_008 is calling == ",  match_id );
+
              let data = await team_matches_tbl.findOne({match_id},'match_id date_utc ');  
           if(data){
             var date_cur    = new Date();                        var date_old    = new Date(data.date_utc);
@@ -219,19 +221,16 @@ class ConjobController{
               console.log("match_time == ",match_time);
 
                   if(seconds_cur >= match_time){
-                    console.log("this card active");
+                          console.log("this card active");
                         fouls_data_add(match_id);
                         card_39_befor_call(match_id);
                 }else{ console.log("this card Not active "); }
-
-
-
-            // let sum    = data.events.fouls.event;     
+        // let sum    = data.events.fouls.event;     
               return  res.status(200).send({'status':true,'msg':'Success','body':data });
 
           }else{
             
-            return  res.status(200).send({'status':false,'msg':'Success', });
+            return  res.status(200).send({'status':false,'msg':'no data found! ..', });
           }    
 
         }catch (error) { console.log(error);
@@ -525,36 +524,39 @@ class ConjobController{
       
       static matchResult_show =  async(req,res)=>{
           try {
-                    //console.log("matchResult_show == ",req.body.match_id );
-                  let  match_id =  req.body.match_id ; // 2701168;  status : "Played" 
+                   
+                  let  match_id =  req.body.match_id ; 
+                  console.log("matchResult_show == ", match_id ); 
                   let data = await matchCardAllData(match_id);  
+
                 //  if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
-                  if( (!isEmpty( data))  && ( data.status != 'Played')){
-                    let dx1 = await get_card_result_add_1({data});  
-                    let dx4  = await get_card_result_add_4({data});  
-                    let dx7 = await get_card_result_add_7({data});  
+              
+                if( (!isEmpty( data))  && ( data.status = 'Played')){
+                  //  let dx1 = await get_card_result_add_1({data});  ///
+                  //  let dx4  = await get_card_result_add_4({data});  //
+                  //   let dx7 = await get_card_result_add_7({data});  //
 
-                    let dx8 =   await get_card_result_add_08({data});
+                 // let dx8 =   await get_card_result_add_08({data});  ******
 
-                    let dx11  = await get_card_result_add_11({data});  
-                    let dx13 = await get_card_result_add_13({data});  
-                    let dx15 = await get_card_result_add_15({data}); 
+                //   let dx11  = await get_card_result_add_11({data});  ///
+                //  let dx13 = await get_card_result_add_13({data});     ///
+                  //   let dx15 = await get_card_result_add_15({data}); 
 
-                     let dx17  = await get_card_result_add_17({data});  
-                    let dx20 = await get_card_result_add_20({data});  
-                    let dx23 = await get_card_result_add_23({data}); 
+                  //    let dx17  = await get_card_result_add_17({data});    
+                  //   let dx20 = await get_card_result_add_20({data});  
+                  //   let dx23 = await get_card_result_add_23({data}); 
 
-                  let dx34  = await get_card_result_add_34({data});  
-                  let dx36  = await get_card_result_add_36({data});  
-                  let dx37  = await get_card_result_add_37({data});  
-                  let dx39  = await get_card_result_add_39({data});  
+                  // let dx34  = await get_card_result_add_34({data});  
+                  // let dx36  = await get_card_result_add_36({data});  
+                  // let dx37  = await get_card_result_add_37({data});  
+                  // let dx39  = await get_card_result_add_39({data}); *******  
                       
-                  let dx10  = await get_card_result_add_10({data});  
+                  // let dx10  = await get_card_result_add_10({data});  
                                
-                           console.log("controller call == ",dx);
+                        
                       return  res.status(200).send({'status':true,'msg':"success", 'data':'' });
                   }else{
-                    return  res.status(200).send({'status':false,'msg':'This match result not show time '}); 
+                    return  res.status(200).send({'status':false,'msg':'This match result not show time ' ,"body":data}); 
                   }
                   
                               
@@ -664,6 +666,7 @@ class ConjobController{
                        return  res.status(200).send({'status':false,'msg':error,'body':''});
                    }
            }
+    
        static match_run =  async(req,res)=>{
             try {
                   let paths    = MyBasePath(req,res); 

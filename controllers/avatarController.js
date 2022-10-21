@@ -8,7 +8,7 @@ class avatarController{
    static avatar_add = async(req,res)=>{
             try{
     let avatar = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-       if(isEmpty(avatar)  ){ 
+       if(isEmpty(avatar)){ 
             return res.status(200).send({"status":false,"msg":'All Field Reqired'}) ;     
             }  
 
