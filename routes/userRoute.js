@@ -72,7 +72,6 @@ const userReportImg =  img_upload('./assets/user_img','image');
 
         //  block_user_add
          router.post('/block_user_add',user_token_check,UserController.block_user_add);
-       
            
       ///  all Sponsorship Routes
         router.post('/sponsor_list',SponsorshipController.sponsor_list);

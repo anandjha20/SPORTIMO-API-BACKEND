@@ -198,9 +198,9 @@ const sendNotificationAdd = (my_obj )=>{
               pipeline.push({$match: {"match_id": obj_match_id }});
                
             // pipeline.push({ $project: {"_id":false,"user_name":"$user_info.name","points":true,
-                //       "match_name":"$match_info.match_name",match_id: true,user_id:true } });
+                //       "match_name":"$match_info.match_name",match_id: true,user_id:true } });  image
              
-          pipeline.push({ $group: {"_id": { user_id : "$user_id",user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
+          pipeline.push({ $group: {"_id": { user_id : "$user_id",image : "$user_info.image", user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
             
             // pipeline.push({ $project: {"_id":false ,"user_name":"$_id.user_name","points": true,
            //    "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });

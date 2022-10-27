@@ -31,7 +31,7 @@ class Sponsorship {
       
 
              let data = await Sponsorship_tbl.find(whr);
-       
+         
           res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success",'body':data});
   
         } catch (error) { console.log(error);
