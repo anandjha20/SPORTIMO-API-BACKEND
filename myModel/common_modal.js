@@ -117,6 +117,13 @@ const isEmpty = (value) => (
   (typeof value === 'object' && Object.keys(value).length === 0) ||
   (typeof value === 'string' && value.trim().length === 0)
 )
+const isArray = function(a) {
+  return (!!a) && (a.constructor === Array);
+};
+
+const isObject = function(a) {
+  return (!!a) && (a.constructor === Object);
+};
 
 const FulldateTime = ()=>{
   var dt = new Date();
@@ -173,4 +180,5 @@ const ArrChunks =  async (array, size = 1)=>{
                             return results;
                           };
 
-module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,rows_count,ArrChunks,before_after_Date};
+module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,
+          rows_count,ArrChunks,before_after_Date,isArray,isObject};

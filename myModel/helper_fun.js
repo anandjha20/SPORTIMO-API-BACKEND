@@ -206,7 +206,7 @@ const sendNotificationAdd = (my_obj )=>{
            //    "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });
 
                pipeline.push({ $sort : { "points": -1}});  
-                pipeline.push({ $limit :3});  
+                pipeline.push({ $limit :10});  
  
     let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
    

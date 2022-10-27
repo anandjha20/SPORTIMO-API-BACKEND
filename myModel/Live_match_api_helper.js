@@ -1,7 +1,7 @@
 const axios     = require("axios");
 const mongoose = require('mongoose');
 
-const { ArrChunks,isEmpty,getcurntDate } = require('../myModel/common_modal'); 
+const { ArrChunks,isEmpty,getcurntDate,isArray,isObject } = require('../myModel/common_modal'); 
 
 const playMatchCards_tbl = require('../models/playMatchCards');   
 const match_cards_tbl = require('../models/match_cards');   
@@ -376,7 +376,7 @@ const add_win_point = async(req,res)=>{
    const get_card_result_add_10  =  async(req,res)=>{
     try {  
            const  data = req.data.events.goals.event ;
-         
+                  console.log( "get_card_result_add_10" , data)
             if(!isEmpty(data)){
               let  live_match_id = req.data.match_id;
               
@@ -399,11 +399,16 @@ const add_win_point = async(req,res)=>{
                                let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
                                
                   let first = 0;  let second = 0;
+                 if(! isArray(data)){
                   data.map((item)=>{
                     if(item.game_minute<=45){first=1}else
                     if(item.game_minute>45){second=1}  
                   })
+                }else if(! isObject(data)){
+                  if(data.game_minute<=45){first=1}else
+                  if(data.game_minute>45){second=1}
 
+                }
                   let result_pass = 0;  let result_fail = 0; 
              if ( !isEmpty(allUsersData) ){
               let allData = await Promise.all( allUsersData.map( async (item)=>{ let right_ans = '';  
