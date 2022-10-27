@@ -5,7 +5,7 @@ let mongoose = require('mongoose');
   
 
 const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date } = require('../myModel/common_modal');
-const { autoincremental,sendNotificationAdd,myBlockUserIds,matchWinUsersRank } = require('../myModel/helper_fun');
+const { autoincremental,sendNotificationAdd,myBlockUserIds,matchWinUsersRank,matchWinUsersRank_one } = require('../myModel/helper_fun');
 
 const  {MyBasePath} = require("../myModel/image_helper");
 
@@ -399,14 +399,19 @@ static user_point_details = async (req,res)=>{
 
 static  all_matches_leaderboard = async (req,res)	=>{		
 		try{
+			let user_id = req.body.user_id ; 
+
             let response = await transaction_tbls.aggregate([ {$match: {points_by: 'match'}}, { $group: {"_id": "$match_id"}} ],);   
 
 		 if(response){
 				let sumdata = [];     
 
 				console.log("jk === ",response);
-			let forGat = await Promise.all(response.map( async(item)=>{  let dx =  await matchWinUsersRank( item._id.toString() ); 
-										if(! isEmpty(dx)) { sumdata.push(dx ) } } ));
+			let forGat = await Promise.all(response.map( async(item)=>{
+				  let matchTopWinners =  await matchWinUsersRank( item._id.toString() ); 
+				  let userReankData = await matchWinUsersRank_one( item._id.toString(),user_id);
+
+										if(! isEmpty(matchTopWinners)) { sumdata.push({ matchTopWinners,userReankData}) } } ));
       		
 										///let response2 = await matchWinUsersRank(response[0]._id.toString());
 
@@ -422,7 +427,48 @@ static  all_matches_leaderboard = async (req,res)	=>{
 
 }
 
+static jks = async(req,res) =>{
 
+	let user_id = req.body.user_id ; 
+	let matchID = req.body.match_id ; 
+		let dx = await  matchWinUsersRank_one(matchID,user_id);
+
+		if(dx){
+			return res.status(200).send({"status":true ,"msg":"success","body":dx});
+		}else{
+			return res.status(200).send({"status":false,"msg":"server error"});
+		}	
+
+
+}
+
+static  all_matches_leaderboard_2 = async (req,res)	=>{		
+	try{
+		  let user_id = req.body.user_id ; 
+		let response = await transaction_tbls.aggregate([ {$match: {points_by: 'match'}}, { $group: {"_id": "$match_id"}} ],);   
+
+	 if(response){
+			let sumdata = [];     
+
+			console.log("jk === ",response);
+		let forGat = await Promise.all(response.map( async(item)=>{ 
+					 let dx =  await matchWinUsersRank( item._id.toString() ); 
+					 // let user_id_dx =  await matchWinUsersRank2( item._id.toString(),user_id ); 
+									if(! isEmpty(dx)) { sumdata.push(dx ) } } ));
+		  
+									///let response2 = await matchWinUsersRank(response[0]._id.toString());
+
+		return res.status(200).send({"status":true ,"msg":"success","body":sumdata});
+	}else{
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}				 	   
+								   
+	}catch (error){
+		console.log(error)
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}
+
+}
 static all_matches_leaderboard_old = async (req,res)	=>{		
 	try{
 		let response

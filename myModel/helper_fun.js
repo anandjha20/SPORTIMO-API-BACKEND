@@ -200,7 +200,7 @@ const sendNotificationAdd = (my_obj )=>{
             // pipeline.push({ $project: {"_id":false,"user_name":"$user_info.name","points":true,
                 //       "match_name":"$match_info.match_name",match_id: true,user_id:true } });  image
              
-          pipeline.push({ $group: {"_id": { user_id : "$user_id",image : "$user_info.image", user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
+            pipeline.push({ $group: {"_id": { user_id : "$user_id",image : "$user_info.image", user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
             
             // pipeline.push({ $project: {"_id":false ,"user_name":"$_id.user_name","points": true,
            //    "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });
@@ -209,7 +209,9 @@ const sendNotificationAdd = (my_obj )=>{
                 pipeline.push({ $limit :3});  
  
     let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
-       console.log("allUsersData call ===  ",allUsersData );
+   
+    if(allUsersData){ allUsersData.map((item)=>{ return  (item._id.image == '') ? item._id.image =  '': item._id.image =  "http://34.204.253.168:3000/image/assets/user_img/"+item._id.image ;}); }
+    
        
             return  (allUsersData)? allUsersData : false ; 
 
@@ -219,6 +221,69 @@ const sendNotificationAdd = (my_obj )=>{
 
   } 
 
+  const matchWinUsersRank_one2 = async (match_id,user_id) => {
+    try{
+          let obj_match_id =  mongoose.Types.ObjectId(match_id);
+          let obj_user_id =  mongoose.Types.ObjectId(user_id); 
+           let pipeline  = [] ;
+               pipeline.push({$match: {"points_by": "match","user_id" : obj_user_id }});
+               pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_info'} });
+               pipeline.push({ $unwind: "$user_info" });
+              pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_info'} });
+              pipeline.push({ $unwind: "$match_info" });
+              pipeline.push({$match: {"match_id": obj_match_id }});
+             
+            pipeline.push({ $group: {"_id": { user_id : "$user_id",image : "$user_info.image", user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
+            pipeline.push({ $sort : { "points": -1}});  
+                pipeline.push({ $limit :3});  
+ 
+    let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
+      
+    if(allUsersData){ allUsersData.map((item)=>{ return  (item._id.image == '') ? item._id.image =  '': item._id.image =  "http://34.204.253.168:3000/image/assets/user_img/"+item._id.image ;}); }
+    
+            return  (allUsersData)? allUsersData : false ; 
+
+      } catch (error) { console.log(error);
+        return false ; 
+         }    
+
+  } 
+  const matchWinUsersRank_one = async (match_id,user_id) => {
+    try{
+          let obj_match_id =  mongoose.Types.ObjectId(match_id);
+          let obj_user_id =  mongoose.Types.ObjectId(user_id); 
+           let pipeline  = [] ;
+               pipeline.push({$match: {"points_by": "match"}});
+               pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_info'} });
+               pipeline.push({ $unwind: "$user_info" });
+              pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_info'} });
+              pipeline.push({ $unwind: "$match_info" });
+              pipeline.push({$match: {"match_id": obj_match_id }});
+             
+            pipeline.push({ $group: {"_id": { user_id : "$user_id",image : "$user_info.image", user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id",} , "points": { $sum: { "$toInt": "$points"} }, } });
+            pipeline.push({ $sort : { "points": -1}});  
+               // pipeline.push({ $limit :3});  
+ 
+    let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
+      let newobj = {}; 
+    if(allUsersData){ allUsersData.map((item,index )=>{ 
+          (item._id.image == '') ? item._id.image =  '': item._id.image =  "http://34.204.253.168:3000/image/assets/user_img/"+item._id.image ;
+        
+          item.rank = index + 1 ;
+          if(item._id.user_id == user_id ){  newobj =  item; }
+         
+        
+        
+        }); }
+    
+            return  (newobj)? newobj : false ; 
+
+      } catch (error) { console.log(error);
+        return false ; 
+         }    
+
+  } 
 
 
-module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne,myBlockUserIds,matchWinUsersRank }
+module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne,
+            myBlockUserIds,matchWinUsersRank,matchWinUsersRank_one }
