@@ -906,7 +906,7 @@ static verify_nickName = async(req,res)=>{
 
                 if(check_rows>0){
                             await follower_tbls.deleteOne({follower_id,following_id})
-                    return res.status(200).send({"status":false,"msg":"This user unfollowed","body":''});        
+                    return res.status(200).send({"status":false,"msg":"This user unfollowed"});        
                   }            
 
                   let obj=new follower_tbls({follower_id,following_id,date});
@@ -915,7 +915,7 @@ static verify_nickName = async(req,res)=>{
                         return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
                     }
                     else{
-                        return res.status(200).send({"status":true,"msg":"This user unfollowed","body": response });
+                        return res.status(200).send({"status":true,"msg":"user Followed Successfully","body": response });
                     }
                 
             }catch(error) { console.log(error);
