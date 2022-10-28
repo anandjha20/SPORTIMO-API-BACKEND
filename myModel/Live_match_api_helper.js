@@ -116,12 +116,8 @@ const match_event_shot_tbl = require('../models/match_event_shots');
                let response = await axios(config);
          if(response){
             let datas = response.data.datasportsgroup.tour.tour_season.competition.season.discipline.gender.round.list.match;
-          
-           return datas;
-         
-         }else{   return false;
-          
-         }    
+              return datas;
+          }else{   return false; }    
 
 
      
@@ -376,7 +372,7 @@ const add_win_point = async(req,res)=>{
    const get_card_result_add_10  =  async(req,res)=>{
     try {  
            const  data = req.data.events.goals.event ;
-                  console.log( "get_card_result_add_10" , data)
+                //  console.log( "get_card_result_add_10" , data)
             if(!isEmpty(data)){
               let  live_match_id = req.data.match_id;
               
@@ -399,8 +395,8 @@ const add_win_point = async(req,res)=>{
                                let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
                                
                   let first = 0;  let second = 0;
-                 if(! isArray(data)){
-                  data.map((item)=>{
+                 if( isArray(data)){
+                  data.map((item)=>{ 
                     if(item.game_minute<=45){first=1}else
                     if(item.game_minute>45){second=1}  
                   })
@@ -1010,11 +1006,11 @@ const get_card_result_add_34  =  async(req,res)=>{
 
   //////////////////////////// extrat function /////////////////////////////////
 
-   
+    
   const day_match_getID = async(match_id) =>{
     try {   
-         //  let date = getcurntDate();
-            let date = "2022-10-16";   
+           let date = getcurntDate();
+          //  let date = "2022-10-1";   
 
        const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
       // const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
@@ -1034,18 +1030,19 @@ const get_card_result_add_34  =  async(req,res)=>{
          if(response){
             let datas = response.data.datasportsgroup.competition[0].season.discipline.gender.round.match;
             let match_id_arr = [];  
-            let time_u = Math.floor(Date.now() / 1000); 
+            let time_u = Math.floor( new Date(new Date().toUTCString()).getTime() / 1000); 
+         //   console.log("curent time == ", new Date().toUTCString());
               console.log("res data type == ", typeof datas );
               console.log("datas values  == ", datas.length );
              if(datas.length >0 ) {
                     datas.map((item)=>{
-                   let date = new Date(item.date_utc+' '+ item.time_utc);
+                   let date =  new Date(new Date(item.date_utc+' : '+ item.time_utc).toUTCString());
                    let seconds = date.getTime() / 1000 ; 
                       /// 92 min = 5,520 sec add on 
                        seconds = seconds + 5520;
-                     console.log("fun call == ",{time_u,seconds});
+                     console.log("fun call-1 == ",{time_u,seconds});
 
-                   if(time_u >= seconds){
+                   if(time_u >= seconds ){
                          match_id_arr.push(item.match_id);    
                        }      
                                              
@@ -1053,13 +1050,18 @@ const get_card_result_add_34  =  async(req,res)=>{
                   
                  return match_id_arr;  
             }else if(typeof datas === 'object'){
-          let date = new Date(datas.date_utc+' '+ datas.time_utc);
-        let seconds = date.getTime() / 1000 ; 
-           /// 92 min = 5,520 sec add on    
-            seconds = seconds + 5520;
-          console.log("fun call == ",{time_u,seconds});
-
-        if(time_u >= seconds){
+           
+        let ms = new Date(datas.date_utc + ' : ' + datas.time_utc ) ;
+              
+        let seconds = Math.floor(ms.getTime() /1000)  ;           
+          // GMT 5.30 hours  to utc time    
+          seconds  = seconds + 19800 ;
+          //  120 mint ( match end time  ) lat on  7200 seconds
+          seconds  = seconds + 7200 ;
+          console.log("fun call-2 == ",{time_u,seconds});
+        
+          
+        if(time_u >= seconds ){
               match_id_arr.push(datas.match_id);    
             }      
               return match_id_arr;         
@@ -1072,7 +1074,7 @@ const get_card_result_add_34  =  async(req,res)=>{
 
 const card_08_befor_call = async(match_id)=>{
     try {
-          //let id = match_id; 
+          //let id = match_id;           
           let data = await matchCardAllData(match_id); 
 if(data){
         

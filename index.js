@@ -7,7 +7,8 @@ const AdminRoute   = require('./routes/AdminRoute');
 const image_urls   = require('./routes/image_urls');
 const cronJobRoutes = require("./routes/cronJobRoute");
 const local_default = require("./local_default.json");
-//const cronjobs = require('./cronJobCall');
+const cronjobs = require('./cronJobCall');
+
 const Port =  local_default.port ;     //  process.env.Port || 3600; 
 //const Port =  3700; 
 const cors = require('cors'); 
