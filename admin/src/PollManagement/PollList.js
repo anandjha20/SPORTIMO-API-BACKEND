@@ -3,7 +3,6 @@ import Header from "../Header";
 import { Link } from "react-router-dom";
 import TableListComponent from "./TableListComponent";
 import Button  from "@mui/material/Button";
-import PollFilterComponent from "./Components/PollFilterComponent";
 
 function PollList() {
     return (
@@ -27,16 +26,14 @@ function PollList() {
 								<div className="justify-content-center">
                                 <Link to="/poll/create" className="btn-link">
                                 <i className="fas fa-plus"></i>&nbsp;&nbsp; Create Poll
-                              </Link>
+                                </Link>
                                
                                 </div>
 							</div>
                         </div>
                         <div className="row justify-content-center">
                             <div className="col-lg-12 table-responsive border border-bottom-0">
-                            <PollFilterComponent />    
-                            <TableListComponent />
-                                       
+                            <TableListComponent />        
                             </div>
                         </div>
                     </div>

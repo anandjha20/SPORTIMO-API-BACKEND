@@ -15,9 +15,11 @@ function Login() {
   async function login() 
   {
 
-  let data={email, pass }; 
-  let result= await  fetch('http://34.204.253.168:3000/web_api/admin_login', {
-  //let result= await  fetch('/admin_login', {
+    let data={email, pass }; 
+    
+     let result= await  fetch('http://34.204.253.168:3000/web_api/admin_login', {
+     //  let result = await  fetch('http://192.168.1.95:3600/web_api/admin_login', { 
+     //let result= await  fetch('/admin_login', {
     
   method : 'POST', 
     headers : {
@@ -61,7 +63,7 @@ function Login() {
     return (
         <>
 
-        <ToastContainer position="bottom-right" />
+        <ToastContainer />
         <div className="page main-signin-wrapper ">
             <div className="main-signin-wrapper">
                 <div className="row signpages text-center">
@@ -82,8 +84,8 @@ function Login() {
                                     <div className="container-fluid">
                                         <div className="row row-sm">
                                             <div className="card-body mt-2 mb-2">
-                                                <img src="assets/img/brand/logo.png"
-                                                    className=" d-lg-none header-brand-img text-left float-left mb-4" alt="logo" />
+                                                {/* <img src="assets/img/brand/logo.png"
+                                                    className=" d-lg-none header-brand-img text-left float-left mb-4" alt="logo" /> */}
                                                 <div className="clearfix"></div>
                                             
                                                 <form>
