@@ -3,9 +3,20 @@ import {Link } from "react-router-dom";
 import { NavLink,useNavigate } from 'react-router-dom';
 import { useState } from "react";
 import {  toast } from 'react-toastify';
-
+import { useEffect } from "react";
 
 export default function Header() {
+
+// const HadnleOnload = (e) => {
+// 	const tokenRequird = localStorage.getItem("token");
+// 	console.log(tokenRequird);
+// };
+	
+// 	useEffect(() => {
+// 		HadnleOnload();
+// 	}, [])
+
+
 
 const navRef = React.useRef(null);
 
@@ -16,6 +27,7 @@ const onRemoveClick = (e) => {
 const onRemoveClick1 = (e) => {
     navRef.current.classList.remove("show");
   };
+
 
  {
 	function cm(...args) {
@@ -91,13 +103,28 @@ return (
 							<span className="sidemenu-label">GEQ</span></NavLink>
 						</li> 
 
-						 <li className="nav-item" >
+						 {/* <li className="nav-item" >
 							<NavLink  to="/sponsorship" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
 							<i className="fad fa-bullhorn sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Sponsorship</span></NavLink>
-						</li> 
+						</li>  */}
 
 
+						<li className="nav-item nav-spon-local" onClick={handleProfile}>
+							<a  className="nav-link with-sub cursor"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-bullhorn sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Sponsorship </span><i className="angle fe fe-chevron-right"></i>
+							</a>
+							 <ul className="nav-sub">
+								<li className="nav-sub-item">
+									<NavLink  to="/sponsorship" className="nav-sub-link" >Home Sponsorship</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/intro-slider" className="nav-sub-link " >Add Introduction Slider</NavLink>
+								</li>
+							</ul>
+						</li>
+						
 						<li className="nav-item nav-link-local" onClick={handleProfile}>
 							<a  className="nav-link with-sub cursor"><span className="shape1"></span><span className="shape2"></span><i className="fad fa-question-circle sidemenu-icon menu-icon"></i><span className="sidemenu-label">Faq</span><i className="angle fe fe-chevron-right"></i>
 							</a>
@@ -110,8 +137,10 @@ return (
 								</li>
 							</ul>
 						</li>
+
+
 						<li className="nav-item nav-link-child" onClick={handleProfile}>
-							<a onClick={handleActive} className="nav-link with-sub cursor"><span className="shape1"></span>
+							<a  className="nav-link with-sub cursor"><span className="shape1"></span>
 							<span className="shape2"></span>
 							<i className="fad fa-comment-alt-edit sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Complaint </span><i className="angle fe fe-chevron-right"></i></a>
@@ -125,6 +154,28 @@ return (
 								{/* <li className="nav-sub-item">
 									<NavLink  to="/complaint-reply" className="nav-sub-link">Chat Management</NavLink>
 								</li> */}
+							</ul>
+						</li>
+
+						<li className="nav-item nav-master-child" onClick={handleProfile}>
+							<a  className="nav-link with-sub cursor"><span className="shape1"></span>
+							<span className="shape2"></span>
+							<i className="fad fad fa-user-shield sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Preference Master</span><i className="angle fe fe-chevron-right"></i></a>
+							 <ul className="nav-sub">
+								<li className="nav-sub-item">
+									<NavLink  to="/preference/sports" className="nav-sub-link">Sports Preference</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/preference/leagues" className="nav-sub-link">Leagues Preference</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/preference/teams" className="nav-sub-link">Teams Preference</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/preference/players" className="nav-sub-link">Players Preference</NavLink>
+								</li>
+								
 							</ul>
 						</li>
 
@@ -144,12 +195,89 @@ return (
 							<span className="sidemenu-label">Complaint Management</span></NavLink>
 						</li>  */}
 						 <li className="nav-item" >
+							<NavLink  to="/notification" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-bell sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Notifications</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
 							<NavLink  to="/tips" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
 							<i className="fad fa-lightbulb-on sidemenu-icon menu-icon"></i>
 							<span className="sidemenu-label">Tips & Tricks</span></NavLink>
 						</li> 
-						
 
+						 <li className="nav-item" >
+							<NavLink  to="/content" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-money-check-edit sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Content Management</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
+							<NavLink  to="/default-message" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-comments-alt sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Default Status Message</span></NavLink>
+						</li> 
+
+						 <li className="nav-item" >
+							<NavLink  to="/report" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-atlas sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Report Reason</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
+							<NavLink  to="/user-report" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-atlas sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">User  Report Reason List</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
+							<NavLink  to="/groups" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-users-class sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Groups Chat Manage..</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
+							<NavLink  to="/chat-blocked-user" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-users-slash sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">User Chat Blocked List</span></NavLink>
+						</li> 
+						<li className="nav-item" >
+							<NavLink  to="/matchcard" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-gamepad-alt sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Add Match Card</span></NavLink>
+						</li> 
+						 <li className="nav-item" >
+							<NavLink  to="/cart-category" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-th sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">View Card Category</span></NavLink>
+						</li> 
+
+						<li className="nav-item" >
+							<NavLink  to="/cards" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-th sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">View Prediction Cards</span></NavLink>
+						</li> 
+
+						<li className="nav-item" >
+							<NavLink  to="/user_predistions" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-th sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">User Prediction</span></NavLink>
+						</li> 
+
+						<li className="nav-item" >
+							<NavLink  to="/leaderboard" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fas fa-users sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Leaderboard</span></NavLink>
+						</li>
+
+						<li className="nav-item" >
+							<NavLink  to="/avatar" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-user-crown sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Create Avatar</span></NavLink>
+						</li> 
+
+						<li className="nav-item" >
+							<NavLink  to="/admin-setting" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fe fe-settings sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Admin Settings</span></NavLink>
+						</li> 
+						
+						
 					
 					</ul>
 				</div>

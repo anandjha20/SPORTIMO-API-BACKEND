@@ -14,7 +14,7 @@ function GameEngagementList() {
 
                         <div className="page-header">
                             <div>
-                                <h2 className="main-content-title tx-24 mg-b-5">Game Engagement Questions</h2>
+                                <Link to="/cards/create"  style={{ color : "white" }} className="main-content-title tx-24 mg-b-5">Game Engagement Questions</Link>
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
                                         <Link to="/home">Home</Link>
@@ -26,11 +26,10 @@ function GameEngagementList() {
                             <div className="d-flex">
 								<div className="justify-content-center">
 							       <Link  to="/geq/create">
-                                    <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add  Game Engagement Questions</Button>
+                                    <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add GEQ</Button>
                                     </Link>
                                 </div>
 							</div>
-                           
                         </div>
                         <div className="row justify-content-center">
                             <div className="col-lg-12 table-responsive border border-bottom-0">

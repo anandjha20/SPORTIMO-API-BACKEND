@@ -9,7 +9,7 @@ import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
+import Swal from 'sweetalert2'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useState, useEffect } from "react";
@@ -43,7 +43,10 @@ export default function AddComplaintCategory() {
     
       const { cat_name, last_name, tags } = values;
    
-   
+   ///////localstrorage get token ////////////////
+   const token = localStorage.getItem("token");
+   const header = ({ 'token': `${token}` });
+   const options1 = ({ headers: header });
    
     useEffect(() => {
         document.body.className = "main-body leftmenu camp_list";
@@ -59,7 +62,7 @@ export default function AddComplaintCategory() {
 
     const onOpenModal = (_id) => {
 
-           axios.get(`/user_complaint_cat_list/${_id}`)
+           axios.get(`/web_api/user_complaint_cat_list/${_id}`)
             .then(res => {
                 const catView = res.data.body[0];
                 setCat(catView);
@@ -70,67 +73,80 @@ export default function AddComplaintCategory() {
 
     /////////////////delete complaint /////////////////
     const deleteCategory = (_id) => {
-
-        axios.delete(`/user_complaint_cat_delete/${_id}`)
-            .then(res => {
-                if (res.status) {
-                    let data = res.data;
-
-                    if (data.status) { 
-                        toast.success(data.msg);
-                         return axios.get("/user_complaint_cat_list")
-                            .then(res => {
-                                const userData = res.data.body;
-                                setData(userData);
-                            })
-                    } else {
-                        toast.error('something went wrong please try again');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+          }).then((result) => {
+            if (result.isConfirmed) {         
+                axios.delete(`/web_api/user_complaint_cat_delete/${_id}`)
+                .then(res => {
+                    if (res.status) {
+                        let data = res.data;
+                        if (data.status) { 
+                            Swal.fire(
+                                'Deleted!',
+                                 data.msg,
+                                'success'
+                              )
+                             return ComplaintList();
+                        } else {
+                            toast.error(data.msg);
+                        }
                     }
-                }
-                else {
-                    toast.error('something went wrong please try again..');
-                }
-
-            })
-            .catch(error => {
-                console.log(this.state);
-            })
+                    else {
+                        toast.error(data.msg);
+                    }
+                })
+            }
+          })
     }
 
     /////////////////complaint list/////////////////
     const onCloseModal = () => setOpen(false);
 
-    const FaqCategoryList = async () => {
-        await axios.get(`/user_complaint_cat_list`)
+    const ComplaintList = async () => {
+        await axios.get(`/web_api/user_complaint_cat_list`)
             .then(res => {
                 const userData = res.data.body;
                 setData(userData);
             })  }
 
     useEffect(() => {
-        FaqCategoryList();
+        ComplaintList();
         // const timer = setInterval(() => {
         //   setData();
         // }, 500);
         // return () => clearInterval(timer);
     }, []);
 
-    const columns = [{ title: 'Complaint Category', field: 'cat_name' }, ]
+    const columns = [
+        { title: 'Category (English)', field: 'cat_name' },
+        { title: 'Category (Arabic)', field: 'cat_name_ara' },
+        { title: 'Category (French)', field: 'cat_name_fr' },
+      ]
     ///////////////// Update complaint category /////////////////
     const saveFormData = async (e) => {
         e.preventDefault();
         try {
 
-            let cat_name = (e.target.elements.cat_name !== 'undefined') ? e.target.elements.cat_name.value : '';
             let _id = (e.target.elements._id !== 'undefined') ? e.target.elements._id.value : '';
+            let cat_name = (e.target.elements.cat_name !== 'undefined') ? e.target.elements.cat_name.value : '';
+            let cat_name_ara = (e.target.elements.cat_name_ara !== 'undefined') ? e.target.elements.cat_name_ara.value : '';
+            let cat_name_fr = (e.target.elements.cat_name_fr !== 'undefined') ? e.target.elements.cat_name_fr.value : '';
+
             let dataToSend2 = {
                 "cat_name": cat_name,
+                "cat_name_ara": cat_name_ara,
+                "cat_name_fr": cat_name_fr,
             }
             console.log("new values == ", dataToSend2);
 
-            let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
-
-            axios.put(`/user_complaint_cat_update/${_id}`, dataToSend2, options1)
+            axios.put(`/web_api/user_complaint_cat_update/${_id}`, dataToSend2, options1)
                 .then(res => {
                     if (res.status) {
 
@@ -138,7 +154,7 @@ export default function AddComplaintCategory() {
                         if (data.status) {
                             toast.success(data.msg);
                             setOpen(false);
-                            return axios.get("/user_complaint_cat_list")
+                            return axios.get("/web_api/user_complaint_cat_list")
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
@@ -165,16 +181,18 @@ export default function AddComplaintCategory() {
         try {
 
             let cat_name = (e.target.elements.cat_name !== 'undefined') ? e.target.elements.cat_name.value : '';
+            let cat_name_ara = (e.target.elements.cat_name_ara !== 'undefined') ? e.target.elements.cat_name_ara.value : '';
+            let cat_name_fr = (e.target.elements.cat_name_fr !== 'undefined') ? e.target.elements.cat_name_fr.value : '';
 
             let dataToSend2 = {
                 "cat_name": cat_name,
+                "cat_name_ara": cat_name_ara,
+                "cat_name_fr": cat_name_fr,
             }
 
             console.log("new values == ", dataToSend2);
 
-            let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
-
-            axios.post(`/add_user_complaint_category`, dataToSend2, options1)
+            axios.post(`/web_api/add_user_complaint_category`, dataToSend2, options1)
                 .then(response => {
                     if (response.status) {
 
@@ -186,18 +204,18 @@ export default function AddComplaintCategory() {
                             toast.success(data.msg);
                             e.target.reset();
 
-                            return axios.get("/user_complaint_cat_list")
+                            return axios.get("/web_api/user_complaint_cat_list")
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
                             });
 
                         } else {
-                            toast.error('something went wrong please try again');
+                            toast.error(data.msg);
                         }
                     }
                     else {
-                        toast.error('something went wrong please try again..');
+                        toast.error(data.msg);
                     }
 
                 })
@@ -244,17 +262,27 @@ export default function AddComplaintCategory() {
                                               
 
                                                 <form className="mt-3" onSubmit={(e) => AddFormData(e)}>
+                                                     
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Complaint Category</h6>
-                                                   
-                                                    <TextField id="categor" className="filter-input" name="cat_name"  autoComplete="off"
-                                                       onChange={handleOnChange} label="Complaint Category" fullWidth type="text"
-                                                        InputLabelProps={{
-                                                            shrink: true,
-                                                        }}
-                                                    />
+                                                     <label className="title-col">Add Category <span className="text-blue">(English)</span></label>
+                                                      <input  onChange={handleOnChange} id="categor" className="form-control mb-4" name="cat_name"
+                                                         type="text"
+                                                        />
+
                                                     {errors.cat_name && dirty.cat_name && (
                                                     <p className="error">{errors.cat_name}</p>
                                                      )}
+    
+                                                      <label className="title-col">Add Category <span className="text-blue">(Arabic)</span></label>
+                                                      <input  id="categor" className="form-control mb-4" name="cat_name_ara"
+                                                         type="text"
+                                                        />
+
+                                                      <label className="title-col">Add Category <span className="text-blue">(French)</span></label>
+                                                      <input  id="categor" className="form-control mb-4" name="cat_name_fr"
+                                                         type="text"
+                                                        />
+
 
                                                     <div className="mt-3">
                                                         <Button type='submit'  className="mr-3 btn-pd btnBg" disabled={disable}>Add</Button>
@@ -298,10 +326,22 @@ export default function AddComplaintCategory() {
                                                 <h2 className="mb-4 text-white">Update Category</h2>
                                                 <div className="mx-500">
                                                     <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
-                                                        <div className="form-group mb-4"> <label className="tx-medium">Update Category</label>
+
+                                                        <div className="form-group mb-4"> 
+                                                        <label className="title-col">Update Category <span className="text-blue">(English)</span></label>
                                                             <input type="hidden" className="form-control" name='_id' value={catView._id} />
                                                             <input type="text" className="form-control" name='cat_name' 
-                                                            defaultValue={catView.cat_name} /> </div>
+                                                            defaultValue={catView.cat_name} /> 
+                                                            </div>
+
+                                                            <label className="title-col">Add Category <span className="text-blue">(Arabic)</span></label>
+                                                            <input  id="categor" className="form-control mb-4" name="cat_name_ara"
+                                                               defaultValue={catView.cat_name_ara}  type="text"  />
+
+                                                            <label className="title-col">Add Category <span className="text-blue">(French)</span></label>
+                                                            <input  id="categor" className="form-control mb-4" name="cat_name_fr"
+                                                           defaultValue={catView.cat_name_fr} type="text" />
+
                                                            <div className="mt-3">
                                                             <Button type='submit' className="mr-3 btn-pd btnBg" >Update</Button>
                                                         </div>

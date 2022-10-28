@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-
+import Swal from 'sweetalert2'
 import "react-responsive-modal/styles.css";
 import { Modal } from "react-responsive-modal";
 import 'react-toastify/dist/ReactToastify.css';
@@ -24,7 +24,7 @@ export default function CreateTipsTricks() {
     
     const onOpenModal = (_id) => 
     {
-      axios.get(`/get_tips/${_id}`, options1 )
+      axios.get(`/web_api/get_tips/${_id}`, options1 )
         .then(res => {
           const catView = res.data.body[0];
           setCat(catView);
@@ -36,7 +36,7 @@ export default function CreateTipsTricks() {
     const onCloseModal = () => setOpen(false);   
     const TipsTricksList = async () =>
     {
-        await axios.get(`/get_tip_list`)
+        await axios.get(`/web_api/get_tip_list`)
         .then(res => {
           const userData = res.data.body;
           setData(userData);
@@ -47,7 +47,52 @@ export default function CreateTipsTricks() {
     TipsTricksList()
   }, []);
 
- const columns =[   { title: 'Tips & Tricks', field: 'tips_trick' }, ] 
+ const columns =[   
+ { title: 'Tips & Tricks (English)', field: 'tips_trick' }, 
+  { title: 'Tips & Tricks (Arabic)', field: 'tips_trick_ara' }, 
+  { title: 'Status', render: rowData => {
+    if (rowData.active_status == true) {
+        return (
+            <>
+            
+             <Button onClick={() => { TipsActiveDeactive(rowData._id, rowData.statusTips="0");}} className="mr-3 btn-pd btnBg">Active</Button>
+            </>
+        );
+      }
+      if (rowData.active_status == false) {
+        return (
+            <>
+            <Button onClick={() => { TipsActiveDeactive(rowData._id, rowData.statusTips="1");}} className="mr-3 btn-pd deactive">Deactive</Button>
+            </>
+        );
+      }
+}
+  }, ] 
+
+
+
+ /////////////////status update/////////////////////
+ const TipsActiveDeactive = (_id, statusTips) =>
+{ 
+           const setDataForm = { tips_status : statusTips } 
+            axios.put(`/web_api/tips_status_update/${_id}`, setDataForm , options1)
+             .then(res => {
+                if (res.status) {
+                    let data = res.data;
+                    if (data.status) { 
+                        toast.success(data.msg);
+                        return TipsTricksList();
+                    } else {
+                        toast.error('something went wrong please try again');
+                    }
+                }
+                else {
+                    toast.error('something went wrong please try again..');
+                }
+
+            })
+             
+} 
 
 ///////////////////////////  Add Tips & Tricks Api Call  /////////////////////////////////////////
 
@@ -56,15 +101,17 @@ export default function CreateTipsTricks() {
         try {
 
             let tips_trick = (e.target.elements.tips_trick !== 'undefined') ? e.target.elements.tips_trick.value : '';
+                let tips_trick_ara = (e.target.elements.tips_trick_ara !== 'undefined') ? e.target.elements.tips_trick_ara.value : '';
+                let dataToSend2 = {
+                    "tips_trick": tips_trick,
+                    "tips_trick_ara": tips_trick_ara,
+                }
 
-            let dataToSend2 = {
-                "tips_trick": tips_trick,
-            }
 
             console.log("new values == ", dataToSend2);
 
 
-            axios.post(`/add_tips`, dataToSend2, options1)
+            axios.post(`/web_api/add_tips`, dataToSend2, options1)
                 .then(response => {
                     if (response.status) {
 
@@ -77,7 +124,7 @@ export default function CreateTipsTricks() {
                             toast.success(data.msg);
 
                             e.target.reset();
-                            return axios.get("/get_tip_list", options1)
+                            return axios.get("/web_api/get_tip_list", options1)
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
@@ -99,37 +146,40 @@ export default function CreateTipsTricks() {
         } catch (err) { console.error(err); toast.error('some errror'); return false; }
     }
 
-
-    
-///////////////// delete tips tricks api call  /////////////////
-    const deleteCategory = (_id) => {  
-        let sendData = { id : _id  }
-        axios.delete(`/delete_tip/${_id}`, options1)
+  /////////////////delete api call /////////////////
+   const deleteCategory = (_id) => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {         
+            axios.delete(`/web_api/delete_tip/${_id}`)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
-
                     if (data.status) { 
-                        toast.success(data.msg);
-                         return axios.get("/get_tip_list", options1)
-                            .then(res => {
-                                const userData = res.data.body;
-                                setData(userData);
-                            })
+                        Swal.fire(
+                            'Deleted!',
+                             data.msg,
+                            'success'
+                          )
+                         return TipsTricksList();
                     } else {
-                        toast.error('something went wrong please try again');
+                        toast.error(data.msg);
                     }
                 }
                 else {
-                    toast.error('something went wrong please try again..');
+                    toast.error(data.msg);
                 }
-
             })
-            .catch(error => {
-                console.log(this.state);
-            })
-    }
-
+        }
+      })
+}
 
  ///////////////// Update complaint category /////////////////
  const UpdateFormData = async (e) => {
@@ -137,13 +187,15 @@ export default function CreateTipsTricks() {
     try {
 
         let tips_trick = (e.target.elements.tips_trick !== 'undefined') ? e.target.elements.tips_trick.value : '';
+        let tips_trick_ara = (e.target.elements.tips_trick_ara !== 'undefined') ? e.target.elements.tips_trick_ara.value : '';
         let id = (e.target.elements.id !== 'undefined') ? e.target.elements.id.value : '';
         let dataToSend2 = {
             "tips_trick": tips_trick,
+            "tips_trick_ara": tips_trick_ara,
             "id": id,
         }
         console.log("new values == ", dataToSend2);
-        axios.put(`/update_tips`, dataToSend2, options1)
+        axios.put(`/web_api/update_tips`, dataToSend2, options1)
             .then(res => {
                 if (res.status) {
 
@@ -151,7 +203,7 @@ export default function CreateTipsTricks() {
                     if (data.status) {
                         toast.success(data.msg);
                         setOpen(false);
-                        return axios.get("/get_tip_list", options1)
+                        return axios.get("/web_api/get_tip_list", options1)
                         .then(res => {
                             const userData = res.data.body;
                             setData(userData);
@@ -202,12 +254,16 @@ export default function CreateTipsTricks() {
                                                 <form className="mt-3" onSubmit={(e) => saveFormData(e)}>
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Tips & Tricks</h6>
 
-                                                    <TextField id="categor" className="filter-input" name="tips_trick"
-                                                        label="Add Tips & Tricks" fullWidth type="text"
-                                                        InputLabelProps={{
-                                                            shrink: true,
-                                                        }}
-                                                    />
+                                                    
+                                                    <label className="title-col">Add Tips & Tricks <span className="text-blue">(English)</span></label>
+                                                       <input id="categor" autoComplete="off" className="form-control mb-4" name="tips_trick"
+                                                         type="text"
+                                                        />
+
+                                                      <label className="title-col">Add Tips & Tricks <span className="text-blue">(Arabic)</span></label>
+                                                      <input  id="categor" autoComplete="off" className="form-control mb-4" name="tips_trick_ara"
+                                                         type="text"
+                                                        />
 
                                                     <div className="mt-3">
                                                         <Button type='submit'  className="mr-3 btn-pd btnBg">Add</Button>
@@ -250,13 +306,23 @@ export default function CreateTipsTricks() {
                                         </div>
 
                                          <Modal open={open} onClose={onCloseModal} center>
-                                                      <h2 className="mb-4 text-white">Update Category</h2>
+                                                      <h2 className="mb-4 text-white">Update Tips & Tricks</h2>
                                                     <div className="mx-500">
                                                         <form className="mt-3 w-100"  onSubmit={(e) => UpdateFormData(e)}>
-                                                        <div className="form-group mb-4"> <label className="tx-medium">Update Category</label>
+                                                        <div className="form-group mb-4">
+
+                                                        <label className="title-col"> Tips & Tricks <span className="text-blue">(English)</span></label>
                                                           <input type="hidden" className="form-control" name="id" defaultValue={catView._id} />
-                                                          <input type="text" className="form-control" name="tips_trick" defaultValue={catView.tips_trick} /> </div>
-                                                            <div className="mt-3">
+                                                
+                                                          <input type="text" autoComplete="off" className="form-control" name="tips_trick" defaultValue={catView.tips_trick} /> 
+                                                          </div>
+
+                                                          <label className="title-col"> Tips & Tricks <span className="text-blue">(Arabic)</span></label>
+                                                          <input  id="categor" autoComplete="off" defaultValue={catView.tips_trick_ara} className="form-control mb-4" name="tips_trick_ara"
+                                                         type="text"
+                                                        />
+
+                                                            <div className="mt-3 mb-3">
                                                              <Button type='submit' className="mr-3 btn-pd btnBg">Update</Button>
                                                                 </div>
                                                         </form>

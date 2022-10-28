@@ -31,7 +31,7 @@ export default function AddFaqCategory() {
       const [open, setOpen] = useState(false);
       const onOpenModal = (_id) => 
       {
-        axios.get(`/faq_cat_list/${_id}`, options1)
+        axios.get(`/web_api/faq_cat_list/${_id}`, options1)
           .then(res => {
             const catView = res.data.body[0];
             setCat(catView);
@@ -42,7 +42,7 @@ export default function AddFaqCategory() {
       const onCloseModal = () => setOpen(false);   
       const FaqCategoryList = async () =>
       {
-          await axios.get(`/faq_cat_list`, options1)
+          await axios.get(`/web_api/faq_cat_list`, options1)
           .then(res => {
             const userData = res.data.body;
             setData(userData);
@@ -55,34 +55,34 @@ export default function AddFaqCategory() {
   
       const navigate = useNavigate();
       const columns =
-          [{ title: 'Category Name', field: 'cat_name' }, ]
+          [
+            { title: 'Category Name(English)', field: 'cat_name' },
+            { title: 'Category Name(Arabic)', field: 'cat_name_ara' },
+            { title: 'Category Name(French)', field: 'cat_name_fr' },
+          ]
 
 
 ///////////////// delete  api call  /////////////////
 const deleteFaq = (_id) => {  
-    axios.delete(`http://192.168.1.95:3600/web_api/delete_faq_category/${_id}`, options1)
+    axios.delete(`/web_api/delete_faq_category/${_id}`, options1)
         .then(res => {
             if (res.status) {
                 let data = res.data;
-
                 if (data.status) { 
                     toast.success(data.msg);
-                     return axios.get("/faq_cat_list")
+                     return axios.get("/web_api/faq_cat_list")
                         .then(res => {
                             const userData = res.data.body;
                             setData(userData);
                         })
                 } else {
-                    toast.error('something went wrong please try again');
+                    toast.error(data.msg);
                 }
             }
             else {
-                toast.error('something went wrong please try again..');
+                toast.error(data.msg);
             }
 
-        })
-        .catch(error => {
-            console.log(this.state);
         })
 }
 
@@ -95,14 +95,18 @@ const deleteFaq = (_id) => {
         try {
 
             let cat_name = (e.target.elements.cat_name !== 'undefined') ? e.target.elements.cat_name.value : '';
+            let cat_name_ara = (e.target.elements.cat_name_ara !== 'undefined') ? e.target.elements.cat_name_ara.value : '';
+            let cat_name_fr = (e.target.elements.cat_name_fr !== 'undefined') ? e.target.elements.cat_name_fr.value : '';
 
             let dataToSend2 = {
                 "cat_name": cat_name,
+                "cat_name_ara": cat_name_ara,
+                "cat_name_fr": cat_name_fr,
             }
 
             console.log("new values == ", dataToSend2);
 
-            axios.post(`/add_faq_category`, dataToSend2, options1)
+            axios.post(`/web_api/add_faq_category`, dataToSend2, options1)
                 .then(response => {
                     if (response.status) {
 
@@ -113,18 +117,18 @@ const deleteFaq = (_id) => {
                         if (data.status) {
                             toast.success(data.msg);
                             e.target.reset();
-                            return axios.get("/faq_cat_list")
+                            return axios.get("/web_api/faq_cat_list")
                             .then(res => {
                                 const userData = res.data.body;
                                 setData(userData);
                             });
                             
                         } else {
-                            toast.error('something went wrong please try again');
+                            toast.error(data.msg);
                         }
                     }
                     else {
-                        toast.error('something went wrong please try again..');
+                        toast.error(data.msg);
                     }
 
                 })
@@ -142,15 +146,19 @@ const UpdateFormData = async (e) => {
     try {
 
         let cat_name = (e.target.elements.cat_name !== 'undefined') ? e.target.elements.cat_name.value : '';
+        let cat_name_fr = (e.target.elements.cat_name_fr !== 'undefined') ? e.target.elements.cat_name_fr.value : '';
+        let cat_name_ara = (e.target.elements.cat_name_ara !== 'undefined') ? e.target.elements.cat_name_ara.value : '';
         let id = (e.target.elements.id !== 'undefined') ? e.target.elements.id.value : '';
        
         let dataToSend2 = {
             "cat_name": cat_name,
+            "cat_name_ara": cat_name_ara,
+            "cat_name_fr": cat_name_fr,
             "id": id,
         }
         console.log("new values == ", dataToSend2);
 
-        axios.put(`/update_faq_category`, dataToSend2, options1)
+        axios.put(`/web_api/update_faq_category`, dataToSend2, options1)
             .then(res => {
                 if (res.status) {
 
@@ -158,7 +166,7 @@ const UpdateFormData = async (e) => {
                     if (data.status) {
                         toast.success(data.msg);
                         setOpen(false);
-                        return axios.get("/faq_cat_list")
+                        return axios.get("/web_api/faq_cat_list")
                         .then(res => {
                             const userData = res.data.body;
                             setData(userData);
@@ -210,11 +218,19 @@ const UpdateFormData = async (e) => {
                                             <div className="col-lg-5">
                                                 <form className="mt-3" onSubmit={(e) => saveFormData(e)}>
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Faq Category</h6>
-                                                    <TextField id="categor" className="filter-input" name="cat_name"
-                                                        label="Add Category" fullWidth type="text"
-                                                        InputLabelProps={{
-                                                            shrink: true,
-                                                        }}
+                                                    <label className="title-col">Add Category <span className="text-blue">(English)</span></label>
+                                                      <input id="categor" className="form-control mb-4" name="cat_name"
+                                                         type="text"
+                                                    />
+
+                                                   <label className="title-col">Add Category <span className="text-blue">(Arabic)</span></label>
+                                                      <input id="categor" className="form-control mb-4" name="cat_name_ara"
+                                                         type="text"
+                                                    />
+
+                                                   <label className="title-col">Add Category <span className="text-blue">(French)</span></label>
+                                                      <input id="categor" className="form-control mb-4" name="cat_name_fr"
+                                                         type="text"
                                                     />
                                                     <div className="mt-3">
                                                         <Button type='submit'  className="mr-3 btn-pd btnBg">Add</Button>
@@ -262,10 +278,21 @@ const UpdateFormData = async (e) => {
                                         <h2 className="mb-4 text-white">Update Category</h2>
                                         <div className="mx-500">
                                             <form className="mt-3 w-100" onSubmit={(e) => UpdateFormData(e)}>
-                                            <div className="form-group mb-4"> <label className="tx-medium">Update Category</label>
+                                            <div className="form-group mb-4"> 
+                                            <label className="title-col">Update Category <span className="text-blue">(English)</span></label>
                                                             <input type="hidden" className="form-control" name='id' value={catView._id} />
                                                             <input type="text" className="form-control" name='cat_name' 
-                                                            defaultValue={catView.cat_name} /> </div>
+                                                            defaultValue={catView.cat_name} /> 
+                                                    </div>
+
+                                                    <label className="title-col">Update Category <span className="text-blue">(Arabic)</span></label>
+                                                      <input id="categor" className="form-control mb-4" name="cat_name_ara"
+                                                         type="text" defaultValue={catView.cat_name_ara}
+                                                    />
+                                                    <label className="title-col">Update Category <span className="text-blue">(French)</span></label>
+                                                      <input id="categor" className="form-control mb-4" name="cat_name_fr"
+                                                         type="text" defaultValue={catView.cat_name_fr}
+                                                    />
                                                 <div className="mt-3">
                                                     <Button type='submit' className="mr-3 btn-pd btnBg">Update</Button>
                                                     </div>
