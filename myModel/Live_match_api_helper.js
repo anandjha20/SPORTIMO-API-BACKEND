@@ -1009,8 +1009,8 @@ const get_card_result_add_34  =  async(req,res)=>{
     
   const day_match_getID = async(match_id) =>{
     try {   
-           let date = getcurntDate();
-          //  let date = "2022-10-1";   
+           //let date = getcurntDate();
+            let date = "2022-10-28";   
 
        const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
       // const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
