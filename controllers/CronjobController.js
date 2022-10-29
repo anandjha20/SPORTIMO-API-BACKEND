@@ -572,7 +572,7 @@ class ConjobController{
      static jkk = async(req,res)=>{
          try {   
                    // let updateData = { point: "10" };
-                    let updateData = { active: true,card_id : '6345416fbbdbacfeab46c547'  };
+                    let updateData = { active: true,card_id : "634d37d58f16160a62ea52fc" };
 
               let response =  await playMatchCards_tbl.updateMany({ }, updateData );
                 
