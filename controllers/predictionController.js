@@ -309,14 +309,16 @@ class predictionController {
       try {
           let language = req.body.language;    
           let user_id = req.body.user_id;    
+          let match_id = req.body.match_id;    
          
          /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
          
           if(isEmpty(user_id)){
             return res.status(200).send({'status':false,'msg':  (language == 'ar')? "مطلوب حقل معرف المستخدم" :  "User Id Field Required"});
                 }
+           let whr = (isEmpty(match_id))?   {user_id} : {user_id,match_id}   ;
     
-       let records = await playMatchCards_tbl.find({user_id}).populate({ path: 'match_card_id', populate: { path: 'card_id'}}).sort({_id:-1});
+       let records = await playMatchCards_tbl.find(whr).populate({ path: 'match_card_id', populate: { path: 'card_id'}}).sort({_id:-1});
          
             
          if(! isEmpty(records)){ records.map((item)=> { 
