@@ -494,7 +494,7 @@ class ConjobController{
               }
        static get_card_0036 =  async(req,res)=>{
         try {
-          let  match_id = 2701168 ; // 2701168;
+            let  match_id = 2701168 ; // 2701168;
           let data = await match_card_number(match_id,2);          
                 console.log("test fun call == ",data); 
            // return data ; 
@@ -523,7 +523,7 @@ class ConjobController{
              } 
       
       static matchResult_show =  async(req,res)=>{
-          try {
+          try {  
                    
                   let  match_id =  req.body.match_id ; 
                   console.log("matchResult_show == ", match_id ); 
@@ -553,10 +553,11 @@ class ConjobController{
                  let dx37  = await get_card_result_add_37({data});  
                 let dx39  = await get_card_result_add_39({data});   // *******spl fun ***  
                       
-                let dx10  = await get_card_result_add_10({data});  
+                 let dx10  = await get_card_result_add_10({data});  
+                 
                                
                         
-                      return  res.status(200).send({'status':true,'msg':"success", 'data':'' });
+                      return  res.status(200).send({'status':true,'msg':"success", 'body': ''  });
                   }else{
                     return  res.status(200).send({'status':false,'msg':'This match result not show time ' ,"body":data}); 
                   }
@@ -571,7 +572,7 @@ class ConjobController{
      static jkk = async(req,res)=>{
          try {   
                    // let updateData = { point: "10" };
-                    let updateData = { active: true,match_id : '634a6b9df68bced78a48454d'  };
+                    let updateData = { active: true,card_id : '6345416fbbdbacfeab46c547'  };
 
               let response =  await playMatchCards_tbl.updateMany({ }, updateData );
                 

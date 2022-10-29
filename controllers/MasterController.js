@@ -447,7 +447,7 @@ class MasterController {
         let name    = req.body.name;
         let date = getcurntDate(); 
       
-        let whr = {date_utc:{$gte : date}};     
+        let whr = {} ;  // {date_utc:{$gte : date}};     
         
        
         if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 

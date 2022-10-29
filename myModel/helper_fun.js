@@ -69,7 +69,7 @@ const autoincremental  = async(seq_id,mymodals) =>{
          return   newSeq ;    
                
         } catch (error) {   console.log('try error====   ',error); return false; }
-}
+} 
 
 const sendNotificationAdd = (my_obj )=>{
                 try {
@@ -88,7 +88,7 @@ const sendNotificationAdd = (my_obj )=>{
                        let m_id =  String(module_id);
                       // console.log("sendNotificationAdd == ", module_id);
                     let date = getcurntDate(); 
-                       let addData =  {title:title,message:msg,type_status:type_status,user_id:user_id };
+                       let addData = {title:title,message:msg,type_status:type_status,user_id:user_id };
                        
                        if(! isEmpty(category_type)){addData.category_type = category_type ; }
                        if(! isEmpty(m_id)){addData.module_id = m_id  }
@@ -104,7 +104,7 @@ const sendNotificationAdd = (my_obj )=>{
                                     console.log('sendNotification success data ===   ',data); return true;
                                     }
                             });   
-                    } catch (error){ console.log('some error====',error); return false; }
+                    } catch (error){ console.log('some error ====',error); return false; }
 
         }      
 

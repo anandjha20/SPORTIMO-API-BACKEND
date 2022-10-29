@@ -208,7 +208,7 @@ const add_win_point = async(req,res)=>{
 
 
             if(!isEmpty(data)){
-                let  live_match_id = req.data.match_id;
+              let  live_match_id = parseInt(req.data.match_id) ;
                let readcard_point = parseInt(data.team_a) + parseInt(data.team_b);
                let right_ans = ''; 
    
@@ -263,7 +263,7 @@ const add_win_point = async(req,res)=>{
          
 
             if(!isEmpty(data)){
-                let  live_match_id = req.data.match_id;
+                let  live_match_id = parseInt(req.data.match_id) ;
 
                 let card_id =  mongoose.Types.ObjectId("63453ab5bbdbacfeab46c4fd");
                 
@@ -319,8 +319,8 @@ const add_win_point = async(req,res)=>{
          
 
             if(!isEmpty(data)){
-                let  live_match_id = req.data.match_id;
-
+               
+                let  live_match_id = parseInt(req.data.match_id) ;
                 let card_id =  mongoose.Types.ObjectId("63453b97bbdbacfeab46c519");
                 
              
@@ -372,9 +372,9 @@ const add_win_point = async(req,res)=>{
    const get_card_result_add_10  =  async(req,res)=>{
     try {  
            const  data = req.data.events.goals.event ;
-                //  console.log( "get_card_result_add_10" , data)
+              //  console.log( "get_card_result_add_10" , data)
             if(!isEmpty(data)){
-              let  live_match_id = req.data.match_id;
+              let  live_match_id = parseInt(req.data.match_id) ;
               
               let card_id =  mongoose.Types.ObjectId("634d37d58f16160a62ea52fc");
           
@@ -383,21 +383,21 @@ const add_win_point = async(req,res)=>{
                  pipeline.push({$match: {match_id: live_match_id}});
                 }
 
-                    pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
-                    pipeline.push({ $unwind: "$play_match_user" });
-                    pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
+                     pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
+                   pipeline.push({ $unwind: "$play_match_user" });
+                   pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
                     pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
                                "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
                                  "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
                                "match_id": "$play_match_user.match_id","active": "$play_match_user.active" } });
 
-
+                      
                                let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
-                               
+                             
                   let first = 0;  let second = 0;
                  if( isArray(data)){
                   data.map((item)=>{ 
-                    if(item.game_minute<=45){first=1}else
+                    if(item.game_minute<=45){first=1}else   
                     if(item.game_minute>45){second=1}  
                   })
                 }else if(! isObject(data)){
@@ -445,7 +445,7 @@ const add_win_point = async(req,res)=>{
            let data = {team_a,team_b};
 
           if(!isEmpty(data)){
-              let  live_match_id = req.data.match_id;
+            let  live_match_id = parseInt(req.data.match_id) ;
 
               let card_id =  mongoose.Types.ObjectId("63453ccebbdbacfeab46c520");
               
@@ -501,7 +501,7 @@ const add_win_point = async(req,res)=>{
           let winner = req.data.winner;
          
           if(!isEmpty(winner)){
-              let  live_match_id = req.data.match_id;
+            let  live_match_id = parseInt(req.data.match_id) ;
 
               let card_id =  mongoose.Types.ObjectId("63453eaabbdbacfeab46c530");
               
@@ -564,7 +564,7 @@ const add_win_point = async(req,res)=>{
                    let resultx =  Math.abs(x); 
 
 
-              let  live_match_id = req.data.match_id;
+                   let  live_match_id = parseInt(req.data.match_id) ;
              // console.log("live_match_id == ",live_match_id);       
             let card_id =  mongoose.Types.ObjectId("6345406abbdbacfeab46c53b");
             
@@ -620,7 +620,7 @@ const add_win_point = async(req,res)=>{
            const  data = req.data.team_stats.stat[10] ;
         
             if(!isEmpty(data)){
-                let  live_match_id = req.data.match_id;
+              let  live_match_id = parseInt(req.data.match_id) ;
 
                 let card_id =  mongoose.Types.ObjectId("634542edbbdbacfeab46c55e");
                 
@@ -672,7 +672,7 @@ const add_win_point = async(req,res)=>{
               /// this function used by red card 
             const  data = req.data.team_stats.stat[6] ;
           if(!isEmpty(data)){
-                let  live_match_id = req.data.match_id;
+            let  live_match_id = parseInt(req.data.match_id) ;
                 let card_id =  mongoose.Types.ObjectId("634542edbbdbacfeab46c55e");
                 
                 
@@ -777,7 +777,7 @@ const add_win_point = async(req,res)=>{
               /// this function used by red card 
             const  data = req.data.team_stats.stat[0] ;
           if(!isEmpty(data)){
-                let  live_match_id = req.data.match_id;
+            let  live_match_id = parseInt(req.data.match_id) ;
 
                 let card_id =  mongoose.Types.ObjectId("63454475bbdbacfeab46c563");
           let pipeline  = [] ;
@@ -828,7 +828,7 @@ const add_win_point = async(req,res)=>{
             const  data = req.data.team_stats.stat[2] ;
            
             if(!isEmpty(data)){
-                let  live_match_id = req.data.match_id;
+              let  live_match_id = parseInt(req.data.match_id) ;
 
                 let card_id =  mongoose.Types.ObjectId("63454628bbdbacfeab46c567");
                 
@@ -887,7 +887,7 @@ const get_card_result_add_34  =  async(req,res)=>{
           const  data = req.data.events.saves.event ;
               console.log("===jk===  ", data); 
             if(!isEmpty(data)){
-              let  live_match_id = req.data.match_id;
+              let  live_match_id = parseInt(req.data.match_id) ;
               
  
               let card_id =  mongoose.Types.ObjectId("6352762a0148247cf84bc758");
@@ -952,7 +952,7 @@ const get_card_result_add_34  =  async(req,res)=>{
 
 
             if(!isEmpty(data)){
-                let  live_match_id = req.data.match_id;
+              let  live_match_id = parseInt(req.data.match_id) ;
 
                 let card_id =  mongoose.Types.ObjectId("634546cebbdbacfeab46c58c");
                 
@@ -1144,7 +1144,7 @@ const get_card_result_add_08  =  async(req,res)=>{
   try {  
           const  data = req.data.team_stats.stat[1] ;
           if(!isEmpty(data)){
-              let  live_match_id = req.data.match_id;
+            let  live_match_id = parseInt(req.data.match_id) ;
               let live_team_a = parseInt(data.team_a) ;
               let live_team_b = parseInt(data.team_b) ;
               console.log("live_team_a ",live_team_a);
@@ -1220,7 +1220,7 @@ const get_card_result_add_08  =  async(req,res)=>{
           
 
           if(!isEmpty(red) && !isEmpty(yellow)){
-              let  live_match_id = req.data.match_id;
+            let  live_match_id = parseInt(req.data.match_id) ;
 
               let card_id =  mongoose.Types.ObjectId("634fcfb28ff22506cf6c0a6a");
        
@@ -1288,7 +1288,7 @@ const get_card_result_add_08  =  async(req,res)=>{
    let totoal_point = RedTotalPoint + YellowTotalPoint;
 
           if(totoal_point >0 ){
-              let  live_match_id = req.data.match_id;
+            let  live_match_id = parseInt(req.data.match_id) ;
              
               let card_id =  mongoose.Types.ObjectId("634feaf08ff22506cf6c0c46");
           

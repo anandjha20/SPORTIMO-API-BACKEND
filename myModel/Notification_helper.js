@@ -66,7 +66,7 @@ const get_sportsUserToken = async(sports)=>{
 
 
 const get_preferenceUserToken = async(preference,preference_name)=>{
-     if(isEmpty(preference)){  return []; }
+  if(isEmpty(preference)){  return []; }
      let my_sports = preference.split(",");
       console.log("my_sports == ", my_sports);
      
