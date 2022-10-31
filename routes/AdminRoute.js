@@ -253,7 +253,7 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
  router.post('/all_user_prediction',predictionController.all_user_prediction);
  router.post('/user_prediction/:id?',predictionController.user_prediction);
 
-
+ router.put('/defaultMsg_update/:id',defaultMsgController.defaultMsg_update); 
 
 
 

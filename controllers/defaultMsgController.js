@@ -74,7 +74,33 @@ class defaultMsgController {
         }
 
     }
+    static defaultMsg_update = async(req,res)=>{
+        try {   
+              let d_msg_id = req.params.id;
+              let d_msg = req.body.d_msg; let d_msg_ara = req.body.d_msg_ara; 
+            
+             let whr = {};
+                if(!isEmpty(d_msg)){whr={...whr,"d_msg":d_msg}}
+                if(!isEmpty(d_msg_ara)){whr={...whr,"d_msg_ara":d_msg_ara}}
+                console.log(whr)
+                if(!isEmpty(d_msg_id)){
+                default_massages_tbl.findByIdAndUpdate(d_msg_id,whr, (err,data)=>{
+                    if(err){     console.log("delete error is == ", err);
+                                return res.status(200).send({"status":false,"msg":'something went wrong please try again' }) ;          
+                        }else if(isEmpty(data)){
+                            return res.status(200).send({"status":false,"msg":'Invalid ID' }) ;   
+                        }else{ return res.status(200).send({"status":true,"msg": 'Default Massages updated Successfully' }) ;  
+                            }
+                });
+            }else{
+                return res.status(200).send({"status":false,"msg":'ID required' }) ;
+            }
 
+ } catch (error) { console.log(error);
+            return res.status(200).send({"status":false,"msg":'something went wrong please try again' }) ;          
+        }
+
+    }
 
 
 }

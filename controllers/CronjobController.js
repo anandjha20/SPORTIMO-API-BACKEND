@@ -18,7 +18,8 @@ const {ArrChunks, rows_count,getcurntDate,getTime,isEmpty,before_after_Date} = r
     get_card_result_add_7,get_card_result_add_1, get_card_result_add_11,get_card_result_add_13,
     get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
     get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,card_08_befor_call,get_card_result_add_08,
-    get_card_result_add_37,card_39_befor_call,get_card_result_add_39,get_card_result_add_34 }   = require("../myModel/Live_match_api_helper"); 
+    get_card_result_add_37,card_39_befor_call,get_card_result_add_39,card_34_befor_call,get_card_result_add_34,
+    get_card_result_add_31,get_card_result_add_5 }   = require("../myModel/Live_match_api_helper"); 
 const { Promise } = require("mongoose");
 
 class ConjobController{
@@ -199,10 +200,8 @@ class ConjobController{
   // importent code for cronjob get_card_008 
     static get_card_008 =  async(req,res)=>{
       try {
-             //console.log( "get_card_008 call == ",  req.body ) ; 
-           // return false ; 
 
-            let  match_id = req.body.match_id ; // '2701198' ;    // 2701168;
+            let  match_id = req.body.match_id ; 
 
             console.log( "get_card_008 is calling == ",  match_id );
 
@@ -224,6 +223,7 @@ class ConjobController{
                           console.log("this card active");
                           card_08_befor_call(match_id);
                           card_39_befor_call(match_id);
+                          card_34_befor_call(match_id);
                 }else{ console.log("this card Not active "); }
         // let sum    = data.events.fouls.event;     
               return  res.status(200).send({'status':true,'msg':'Success','body':data });
@@ -236,7 +236,7 @@ class ConjobController{
         }catch (error) { console.log(error);
                     return  res.status(200).send({'status':false,'msg':'servr error'});
                 }
-              }
+   }
          
                
                
@@ -532,9 +532,10 @@ class ConjobController{
                 //  if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
               
                 if( (!isEmpty( data))  && ( data.status = 'Played')){
-                   let dx1 = await get_card_result_add_1({data});  ///
-                   let dx4  = await get_card_result_add_4({data});  //
-                    let dx7 = await get_card_result_add_7({data});  //
+                    let dx1 = await get_card_result_add_1({data});  ///
+                    let dx4  = await get_card_result_add_4({data});  //
+                   let dx5  = await get_card_result_add_5({data});  //
+                   let dx7 = await get_card_result_add_7({data});  //
 
                  let dx8 =   await get_card_result_add_08({data});  //  *******spl fun ***
 
@@ -546,15 +547,25 @@ class ConjobController{
                    let dx20 = await get_card_result_add_20({data});      //   
                     let dx23 = await get_card_result_add_23({data});     //
 
-                //  let dx34  = await get_card_result_add_34({data});  // ** -----------*??
+                  let dx34  = await get_card_result_add_34({data});  //  *******spl fun ***  
               
                 let dx36  = await get_card_result_add_36({data});   //
                  
-                 let dx37  = await get_card_result_add_37({data});  
+                  let dx37  = await get_card_result_add_37({data});  
                 let dx39  = await get_card_result_add_39({data});   // *******spl fun ***  
                       
                  let dx10  = await get_card_result_add_10({data});  
-                 
+              
+                 let dx26 = await get_card_result_add_26({data});
+              
+                 let dx31 = await get_card_result_add_31({data}); 
+
+
+
+
+
+
+
                                
                         
                       return  res.status(200).send({'status':true,'msg':"success", 'body': ''  });

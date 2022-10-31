@@ -182,7 +182,7 @@ class ComplaintController{
             let e_date  = req.body.e_date;
             let email  = req.body.email;
             let mobile  = req.body.mobile;
-            
+            let admin_status  = req.body.status;
   
             let page  = req.body.page;
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
@@ -191,6 +191,8 @@ class ComplaintController{
             let whr ={}; 
            // if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*' } ;} 
             if(!isEmpty(cat_id)){  whr.cat_id = cat_id;} 
+            if(!isEmpty(admin_status)){  whr.admin_status = admin_status;} 
+            
             if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date = { $gte: s_date, $lte: e_date } } 
           
           

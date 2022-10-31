@@ -302,13 +302,14 @@ const sendNotificationAdd = (my_obj )=>{
              
                pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_info'} });
                pipeline.push({ $unwind: "$user_info" });
-              pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_info'} });
-              pipeline.push({ $unwind: "$match_info" });
+             // pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_info'} });
+           //   pipeline.push({ $unwind: "$match_info" });
              
              
                        pipeline.push({ $group: {"_id": { user_id : "$user_id",image : "$user_info.image", user_name : "$user_info.name",
-                              match_name : "$match_info.match_name",match_id : "$match_id",
-                              date : "$match_info.date_utc" } , "points": { $sum: { "$toInt": "$points"} }, } });
+                            //  match_name : "$match_info.match_name",match_id : "$match_id",
+                           //   date : "$match_info.date_utc"
+                             } , "points": { $sum: { "$toInt": "$points"} }, } });
            /// date : "$date" 
                         
                                pipeline.push({ $sort : { "points": -1}});  

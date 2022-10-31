@@ -9,7 +9,7 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds,matchWinUsersRank,mat
 			AllMatchWinUsersRank,AllMatchWinUsersRank_one } = require('../myModel/helper_fun');
 
 const  {MyBasePath} = require("../myModel/image_helper");
-
+ 
 
 // all mongodb schema    
 const user_tbl = require('../models/user');    
@@ -452,8 +452,7 @@ static topMostWinners = async(req,res) =>{
 		let matchTopWinners =  await AllMatchWinUsersRank(  ); 
 		let userReankData = await AllMatchWinUsersRank_one(user_id);
 		if(matchTopWinners){
-				
-			return res.status(200).send({"status":true ,"msg":"success","body":{matchTopWinners,userReankData}});
+				return res.status(200).send({"status":true ,"msg":"success","body":{matchTopWinners,userReankData}});
 		}else{
 			return res.status(200).send({"status":false,"msg":"server error"});
 		}	

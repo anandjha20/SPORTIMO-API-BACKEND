@@ -494,7 +494,7 @@ class AdminController {
           }
         
           if(isEmpty(updatedUser)){
-                  let add =new content_tbls({type,content_data});
+                  let add =new content_tbls({type,content_data,content_data_ara});
                   add.save((err,datas)=>{
                     if(err){ console.log(err);   return res.status(200).send({"status":false,"msg":'some errors...'}) ;   
                          }else{ 
