@@ -19,7 +19,7 @@ const prediction_card_schema = new Schema({
              point_1 : { type: Number, default: 0 },    point_2 : { type: Number, default: 0 },
              point_3 : { type: Number, default: 0 },    point_4 : { type: Number, default: 0 },
              date :{ type: Date, default: Date.now },
-             time_range: { type: Number,datault: 0},
+             time_range: { type: Number,default: 0},
          }) ;
 
 

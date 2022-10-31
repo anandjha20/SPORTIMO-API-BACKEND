@@ -19,7 +19,7 @@ const {ArrChunks, rows_count,getcurntDate,getTime,isEmpty,before_after_Date} = r
     get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
     get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,card_08_befor_call,get_card_result_add_08,
     get_card_result_add_37,card_39_befor_call,get_card_result_add_39,card_34_befor_call,get_card_result_add_34,
-    get_card_result_add_31,get_card_result_add_5 }   = require("../myModel/Live_match_api_helper"); 
+    get_card_result_add_31,get_card_result_add_5,get_card_result_add_34_endTimesCall,get_card_result_add_26 }   = require("../myModel/Live_match_api_helper"); 
 const { Promise } = require("mongoose");
 
 class ConjobController{
@@ -203,7 +203,6 @@ class ConjobController{
 
             let  match_id = req.body.match_id ; 
 
-            console.log( "get_card_008 is calling == ",  match_id );
 
              let data = await team_matches_tbl.findOne({match_id},'match_id date_utc ');  
           if(data){
@@ -547,18 +546,15 @@ class ConjobController{
                    let dx20 = await get_card_result_add_20({data});      //   
                     let dx23 = await get_card_result_add_23({data});     //
 
-                  let dx34  = await get_card_result_add_34({data});  //  *******spl fun ***  
-              
-                let dx36  = await get_card_result_add_36({data});   //
-                 
-                  let dx37  = await get_card_result_add_37({data});  
-                let dx39  = await get_card_result_add_39({data});   // *******spl fun ***  
+                
+                let dx34   = await get_card_result_add_34_endTimesCall({data})//  *******spl fun ***  
+                let dx36   = await get_card_result_add_36({data});   //
+                let dx37   = await get_card_result_add_37({data});  
+                let dx39   = await get_card_result_add_39({data});   // *******spl fun ***  
                       
                  let dx10  = await get_card_result_add_10({data});  
-              
-                 let dx26 = await get_card_result_add_26({data});
-              
-                 let dx31 = await get_card_result_add_31({data}); 
+                 let dx26  = await get_card_result_add_26({data});
+                 let dx31  = await get_card_result_add_31({data}); 
 
 
 

@@ -11,7 +11,7 @@ const { autoincremental } = require('../myModel/helper_fun');
     const chat_groups_tbl = require('../models/chat_groups');    
     const group_participant_tbl = require('../models/group_participant');    
     const user_chat_blocks_tbl = require("../models/user_chat_blocks");
-
+    const user_reportings_tbl = require('../models/user_reportings');
   
 
 class chatController {
@@ -102,7 +102,7 @@ static group_participant_list = async (req,res)=>{
     }
   
   
-  }  
+  } 
   static adminUserChatBlock = async (req,res)=>{
     try {
            let user_id = req.body.user_id;
@@ -116,20 +116,24 @@ static group_participant_list = async (req,res)=>{
            let addData = new user_chat_blocks_tbl({ user_id,block_status,block_type: "admin"});
            let response = await addData.save();
            if(response){ 
-               
-             let dds =   user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {chatBlockStatus:block_status }},{new: true},
+             let dds1 =   user_reportings_tbl.updateMany({ reported_user_id:user_id} , {autoBlockStatus:block_status },{new: true},
+               (err,updatedUser)=>{ if(err) {  console.log(err); } });
+              
+             let dds =  user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {chatBlockStatus:block_status }},{new: true},
                                     (err,updatedUser)=>{ if(err) {  console.log(err); } });
+                                    return res.status(200).send({"status":true,"msg": msg_msg ,"body":response});
                }
 
-           return res.status(200).send({"status":true,"msg": msg_msg ,"body":response});
          }else{
            let response = await user_chat_blocks_tbl.findOneAndDelete({user_id});
            if(response){ 
-               
-             let dds =   user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {chatBlockStatus:block_status }},{new: true},
+             let dds1 =   user_reportings_tbl.updateMany({ reported_user_id:user_id} , {autoBlockStatus:block_status },{new: true},
+               (err,updatedUser)=>{ if(err) {  console.log(err); } });
+             
+               let dds =   user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {chatBlockStatus:block_status }},{new: true},
                                     (err,updatedUser)=>{ if(err) {  console.log(err); } });
+                                    return res.status(200).send({"status":true,"msg": msg_msg ,"body":response});
                }
-               return res.status(200).send({"status":true,"msg": msg_msg ,"body":response});
          }
          } catch (error) { console.log(error); 
                return res.status(200).send({"status":false,"msg":"server error" ,"body":''});
