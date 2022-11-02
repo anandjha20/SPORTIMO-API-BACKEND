@@ -20,7 +20,8 @@ const {ArrChunks, rows_count,getcurntDate,getTime,isEmpty,before_after_Date} = r
     get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,card_08_befor_call,get_card_result_add_08,
     get_card_result_add_37,card_39_befor_call,get_card_result_add_39,card_34_befor_call,get_card_result_add_34,
     get_card_result_add_31,get_card_result_add_5,get_card_result_add_34_endTimesCall,get_card_result_add_26,
-    getCardGreaterThan_16,getCardResult_16_END,getCardGreaterThan_03, getCardResult_03_END }   = require("../myModel/Live_match_api_helper"); 
+    getCardGreaterThan_16,getCardResult_16_END,getCardGreaterThan_03, getCardResult_03_END,getCardGreaterThan_09,
+    getCardResult_09_END }   = require("../myModel/Live_match_api_helper"); 
 const { Promise } = require("mongoose");
 
 class ConjobController{
@@ -92,8 +93,7 @@ class ConjobController{
                     }    
 
     } 
-
-    static get_card_001 =  async(req,res)=>{
+    static get_card_03 =  async(req,res)=>{
       try {
                      
         let response = await day_match_getID();
@@ -110,6 +110,33 @@ class ConjobController{
                  
                 sumArr.push(resp);
         })) ;      
+        }
+             
+        return  res.status(200).send({'status':true,'msg':'cronjob api card -16  calling ','body': sumArr  });
+    } catch(error) { console.log( "cronjob api card -16 calling server error  == ", error);
+                      return  res.status(200).send({'status':false,'msg':'servr error'});
+                               
+                  }    
+
+  } 
+    static get_card_001 =  async(req,res)=>{
+      try {
+                     
+        let response = await day_match_getID();
+        let sumArr = [];
+      
+       
+    if(response){  
+           let resp = await getCardGreaterThan_09(response[0]);
+                        sumArr.push(resp);  
+
+
+        //       let allData =  await Promise.all( response.map( async (item)=>{
+        //         console.log( "match_id is == ",item );
+        //          let resp = await getCardGreaterThan_09(item);
+                 
+        //         sumArr.push(resp);
+        // })) ;      
         } 
              
         return  res.status(200).send({'status':true,'msg':'cronjob api card -16  calling ','body': sumArr  });
@@ -119,25 +146,27 @@ class ConjobController{
                   }    
 
   } 
-
+  
       static get_card_001_OLD =  async(req,res)=>{
         try {
                 let  match_id = '2701234' ;      // 2701168;
 
-                let card_id =  mongoose.Types.ObjectId("635fbe7ac52f44e554d78390");
+                let card_id =  mongoose.Types.ObjectId("636211cb5037249041b1486c");
                 
-             
+             console.log("get_card_001 is calling ");
                 let pipeline  = [] ;
                  
                       pipeline.push({$match: {match_id : match_id}});
                       pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
                       pipeline.push({ $unwind: "$play_match_user" });
-                      pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true,
-                                             "play_match_user.time_range_start":{ $lte : 7 } ,
-                                              "play_match_user.time_range_end":{ $gte : 7 } 
+                 
+                       pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true,
+                                           // "play_match_user.time_range_start":{ $lte : 3 } ,
+                                           //   "play_match_user.time_range_end":{ $gte : 3 } 
                                             }});
 
-                        pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
+                     
+                    pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
                                         "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
                                         "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
                                         "time_range_start":"$play_match_user.time_range_start","time_range_end":"$play_match_user.time_range_end",
@@ -620,8 +649,9 @@ class ConjobController{
                 //  let dx26  = await get_card_result_add_26({data});
                 //  let dx31  = await get_card_result_add_31({data}); 
                 
-                 let dx16 = await getCardResult_16_END({data});   // **** make date 2022-11-01 ***
-                 let dx03 = await getCardResult_03_END({data});   // **** make date 2022-11-01 ***
+                // let dx16 = await getCardResult_16_END({data});   // **** make date 2022-11-01 ***
+               //  let dx03 = await getCardResult_03_END({data});   // **** make date 2022-11-01 ***
+                 let dx09 = await getCardResult_09_END({data});   // **** make date 2022-11-01 ***
 
 
 

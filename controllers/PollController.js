@@ -84,60 +84,63 @@ class PollController {
     }
 
       
-
     static poll_list = async (req,res)=>{
-        try {
-             
-          let language =  req.body.language ; 
-           let  id = req.params.id;
-           let poll_type    = req.body.poll_type;
-           let fee_type  = req.body.fee_type;
-           let match  = req.body.match;
-           let s_date  = req.body.s_date;
-           let e_date  = req.body.e_date;
-           let U_id =  req.body.user_id ; 
-           let leagues =  req.body.leagues ; 
-
-           let page  = req.body.page;  
-            page = (isEmpty(page) || page == 0 )? 1 :page ; 
-          
-          
-            let whr ={};
-            if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*', $options: 'i' } ;} 
-            if(!isEmpty(poll_type)){whr.poll_type = poll_type;} 
-            if(!isEmpty(fee_type)){whr.fee_type = fee_type;} 
-            if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date = { $gte: s_date, $lte: e_date } ;} 
+      try {
            
-            if(!isEmpty(leagues)){whr.leagues = { $regex: '.*' + leagues + '.*' } ;} 
-            if(!isEmpty(id)){whr = {_id: id} ;} 
-            let query =  poll_tbl.find(whr).populate('match','match_name').sort({_id:-1});
-              
-             const query2 =  query.clone();
-             const counts = await query.countDocuments();   
+        let language =  req.body.language ; 
+         let  id = req.params.id;
+         let poll_type    = req.body.poll_type;
+         let disclosed_status    = req.body.disclosed_status;
+         let fee_type  = req.body.fee_type;
+         let match  = req.body.match;
+         let s_date  = req.body.s_date;
+         let e_date  = req.body.e_date;
+         let U_id =  req.body.user_id ; 
+         let leagues =  req.body.leagues ; 
+
+         let page  = req.body.page;  
+          page = (isEmpty(page)
+|| page == 0 )? 1 :page ; 
+        
+        
+          let whr ={};
+          if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*', $options: 'i' } ;} 
+          if(!isEmpty(poll_type)){whr.poll_type = poll_type;} 
+          if(!isEmpty(disclosed_status)){whr.disclosed_status = disclosed_status;} 
+          if(!isEmpty(fee_type)){whr.fee_type = fee_type;} 
+          if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date = { $gte: s_date, $lte: e_date } ;} 
          
-             let offest = (page -1 ) * 10 ; 
-             const records = await query2.skip(offest).limit(10);
-
-             records.map((item)=> { if(language != '' && language == 'ar'){
-                                      item.qus = item.qus_ara ;
-                                      item.ops_1 = item.ops_1_ara ;
-                                      item.ops_2 = item.ops_2_ara ;
-                                      item.ops_3 = item.ops_3_ara ;
-                                      item.ops_4 = item.ops_4_ara ;
-                                  
-                                  }
+          if(!isEmpty(leagues)){whr.leagues = { $regex: '.*' + leagues + '.*' } ;} 
+          if(!isEmpty(id)){whr = {_id: id} ;} 
+          let query =  poll_tbl.find(whr).populate('match','match_name').sort({_id:-1});
             
-                             return item;
-                   });      
+           const query2 =  query.clone();
+           const counts = await query.countDocuments();   
+       
+           let offest = (page -1 ) * 10 ; 
+           const records = await query2.skip(offest).limit(10);
 
-          return res.status(200).send({'status':true,'msg':  (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
-  
-        } catch (error) { console.log(error);
-          return  res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error" ,'body':''});
-        }
-               
-            }     
- 
+           records.map((item)=> { if(language != '' && language == 'ar'){
+                                    item.qus = item.qus_ara ;
+                                    item.ops_1 = item.ops_1_ara ;
+                                    item.ops_2 = item.ops_2_ara ;
+                                    item.ops_3 = item.ops_3_ara ;
+                                    item.ops_4 = item.ops_4_ara ;
+                                
+                                }
+          
+                           return item;
+                 });      
+
+        return res.status(200).send({'status':true,'msg':  (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
+
+      } catch (error) { console.log(error);
+        return  res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error" ,'body':''});
+      }
+             
+          } 
+          
+          
      static add_poll = async(req,res)=>{
 
          try {   

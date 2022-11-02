@@ -42,6 +42,7 @@ const token_check =  require('../middleware/token_check');
   let chatController = require("../controllers/chatController");
   let predictionController = require("../controllers/predictionController");
   let leaderboardController= require("../controllers/leaderboardController");
+  let dashboardController= require("../controllers/dashboardController");
   let geqController= require("../controllers/geqController");
   let avatarController= require("../controllers/avatarController");
 
@@ -254,6 +255,10 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
  router.post('/user_prediction/:id?',predictionController.user_prediction);
 
  router.put('/defaultMsg_update/:id',defaultMsgController.defaultMsg_update); 
+
+ ////dashboard api
+ router.get('/dashboard_count',dashboardController.dashboard_count); 
+
 
 
 
