@@ -16,7 +16,10 @@ export default function Header() {
 // 		HadnleOnload();
 // 	}, [])
 
-
+const navigate = useNavigate();
+useEffect(() => {
+	if(!localStorage.getItem("token")) navigate("/");
+ }, []);
 
 const navRef = React.useRef(null);
 
@@ -47,13 +50,14 @@ const onRemoveClick1 = (e) => {
 
 	 const [navItem, setnavItem] = useState("");
 
-	 const navigate = useNavigate();
 	 const logout = ()=>{
-
 		//alert("my fun call == ");
 		localStorage.clear();
-	    navigate('/');
 		toast.success("Logout Successfully");
+		setTimeout(() => {
+			navigate('/');
+		}, 1000);
+		
 	}
 
 return (
@@ -396,9 +400,9 @@ return (
 								<i className="fal fa-lock"></i>
 								Change Password </Link>
 
-								<li className="dropdown-item"  onClick={(e)=>logout()}  >
+								<a href="#" className="dropdown-item"  onClick={(e)=>logout()}  >
 									<i className="fe fe-power" ></i> Sign Out
-								</li>
+								</a>
 							</div>
 						</div>
 						

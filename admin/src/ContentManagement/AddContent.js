@@ -52,12 +52,15 @@ function AddContent() {
       try {
 
           let type = (e.target.elements.type !== 'undefined') ? e.target.elements.type.value : '';
-          // let content_data = {value}
+          let content_data = {value}
+          let content_data_ara = {value_ara}
 
           let dataToSend2 = {
            "type": type,
            "content_data": value,
+           "content_data_ara": value_ara,
           }
+
           console.log("new values == ", dataToSend2);
           
           let token = localStorage.getItem("token");
@@ -102,6 +105,10 @@ function AddContent() {
     setValue(value);
   };
 
+  const [value_ara, setValue_ara] = useState("");
+  const getValue_ara = (value_ara) => {
+    setValue_ara(value_ara);
+  };
   return (
     <>
 
@@ -158,11 +165,19 @@ function AddContent() {
                             </div>
 
                             <div className="col-lg-12 mb-4">
-                              <label className="title-col">CONTENT</label>
+                              <label className="title-col">CONTENT (English)</label>
                               {/* <TextField id="filled-multiline-static" label="Enter Question" multiline rows={4} fullWidth defaultValue="" variant="filled" /> */}
                               {/* <ReactEditorJS  name='content_data' tools={EDITOR_JS_TOOLS}  setValu>
                               </ReactEditorJS> */}
                              <RichTextEditor initialValue="" getValue={getValue} />
+                            
+                            </div>
+                            <div className="col-lg-12 mb-4">
+                              <label className="title-col">CONTENT (Arabic)</label>
+                              {/* <TextField id="filled-multiline-static" label="Enter Question" multiline rows={4} fullWidth defaultValue="" variant="filled" /> */}
+                              {/* <ReactEditorJS  name='content_data' tools={EDITOR_JS_TOOLS}  setValu>
+                              </ReactEditorJS> */}
+                             <RichTextEditor initialValue="" getValue={getValue_ara} />
                             
                             </div>
 

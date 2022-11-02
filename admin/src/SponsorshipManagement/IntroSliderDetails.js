@@ -69,8 +69,12 @@ export default function IntroSliderDetails() {
                     let data = response.data;
                     console.log(data.msg)
                     if (data.status) {
-                         //navigate(`/intro-slider`);
+                        IntroSliderDetail();
                         toast.success(data.msg);
+                        const timer = setTimeout(() => {
+                             navigate(`/intro-slider`);
+                          }, 2000);
+                         
                     } else {
                         toast.error('something went wrong please try again');
                     }

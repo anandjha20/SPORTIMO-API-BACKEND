@@ -13,16 +13,14 @@ import { useState, useEffect } from "react";
 import SelectTageting from "./Components/SelectTageting";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
 export default function AddSponsorship() {
-  
-
   const navigate = useNavigate();
   useEffect(() => {
+     if(!localStorage.getItem("token")) navigate("/");
     document.body.className = "main-body leftmenu sponer_list";
     return () => {
       document.body.className = "main-body leftmenu";
@@ -32,9 +30,6 @@ export default function AddSponsorship() {
   const [alignmentSkip, setAlignmentSkip] = React.useState("skip");
   const [skip_add, setSkip_add] = React.useState("1");
   const [view_type, setView_type] = React.useState("banner");
-
-
-
 
   const handleChangeToggle = (event) => {
     setAlignment(event.target.value);
@@ -46,7 +41,6 @@ export default function AddSponsorship() {
 
 
   const [showhide, setShowhide] = useState('');
-
   const [show, setShow] = useState('');
 
 
@@ -102,30 +96,22 @@ export default function AddSponsorship() {
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
       let options1 = ({ headers: header });
-
       // let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
-
       let response = await axios.post('/web_api/add_sponsor',dataToSend2, options1);
-
       if (response.status) {
-
         let data = response.data;
-
         if (data.status) {
           navigate(`/sponsorship`);
           toast.success(data.msg);
         } else {
-          toast.error('something went wrong please try again');
+          toast.error('Please fill all necessary fields');
         }
       }
       else {
-        toast.error('something went wrong please try again..');
+        toast.error('Please fill all necessary fields');
       }
 
     } catch (err) { console.error(err); toast.error('some errror'); return false; }
-
-
-
   }
 
 

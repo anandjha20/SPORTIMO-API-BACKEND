@@ -1,11 +1,11 @@
 import React from 'react';
 import Select from 'react-select';
-
 import { useState,useEffect } from "react";
 import axios from "axios";
-
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+
 
               
 
@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export default function SelectTageting() {
 
+    const navigate = useNavigate();
     const [sport_lists, setSport_lists] = React.useState([]);
     const [league_lists, setLeague_lists] = React.useState([]);
     const [team_lists, setTeam_lists] = React.useState([]);
@@ -21,30 +22,27 @@ export default function SelectTageting() {
     const [country_lists, setCountry_lists] = React.useState([]);
 
     const get_data = async(url,setval) =>{
-        try {
+      try {
           let sendData = {}; 
           let token = localStorage.getItem("token");
           let header = ({ 'token': `${token}` });
           let options1 = ({ headers: header });
-        //   let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
+         //let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
           let response = await axios.get( url, options1, sendData );
-    
           if (response.status) {
-    
             let data = response.data;
-    
             if (data.status) {
                 setval(data.body);
              // toast.success(data.msg);
             } else {
               toast.error(data.mgs);
+              navigate("/");
             }
           }
           else {
             toast.error('something went wrong please try again..');
           }
-    
-    
+
         } catch (err) { console.error(err); toast.error('some errror'); return false; }
     
     }

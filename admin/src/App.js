@@ -23,7 +23,7 @@ import CreateTipsTricks from "./TipsTricksManagement/CreateTipsTricks";
 import AddComplaintCategory from "./ComplaintManagement/AddCategory/AddComplaintCategory";
 import ReplyComplaintChat from "./ComplaintManagement/ChatManagement/ReplyComplaintChat";
 import ContentList from "./ContentManagement/ContentList";
-// import AddContent from "./ContentManagement/AddContent";
+import AddContent from "./ContentManagement/AddContent";
 import UpdateContent from "./ContentManagement/UpdateContent";
 import CreateDefaultMessage from "./DefaultMessageManagement/CreateDefaultMessage";
 import UpdatePoll from "./PollManagement/UpdatePoll";
@@ -123,7 +123,7 @@ function App() {
 
         {/*ContentManagement */} 
         <Route path="/content" element={ <ContentList /> } />
-        {/* <Route path="/content/add" element={ <AddContent /> } /> */}
+        <Route path="/content/add" element={ <AddContent /> } />
         <Route path="/content/view/:type" element={ <UpdateContent /> } />
 
         {/*CreateDefaultMessage */} 

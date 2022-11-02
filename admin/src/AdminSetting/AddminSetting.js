@@ -60,12 +60,12 @@ function AddminSetting() {
 
             <div className="page-header">
               <div>
-                <h2 className="main-content-title tx-24 mg-b-5">Addmin Setting</h2>
+                <h2 className="main-content-title tx-24 mg-b-5">Admin Setting</h2>
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <Link to="/home">Home</Link>
                   </li>
-                  <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Addmin Setting</li>
+                  <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Admin Setting</li>
                 </ol>
               </div>
               {/* <div className="d-flex">
@@ -95,7 +95,7 @@ function AddminSetting() {
                             </div>
 
                             <div className="col-lg-12 reletive mb-4">
-                            <label className="title-col">Guest User Aactive Days </label>
+                            <label className="title-col">Guest User Active Days </label>
                               <input type="text" className="form-control card-input"  name='guest_user_active_days' defaultValue={data.guest_user_active_days}  fullWidth  variant="filled" autoComplete="off" />
                             </div>   
 

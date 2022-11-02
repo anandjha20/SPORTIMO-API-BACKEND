@@ -30,7 +30,7 @@ function OrderReceivedTable() {
         <>
 
             <div className="row">
-                <div className="col-lg-12 mb-5">
+                <div className="col-lg-12 mb-5" style={{display : "none"}}>
                
                     <MaterialTable
                         title="Order Received"

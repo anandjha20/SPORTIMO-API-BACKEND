@@ -9,6 +9,9 @@ import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import Select from 'react-select';
 import Moment from 'moment';
+// import {ToastContainer, toast}
+import { ToastContainer, toast } from "react-toastify";
+
 
 
 function TableUserReportList() {
@@ -120,12 +123,39 @@ function TableUserReportList() {
         setData(commentsFormServer);
     };
 
- 
+ const handleUnblock = () =>
+ {
+    alert("unblocked user");
+ }
+
+ const handleblock = (_id, block_status) =>
+ {
+    const setDataForm = {
+        user_id: _id,
+        block_status: block_status
+    }
+    axios.post(`/web_api/adminUserChatBlockUnblock`, setDataForm)
+        .then(res => {
+            if (res.status) {
+                let data = res.data;
+                if (data.status) {
+                    toast.success(data.msg);
+                    return CompList();
+                } else {
+                    toast.error(data.msg);
+                }
+            }
+            else {
+                toast.error(data.msg);
+            }
+
+        })
+ }
 
     return (
 
         <>
-
+            <ToastContainer />
             <div className="card custom-card">
                 <div className="card-body">
                     <form onSubmit={(e) => formsave(e)}>
@@ -162,7 +192,7 @@ function TableUserReportList() {
             <div className="row">
                 <div className="col-lg-12">
                     <div className="table-card MuiPaper-root MuiPaper-elevation2 MuiPaper-rounded">
-                        <h6 className="MuiTypography-root MuiTypography-h6 padd1rem">Complaint List</h6>
+                        <h6 className="MuiTypography-root MuiTypography-h6 padd1rem">User Report List</h6>
                         <table className="table ">
                             <thead>
                                 <tr>
@@ -192,15 +222,17 @@ function TableUserReportList() {
                                             <td>  {item.reporting_user_id == null ? <></> : <>{item.reporting_user_id.name}</>  }</td>
                                             <td>{item.discription}</td>
                                             <td>{Moment(item.date).format("DD/MM//YYYY")}</td>
-                                            {/* <td>{item.admin_status == false ? <>Open</> : <>Closed</>}</td> */}
-                                            <td className="text-end">
+                                            <td className="text-end">{item.autoBlockStatus == true ? <>
+                                             <Button  type='submit' onClick={(e) => handleblock(item.reported_user_id._id, item.block_status = "0")} variant="contained" className="btn-filter btnBg bbtn">UnBlock</Button></> : 
+                                             <><Button type='submit' onClick={(e) => handleblock(item.reported_user_id._id, item.block_status = "1")} variant="contained" className="btn-filter btnBg bbtn btnblock">block</Button></>}</td >
+                                            {/* <td className="text-end">
                                                 <div className="d-flex justtify-content-end">
                                                     <IconButton onClick={(e) => {  }} aria-label="delete"> <span className="material-symbols-outlined">
                                                         sms </span>
                                                     </IconButton>
 
                                                 </div>
-                                            </td>
+                                            </td> */}
                                         </tr>
                                     );
 

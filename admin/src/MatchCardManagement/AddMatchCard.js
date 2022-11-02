@@ -41,11 +41,11 @@ export default function AddMatchCard() {
            navigate(`/matchcard`);
           toast.success(data.msg);
         } else {
-          toast.error('something went wrong please try again');
+          toast.error(data.msg);
         }
       }
       else {
-        toast.error('something went wrong please try again..');
+        toast.error(data.msg);
       }
 
     } catch (err) { console.error(err); toast.error('some errror'); return false; }

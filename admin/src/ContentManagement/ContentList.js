@@ -26,11 +26,11 @@ function ContentList() {
                                 </ol>
                             </div>
                             <div className="d-flex">
-								{/* <div className="justify-content-center">
+								<div className="justify-content-center">
 							       <Link  to="/content/add">
                                     <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add Content</Button>
                                     </Link>
-                                </div> */}
+                                </div>
 							</div>
                            
                         </div>

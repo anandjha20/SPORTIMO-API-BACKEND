@@ -42,7 +42,7 @@ export default function CreateDefaultMessage() {
     let options1 = ({ headers: header });
 
     const onCloseModal = () => setOpen(false);
-    const TipsTricksList = async () => {
+    const DefaultStausMessage = async () => {
         await axios.get(`/web_api/get_defaultMsg`)
             .then(res => {
                 const userData = res.data.body;
@@ -51,7 +51,7 @@ export default function CreateDefaultMessage() {
     }
 
     useEffect(() => {
-        TipsTricksList()
+        DefaultStausMessage()
     }, []);
 
     const columns = [
@@ -156,17 +156,20 @@ export default function CreateDefaultMessage() {
 
     ///////////////// Update complaint category /////////////////
     const UpdateFormData = async (e) => {
+        // console.log(_id);
         e.preventDefault();
         try {
 
             let d_msg = (e.target.elements.d_msg !== 'undefined') ? e.target.elements.d_msg.value : '';
-            let id = (e.target.elements.id !== 'undefined') ? e.target.elements.id.value : '';
+            let d_msg_ara = (e.target.elements.d_msg_ara !== 'undefined') ? e.target.elements.d_msg_ara.value : '';
+
             let dataToSend2 = {
                 "d_msg": d_msg,
-                "id": id,
+                "d_msg_ara": d_msg_ara,
             }
+            const id = opnData._id
             console.log("new values == ", dataToSend2);
-            axios.put(`/web_api/update_tips`, dataToSend2, options1)
+            axios.put(`/web_api/defaultMsg_update/${id}`, dataToSend2, options1)
                 .then(res => {
                     if (res.status) {
 
@@ -175,17 +178,13 @@ export default function CreateDefaultMessage() {
                             
                             toast.success(data.msg);
                             setOpen(false);
-                            return axios.get("/web_api/get_defaultMsg", options1)
-                                .then(res => {
-                                    const userData = res.data.body;
-                                    setData(userData);
-                                })
+                            return DefaultStausMessage();   
                         } else {
-                            toast.error('something went wrong please try again');
+                            toast.error(data.msg);
                         }
                     }
                     else {
-                        toast.error('something went wrong please try again..');
+                        toast.error(data.msg);
                     }
                 })
                 .catch(error => {
@@ -258,7 +257,7 @@ export default function CreateDefaultMessage() {
                                                             data={data}
                                                             actions={[
                                                                 {
-                                                                    icon: 'visibility',
+                                                                    icon: 'edit',
                                                                     iconProps: { style: { color: "#6259ca" } },
                                                                     tooltip: 'Edit Category',
                                                                     onClick: (event, setData) => { handleClickOpen(setData); }
@@ -283,6 +282,7 @@ export default function CreateDefaultMessage() {
                                                 </div>
 
                                                 <Dialog className="notifi-style" open={open} onClose={handleClose}>
+                                                  <form onSubmit={(e) => UpdateFormData(e)}>
                                                     <DialogTitle><i className="fad fa-comments-alt"></i> &nbsp;Default Status Message</DialogTitle>
                                                     <DialogContent>
                                                     {/* <DialogContentText>
@@ -293,29 +293,34 @@ export default function CreateDefaultMessage() {
                                                         autoFocus
                                                         margin="dense"
                                                         id="name"
+                                                        name="d_msg"
                                                         label="English"
                                                         type="text"
                                                         fullWidth
                                                         variant="standard"
                                                         defaultValue={opnData.d_msg}
-                                                                InputProps={{readOnly: true, }}
+                                                                
                                                     />
                                                     <TextField multiline rows={2}
                                                         autoFocus
                                                         margin="dense"
                                                         id="name"
+                                                        name="d_msg_ara"
                                                         label="Arabic"
                                                         type="text"
                                                         fullWidth
                                                         variant="standard"
                                                         defaultValue={opnData.d_msg_ara}
-                                                                InputProps={{readOnly: true, }}
+                                                                
                                                     />
                                                     </DialogContent>
+                                                    
                                                     <DialogActions className="mb-2">
-                                                    {/* <Button className="mr-3" onClick={handleClose}>Cancel</Button> */}
-                                                    <Button variant="contained" className="mr-3 btn-pd btnBg" onClick={handleClose}>Close</Button>
+                                                    
+                                                    <Button className="mr-3" type="button" onClick={handleClose}>Cancel</Button>
+                                                    <Button variant="contained" type="submit" className="mr-3 btn-pd btnBg">Submit</Button>
                                                     </DialogActions>
+                                                    </form>
                                                 </Dialog>
 
 

@@ -15,15 +15,12 @@ import Moment from 'moment';
 
 export default function IntroSliderImg() {
 
-
-
     useEffect(() => {
         document.body.className = "main-body leftmenu sponer_list";
         return () => {
             document.body.className = "main-body leftmenu";
         }
     }, []);
-
 
     const [data, setData] = useState([])
     const [catView, setCat] = useState([])
@@ -58,7 +55,7 @@ export default function IntroSliderImg() {
                     console.log(data.msg)
                     if (data.status) {
                         toast.success(data.msg);
-                        e.target.reset();
+                        //e.target.reset();
                       
                     } else {
                         toast.error('something went wrong please try again');

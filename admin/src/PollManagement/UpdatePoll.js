@@ -595,6 +595,7 @@ const secondOptions = [
   const [datadetail, setDataDetail] = useState('')
   const [polltypeSet, setPollyupe] = useState('')
   const [sportsOpt, setSportsOpt] = useState('')
+  const [LeaguesOpt, setLeaguesOpt] = useState('')
    
 
 
@@ -622,6 +623,7 @@ const polldetail = async () =>
             const second = res.data.body[0].time_duration.slice(-2);
 
             const sportsArrayOp = datadetail.sports;
+            const LeaguesOpt = datadetail.leagues;
             const answerOne = datadetail.ops_1;
             const sportsOpt = sportsArrayOp.split(',');
 
@@ -633,8 +635,10 @@ const polldetail = async () =>
             // console.log(answerOne)
             // }
 
+            setLeaguesOpt(LeaguesOpt.split('\n'));
             setSportsOpt(sportsOpt);
-            console.log(sportsOpt);
+            // console.log(sportsOpt);
+            console.log(LeaguesOpt);
 
             setDataDetail(datadetail);
             setPollyupe(polltypeSet);
@@ -825,7 +829,6 @@ const polldetail = async () =>
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond}  options={hsecondOptions} />
                               </div>
 
-
                               </div>
                             </div>
 
@@ -891,10 +894,10 @@ const polldetail = async () =>
                                 <span className='react-select-title'>Select Sports</span>
                                 <Select isMulti
                                     closeMenuOnSelect={false}
-                                    // defaultValue = { sportsOpt.map((item) => {
-                                    //   return (
-                                    //    { value: sportsOpt, label: sportsOpt });
-                                    //   }) }
+                                    defaultValue = { sportsOpt.map((item, index) => {
+                                      return (
+                                       { value: item.toString(), label: item });
+                                      }) }
                                     // defaultValue={userTechsForSelect[0]}
                                     name="sports"
                                     options={sportOptions}
@@ -911,7 +914,10 @@ const polldetail = async () =>
                                     name="leagues" 
                                     options={leagueOptions}
                                     onChange={handleChangeLeagues}
-                                    defaultValue={{ value: datadetail.sports}}
+                                    defaultValue = { LeaguesOpt.map((item, index) => {
+                                      return (
+                                       { value: item, label: item });
+                                      }) }
                                     className="basic-multi-select"
                                     classNamePrefix="select" />
                             </div>
@@ -1011,13 +1017,14 @@ const polldetail = async () =>
 
 
                             <div className="col-lg-12 mb-4">
-                                   <FormGroup className="mb-3">
+                                   {/* <FormGroup className="mb-3">
                                     <FormControlLabel name=''  onChange={(e) => rewardfun(e)} control={<Checkbox />} label="Rewards" />
-                                  </FormGroup>
-
+                                  </FormGroup> */}
+                               <label className="title-col">Rewards</label>       
                                  
                             
-                             <div className="row" id="rewards1">
+                             {/* <div className="row" id="rewards1"> */}
+                             <div className="row" id="">
                           
                                   <div className="col-lg-6 reletive mt-2">
                                 <span className='react-select-title'>Select Rewards Type</span>

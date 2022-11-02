@@ -17682,7 +17682,7 @@ input:checked+label.payment-cards {
     border-width: 1px;
     color: #6259ca
 }
-
+/* 
 .form input:checked+label:after,
 form input:checked+label:after {
     content: "";
@@ -17717,7 +17717,7 @@ form input:checked+label:before {
     right: 4px;
     font-size: 14px;
     color: #fff
-}
+} */
 
 .crypto-buysell-card .nav.panel-tabs li {
     position: relative;
@@ -75470,4 +75470,35 @@ label, span
     background: #4caf5057;
     padding: 4px;
     border-radius: 4px;
+ }
+
+ .guestcheck label
+ {
+    margin-left: 0.5rem;
+    font-size: 16px;
+ }
+
+ .guestcheck input
+ {
+    height: 18px;
+    width: 18px;
+    margin-bottom: 9px;
+    display: inline-block;
+ }
+
+ .guestcheck 
+ {
+    display: flex;
+    align-items: center;
+ }
+
+ .bbtn
+ {
+ padding : 5px 13px !important;
+ }
+
+ .btnblock
+ {
+    background: #f44336 !important;
+    padding: 6px 23px !important;
  }

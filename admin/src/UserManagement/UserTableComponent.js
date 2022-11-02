@@ -18,12 +18,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { ToastContainer, toast } from 'react-toastify';
 
 function UserListTable(props) {
-
     const [open, setOpen] = React.useState(false);
     const [pageCount, setpageCount] = useState('');
     const [guestUser, setGuest] = React.useState(0);
     const [Fromvalue, setFromvalue] = React.useState('');
     const [Selectvalue, SetSelectvalue] = useState('');
+    const [checkbox, SetCheckbox] = useState('');
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -105,14 +105,13 @@ function UserListTable(props) {
                 const totalPage = (Math.ceil(total / limit));
                 setpageCount(totalPage);
                 setData(data);
-                SetSelectvalue('')
+                SetSelectvalue('');
                 console.log(data);
             })
     }
     useEffect(() => {
         userlist()
     }, [])
-
 
     ///////////////pagenestion///////////////
     const fetchComments = async (page) => {
@@ -144,9 +143,11 @@ function UserListTable(props) {
                     <form onSubmit={(e)=>formsave(e)}>
                     <div className="row align-items-center">
                         <div className="col-lg-12">
-                                 <FormGroup className="mb-3 ml-2 inputheckbox">
-                                    <FormControlLabel name='guest_user' onChange={(e) => guestfun(e)}  control={<Checkbox />} label="Guest User" />
-                                  </FormGroup>
+                                 <div className="mb-3 ml-2 guestcheck">
+                                  <input type="checkbox"  name='guest_user' id="chck" onChange={(e) => guestfun(e)} />
+                                  <label htmlFor="chck">Guest User</label>
+                                    {/* <FormControlLabel name='guest_user' onChange={(e) => guestfun(e)}  control={<Checkbox  />} label="Guest User"  /> */}
+                                  </div>
                         </div>
                         <div className="col-lg-3 ">
                         <TextField id="search" name='name' className="filter-input" label="Search User" autoComplete="off" fullWidth type="text"
@@ -222,6 +223,7 @@ function UserListTable(props) {
                                     <th scope="col">User Name</th>
                                     <th scope="col">Mobile No.</th>
                                     <th scope="col">Email Address</th>
+                                    <th scope="col">User Wallet</th>
                                     <th scope="col">Registration Date</th>
                                     {/* <th scope="col">User language</th> */}
                                     <th scope="col">Country</th>
@@ -246,6 +248,7 @@ function UserListTable(props) {
                                             <td>{item.name}</td>
                                             <td>{item.mobile}</td>
                                             <td>{item.email}</td>
+                                            <td>{item.points}</td>
                                             <td>{Moment(item.date).format("DD/MM/YYYY")}</td>
                                             {/* <td>{item.user_language}</td> */}
                                             <td>{item.country}</td>
@@ -325,3 +328,5 @@ function UserListTable(props) {
 }
 
 export default UserListTable
+
+

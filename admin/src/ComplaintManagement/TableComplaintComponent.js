@@ -52,6 +52,8 @@ function TableComplaintComponent() {
             const category = data.category;
             const image = res.data.body.image;
             console.log(data);
+            SetSelectvalue('');
+            SetSelectvalue1('');
         })
     }
     const CategoryList = async () =>
@@ -130,6 +132,13 @@ function TableComplaintComponent() {
         setData(commentsFormServer);
     };
 
+   const category_status = [
+        {value : "0" , label : "Open"},
+        {value : "1" , label : "Close"}
+        ] 
+   const [Selectvalue, SetSelectvalue] = useState('');
+   const [Selectvalue1, SetSelectvalue1] = useState('');
+    
     return (
 
         <>
@@ -138,22 +147,31 @@ function TableComplaintComponent() {
                 <div className="card-body">
                     <form onSubmit={(e) => formsave(e)}>
                         <div className="row align-items-center">
-                            <div className="col-lg-3 reletive mb-3">
+                            <div className="col-lg-4 reletive mb-3">
                                 <span className="react-select-title">Category Type</span>
                                 <Select  name='cat_id'
+                                onChange={SetSelectvalue1} value={Selectvalue1}
                                 options={category_type}
                                 className="basic-multi-select"
                                 classNamePrefix="select" />
 
                             </div>
-                            <div className="col-lg-3 mb-3" style={{ maxWidth : "23%"}}>
+                            <div className="col-lg-4 reletive mb-3">
+                                <span className="react-select-title">Complaint Status</span>
+                                <Select  name='status' onChange={SetSelectvalue} value={Selectvalue}
+                                options={category_status}
+                                className="basic-multi-select"
+                                classNamePrefix="select" />
+
+                            </div>
+                            <div className="col-lg-4 mb-3" style={{ maxWidth : "32%"}}>
                                 <TextField name='mobile' className="filter-input" label="Mobile Number" fullWidth type="number"
                                    InputLabelProps={{
                                     shrink: true,
                                 }}
                                 />
                             </div>
-                            <div className="col-lg-2 mb-3">
+                            <div className="col-lg-4 mb-3">
                                 <TextField id="sdate" name='s_date' className="filter-input" label="Start Date" fullWidth type="date"
                                     InputLabelProps={{
                                         shrink: true,
@@ -161,7 +179,7 @@ function TableComplaintComponent() {
                                 />
                             </div>
 
-                            <div className="col-lg-2 mb-3">
+                            <div className="col-lg-4 mb-3">
                                 <TextField id="edate" name='e_date' className="filter-input" label="End Date" fullWidth type="date"
                                     InputLabelProps={{ shrink: true, }} />
                             </div>
