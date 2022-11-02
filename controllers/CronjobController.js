@@ -11,7 +11,7 @@ const {ArrChunks, rows_count,getcurntDate,getTime,isEmpty,before_after_Date} = r
   
   const match_event_shot_tbl = require('../models/match_event_shots');   
  const  {MyBasePath} = require("../myModel/image_helper");
-  
+    
   
   const team_matches = require('../models/team_matches');
   const {day_match_getID,match_card_number,match_card_0011,match_card_0013,matchCardAllData,matchCardEventAllData,get_card_result_add_4,
@@ -19,7 +19,8 @@ const {ArrChunks, rows_count,getcurntDate,getTime,isEmpty,before_after_Date} = r
     get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
     get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,card_08_befor_call,get_card_result_add_08,
     get_card_result_add_37,card_39_befor_call,get_card_result_add_39,card_34_befor_call,get_card_result_add_34,
-    get_card_result_add_31,get_card_result_add_5,get_card_result_add_34_endTimesCall,get_card_result_add_26 }   = require("../myModel/Live_match_api_helper"); 
+    get_card_result_add_31,get_card_result_add_5,get_card_result_add_34_endTimesCall,get_card_result_add_26,
+    getCardGreaterThan_16,getCardResult_16_END,getCardGreaterThan_03, getCardResult_03_END }   = require("../myModel/Live_match_api_helper"); 
 const { Promise } = require("mongoose");
 
 class ConjobController{
@@ -63,34 +64,97 @@ class ConjobController{
               } catch (error) { console.log(error);
                   return  res.status(200).send({'status':false,'msg':'servr error'});
               }
-      }         
-      static get_card_001 =  async(req,res)=>{
+      } 
+      
+      static get_card_16 =  async(req,res)=>{
         try {
-                let  match_id = '2701198' ; // 2701168;
+                       
+          let response = await day_match_getID();
+          let sumArr = [];
+         // let url = 'http://34.204.253.168:3000/open_api/get_card_008';
+          let url = 'http://localhost:3600/open_api/getCardGreaterthan_16';
+         
+      if(response){  
+            // let resp = await getCardGreaterThan_16(response[0]);
+            /// sumArr.push(resp);  
+                let allData =  await Promise.all( response.map( async (item)=>{
+                  console.log( "match_id is == ",item );
+                   let resp = await getCardGreaterThan_16(item);
+                   
+                  sumArr.push(resp);
+          })) ;      
+          }
+               
+          return  res.status(200).send({'status':true,'msg':'cronjob api card -16  calling ','body': sumArr  });
+      } catch(error) { console.log( "cronjob api card -16 calling server error  == ", error);
+                        return  res.status(200).send({'status':false,'msg':'servr error'});
+                                 
+                    }    
 
-                let card_id =  mongoose.Types.ObjectId("634e5c528f16160a62ea586a");
+    } 
+
+    static get_card_001 =  async(req,res)=>{
+      try {
+                     
+        let response = await day_match_getID();
+        let sumArr = [];
+       // let url = 'http://34.204.253.168:3000/open_api/get_card_008';
+        let url = 'http://localhost:3600/open_api/getCardGreaterthan_16';
+       
+    if(response){  
+          // let resp = await getCardGreaterThan_16(response[0]);
+          /// sumArr.push(resp);  
+              let allData =  await Promise.all( response.map( async (item)=>{
+                console.log( "match_id is == ",item );
+                 let resp = await getCardGreaterThan_03(item);
+                 
+                sumArr.push(resp);
+        })) ;      
+        } 
+             
+        return  res.status(200).send({'status':true,'msg':'cronjob api card -16  calling ','body': sumArr  });
+    } catch(error) { console.log( "cronjob api card -16 calling server error  == ", error);
+                      return  res.status(200).send({'status':false,'msg':'servr error'});
+                               
+                  }    
+
+  } 
+
+      static get_card_001_OLD =  async(req,res)=>{
+        try {
+                let  match_id = '2701234' ;      // 2701168;
+
+                let card_id =  mongoose.Types.ObjectId("635fbe7ac52f44e554d78390");
                 
              
                 let pipeline  = [] ;
                  
-                     pipeline.push({$match: {match_id: match_id}});
+                      pipeline.push({$match: {match_id : match_id}});
                       pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
-                        pipeline.push({ $unwind: "$play_match_user" });
-                         pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
+                      pipeline.push({ $unwind: "$play_match_user" });
+                      pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true,
+                                             "play_match_user.time_range_start":{ $lte : 7 } ,
+                                              "play_match_user.time_range_end":{ $gte : 7 } 
+                                            }});
+
                         pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
                                         "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
                                         "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
+                                        "time_range_start":"$play_match_user.time_range_start","time_range_end":"$play_match_user.time_range_end",
                                         "match_id": "$play_match_user.match_id","active": "$play_match_user.active" } });
-                
-    
+
+
+
+
              let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
-               
+            
+             
 
              return  res.status(200).send({'status':true,'msg':'Success','body':allUsersData });
 
    } catch (error) { console.log(error);
-              return  res.status(200).send({'status':false,'msg':'servr error'});
-          }
+                           return  res.status(200).send({'status':false,'msg':'servr error'});
+                      }
         }
        // importent code for cronjob  
       static get_card_0018 =  async(req,res)=>{
@@ -200,14 +264,14 @@ class ConjobController{
   // importent code for cronjob get_card_008 
     static get_card_008 =  async(req,res)=>{
       try {
+              let  match_id = req.body.match_id ; 
+            let data = await team_matches_tbl.findOne({match_id},'match_id date_utc ');  
 
-            let  match_id = req.body.match_id ; 
-
-
-             let data = await team_matches_tbl.findOne({match_id},'match_id date_utc ');  
           if(data){
-            var date_cur    = new Date();                        var date_old    = new Date(data.date_utc);
-            var seconds_cur = Math.floor(date_cur.getTime() / 1000);         var seconds_old = Math.floor(date_old.getTime() / 1000); 
+             var date_cur    = new Date();  
+             var date_old = new Date(data.date_utc);
+            var seconds_cur = Math.floor(date_cur.getTime() / 1000);  
+            var seconds_old = Math.floor(date_old.getTime() / 1000); 
               
             let apperance_times_data = await match_cards_tbl.findOne({ match_id : data._id} , 'apperance_times' );  
             let card_apperance_times = parseInt(apperance_times_data.apperance_times)*60;
@@ -531,31 +595,33 @@ class ConjobController{
                 //  if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
               
                 if( (!isEmpty( data))  && ( data.status = 'Played')){
-                    let dx1 = await get_card_result_add_1({data});  ///
-                    let dx4  = await get_card_result_add_4({data});  //
-                   let dx5  = await get_card_result_add_5({data});  //
-                   let dx7 = await get_card_result_add_7({data});  //
+                //     let dx1 = await get_card_result_add_1({data});  ///
+                //     let dx4  = await get_card_result_add_4({data});  //
+                //    let dx5  = await get_card_result_add_5({data});  //
+                //    let dx7 = await get_card_result_add_7({data});  //
 
-                 let dx8 =   await get_card_result_add_08({data});  //  *******spl fun ***
+                //  let dx8 =   await get_card_result_add_08({data});  //  *******spl fun ***
 
-                  let dx11  = await get_card_result_add_11({data});  ///
-                 let dx13 = await get_card_result_add_13({data});     ///
-                  let dx15 = await get_card_result_add_15({data});  ///
+                //   let dx11  = await get_card_result_add_11({data});  ///
+                //  let dx13 = await get_card_result_add_13({data});     ///
+                //   let dx15 = await get_card_result_add_15({data});  ///
 
-                  let dx17  = await get_card_result_add_17({data});    //
-                   let dx20 = await get_card_result_add_20({data});      //   
-                    let dx23 = await get_card_result_add_23({data});     //
+                //   let dx17  = await get_card_result_add_17({data});    //
+                //    let dx20 = await get_card_result_add_20({data});      //   
+                //     let dx23 = await get_card_result_add_23({data});     //
 
                 
-                let dx34   = await get_card_result_add_34_endTimesCall({data})//  *******spl fun ***  
-                let dx36   = await get_card_result_add_36({data});   //
-                let dx37   = await get_card_result_add_37({data});  
-                let dx39   = await get_card_result_add_39({data});   // *******spl fun ***  
+                // let dx34   = await get_card_result_add_34_endTimesCall({data})//  *******spl fun ***  
+                // let dx36   = await get_card_result_add_36({data});   //
+                // let dx37   = await get_card_result_add_37({data});  
+                // let dx39   = await get_card_result_add_39({data});   // *******spl fun ***  
                       
-                 let dx10  = await get_card_result_add_10({data});  
-                 let dx26  = await get_card_result_add_26({data});
-                 let dx31  = await get_card_result_add_31({data}); 
-
+                //  let dx10  = await get_card_result_add_10({data});  
+                //  let dx26  = await get_card_result_add_26({data});
+                //  let dx31  = await get_card_result_add_31({data}); 
+                
+                 let dx16 = await getCardResult_16_END({data});   // **** make date 2022-11-01 ***
+                 let dx03 = await getCardResult_03_END({data});   // **** make date 2022-11-01 ***
 
 
 

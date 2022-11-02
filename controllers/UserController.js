@@ -25,7 +25,7 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds } = require('../myMod
     //const avatars_tbl = require("../models/avatars");     
     const play_match_cards_tbl = require("../models/playMatchCards");     
 const team_matches = require('../models/team_matches');
-        
+const userArchive = require('../models/userArchive');     
 
 
 
@@ -230,6 +230,7 @@ if(user_type==2){condition_obj={...condition_obj,email}};
 
 let user = await user_tbl.find(condition_obj);
     if( ! isEmpty(user) &&  user[0].is_deleted==1){
+        
     return res.status(200).send({"status":false,"msg":'your account was deleted..register yourself first!!! '}) ;
 }else{
 
@@ -995,25 +996,68 @@ static verify_nickName = async(req,res)=>{
             }
             }      
 
-    static delete_user= async (req,res)=>{
-        try{
-            let _id=req.params.id;
-            if(!isEmpty(_id)){
-                let response= await user_tbl.findOneAndUpdate({_id},{$set:{is_deleted:1}},{new: true})
-                if(!isEmpty(response)){
-                    return res.status(200).send({"status":true,"msg":"this user account deleted","body":''});        
-                }else{
-                    return res.status(200).send({"status":false,"msg":"Invalid user id ","body":''});
+     static delete_user= async (req,res)=>{
+           try{
+                    let _id=req.params.id;
+                    if(!isEmpty(_id)){
+                        let response= await user_tbl.findOneAndDelete({_id})
+                        let archiveData={
+                            name: response.name,
+                            doc_type: response.doc_type,
+                            token: response.token,
+                            city: response.city,
+                            address: response.address,
+                            user_language : response.user_language,
+                            email: response.email,
+                            otp: response.otp,
+                            mobile: response.mobile,
+                            gender: response.gender,
+                            user_type: response.user_type, 
+                            image: response.image, 
+                            country :response.country,
+                            date: response.date,   
+                            active_status: response.active_status,     
+                            email_status:response.email_status,
+                            mobile_status: response.mobile_status,
+                            device_id: response.device_id,
+                            sport_preferences:  response.sport_preferences,
+                            league_preference: response.league_preference,
+                            team_preference:  response.team_preference,
+                            player_preference:  response.player_preference,
+                            u_name :  response.u_name,
+                            status_msg :  response.status_msg,
+                            seq_id : response.seq_id,
+                            is_deleted : response.is_deleted,
+                            facebook_id : response.facebook_id,
+                            google_id  : response.google_id,
+                            music_sound : response.music_sound,
+                            haptics : response.haptics,
+                            chat : response.chat,          
+                            biometric  : response.biometric,
+                            notifications : response.notifications, 
+                            chatBlockStatus :response.chatBlockStatus,
+                            firebase_token :  response.firebase_token,
+                            profile_type : response.profile_type,  
+                            points: response.points,
+                            follower : response.follower,
+                  
+                        }
+                        if(!isEmpty(response)){
+                            let obj=new userArchive(archiveData);
+                            let archive=await obj.save()
+                            return res.status(200).send({"status":true,"msg":"this user account deleted","body":''});        
+                        }else{
+                            return res.status(200).send({"status":false,"msg":"Invalid user id "});
+                        }
+                    }else{
+                        return res.status(200).send({"status":false,"msg":"userID required","body":''});
+                    }
+        
+                }catch (error){
+                    console.log(error);
+                    return res.status(200).send({"status":false,"msg":"server error","body":''});
                 }
-            }else{
-                return res.status(200).send({"status":false,"msg":"userID required","body":''});
             }
-
-        }catch (error){
-            console.log(error);
-            return res.status(200).send({"status":false,"msg":"server error","body":''});
-        }
-    }
 
     static block_user_list = async (req,res)=>{
         try{

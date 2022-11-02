@@ -444,16 +444,18 @@ class predictionController {
         } catch (error) { return res.status(200).send({"status":true,"msg":'Some error' , "body":''}) ; }
 
     }
-
     static match_card_list = async (req,res)=>{
       try {
            let language = req.body.language;    // 'name card_type'
+           let card_cat_id = req.body.category_id;    // 'name card_type'
+           let cardCat={};
+           if(!isEmpty(card_cat_id)){cardCat={...cardCat,card_cat_id}}
            let condition_obj={};
           if(!isEmpty(req.body.match_id)){
             condition_obj={...condition_obj,match_id:req.body.match_id}
           }
             console.log("condition_obj == ", condition_obj);
-          let records = await match_cards_tbl.find(condition_obj).populate('card_id').sort({_id:-1});
+          let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat).sort({_id:-1});
         
              
               if(records){ records.map((item)=> { 
@@ -485,7 +487,7 @@ class predictionController {
                   return res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"});
               }
               
-      }       
+      }      
 
       static user_prediction_old = async (req,res)=>{
         try {
@@ -557,7 +559,7 @@ class predictionController {
                     
                 }   
 
-
+                
  
     }
 
