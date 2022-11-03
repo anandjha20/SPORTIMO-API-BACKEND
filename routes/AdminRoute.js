@@ -45,6 +45,7 @@ const token_check =  require('../middleware/token_check');
   let dashboardController= require("../controllers/dashboardController");
   let geqController= require("../controllers/geqController");
   let avatarController= require("../controllers/avatarController");
+  let analyticsController= require("../controllers/analyticsController");
 
   // admin login Routes  
   router.post('/admin_login/',AdminController.admin_login);
@@ -259,6 +260,9 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
  ////dashboard api
  router.get('/dashboard_count',dashboardController.dashboard_count); 
 
+ ////analytics api
+router.post('/all_user_analytics',analyticsController.all_user_analytics); 
+router.post('/polls_analytics',analyticsController.polls_analytics); 
 
 
 

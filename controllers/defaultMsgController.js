@@ -8,28 +8,28 @@
 
 class defaultMsgController {
 
- static addDefaultMsg = async(req,res)=>{
-    try {
-            let d_msg = req.body.d_msg; let d_msg_ara = req.body.d_msg_ara; 
-            if(isEmpty(d_msg) || isEmpty(d_msg_ara)){ return res.status(200).send({"status":false,"msg":'All Field Required'}) ; }
-            
-            let addData = {d_msg_ara,d_msg:d_msg } ;
-            
-            let add = new default_massages_tbl(addData) ;        
-
-                    let allsaveData =  await add.save();
-                        if(isEmpty(allsaveData)){
-                            return res.status(200).send({"status":false,"msg": 'something went wrong please try again'}) ;  
-                                    }else{
-                                      
-                                    return res.status(200).send({"status":true,"msg": 'Data add successfully' , "user_id":add._id }) ;  
-
-                                }
-                } catch (error) { console.log(error);
-                        return res.status(200).send({"status":false,"msg":'something went wrong please try again' }) ;          
-                    }           
-    }
-
+    static addDefaultMsg = async(req,res)=>{
+        try {
+                let d_msg = req.body.d_msg; let d_msg_ara = req.body.d_msg_ara; 
+                if(isEmpty(d_msg) || isEmpty(d_msg_ara)){ return res.status(200).send({"status":false,"msg":'All Field Required'}) ; }
+                
+                let addData = {d_msg_ara,d_msg:d_msg } ;
+                
+                let add = new default_massages_tbl(addData) ;        
+    
+                        let allsaveData =  await add.save();
+                            if(isEmpty(allsaveData)){
+                                return res.status(200).send({"status":false,"msg": 'something went wrong please try again'}) ;  
+                                        }else{
+                                          
+                                        return res.status(200).send({"status":true,"msg": 'Data add successfully' , "body":allsaveData }) ;  
+    
+                                    }
+                    } catch (error) { console.log(error);
+                            return res.status(200).send({"status":false,"msg":'something went wrong please try again' }) ;          
+                        }           
+        }
+        
     static get_defaultMsg = async(req,res)=>{
         try {
               let language = req.body.language;
