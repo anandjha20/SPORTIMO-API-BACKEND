@@ -1237,21 +1237,20 @@ static verify_nickName = async(req,res)=>{
         try{
             let _id=req.body.id;
             let user_id=req.body.user_id;
-            let m_id =  mongoose.Types.ObjectId(_id);
-            let m_user_id =  mongoose.Types.ObjectId(user_id);
-                
+               
             let condition_obj={};
             if(!isEmpty(_id)){condition_obj={...condition_obj,_id}}
              let response=await team_matches.find(condition_obj)
              let total_cards=await match_cards.find({"match_id":_id}).countDocuments()
              let total_played_cards=await play_match_cards_tbl.find({"match_id":_id,"user_id":user_id}).countDocuments()
-             let transaction= await transaction_tbls.aggregate([
-                {$match: {"match_id": m_id,"user_id":m_user_id }},
-                { $group: {"_id": { user_id : "$user_id" } , "points": { $sum: { "$toInt": "$points"} }, } }
-             ])
-            
+            let transaction= await transaction_tbls.find({"match_id":_id,"user_id":user_id});
+            let score=0;
+            transaction.map((item)=>{
+                score+=item.points;
+            })
+            console.log(score)
             if(response.length>0){
-                return res.status(200).send({"status":true,"msg":"data found","body":{response,total_cards,total_played_cards,score:transaction[0].points}});
+                return res.status(200).send({"status":true,"msg":"data found","body":response,total_cards,total_played_cards,score});
             }else{
                 return res.status(200).send({"status":false,"msg":"no data found"})
             }
@@ -1261,7 +1260,6 @@ static verify_nickName = async(req,res)=>{
             return res.status(200).send({"status":false,"msg":"server error"});
         }
     }
-
     static update_google_id = async(req,res)=> {
         try{   
              let user_id  = req.body.user_id;
