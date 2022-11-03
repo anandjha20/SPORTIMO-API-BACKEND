@@ -16,7 +16,11 @@ const user_tbl = require('../models/user');
 const logins= require('../models/logins');
 const poll_result = require('../models/poll_result');    
 const poll_skips = require('../models/poll_skips');    
-    
+const user_reportings_tbl = require('../models/user_reportings');    
+const user_chat_blocks_tbl = require("../models/user_chat_blocks");
+const block_user_tbl = require("../models/block_user");
+const user_complaint_tbl = require('../models/user_complaint');    
+
 
 class analyticsController { 
     
@@ -72,6 +76,28 @@ class analyticsController {
   
       }
 
+      static user_profile_analytics = async (req,res)=>{
+        try {
+            let total_reporting_user = await user_reportings_tbl.distinct("reporting_user_id");
+            let total_chat_block = await user_chat_blocks_tbl.distinct("user_id");
+            let total_block_user = await block_user_tbl.find().countDocuments();
+                
+            
+            let analytics={
+              total_reporting_user:total_reporting_user.length,
+              total_chat_block:total_chat_block.length,
+              total_block_user:total_block_user
+            };
+            return  res.status(200).send({'status':true,'msg':"success",'body':analytics});
+          } catch (error) {
+            console.log(error)
+            return  res.status(200).send({'status':false,'msg':"server error",'body':''});
+          }
+  
+  
+      }
+
+
   static polls_analytics = async (req,res)=>{
     try {
             let total_user_participated_in_polls = await (await poll_result.distinct("user_id")).length;
@@ -97,6 +123,26 @@ class analyticsController {
 
   }
 
+  static support_analytics = async (req,res)=>{
+    try {
+          
+          let total_tickets = await user_complaint_tbl.find().countDocuments();
+          let total_active_tickets = await user_complaint_tbl.find({admin_status:0}).countDocuments();
+          let total_resolved_tickets = await user_complaint_tbl.find({admin_status:1}).countDocuments();
+          
+          let analytics={
+            total_tickets,
+            total_active_tickets,
+            total_resolved_tickets
+          };
+        return  res.status(200).send({'status':true,'msg':"success",'body':analytics});
+      } catch (error) {
+        console.log(error)
+        return  res.status(200).send({'status':false,'msg':"server error",'body':''});
+      }
+
+
+  }
 
 }
 

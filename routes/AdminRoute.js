@@ -260,11 +260,11 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
  ////dashboard api
  router.get('/dashboard_count',dashboardController.dashboard_count); 
 
- ////analytics api
+///analytics api
 router.post('/all_user_analytics',analyticsController.all_user_analytics); 
+router.post('/user_profile_analytics',analyticsController.user_profile_analytics); 
 router.post('/polls_analytics',analyticsController.polls_analytics); 
-
-
+router.post('/support_analytics',analyticsController.support_analytics); 
 
 
 

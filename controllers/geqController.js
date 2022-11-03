@@ -4,6 +4,7 @@ const { rows_count,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = requ
    
   
  const geq_tbl= require('../models/geq_tbl');
+ const geq_answers= require('../models/geq_answers');
     
 class geqController { 
 
@@ -156,7 +157,28 @@ static geq_list = async (req,res)=>{
         }
                 
             }
-static delete_geq = async (req,res)=>{
+
+  static geq_list_user = async (req,res)=>{
+    try {
+        let match_id=req.body.match_id;
+        
+        if(isEmpty(match_id)){
+          res.status(200).send({'status':false,'msg':"match id required" });
+        }else{
+
+          let records =await  geq_tbl.find({match_id}) ;
+                    
+          
+              res.status(200).send({'status':true,'msg':"geq list fetched", 'body':records });
+              
+        }
+        } catch (error) { console.log(error);
+            res.status(200).send({'status':false,'msg':'server error','body':''});
+        }
+                
+            }
+          
+    static delete_geq = async (req,res)=>{
     try {
     
             let _id=req.params.id
@@ -178,8 +200,72 @@ static delete_geq = async (req,res)=>{
             res.status(200).send({'status':false,'msg':'server error','body':''});
         }
                 
-            }
+  }
+
+  static geq_answer_add = async (req,res)=>{
+    try {
+         let geq_id = req.body.geq_id;
+         let user_id = req.body.user_id;
+         let user_ans = req.body.user_ans;
+
+         const details={geq_id,user_id,user_ans};
+
+         if(!isEmpty(geq_id) || !isEmpty(user_id) || !isEmpty(user_ans) ){
+             let obj=new geq_answers(details);
+             let response=await obj.save()
+             if(!isEmpty(response)){
+                 res.status(200).send({'status':true,'msg':'geq added successfully','body':response});
+             }else{
+                 res.status(200).send({'status':false,'msg':'something went wrong','body':''});
+             }
+
+         }else{
+            res.status(200).send({'status':false,'msg':'all field required'});
+         }
+        
+    } catch (error) { console.log(error);
+        res.status(200).send({'status':false,'msg':'server error','body':''});
+    }
+            
+  } 
                                      
+  static geq_result = async (req,res)=>{
+    try {
+         let geq_id = req.body.geq_id;
+         
+         if(!isEmpty(geq_id) ){
+            let total=await geq_answers.find({"geq_id":geq_id}).countDocuments();
+            let opt_1=await geq_answers.find({"geq_id":geq_id,"user_ans":"opt_1"}).countDocuments();
+            let opt_2=await geq_answers.find({"geq_id":geq_id,"user_ans":"opt_2"}).countDocuments();
+            let opt_3=await geq_answers.find({"geq_id":geq_id,"user_ans":"opt_3"}).countDocuments();
+            let opt_4=await geq_answers.find({"geq_id":geq_id,"user_ans":"opt_4"}).countDocuments();
+            let opt_1_percent=((opt_1/total)*100).toFixed(2); 
+            let opt_2_percent=((opt_2/total)*100).toFixed(2); 
+            let opt_3_percent=((opt_3/total)*100).toFixed(2); 
+            let opt_4_percent=((opt_4/total)*100).toFixed(2); 
+            let response={
+              opt_1_percent,
+              opt_2_percent,
+              opt_3_percent,
+              opt_4_percent
+            }
+            if(!isEmpty(response)){
+                 res.status(200).send({'status':true,'msg':'geq added successfully','body':response});
+             }else{
+                 res.status(200).send({'status':false,'msg':'something went wrong','body':''});
+             }
+
+         }else{
+            res.status(200).send({'status':false,'msg':'all field required'});
+         }
+        
+    } catch (error) { console.log(error);
+        res.status(200).send({'status':false,'msg':'server error','body':''});
+    }
+            
+  } 
+
+
 }
    
 module.exports = geqController ;      
