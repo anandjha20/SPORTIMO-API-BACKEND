@@ -73,12 +73,9 @@ class ConjobController{
                        
           let response = await day_match_getID();
           let sumArr = [];
-         // let url = 'http://34.204.253.168:3000/open_api/get_card_008';
-          let url = 'http://localhost:3600/open_api/getCardGreaterthan_16';
-         
+        
       if(response){  
-            // let resp = await getCardGreaterThan_16(response[0]);
-            /// sumArr.push(resp);  
+          
                 let allData =  await Promise.all( response.map( async (item)=>{
                   console.log( "match_id is == ",item );
                    let resp = await getCardGreaterThan_16(item);
@@ -677,36 +674,36 @@ class ConjobController{
                 //  if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
               
                 if( (!isEmpty( data))  && ( data.status = 'Played')){
-                //     let dx1 = await get_card_result_add_1({data});  ///
-                //     let dx4  = await get_card_result_add_4({data});  //
-                //    let dx5  = await get_card_result_add_5({data});  //
-                //    let dx7 = await get_card_result_add_7({data});  //
+                    let dx1 = await get_card_result_add_1({data});  ///
+                    let dx4  = await get_card_result_add_4({data});  //
+                   let dx5  = await get_card_result_add_5({data});  //
+                   let dx7 = await get_card_result_add_7({data});  //
 
-                //  let dx8 =   await get_card_result_add_08({data});  //  *******spl fun ***
+                 let dx8 =   await get_card_result_add_08({data});  //  *******spl fun ***
 
-                //   let dx11  = await get_card_result_add_11({data});  ///
-                //  let dx13 = await get_card_result_add_13({data});     ///
-                //   let dx15 = await get_card_result_add_15({data});  ///
+                  let dx11  = await get_card_result_add_11({data});  ///
+                 let dx13 = await get_card_result_add_13({data});     ///
+                  let dx15 = await get_card_result_add_15({data});  ///
 
-                //   let dx17  = await get_card_result_add_17({data});    //
-                //    let dx20 = await get_card_result_add_20({data});      //   
-                //     let dx23 = await get_card_result_add_23({data});     //
+                  let dx17  = await get_card_result_add_17({data});    //
+                   let dx20 = await get_card_result_add_20({data});      //   
+                    let dx23 = await get_card_result_add_23({data});     //
 
                 
-                // let dx34   = await get_card_result_add_34_endTimesCall({data})//  *******spl fun ***  
-                // let dx36   = await get_card_result_add_36({data});   //
-                // let dx37   = await get_card_result_add_37({data});  
-                // let dx39   = await get_card_result_add_39({data});   // *******spl fun ***  
+                let dx34   = await get_card_result_add_34_endTimesCall({data})//  *******spl fun ***  
+                let dx36   = await get_card_result_add_36({data});   //
+                let dx37   = await get_card_result_add_37({data});  
+                let dx39   = await get_card_result_add_39({data});   // *******spl fun ***  
                       
-                //  let dx10  = await get_card_result_add_10({data});  
-                //  let dx26  = await get_card_result_add_26({data});
-                //  let dx31  = await get_card_result_add_31({data}); 
+                 let dx10  = await get_card_result_add_10({data});  
+                 let dx26  = await get_card_result_add_26({data});
+                 let dx31  = await get_card_result_add_31({data}); 
                 
-                // let dx16 = await getCardResult_16_END({data});   // **** make date 2022-11-01 ***
-               //  let dx03 = await getCardResult_03_END({data});   // **** make date 2022-11-01 ***
-               //  let dx09 = await getCardResult_09_END({data});   // **** make date 2022-11-02 ***
-                // let dx19   = await getCardResult_19_END({data});   // **** make date 2022-11-02 ***
-                 let dx22   = await getCardResult_22_END({data});   // **** make date 2022-11-02 ***
+                let dx16 = await getCardResult_16_END({data});   // **** make date 2022-11-01 ***
+                let dx03 = await getCardResult_03_END({data});   // **** make date 2022-11-01 ***
+                let dx09 = await getCardResult_09_END({data});   // **** make date 2022-11-02 ***
+                let dx19   = await getCardResult_19_END({data});  // **** make date 2022-11-02 ***
+                let dx22   = await getCardResult_22_END({data});   // **** make date 2022-11-02 ***
 
                     return  res.status(200).send({'status':true,'msg':"success", 'body': ''  });
                   }else{

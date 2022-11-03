@@ -22,7 +22,9 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds } = require('../myMod
     const content_tbls = require('../models/content_tbls'); 
     const userLanguage = require("../models/userLanguage");            
     const follower_tbls = require("../models/follower_users");         
-    //const avatars_tbl = require("../models/avatars");     
+    //const avatars_tbl = require("../models/avatars");  
+    const match_cards = require('../models/match_cards');
+    const transaction_tbls = require("../models/transactions")         
     const play_match_cards_tbl = require("../models/playMatchCards");     
 const team_matches = require('../models/team_matches');
 const userArchive = require('../models/userArchive');     
@@ -1234,12 +1236,22 @@ static verify_nickName = async(req,res)=>{
     static match_details = async (req,res)=>{
         try{
             let _id=req.body.id;
+            let user_id=req.body.user_id;
+            let m_id =  mongoose.Types.ObjectId(_id);
+            let m_user_id =  mongoose.Types.ObjectId(user_id);
+                
             let condition_obj={};
             if(!isEmpty(_id)){condition_obj={...condition_obj,_id}}
              let response=await team_matches.find(condition_obj)
-             
+             let total_cards=await match_cards.find({"match_id":_id}).countDocuments()
+             let total_played_cards=await play_match_cards_tbl.find({"match_id":_id,"user_id":user_id}).countDocuments()
+             let transaction= await transaction_tbls.aggregate([
+                {$match: {"match_id": m_id,"user_id":m_user_id }},
+                { $group: {"_id": { user_id : "$user_id" } , "points": { $sum: { "$toInt": "$points"} }, } }
+             ])
+            
             if(response.length>0){
-                return res.status(200).send({"status":true,"msg":"data found","body":response});
+                return res.status(200).send({"status":true,"msg":"data found","body":{response,total_cards,total_played_cards,score:transaction[0].points}});
             }else{
                 return res.status(200).send({"status":false,"msg":"no data found"})
             }

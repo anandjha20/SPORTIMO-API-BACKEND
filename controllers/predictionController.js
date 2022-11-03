@@ -305,51 +305,52 @@ class predictionController {
          
    
         }   
-    static my_playMatchCard_list = async (req,res)=>{
-      try {
-          let language = req.body.language;    
-          let user_id = req.body.user_id;    
-          let match_id = req.body.match_id;    
-         
-         /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
-         
-          if(isEmpty(user_id)){
-            return res.status(200).send({'status':false,'msg':  (language == 'ar')? "مطلوب حقل معرف المستخدم" :  "User Id Field Required"});
-                }
-           let whr = (isEmpty(match_id))?   {user_id} : {user_id,match_id}   ;
-    
-       let records = await playMatchCards_tbl.find(whr).populate({ path: 'match_card_id', populate: { path: 'card_id'}}).sort({_id:-1});
-         
-            
-         if(! isEmpty(records)){ records.map((item)=> { 
-                          if(language != '' && language == 'ar'){ 
+        static my_playMatchCard_list = async (req,res)=>{
+          try {
+              let language = req.body.language;    
+              let user_id = req.body.user_id;    
+              let match_id = req.body.match_id;    
+              let result=req.body.status;
+             
+             /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
+             
+              if(isEmpty(user_id)){
+                return res.status(200).send({'status':false,'msg':  (language == 'ar')? "مطلوب حقل معرف المستخدم" :  "User Id Field Required"});
+                    }
+               let whr = (isEmpty(match_id))?   {user_id} : {user_id,match_id}   ;
+                    if(!isEmpty(result)){whr={...whr,result}};
+           let records = await playMatchCards_tbl.find(whr).populate({ path: 'match_card_id', populate: { path: 'card_id'}}).sort({_id:-1});
+             
+                
+             if(! isEmpty(records)){ records.map((item)=> { 
+                              if(language != '' && language == 'ar'){ 
+                                    
+                                if(typeof item.match_card_id.card_id === 'object' && item.match_card_id.card_id !== null){
+                                  item.match_card_id.card_id.name = item.match_card_id.card_id.name_ara;
+                                  item.match_card_id.card_id.qus = item.match_card_id.card_id.qus_ara;
+                                  item.match_card_id.card_id.ops_1 = item.match_card_id.card_id.ops_1_ara;
+                                  item.match_card_id.card_id.ops_2 = item.match_card_id.card_id.ops_2_ara;
+                                  item.match_card_id.card_id.ops_3 = item.match_card_id.card_id.ops_3_ara;
+                                  item.match_card_id.card_id.ops_4 = item.match_card_id.card_id.ops__ara;
+                                }else{  item.match_card_id = {};}
                                 
-                            if(typeof item.match_card_id.card_id === 'object' && item.match_card_id.card_id !== null){
-                              item.match_card_id.card_id.name = item.match_card_id.card_id.name_ara;
-                              item.match_card_id.card_id.qus = item.match_card_id.card_id.qus_ara;
-                              item.match_card_id.card_id.ops_1 = item.match_card_id.card_id.ops_1_ara;
-                              item.match_card_id.card_id.ops_2 = item.match_card_id.card_id.ops_2_ara;
-                              item.match_card_id.card_id.ops_3 = item.match_card_id.card_id.ops_3_ara;
-                              item.match_card_id.card_id.ops_4 = item.match_card_id.card_id.ops__ara;
-                            }else{  item.match_card_id = {};}
+                                // item.card_id.name = item.card_id.name_ara;  
+                                  
+                              }
+                              return item; })
                             
-                            // item.card_id.name = item.card_id.name_ara;  
-                              
-                          }
-                          return item; })
-                        
-                          return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,  'body':records });
-                  }else{
-                        return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
-                        }
+                              return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,  'body':records });
+                      }else{
+                            return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
+                            }
+          
+          
       
-      
-  
-            } catch (error) { console.log(error);
-                  return res.status(200).send({'status':false,'msg': "server error"});
-              }
-                        
-      }     
+                } catch (error) { console.log(error);
+                      return res.status(200).send({'status':false,'msg': "server error"});
+                  }
+                            
+          }       
       static playMatchCard_list = async (req,res)=>{
         try {
             let language = req.body.language;    
