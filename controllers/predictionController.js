@@ -458,26 +458,29 @@ class predictionController {
             console.log("condition_obj == ", condition_obj);
           let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat).sort({_id:-1});
         
-             
+             let data=[]
               if(records){ records.map((item)=> { 
-                          if(language != '' && language == 'ar'){ 
+                if(typeof item.card_id === 'object' && item.card_id !== null){
+                    
+                  if(language != '' && language == 'ar'){ 
                                 
-                            if(typeof item.card_id === 'object' && item.card_id !== null){
                               item.card_id.name = item.card_id.name_ara;
                               item.card_id.qus = item.card_id.qus_ara;
                               item.card_id.ops_1 = item.card_id.ops_1_ara;
                               item.card_id.ops_2 = item.card_id.ops_2_ara;
                               item.card_id.ops_3 = item.card_id.ops_3_ara;
                               item.card_id.ops_4 = item.card_id.ops__ara;
-                            }else{  item.card_id = {};}
+                            }
+
+                            data.push(item)
                             
                            // item.card_id.name = item.card_id.name_ara;  
                               
                           }
                          // console.log(item)
-                         return item; })
+               })
                         
-                         return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,  'body':records });
+                         return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,  'body':data });
                   }else{
                        return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
                         }
