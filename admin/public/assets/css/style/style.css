@@ -75502,3 +75502,32 @@ label, span
     background: #f44336 !important;
     padding: 6px 23px !important;
  }
+
+ .form-filter
+ {
+    display :flex;
+    align-items: center;
+    width : 100%;
+ }
+
+ .form-filter input
+ {
+    height: 38px;
+    border-radius: 10px;
+    background: transparent;
+    padding: 12px;
+    width: 100%;
+ }
+ .form-filter button
+ {
+    position: absolute;
+    right: -1px;
+    border: none;
+    border-radius: 25px 5px 5px 23px !important;
+    padding: 9px 20px !important;
+ }
+
+ .swal2-title
+ {
+    font-size: 1.5em !important;
+ }
