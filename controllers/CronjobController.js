@@ -24,7 +24,7 @@ const {ArrChunks, rows_count,getcurntDate,getTime,isEmpty,before_after_Date} = r
     getCardResult_09_END,getCardGreaterThan_19,getCardResult_19_END,getCardGreaterThan_22,getCardResult_22_END
        }   = require("../myModel/Live_match_api_helper"); 
 const { Promise } = require("mongoose");
-
+ 
 class ConjobController{
       static get_card_00122 =  async(req,res)=>{
           try {

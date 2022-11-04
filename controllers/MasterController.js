@@ -253,8 +253,8 @@ class MasterController {
             let page  = req.body.page;
             let name    = req.body.name;
             let whr = {};
-
-            if(!isEmpty(name)){whr.team_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+            console.log(name)
+            if(!isEmpty(name)){whr.name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
 
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
             if(!isEmpty(id)){whr = {_id: id} ;} 
