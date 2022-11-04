@@ -1,5 +1,5 @@
 let  express_2 = require('express');
-  
+ let mongoose = require('mongoose'); 
 const { rows_count,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
    
   
@@ -13,7 +13,10 @@ const { rows_count,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = requ
     const tips_trick = require('../models/tips_tricks'); 
     const content_tbls = require('../models/content_tbls');      // tips_status_update
    const block_user_tbl = require("../models/block_user");
-   const admin_settings= require('../models/admin_settings')
+   const admin_settings= require('../models/admin_settings');
+   const power_ups_tbl= require('../models/power_ups');
+   const user_allotted_powerUps_tbl = require('../models/user_allotted_powerUps');
+   const used_power_ups_tbl = require('../models/used_power_ups');
 class AdminController { 
 
   static tips_status_update = async (req,res)=>{
@@ -648,8 +651,164 @@ class AdminController {
         }     
 
 
+  static power_up_add = async (req,res)=>{
+      try {
+             let power_up_name = req.body.name;
+             let power_up_type = req.body.type;
+             let power_up_dis = req.body.dis;
+             let powerup_value = req.body.powerup_value;
+          console.log(req.body) ;   
+         if(isEmpty(power_up_name) || isEmpty(power_up_type) || isEmpty(power_up_dis) ){
+           return res.status(200).send({'status':false,'msg':"all field required"});
+            }
 
+          let add = new power_ups_tbl({power_up_name,power_up_type,power_up_dis,powerup_value });
+       
+                add.save((err,datas)=>{
+                  if(err){ console.log(err);   return res.status(200).send({"status":false,"msg":'some errors...'}) ;   
+                      }else{ 
+                        return res.status(200).send({"status":true,"msg":'Power up add successfully',"body":datas }) ;  
+                      }
+                  }); 
 
+          } catch (error) { console.log(error); 
+            res.status(200).send({'status':false,'msg':'','body':''});
+          }
+               
+              }  
+
+ static powerUp_list = async (req,res)=>{
+                try {
+                 
+                   let id = req.params.id;
+                   let whr = (!isEmpty(id))? {"_id":id} : {} ; 
+               
+
+                let result = await power_ups_tbl.find(whr); 
+                  if(result){
+                     return res.status(200).send({'status':true,'msg':"user deleted",body:result});
+                  }else{
+                         res.status(200).send({'status':false,'msg':"all field required"});
+                        }
+               } catch (error) { console.log(error); 
+                  res.status(200).send({'status':false,'msg':'','body':''});
+                }
+        }
+        
+        
+  static power_up_alloted = async (req,res)=>{
+          try {
+                  let user_id = req.body.user_id;
+                  let power_up_count = req.body.power_up_count ;
+                  
+             // console.log(req.body) ;   
+              if(isEmpty(user_id) ){
+                return res.status(200).send({'status':false,'msg':"all field required"});
+                }
+           /// check user     
+           let rows = await user_allotted_powerUps_tbl.find({user_id}).countDocuments();         
+          
+           if(rows>0){
+                 return res.status(200).send({'status':false,'msg':"power up already alloted"});
+            }   
+
+              let add = new user_allotted_powerUps_tbl({user_id,power_up_count });
+            
+                    add.save((err,datas)=>{
+                      if(err){ console.log(err);   return res.status(200).send({"status":false,"msg":'some errors...'}) ;   
+                          }else{ 
+                            return res.status(200).send({"status":true,"msg":'This user Power up alotted successfully',"body":datas }) ;  
+                          }
+                      }); 
+    
+              } catch (error) { console.log(error); 
+                res.status(200).send({'status':false,'msg':'','body':''});
+              }
+                    
+                  }  
+          
+
+   static alloted_powerUp_list = async (req,res)=>{
+        try {
+                        let id = req.params.id;
+                    
+                       let obj_id =  mongoose.Types.ObjectId(id);
+    
+                          let pipeline =  [];
+                          if(!isEmpty(id)){
+                            pipeline.push({ $match:{"_id":obj_id} });
+                          }
+            
+              pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_tbl'} });
+              pipeline.push({ $unwind: "$user_tbl" }); 
+              pipeline.push({ $project: {"_id":1,"power_up_count": 1,"user_id":1, "user_name":"$user_tbl.name", } });
+       
+           console.log("pipeline", pipeline);
+
+     let result = await user_allotted_powerUps_tbl.aggregate(pipeline).exec();
+                  if(result){ return res.status(200).send({'status':true,'msg':"Success",body:result});
+                      }else{ res.status(200).send({'status':false,'msg':"all field required"});
+                            }
+                   } catch (error) { console.log(error); 
+                      res.status(200).send({'status':false,'msg':'','body':''});
+                    }
+            }
+
+  static get_user_powerUp_list = async (req,res)=>{
+        try {
+                        let id = req.params.id;
+                    if( isEmpty(id)){
+                      return res.status(200).send({'status':false,'msg':'User id Field Required'});
+                    }
+                        let obj_id =  mongoose.Types.ObjectId(id);
+    
+                          let pipeline =  [];
+                         
+              pipeline.push({ $match:{"user_id":obj_id} });
+              pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_tbl'} });
+              pipeline.push({ $unwind: "$user_tbl" }); 
+              pipeline.push({ $project: {"_id":1,"power_up_count": 1,"user_id":1, "user_name":"$user_tbl.name", } });
+        
+            console.log("pipeline", pipeline);
+
+      let result = await user_allotted_powerUps_tbl.aggregate(pipeline).exec();
+                  if(result){ return res.status(200).send({'status':true,'msg':"Success",body:result});
+                      }else{ return res.status(200).send({'status':false,'msg':"all field required"});
+                            }
+                    } catch (error) { console.log(error); 
+                      return res.status(200).send({'status':false,'msg':'','body':''});
+                    }
+            }
+      
+            static power_up_used = async (req,res)=>{
+              try {
+                      let user_id = req.body.user_id;
+                      let match_id = req.body.match_id;
+                      let card_id = req.body.card_id;
+                      let power_up_type = req.body.power_up_type ;
+                      
+                 // console.log(req.body) ;   
+                  if(isEmpty(user_id) ){
+                    return res.status(200).send({'status':false,'msg':"all field required"});
+                    }
+               /// check user     
+                 
+    
+                  let add = new used_power_ups_tbl({user_id,match_id,card_id,power_up_type });
+                
+                        add.save((err,datas)=>{
+                          if(err){ console.log(err);   return res.status(200).send({"status":false,"msg":'some errors...'}) ;   
+                              }else{ 
+                                return res.status(200).send({"status":true,"msg":'Data add  successfully',"body":datas }) ;  
+                              }
+                          }); 
+        
+                  } catch (error) { console.log(error); 
+                    res.status(200).send({'status':false,'msg':'','body':''});
+                  }
+                        
+                      }    
+  
 }
    
 

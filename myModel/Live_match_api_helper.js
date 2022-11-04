@@ -114,8 +114,10 @@ const match_event_shot_tbl = require('../models/match_event_shots');
                };
    
                let response = await axios(config);
-         if(response){
-            let datas = response.data.datasportsgroup.tour.tour_season.competition.season.discipline.gender.round.list.match;
+               if(response){
+                 //console.log(response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].round[0].list[0].match)
+                 //let datas = response.data.datasportsgroup.tour.tour_season.competition.season.discipline.gender.round.list.match;
+                 let datas = response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].round[0].list[0].match;
               return datas;
           }else{   return false; }    
 
@@ -141,7 +143,7 @@ const match_event_shot_tbl = require('../models/match_event_shots');
                let response = await axios(config);
          if(response){
             let datas = response.data.datasportsgroup.tour.tour_season.competition.season.discipline.gender.round.list.match;
-         
+          
            return {"events":datas.events,"team_a_original_name": datas.team_a_original_name,"team_b_original_name": datas.team_b_original_name}
          
          }else{   return false;
@@ -204,11 +206,11 @@ const add_win_point = async(req,res)=>{
   const get_card_result_add_4  =  async(req,res)=>{
     try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[12] ;
-
+            const  data = req.data[0].team_stats[0].stat[12] ;
+            console.log(data)
 
             if(!isEmpty(data)){
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                     live_match_id.toString();
               let readcard_point = parseInt(data.team_a) + parseInt(data.team_b);
                let right_ans = ''; 
@@ -219,7 +221,7 @@ const add_win_point = async(req,res)=>{
                 
              
             let pipeline  = [] ;
-             if(! isEmpty(req.data.match_id)){
+             if(! isEmpty(req.data[0].match_id)){
                  pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -260,11 +262,11 @@ const add_win_point = async(req,res)=>{
    const get_card_result_add_5  =  async(req,res)=>{
     try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[12] ;
+            const  data = req.data[0].team_stats[0].stat[12] ;
           
 
             if(!isEmpty(data)){
-                let  live_match_id = req.data.match_id ;
+                let  live_match_id = req.data[0].match_id ;
                                         live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("635f970cee2a7c8e37c04ecc");
                 let right_ans = '';  
@@ -274,7 +276,7 @@ const add_win_point = async(req,res)=>{
                  
              
             let pipeline  = [] ;
-             if(! isEmpty(req.data.match_id)){
+             if(! isEmpty(req.data[0].match_id)){
                  pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -316,18 +318,18 @@ const add_win_point = async(req,res)=>{
   const get_card_result_add_7  =  async(req,res)=>{
     try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[1] ;
+            const  data = req.data[0].team_stats[0].stat[1] ;
          
 
             if(!isEmpty(data)){
                
-                let  live_match_id = req.data.match_id ;
+                let  live_match_id = req.data[0].match_id ;
                                 live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("63453b97bbdbacfeab46c519");
                 
              
             let pipeline  = [] ;
-             if(! isEmpty(req.data.match_id)){
+             if(! isEmpty(req.data[0].match_id)){
                  pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -373,10 +375,11 @@ const add_win_point = async(req,res)=>{
 
    const get_card_result_add_10  =  async(req,res)=>{
     try {  
-           const  data = req.data.events.goals.event ;
+           const  data = req.data[0].events[0].goals[0].event ;
               //  console.log( "get_card_result_add_10" , data)
+           
             if(!isEmpty(data)){
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                           live_match_id.toString();
               let card_id =  mongoose.Types.ObjectId("634d37d58f16160a62ea52fc");
           
@@ -391,10 +394,10 @@ const add_win_point = async(req,res)=>{
                                  "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
                                "match_id": "$play_match_user.match_id","active": "$play_match_user.active" } });
 
-                      console.log("pipeline", pipeline);
+                     // console.log("pipeline", pipeline);
                              let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
-                              /// let allUsersData = await team_matches_tbl.find({"match_id":live_match_id} ) ;//.exec();
-                              return allUsersData
+                              // let allUsersData = await team_matches_tbl.find({"match_id":live_match_id} ) ;//.exec();
+                              //return allUsersData
                   let first = 0;  let second = 0;
                  if( isArray(data)){
                   data.map((item)=>{ 
@@ -441,19 +444,18 @@ const add_win_point = async(req,res)=>{
  
  const get_card_result_add_11  =  async(req,res)=>{
   try {  
-          let team_a = req.data.score_a;
-          let team_b = req.data.score_b;
+          let team_a = req.data[0].score_a;
+          let team_b = req.data[0].score_b;
            let data = {team_a,team_b};
-
           if(!isEmpty(data)){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                                live_match_id.toString();
               let card_id =  mongoose.Types.ObjectId("63453ccebbdbacfeab46c520");
               
     
            
           let pipeline  = [] ;
-           if(! isEmpty(req.data.match_id)){
+           if(! isEmpty(req.data[0].match_id)){
                pipeline.push({$match: {match_id: live_match_id}});
               }
 
@@ -499,17 +501,17 @@ const add_win_point = async(req,res)=>{
 
  const get_card_result_add_13  =  async(req,res)=>{
   try { 
-          let winner = req.data.winner;
+          let winner = req.data[0].winner;
          
           if(!isEmpty(winner)){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                               live_match_id.toString();
               let card_id =  mongoose.Types.ObjectId("63453eaabbdbacfeab46c530");
               
     
            
           let pipeline  = [] ;
-           if(! isEmpty(req.data.match_id)){
+           if(! isEmpty(req.data[0].match_id)){
                pipeline.push({$match: {match_id: live_match_id}});
               }
 
@@ -556,16 +558,15 @@ const add_win_point = async(req,res)=>{
             /// this function used by red card 
          // const  data = req.data.team_stats.stat[6] ;
          
-          let team_a = req.data.score_a;
-          let team_b = req.data.score_b;
+          let team_a = req.data[0].score_a;
+          let team_b = req.data[0].score_b;
            let data = {team_a,team_b};
-        console.log("data == ",data); 
           if(!isEmpty(data)){
                   let x = data.team_a - data.team_b  ;
                    let resultx =  Math.abs(x); 
 
 
-                   let  live_match_id = req.data.match_id ;
+                   let  live_match_id = req.data[0].match_id ;
                              live_match_id.toString(); 
             let card_id =  mongoose.Types.ObjectId("6345406abbdbacfeab46c53b");
             
@@ -573,7 +574,7 @@ const add_win_point = async(req,res)=>{
    
            
           let pipeline  = [] ;
-           if(! isEmpty(req.data.match_id)){
+           if(! isEmpty(req.data[0].match_id)){
                pipeline.push({$match: {match_id: live_match_id}});
               }
 
@@ -618,16 +619,16 @@ const add_win_point = async(req,res)=>{
    const get_card_result_add_1  =  async(req,res)=>{
     try {  
               /// this function used by Yellow card 
-           const  data = req.data.team_stats.stat[10] ;
+           const  data = req.data[0].team_stats[0].stat[10] ;
         
             if(!isEmpty(data)){
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                              live_match_id.toString();
-                let card_id =  mongoose.Types.ObjectId("634542edbbdbacfeab46c55e");
+                let card_id =  mongoose.Types.ObjectId("63651a9a5760f2ffacce3750");
                 
              
             let pipeline  = [] ;
-             if(! isEmpty(req.data.match_id)){
+             if(! isEmpty(req.data[0].match_id)){
                  pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -671,16 +672,17 @@ const add_win_point = async(req,res)=>{
   const get_card_result_add_17  =  async(req,res)=>{
     try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[6] ;
+            const  data = req.data[0].team_stats[0].stat[6] ;
+            
           if(!isEmpty(data)){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                        live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("634542edbbdbacfeab46c55e");
                 
                 
              
             let pipeline  = [] ;
-             if(! isEmpty(req.data.match_id)){
+             if(! isEmpty(req.data[0].match_id)){
                  pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -777,13 +779,14 @@ const add_win_point = async(req,res)=>{
    const get_card_result_add_20  =  async(req,res)=>{
     try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[0] ;
+            const  data = req.data[0].team_stats[0].stat[0] ;
+            
           if(!isEmpty(data)){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                          live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("63454475bbdbacfeab46c563");
           let pipeline  = [] ;
-             if(! isEmpty(req.data.match_id)){
+             if(! isEmpty(req.data[0].match_id)){
                  pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -824,20 +827,20 @@ const add_win_point = async(req,res)=>{
            }
        } catch (error) { console.log(error); return false ;  }
    }    
-      const get_card_result_add_23  =  async(req,res)=>{
+   const get_card_result_add_23  =  async(req,res)=>{
         try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[2] ;
-           
+            const  data = req.data[0].team_stats[0].stat[2] ;
+
             if(!isEmpty(data)){
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                               live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("63454628bbdbacfeab46c567");
                 
 
              
             let pipeline  = [] ;
-             if(! isEmpty(req.data.match_id)){
+             if(! isEmpty(req.data[0].match_id)){
                  pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -885,12 +888,12 @@ const add_win_point = async(req,res)=>{
    const get_card_result_add_36  =  async(req,res)=>{
     try {  
               /// this function used by red card 
-            const  data = req.data.team_stats.stat[5] ;
+            const  data = req.data[0].team_stats[0].stat[5] ;
             
 
 
             if(!isEmpty(data)){
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                           live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("634546cebbdbacfeab46c58c");
                 
@@ -948,7 +951,7 @@ const add_win_point = async(req,res)=>{
   const day_match_getID = async(match_id) =>{
     try {   
          // let date = getcurntDate();
-            let date = "2022-10-29";   
+            let date = "2022-10-28";   
 
        const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
       // const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
@@ -961,11 +964,12 @@ const add_win_point = async(req,res)=>{
                              };
                    
                let response = await axios(config);
-                
-
-         if(response){
-
-            let datas =  isArray(response.data.datasportsgroup.competition)? response.data.datasportsgroup.competition[0].season.discipline.gender.round.match :response.data.datasportsgroup.competition.season.discipline.gender.round.match ;
+               
+               
+               if(response){
+                 
+                 let datas =  isArray(response.data.datasportsgroup.competition)? response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match :response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match ;
+                 console.log(datas)
             let match_id_arr = [];  
             let time_u = Math.floor( new Date(new Date().toUTCString()).getTime() / 1000); 
          //   console.log("curent time == ", new Date().toUTCString());
@@ -1082,8 +1086,8 @@ if(data){
             let data = await matchCardAllData(match_id); 
               if(data){
                 
-                  let Red = data.team_stats.stat[8];
-                  let Yellow = data.team_stats.stat[6];
+                  let Red = data[0].team_stats[0].stat[8];
+                  let Yellow = data[0].team_stats[0].stat[6];
                
                   let RedTotalPoint    = parseInt(Red.team_a)+parseInt(Red.team_b); 
                   let YellowTotalPoint = parseInt(Yellow.team_a)+parseInt(Yellow.team_b); 
@@ -1117,15 +1121,13 @@ if(data){
 
 const get_card_result_add_08  =  async(req,res)=>{
   try {  
-          const  data = req.data.team_stats.stat[1] ;
+          const  data = req.data[0].team_stats[0].stat[1] ;
           if(!isEmpty(data)){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                             live_match_id.toString();
               let live_team_a = parseInt(data.team_a) ;
               let live_team_b = parseInt(data.team_b) ;
-              console.log("live_team_a ",live_team_a);
-              console.log("live_team_b ",live_team_b);
-
+            
               let card_id =  mongoose.Types.ObjectId("634fd1c88ff22506cf6c0b37");
           
         let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"fouls"},"team_a team_b" );
@@ -1134,9 +1136,7 @@ const get_card_result_add_08  =  async(req,res)=>{
            
             live_team_a = live_team_a - shots_count[0].team_a;
             live_team_b = live_team_b - shots_count[0].team_b;
-            console.log("live_team_a end ",live_team_a);         
-            console.log("live_team_b end ",live_team_b);
-
+            
             if( live_team_a > 0 && live_team_b == 0 ){ right_ans = "opt_1";}else 
             if( live_team_b > 0 && live_team_a == 0 ){ right_ans = "opt_2";}else 
             if( live_team_b > 0 && live_team_a > 0 ){ right_ans = "opt_4";}else 
@@ -1188,15 +1188,14 @@ const get_card_result_add_08  =  async(req,res)=>{
  const get_card_result_add_37  =  async(req,res)=>{
   try {  
             /// this function used by red card 
-          const  red = req.data.team_stats.stat[12] ;
-          const  yellow = req.data.team_stats.stat[10] ;
+          const  red = req.data[0].team_stats[0].stat[12] ;
+          const  yellow = req.data[0].team_stats[0].stat[10] ;
           let team_a_total_card = parseInt(red.team_a)+parseInt(yellow.team_a); 
           let team_b_total_card = parseInt(red.team_b)+parseInt(yellow.team_b); 
        
           
-
           if(!isEmpty(red) && !isEmpty(yellow)){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                          live_match_id.toString();
               let card_id =  mongoose.Types.ObjectId("634fcfb28ff22506cf6c0a6a");
        
@@ -1241,7 +1240,7 @@ const get_card_result_add_08  =  async(req,res)=>{
          let obj = {result_pass,result_fail }; 
          console.log(obj)
               return  obj ;
-          }else{  console.log( "no data found!.. ",{live_match_id});  return false ;   }
+          }else{  console.log( "no data found!.. ");  return false ;   }
 
 
          }else{  console.log( "Result not show ");   return false ; 
@@ -1253,18 +1252,18 @@ const get_card_result_add_08  =  async(req,res)=>{
  const get_card_result_add_39  =  async(req,res)=>{
   try {  
             /// this function used by red card 
-   const  data = req.data.team_stats.stat[1] ;
+   const  data = req.data[0].team_stats[0].stat ;
   
-   let Red    = req.data.team_stats.stat[8];
-   let Yellow = req.data.team_stats.stat[6];
-
+   let Red    = req.data[0].team_stats[0].stat[10];
+   let Yellow = req.data[0].team_stats[0].stat[12];
+    console.log(Red,Yellow)
    let RedTotalPoint    = parseInt(Red.team_a)+parseInt(Red.team_b); 
    let YellowTotalPoint = parseInt(Yellow.team_a)+parseInt(Yellow.team_b); 
  
    let totoal_point = RedTotalPoint + YellowTotalPoint;
 
           if(totoal_point >0 ){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                   live_match_id.toString();
               let card_id =  mongoose.Types.ObjectId("634feaf08ff22506cf6c0c46");
           
@@ -1279,7 +1278,7 @@ const get_card_result_add_08  =  async(req,res)=>{
 
            
           let pipeline  = [] ;
-           if(! isEmpty(req.data.match_id)){
+           if(! isEmpty(req.data[0].match_id)){
                pipeline.push({$match: {match_id: live_match_id}});
               }
 
@@ -1323,12 +1322,12 @@ const get_card_result_add_08  =  async(req,res)=>{
  const get_card_result_add_34  =  async(req,res)=>{
   try {  
         
-          const data  = req.data.events.substitutions.event ;
+          const data  = req.data[0].events[0].substitutions[0].event ;
           if(isArray(data)){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                             live_match_id.toString();
-              let live_team_a_id = parseInt(req.data.team_a_id) ;
-              let live_team_b_id = parseInt(req.data.team_b_id) ;    
+              let live_team_a_id = parseInt(req.data[0].team_a_id) ;
+              let live_team_b_id = parseInt(req.data[0].team_b_id) ;    
              
             let card_id =  mongoose.Types.ObjectId("6352762a0148247cf84bc758");
           
@@ -1339,7 +1338,6 @@ const get_card_result_add_08  =  async(req,res)=>{
                 let nums = shots_count[0].shots_count;
 
                 console.log("nums === ",nums);
-
             let win_team_id  =  data[nums].team_id;
            
             // console.log( "win_team_id == ",win_team_id);
@@ -1353,7 +1351,7 @@ const get_card_result_add_08  =  async(req,res)=>{
    
            
           let pipeline  = [] ;
-           if(! isEmpty(req.data.match_id)){
+           if(! isEmpty(req.data[0].match_id)){
                pipeline.push({$match: {match_id: live_match_id}});
               }
 
@@ -1390,12 +1388,12 @@ const get_card_result_add_08  =  async(req,res)=>{
  const get_card_result_add_34_endTimesCall  =  async(req,res)=>{
   try {  
         
-          const data  = req.data.events.substitutions.event ;
+          const data  = req.data[0].events[0].substitutions[0].event ;
           if(isArray(data)){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                             live_match_id.toString();
-              let live_team_a_id = parseInt(req.data.team_a_id) ;
-              let live_team_b_id = parseInt(req.data.team_b_id) ;    
+              let live_team_a_id = parseInt(req.data[0].team_a_id) ;
+              let live_team_b_id = parseInt(req.data[0].team_b_id) ;    
              
             let card_id =  mongoose.Types.ObjectId("6352762a0148247cf84bc758");
           
@@ -1416,7 +1414,7 @@ const get_card_result_add_08  =  async(req,res)=>{
 
            
           let pipeline  = [] ;
-           if(! isEmpty(req.data.match_id)){
+           if(! isEmpty(req.data[0].match_id)){
                pipeline.push({$match: {match_id: live_match_id}});
               }
 
@@ -1459,19 +1457,20 @@ const get_card_result_add_08  =  async(req,res)=>{
  const get_card_result_add_26  =  async(req,res)=>{
       try {  
             /// this function used by red card 
-          const  penalty_goals = req.data.team_stats.stat[8] ;
-          const  penalty_missed = req.data.team_stats.stat[9] ;
+          const  penalty_goals = req.data[0].team_stats[0].stat[8] ;
+          const  penalty_missed = req.data[0].team_stats[0].stat[9] ;
+          
           let team_a_total_penalty=parseInt(penalty_goals.team_a)+parseInt(penalty_missed.team_a);
           let team_b_total_penalty=parseInt(penalty_goals.team_b)+parseInt(penalty_missed.team_b);
           if(!isEmpty(penalty_goals) && !isEmpty(penalty_goals)){
-            let  live_match_id = req.data.match_id ;
+            let  live_match_id = req.data[0].match_id ;
                             live_match_id.toString();
               let card_id =  mongoose.Types.ObjectId("635f6c2aa4e76d45363a6c5d");
               
   
            
           let pipeline  = [] ;
-           if(! isEmpty(req.data.match_id)){
+           if(! isEmpty(req.data[0].match_id)){
                pipeline.push({$match: {match_id: live_match_id}});
               }
   
@@ -1517,17 +1516,17 @@ const get_card_result_add_08  =  async(req,res)=>{
    const get_card_result_add_31  =  async(req,res)=>{
     try {  
           /// this function used by red card 
-        const  data = req.data.team_stats.stat[3] ;
-       
+        const  data = req.data[0].team_stats[0].stat[3] ;
+       console.log(data)
         if(!isEmpty(data)){
-          let  live_match_id = req.data.match_id ;
+          let  live_match_id = req.data[0].match_id ;
                           live_match_id.toString();
             let card_id =  mongoose.Types.ObjectId("635f77df80281e5ba3c05c0a");
             
   
          
         let pipeline  = [] ;
-         if(! isEmpty(req.data.match_id)){
+         if(! isEmpty(req.data[0].match_id)){
              pipeline.push({$match: {match_id: live_match_id}});
             }
   
@@ -1578,12 +1577,12 @@ const getCardGreaterThan_16 = async(match_id)=>{
     if(liveData){
 
     ///  get short on target event array
-      const data  = liveData.events.shots_on_target.event ;
+      const data  = liveData[0].events[0].shots_on_target[0].event ;
    
-      let  live_match_id = liveData.match_id ;
+      let  live_match_id = liveData[0].match_id ;
                       live_match_id.toString();
-        let live_team_a_id = parseInt(liveData.team_a_id) ;
-        let live_team_b_id = parseInt(liveData.team_b_id) ;    
+        let live_team_a_id = parseInt(liveData[0].team_a_id) ;
+        let live_team_b_id = parseInt(liveData[0].team_b_id) ;    
    
    ///  get card-16 priveas array index number
   let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"card_16"},"shots_count" );
@@ -1664,14 +1663,14 @@ const getCardGreaterThan_16 = async(match_id)=>{
 const getCardResult_16_END  =  async(req,res)=>{
   try {  
            
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                               live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("635fbe7ac52f44e554d78390");
                 
 
             
             let pipeline  = [] ;
-            if(! isEmpty(req.data.match_id)){
+            if(! isEmpty(req.data[0].match_id)){
                 pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -1696,31 +1695,160 @@ const getCardResult_16_END  =  async(req,res)=>{
         
            
 
-          console.log(allUsersData)
-  } catch (error) { console.log(error); return false ;  }
-} 
-
-const getCardGreaterThan_03 = async(match_id)=>{
-  try {   
-      // this match id get data
+        console.log(allUsersData)
+      } catch (error) { console.log(error); return false ;  }
+    } 
+    
+    const getCardGreaterThan_03 = async(match_id)=>{
+      try {   
+        // this match id get data
     let liveData = await matchCardAllData(match_id); 
      // check match id get data
-    if(liveData){
+     if(liveData){
 
     ///  get short on target event array
-      const data  = liveData.events.bookings.event ;
+      const data  = liveData[0].events[0].bookings[0].event ;
    
-      let  live_match_id = liveData.match_id ;
+      let  live_match_id = liveData[0].match_id ;
                       live_match_id.toString();
         let live_team_a_id = parseInt(liveData.team_a_id) ;
         let live_team_b_id = parseInt(liveData.team_b_id) ;    
    
    ///  get card-16 priveas array index number
-  let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"card_03"},"shots_count" );
+   let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"card_03_06"},"shots_count" );
+   
+   if(!isEmpty(shots_count)){
+          let nums         = parseInt(shots_count[0].shots_count);
+        if(data.length > nums && data[nums].type=="yellow_card"){
+              let win_team_id  =  data[nums].team_id;
+              let game_minute  =  parseInt(data[nums].game_minute) ;
+              let right_ans = '';    
+                  
+
+                  if( live_team_a_id  == win_team_id ){ right_ans = "opt_1";}else 
+                  if( live_team_b_id  == win_team_id ){ right_ans = "opt_2";}
+                  
+
+                  
+                  
+ let match_eventUpdate  =  match_event_shot_tbl.findOneAndUpdate({"match_id":match_id,"event_type":"card_03_06"},{$set : {"shots_count" : nums+1} },{new: true}, (err, updatedUser) => {
+                                     if(err) { console.log(err); return false}else{   return true }  }); 
+
+
+                                  
+//////////////////////////////////////////
+    let card_id =  mongoose.Types.ObjectId("635fc08f56ae547beb457bee");
+    
+    
+    let pipeline  = [] ;
+    
+    pipeline.push({$match: {match_id : match_id}});
+    pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
+    pipeline.push({ $unwind: "$play_match_user" });
+    pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true,
+    "play_match_user.time_range_start":{ $lte : game_minute } ,
+    "play_match_user.time_range_end":{ $gte : game_minute } 
+  }});
+  
+  pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
+  "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
+  "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
+  "time_range_start":"$play_match_user.time_range_start","time_range_end":"$play_match_user.time_range_end",
+  "match_id": "$play_match_user.match_id","active": "$play_match_user.active" } });
+  
+  let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
+  
+  
+  
+        console.log( "live game mint nums  ==========", game_minute);                             
+                             
+    if (! isEmpty(allUsersData) ){
+      let allData = await Promise.all( allUsersData.map( async (item)=>{ 
+        if( right_ans ==  item.user_option ){    let demo_1  =  await add_win_point(item);  }else 
+         if( item.user_option == "opt_3" ){    let demo_1  =  await add_win_point(item);  }
+          } ));
+          
+          
+          return true ;
+        }else{ // console.log( "no data found!.. "); 
+     return false ;   }
+    
+          }else{// console.log( "table array length == ", nums ); console.log( "live array length == ", data.length );   
+                  return false; }
+
+        }else{      console.log( "match_event_shot_tbl CARD ADD ON   == " );
+                ///  add card-16 array index number in match_event_shot_tbl           
+                let add = new match_event_shot_tbl({
+                            match_id,"event_type":"card_03_06" , "shots_count" : 0 });
+                        let add_rows = await add.save(); 
+              } 
+
+            }else{ console.log( `${ match_id } this match_id is No data fund!..`  ); return false ; 
+          }
+          
+        } catch (error) { console.log( error); return false ;  }
+      }
+      
+  const getCardResult_03_END  =  async(req,res)=>{
+    try {  
+              
+                let  live_match_id = req.data[0].match_id ;
+                                live_match_id.toString();
+                  let card_id =  mongoose.Types.ObjectId("635fc08f56ae547beb457bee");
+                  
+  
+              
+              let pipeline  = [] ;
+              if(! isEmpty(req.data[0].match_id)){
+                  pipeline.push({$match: {match_id: live_match_id}});
+                  }
+  
+                      pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
+                      pipeline.push({ $unwind: "$play_match_user" });
+                      pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
+                      pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
+                                "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
+                                  "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
+                                "match_id": "$play_match_user.match_id","active": "$play_match_user.active" } });
+  
+  
+          let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
+          if (! isEmpty(allUsersData) ){
+            let allData = await Promise.all( allUsersData.map( async (item)=>{ 
+                    let demo_1 = ( item.user_option == "opt_4")? await add_win_point(item) : await playMatchCard_remove(item);
+                  } ));
+    
+        
+              return  true ;
+          }else{  console.log( "no data found!.. ");  return false ;   }
+          
+              
+  
+            console.log(allUsersData)
+    } catch (error) { console.log(error); return false ;  }
+  } 
+     
+  const getCardGreaterThan_06 = async(match_id)=>{
+        try {   
+          // this match id get data
+          let liveData = await matchCardAllData(match_id); 
+     // check match id get data
+    if(liveData){
+
+    ///  get short on target event array
+      const data  = liveData[0].events[0].bookings[0].event ;
+   
+      let  live_match_id = liveData[0].match_id ;
+                      live_match_id.toString();
+        let live_team_a_id = parseInt(liveData.team_a_id) ;
+        let live_team_b_id = parseInt(liveData.team_b_id) ;    
+   
+   ///  get card-16 priveas array index number
+  let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"card_03_06"},"shots_count" );
      
     if(!isEmpty(shots_count)){
           let nums         = parseInt(shots_count[0].shots_count);
-        if(data.length > nums){
+        if(data.length > nums && data[nums].type=="red_card"){
               let win_team_id  =  data[nums].team_id;
               let game_minute  =  parseInt(data[nums].game_minute) ;
               let right_ans = '';    
@@ -1732,13 +1860,13 @@ const getCardGreaterThan_03 = async(match_id)=>{
 
 
 
- let match_eventUpdate  =  match_event_shot_tbl.findOneAndUpdate({"match_id":match_id,"event_type":"card_16"},{$set : {"shots_count" : nums+1} },{new: true}, (err, updatedUser) => {
+ let match_eventUpdate  =  match_event_shot_tbl.findOneAndUpdate({"match_id":match_id,"event_type":"card_03_06"},{$set : {"shots_count" : nums+1} },{new: true}, (err, updatedUser) => {
                                      if(err) { console.log(err); return false}else{   return true }  }); 
 
 
                                   
 //////////////////////////////////////////
-    let card_id =  mongoose.Types.ObjectId("635fc08f56ae547beb457bee");
+    let card_id =  mongoose.Types.ObjectId("6364c313fde4ad7574244a18");
                 
              
     let pipeline  = [] ;
@@ -1765,8 +1893,8 @@ const getCardGreaterThan_03 = async(match_id)=>{
                              
     if (! isEmpty(allUsersData) ){
       let allData = await Promise.all( allUsersData.map( async (item)=>{ 
-         if( right_ans ==  item.user_option ){    let demo_1  =  await add_win_point(item);  }else 
-         if( item.user_option == "opt_3" ){    let demo_1  =  await add_win_point(item);  }
+         if( right_ans ==  item.user_option ){    let demo_1  =  await add_win_point(item);  } 
+         
           } ));
           
        
@@ -1777,10 +1905,10 @@ const getCardGreaterThan_03 = async(match_id)=>{
           }else{// console.log( "table array length == ", nums ); console.log( "live array length == ", data.length );   
                   return false; }
 
-        }else{      console.log( "match_event_shot_tbl CARD ADD ON  card_03 == " );
+        }else{      console.log( "match_event_shot_tbl CARD ADD ON  card_06 == " );
                 ///  add card-16 array index number in match_event_shot_tbl           
                 let add = new match_event_shot_tbl({
-                            match_id,"event_type":"card_03" , "shots_count" : 0 });
+                            match_id,"event_type":"card_06" , "shots_count" : 0 });
                         let add_rows = await add.save(); 
               } 
 
@@ -1791,17 +1919,18 @@ const getCardGreaterThan_03 = async(match_id)=>{
 }
 
 
-const getCardResult_03_END  =  async(req,res)=>{
+
+const getCardResult_06_END  =  async(req,res)=>{
   try {  
            
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                               live_match_id.toString();
-                let card_id =  mongoose.Types.ObjectId("635fc08f56ae547beb457bee");
+                let card_id =  mongoose.Types.ObjectId("6364c313fde4ad7574244a18");
                 
 
             
             let pipeline  = [] ;
-            if(! isEmpty(req.data.match_id)){
+            if(! isEmpty(req.data[0].match_id)){
                 pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -1817,7 +1946,7 @@ const getCardResult_03_END  =  async(req,res)=>{
         let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
         if (! isEmpty(allUsersData) ){
           let allData = await Promise.all( allUsersData.map( async (item)=>{ 
-                 let demo_1 = ( item.user_option == "opt_4")? await add_win_point(item) : await playMatchCard_remove(item);
+                 let demo_1 = ( item.user_option == "opt_3")? await add_win_point(item) : await playMatchCard_remove(item);
                } ));
   
       
@@ -1828,7 +1957,7 @@ const getCardResult_03_END  =  async(req,res)=>{
 
           console.log(allUsersData)
   } catch (error) { console.log(error); return false ;  }
-} 
+}
 
 // pridiction card 
 const getCardGreaterThan_09 = async(match_id)=>{
@@ -1839,12 +1968,12 @@ const getCardGreaterThan_09 = async(match_id)=>{
     if(liveData){
 
     ///  get short on target event array
-      const data  = liveData.events.fouls.event ;
+      const data  = liveData[0].events[0].fouls[0].event ;
    
-      let  live_match_id = liveData.match_id ;
+      let  live_match_id = liveData[0].match_id ;
                       live_match_id.toString();
-        let live_team_a_id = parseInt(liveData.team_a_id) ;
-        let live_team_b_id = parseInt(liveData.team_b_id) ;    
+        let live_team_a_id = parseInt(liveData[0].team_a_id) ;
+        let live_team_b_id = parseInt(liveData[0].team_b_id) ;    
    
    ///  get card-16 priveas array index number
   let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"card_09"},"shots_count" );
@@ -1908,7 +2037,7 @@ const getCardGreaterThan_09 = async(match_id)=>{
           }else{// console.log( "table array length == ", nums ); console.log( "live array length == ", data.length );   
                   return false; }
 
-        }else{      console.log( "match_event_shot_tbl CARD ADD ON  card_03 == " );
+        }else{      console.log( "match_event_shot_tbl CARD ADD ON   == " );
                 ///  add card-16 array index number in match_event_shot_tbl           
                 let add = new match_event_shot_tbl({
                             match_id,"event_type":"card_09" , "shots_count" : 0 });
@@ -1925,14 +2054,14 @@ const getCardGreaterThan_09 = async(match_id)=>{
 const getCardResult_09_END  =  async(req,res)=>{
   try {  
            
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                               live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("636211cb5037249041b1486c");
                 
 
             
             let pipeline  = [] ;
-            if(! isEmpty(req.data.match_id)){
+            if(! isEmpty(req.data[0].match_id)){
                 pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -1970,12 +2099,12 @@ const getCardGreaterThan_19 = async(match_id)=>{
      // check match id get data
     if(liveData){
         ///  get short on target event array
-      const data  = liveData.events.corners.event ;
+      const data  = liveData[0].events[0].corners[0].event ;
    
-      let  live_match_id = liveData.match_id ;
+      let  live_match_id = liveData[0].match_id ;
                       live_match_id.toString();
-        let live_team_a_id = parseInt(liveData.team_a_id) ;
-        let live_team_b_id = parseInt(liveData.team_b_id) ;    
+        let live_team_a_id = parseInt(liveData[0].team_a_id) ;
+        let live_team_b_id = parseInt(liveData[0].team_b_id) ;    
    
    ///  get card-16 priveas array index number
   let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"card_19"},"shots_count" );
@@ -2056,11 +2185,11 @@ const getCardGreaterThan_19 = async(match_id)=>{
 const getCardResult_19_END  =  async(req,res)=>{
   try {  
            
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                               live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("63627be29f1c3eb8594fa7c4");
           let pipeline  = [] ;
-            if(! isEmpty(req.data.match_id)){
+            if(! isEmpty(req.data[0].match_id)){
                 pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -2097,12 +2226,12 @@ const getCardGreaterThan_22 = async(match_id)=>{
      // check match id get data
     if(liveData){
         ///  get short on target event array
-      const data  = liveData.events.offside.event ;
+      const data  = liveData[0].events[0].offside[0].event ;
    
-      let  live_match_id = liveData.match_id ;
+      let  live_match_id = liveData[0].match_id ;
                       live_match_id.toString();
-        let live_team_a_id = parseInt(liveData.team_a_id) ;
-        let live_team_b_id = parseInt(liveData.team_b_id) ;    
+        let live_team_a_id = parseInt(liveData[0].team_a_id) ;
+        let live_team_b_id = parseInt(liveData[0].team_b_id) ;    
    
    ///  get card-16 priveas array index number
   let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"card_22"},"shots_count" );
@@ -2183,11 +2312,11 @@ const getCardGreaterThan_22 = async(match_id)=>{
 const getCardResult_22_END  =  async(req,res)=>{
   try {  
            
-              let  live_match_id = req.data.match_id ;
+              let  live_match_id = req.data[0].match_id ;
                               live_match_id.toString();
                 let card_id =  mongoose.Types.ObjectId("63628a07df37c3687a28fe68");
           let pipeline  = [] ;
-            if(! isEmpty(req.data.match_id)){
+            if(! isEmpty(req.data[0].match_id)){
                 pipeline.push({$match: {match_id: live_match_id}});
                 }
 
@@ -2224,5 +2353,5 @@ module.exports = {day_match_getID,match_card_number,match_card_0011,match_card_0
                     get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,card_08_befor_call,get_card_result_add_08,
                     get_card_result_add_37,card_39_befor_call,get_card_result_add_39,card_34_befor_call,get_card_result_add_34,
                     get_card_result_add_34_endTimesCall,get_card_result_add_26,get_card_result_add_31,get_card_result_add_5,
-                    getCardGreaterThan_16,getCardResult_16_END,getCardGreaterThan_03, getCardResult_03_END,getCardGreaterThan_09,
+                    getCardGreaterThan_16,getCardResult_16_END,getCardGreaterThan_03, getCardResult_03_END,getCardGreaterThan_06,getCardResult_06_END,getCardGreaterThan_09,
                     getCardResult_09_END,getCardGreaterThan_19,getCardResult_19_END,getCardGreaterThan_22,getCardResult_22_END}

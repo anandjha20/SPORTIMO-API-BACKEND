@@ -50,7 +50,10 @@ const userReportImg =  img_upload('./assets/user_img','image');
           router.post('/team_list/:id?', user_token_check,FootballController.team_list);
           router.post('/player_list/:id?',user_token_check,FootballController.player_list);
           router.post('/get_tip_list/:id?',AdminController.get_tip_list);
-          router.post('/faq_list/:id?',AdminController.faq_list);                  
+          router.post('/faq_list/:id?',AdminController.faq_list);  
+       
+          router.get('/get_user_powerUp_list/:id?',AdminController.get_user_powerUp_list);  
+          router.post('/power_up_used',AdminController.power_up_used); 
                                    
           router.post('/registration/',UserController.registration);
           router.post('/verify_nickName',UserController.verify_nickName);
@@ -225,6 +228,11 @@ const userReportImg =  img_upload('./assets/user_img','image');
 
    // make by mhn
       router.put('/update_google_id/',UserController.update_google_id); 
+
+
+
+
+    
 
 
 

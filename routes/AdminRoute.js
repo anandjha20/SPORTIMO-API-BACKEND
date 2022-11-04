@@ -216,9 +216,15 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
   
    
    // chat block User LIst  
-   router.post('/admin_settings_update',AdminController.admin_settings_update);
-   router.get('/admin_settings_get',AdminController.admin_settings_get);
-   //router.post('/admin_settings_set',AdminController.admin_settings_set);
+    router.post('/admin_settings_update',AdminController.admin_settings_update);
+    router.get('/admin_settings_get',AdminController.admin_settings_get);
+    router.post('/power_up_add',AdminController.power_up_add); 
+    router.post('/power_up_alloted',AdminController.power_up_alloted); 
+    router.get('/powerUp_list/:id?',AdminController.powerUp_list); 
+    router.get('/alloted_powerUp_list/:id?',AdminController.alloted_powerUp_list); 
+    
+   
+    //router.post('/admin_settings_set',AdminController.admin_settings_set);
   
   
    router.get('/jk_test',PollController.jk_test);    
@@ -265,6 +271,9 @@ router.post('/all_user_analytics',analyticsController.all_user_analytics);
 router.post('/user_profile_analytics',analyticsController.user_profile_analytics); 
 router.post('/polls_analytics',analyticsController.polls_analytics); 
 router.post('/support_analytics',analyticsController.support_analytics); 
+
+
+
 
 
 
