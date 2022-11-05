@@ -71,8 +71,8 @@ export default function TeamsPreference() {
     /////////////////delete api call /////////////////
    const deleteCategory = (_id) => {
     Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
+        title: 'Are you sure you want to delete selected Team Preference ?',
+        // text: "You won't be able to revert this!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -87,7 +87,7 @@ export default function TeamsPreference() {
                     if (data.status) { 
                         Swal.fire(
                             'Deleted!',
-                             data.msg,
+                            "Team preference deleted successfully",
                             'success'
                           )
                          return PreferenceList();
@@ -106,6 +106,21 @@ export default function TeamsPreference() {
     /////////////////complaint list/////////////////
     const onCloseModal = () => setOpen(false);
     const limit = 10;
+    
+    const formsave = (e, page)=>{
+        e.preventDefault();
+        const data = new FormData(e.target);
+        const Formvlaues = Object.fromEntries(data.entries());
+      axios.post(`/web_api/teams_get`, Formvlaues, options1)
+            .then(res => {
+                const userData = res.data.body;
+                const total = res.data.rows;
+                const totalPage = (Math.ceil(total / limit));
+                setpageCount(totalPage);
+                setData(userData);
+            })
+    }
+
     const PreferenceList = async (page) => {
         const sanData = { page: page }
         await axios.post(`/web_api/teams_get`,)
@@ -274,7 +289,22 @@ export default function TeamsPreference() {
                                                     <div className="col-lg-12">
 
                                                         <div className="table-card MuiPaper-root MuiPaper-elevation2 MuiPaper-rounded">
+                                                        <form onSubmit={(e)=>formsave(e)}> 
+                                                            <div className="filter-header row">
+                                                            <div className="col-lg-7">
                                                             <h6 className="MuiTypography-root MuiTypography-h6 padd1rem">Teams Preference List</h6>
+                                                            </div>
+
+                                                            <div className="col-lg-5 d-flex">
+                                                                <div className="form-filter">
+                                                            <input type="search" name="name" placeholder="Search.." className="form-control" aria-label="Search" aria-describedby="search-addon" />
+                                                             <button type='submit' className="mr-3 btn-pd btnBg"><i className="fas fa-search"></i></button>
+                                                             </div>
+                                                          </div>
+
+                                                          </div>
+                                                            </form>
+                                                            {/* <h6 className="MuiTypography-root MuiTypography-h6 padd1rem">Teams Preference List</h6> */}
                                                             <table className="table ">
                                                                 <thead>
                                                                     <tr>

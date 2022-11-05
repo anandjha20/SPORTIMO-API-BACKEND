@@ -19,7 +19,7 @@ function TableListComponent(props) {
 
     const [open, setOpen] = React.useState(false);
     const [pageCount, setpageCount] = useState('');
-    const [guestUser, setGuest] = React.useState(0);
+    const [guestUser, setGuest] = React.useState(null);
     const [Fromvalue, setFromvalue] = React.useState('');
 
     const handleClickOpen = () => {
@@ -37,14 +37,17 @@ function TableListComponent(props) {
 
     const [data, setData] = useState([])
 
+
+    // const [guestUser, setGuest] = React.useState(0);
+
     const navigate = useNavigate();
 
     const guestfun = (event) => {
-        if (guestUser == 1) {
-          setGuest(0);
+        if (guestUser == null) {
+          setGuest('0');
         }
         if (guestUser == 0) {
-          setGuest(1);
+          setGuest(null);
         }
         return false;
       };
@@ -67,7 +70,7 @@ function TableListComponent(props) {
         e.preventDefault();
           const data = new FormData(e.target);
          const Formvlaues = Object.fromEntries(data.entries());
-        //  Formvlaues.guest_user = guestUser
+         Formvlaues.disclosed_status = guestUser
          const formData = Formvlaues
          setFromvalue(formData);
            console.log('Formvlaues === ', Formvlaues);
@@ -223,6 +226,7 @@ const pollfee = [
 
     const [value, setValue] = useState("");
     const [value1, setValue1] = useState("");
+    
 
     return (
 
@@ -236,11 +240,11 @@ const pollfee = [
                 <div className="card-body">
                     <form onSubmit={(e)=>formsave(e)}>
                     <div className="row align-items-center">
-                    <div className="col-lg-12 ml-2">
-                                 <FormGroup className="mb-3">
-                                    <FormControlLabel name=''  control={<Checkbox />} label="Active Poll" />
-                                  </FormGroup>
-                        </div>
+                    <div className="mb-3 col-lg-12 ml-2 guestcheck">
+                                  <input type="checkbox"  name='disclosed_status' id="chck" onChange={(e) => guestfun(e)} />
+                                  <label htmlFor="chck">Active Poll</label>
+                                    {/* <FormControlLabel name='guest_user' onChange={(e) => guestfun(e)}  control={<Checkbox  />} label="Guest User"  /> */}
+                                  </div>
                         <div className="col-lg-4 mb-3">
                             <TextField id="search" className="filter-input" name='match' label="Search Match/league" fullWidth type="text"
                                 InputLabelProps={{
