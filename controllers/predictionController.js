@@ -1,6 +1,6 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
-const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
+const { userPowerUpsData,getcurntDate,getTime,saveData, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
 const { sendNotificationAdd } = require('../myModel/helper_fun');
 const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
 const  {MyBasePath} = require("../myModel/image_helper");
@@ -13,7 +13,11 @@ const { poll_percent} = require('../myModel/helper_fun');
     const prediction_cards_tbl = require('../models/prediction_cards');    
     const match_cards_tbl      = require('../models/match_cards');   
     const playMatchCards_tbl   = require('../models/playMatchCards');   
-    const play_match_cards    = require ("../models/playMatchCards");
+    const play_match_cards     = require ("../models/playMatchCards");
+    const used_power_ups_tbl   = require ("../models/used_power_ups");
+    const user_allotted_powerups_tbl   = require ("../models/user_allotted_powerUps");
+
+
    const prediction_card_categories = require("../models/prediction_card_categories")     
 class predictionController {   
      
@@ -311,7 +315,8 @@ class predictionController {
               let user_id = req.body.user_id;    
               let match_id = req.body.match_id;    
               let result=req.body.status;
-             
+                 
+
              /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
              
               if(isEmpty(user_id)){
@@ -338,8 +343,14 @@ class predictionController {
                                   
                               }
                               return item; })
-                            
-                              return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,  'body':records });
+            ////////////////////////////////////                
+            let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
+            let played_cards_count = await playMatchCards_tbl.find({match_id,user_id}).countDocuments();
+           
+            let p_counts = await userPowerUpsData(user_id);
+           
+                 return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,
+                 all_card_count,played_cards_count, "userpowers":p_counts.userpowers ,"usedPoweUps_count":p_counts.usedPoweUps_count, 'body':records });
                       }else{
                             return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
                             }
@@ -401,18 +412,33 @@ class predictionController {
                   isEmpty(card_cat_id)  ){
                   return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
                       }   
-      
-        // let checkName = await rows_count({"name":""})             
-          let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end ,match_id,
+ let {userpowers,usedPoweUps_count} = await userPowerUpsData(user_id); 
+
+       console.log({userpowers,usedPoweUps_count});                   
+ 
+  if(userpowers == 0 && usedPoweUps_count == 0 ){
+        return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation' , "body": ''}) ;   
+      }else if(usedPoweUps_count >= userpowers){
+        return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation' , "body": ''}) ;   
+        }
+  
+     
+      //return res.status(200).send({"status":false,"msg":'success' , "body": savedd }) ;   
+          
+
+       let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end ,match_id,
                                card_id, card_cat_id,point };                
-                  
-       playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
-      if(err) {  console.log(err);
+      
+     playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
+     
+        if(err){ console.log(err);
           return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
       }else if(!isEmpty(updatedUser)){
-                  return res.status(200).send({"status":true,"msg":'Play Match Card Updated Successfully' , "body":updatedUser  }) ;   
-          }else{  return res.status(200).send({"status":false,"msg":'Invalid Play Match Card Id ' , "body": ''}) ;   
-                  } 
+            let savedd =  saveData({user_id,match_id,card_id,"power_up_type":"score_multiplier"},used_power_ups_tbl)  ; 
+                return res.status(200).send({"status":true,"msg":'Play Match Card Updated Successfully' , "body":updatedUser  }) ;   
+          }else{ return res.status(200).send({"status":false,"msg":'Invalid Play Match Card Id ' , "body": ''}) ;   
+                 
+        } 
         });
 
 
@@ -445,7 +471,9 @@ class predictionController {
         } catch (error) { return res.status(200).send({"status":true,"msg":'Some error' , "body":''}) ; }
 
     }
-    static match_card_list = async (req,res)=>{
+   
+   
+    static match_card_list_old = async (req,res)=>{
       try {
            let language = req.body.language;    // 'name card_type'
            let card_cat_id = req.body.category_id;    // 'name card_type'
@@ -492,6 +520,70 @@ class predictionController {
               }
               
       }      
+
+ static match_card_list = async (req,res)=>{
+        try {
+             let language = req.body.language;    // 'name card_type'
+             let card_cat_id = req.body.category_id;    // 'name card_type'
+             let match_id = req.body.match_id;  
+             let user_id = req.body.user_id;  
+             let cardCat={};
+             if(!isEmpty(card_cat_id)){cardCat={...cardCat,card_cat_id}}
+             let condition_obj={};
+            if(!isEmpty(req.body.match_id)){
+              condition_obj={...condition_obj,match_id:req.body.match_id}
+            }
+         
+            let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
+            let played_cards_count = await playMatchCards_tbl.find({match_id,user_id}).countDocuments();
+           
+            let usedPoweUps_count = await used_power_ups_tbl.find({user_id}).countDocuments();
+            let userUsedpowerpus  = await user_allotted_powerups_tbl.find({match_id,user_id});
+            let userpowers = isEmpty(userUsedpowerpus)? 0 : userUsedpowerpus[0].power_up_count;
+          
+              console.log("condition_obj == ", condition_obj);
+          let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat).sort({_id:-1});
+          
+               let data=[]
+                if(records){ records.map((item)=> { 
+                  if(typeof item.card_id === 'object' && item.card_id !== null){
+                      
+                    if(language != '' && language == 'ar'){ 
+                                  
+                                item.card_id.name = item.card_id.name_ara;
+                                item.card_id.qus = item.card_id.qus_ara;
+                                item.card_id.ops_1 = item.card_id.ops_1_ara;
+                                item.card_id.ops_2 = item.card_id.ops_2_ara;
+                                item.card_id.ops_3 = item.card_id.ops_3_ara;
+                                item.card_id.ops_4 = item.card_id.ops__ara;
+                              }
+  
+                              data.push(item) ;
+                                
+                            }
+                         
+                 })
+                         
+                  //  let sendData = { all_card_count,played_cards_count,"list":data };
+                    let sendData = { all_card_count,played_cards_count, userpowers,usedPoweUps_count, "list":data };
+
+                           return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,
+                                  all_card_count,played_cards_count,userpowers,usedPoweUps_count , 'body':data });
+                    }else{
+                         return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
+                          }
+        
+        
+    
+             } catch (error) { console.log(error);
+                    return res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"});
+                }
+                
+        }      
+  
+
+
+
 
       static user_prediction_old = async (req,res)=>{
         try {

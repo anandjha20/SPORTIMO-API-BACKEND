@@ -54,6 +54,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
        
           router.get('/get_user_powerUp_list/:id?',AdminController.get_user_powerUp_list);  
           router.post('/power_up_used',AdminController.power_up_used); 
+          router.get('/user_powerUp_used_list/:id?',AdminController.user_powerUp_used_list); 
                                    
           router.post('/registration/',UserController.registration);
           router.post('/verify_nickName',UserController.verify_nickName);
@@ -174,13 +175,15 @@ const userReportImg =  img_upload('./assets/user_img','image');
     router.post('/userFirebaseTokenUpdate',UserController.userFirebaseTokenUpdate);
     
   // userLenguageAdd route  getUserLenguage
-      router.post('/userLenguageAdd',UserController.userLenguageAdd);
-                           
+    
+    router.post('/userLenguageAdd',UserController.userLenguageAdd);
+                             
   // getUserLenguage route  
       router.get('/getUserLenguage/:id?',UserController.getUserLenguage);
    
      // match_card_list route   
       router.post('/match_card_list',predictionController.match_card_list); 
+     // router.post('/match_card_list_2',predictionController.match_card_list_2); 
 
       // play Match  card add    
       router.post('/playMatchCard_add',predictionController.playMatchCard_add);

@@ -809,6 +809,66 @@ class AdminController {
                         
                       }    
   
+   static powerUp_used_list = async (req,res)=>{
+       try {
+                      let id = req.params.id;
+           
+                        let pipeline =  [];
+         
+            pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_tbl'} });
+            pipeline.push({ $unwind: "$user_tbl" }); 
+          
+            pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_tbl'} });
+            pipeline.push({ $unwind: "$match_tbl" }); 
+           
+           
+           pipeline.push({ $project: {"_id":1,"power_up_type": 1,"date":1, "user_id":1, "match_id":1,"match_name":"$match_tbl.match_name" , "user_name":"$user_tbl.name", } });
+      
+          console.log("pipeline", pipeline);
+
+    let result = await used_power_ups_tbl.aggregate(pipeline).exec();
+                if(result){ return res.status(200).send({'status':true,'msg':"Success",body:result});
+                    }else{ return res.status(200).send({'status':false,'msg':"all field required"});
+                          }
+                  } catch (error) { console.log(error); 
+                    return res.status(200).send({'status':false,'msg':'','body':''});
+                  }
+          }
+
+      static user_powerUp_used_list = async (req,res)=>{
+            try {
+                        let id = req.params.id;
+                    if(isEmpty(id)){
+                      return res.status(200).send({'status':false,'msg':'user Id Field Requiered'});
+                    }          
+                        let obj_id =  mongoose.Types.ObjectId(id);
+
+                          let pipeline =  [];
+                        
+                 pipeline.push({ $match:{"user_id":obj_id} });
+                 pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_tbl'} });
+                 pipeline.push({ $unwind: "$user_tbl" }); 
+               
+                 pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_tbl'} });
+                 pipeline.push({ $unwind: "$match_tbl" }); 
+                
+                
+                pipeline.push({ $project: {"_id":1,"power_up_type": 1,"date":1, "user_id":1, "match_id":1,"match_name":"$match_tbl.match_name" , "user_name":"$user_tbl.name", } });
+           
+               console.log("pipeline", pipeline);
+     
+         let result = await used_power_ups_tbl.aggregate(pipeline).exec();
+                     if(result){ return res.status(200).send({'status':true,'msg':"Success",body:result});
+                         }else{ return res.status(200).send({'status':false,'msg':"all field required"});
+                               }
+                       } catch (error) { console.log(error); 
+                         return res.status(200).send({'status':false,'msg':'server error'});
+                       }
+               }
+     
+     
+
+
 }
    
 

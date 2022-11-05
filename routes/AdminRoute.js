@@ -222,7 +222,8 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
     router.post('/power_up_alloted',AdminController.power_up_alloted); 
     router.get('/powerUp_list/:id?',AdminController.powerUp_list); 
     router.get('/alloted_powerUp_list/:id?',AdminController.alloted_powerUp_list); 
-    
+    router.get('/powerUp_used_list/:id?',AdminController.powerUp_used_list); 
+        
    
     //router.post('/admin_settings_set',AdminController.admin_settings_set);
   
@@ -271,11 +272,6 @@ router.post('/all_user_analytics',analyticsController.all_user_analytics);
 router.post('/user_profile_analytics',analyticsController.user_profile_analytics); 
 router.post('/polls_analytics',analyticsController.polls_analytics); 
 router.post('/support_analytics',analyticsController.support_analytics); 
-
-
-
-
-
 
 
 

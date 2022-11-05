@@ -142,9 +142,9 @@ const match_event_shot_tbl = require('../models/match_event_shots');
    
                let response = await axios(config);
          if(response){
-            let datas = response.data.datasportsgroup.tour.tour_season.competition.season.discipline.gender.round.list.match;
+            let datas = response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].round[0].list[0].match;
           
-           return {"events":datas.events,"team_a_original_name": datas.team_a_original_name,"team_b_original_name": datas.team_b_original_name}
+           return {"events":datas[0].events,"team_a_original_name": datas[0].team_a_original_name,"team_b_original_name": datas[0].team_b_original_name}
          
          }else{   return false;
           
@@ -700,12 +700,12 @@ const add_win_point = async(req,res)=>{
                   let result_pass = 0;  let result_fail = 0; 
              if (! isEmpty(allUsersData) ){
               let allData = await Promise.all( allUsersData.map( async (item)=>{ let right_ans = '';  
-                 if( data.team_a >  data.team_b ){ right_ans = "opt_1";}else 
-                 if( data.team_b >  data.team_a  ){ right_ans = "opt_2";}else 
-                 if( data.team_b == '0' &&  data.team_a == '0'  ){ right_ans = "opt_3";}else 
-                 if( data.team_b ==  data.team_a ){ right_ans = "opt_4";}
+                 if( parseInt(data.team_a) >  parseInt(data.team_b) ){ right_ans = "opt_1";console.log("======swjbefjikbw")}else 
+                 if( parseInt(data.team_b) >  parseInt(data.team_a)  ){ right_ans = "opt_2";}else 
+                 if( data.team_b == '0' &&  data.team_a == '0'  ){ right_ans = "opt_4";}else 
+                 if( parseInt(data.team_a) ==  parseInt(data.team_b) ){ right_ans = "opt_3";}
             
-            
+            console.log(right_ans)
                  if( right_ans == item.user_option ){  result_pass += 1 ;
                           let demo_1  =  await add_win_point(item); 
                       }else{      result_fail += 1 ;
@@ -775,7 +775,48 @@ const add_win_point = async(req,res)=>{
            
        } catch (error) { console.log(error); return false ;  }
    } 
-   
+  
+   const getCardResult_18_END  =  async(req,res)=>{
+    try {  
+             
+                let  live_match_id = req.data[0].match_id ;
+                                live_match_id.toString();
+                  let card_id =  mongoose.Types.ObjectId("634e5c528f16160a62ea586a");
+                  
+  
+              console.log("live_match_id",live_match_id)
+              let pipeline  = [] ;
+              if(! isEmpty(req.data[0].match_id)){
+                  pipeline.push({$match: {match_id: live_match_id}});
+                  }
+  
+                      pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
+                      pipeline.push({ $unwind: "$play_match_user" });
+                      pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
+                      pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
+                                "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
+                                  "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
+                                "match_id": "$play_match_user.match_id","active": "$play_match_user.active" } });
+  
+  
+          let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
+          console.log("allUsersData",allUsersData)
+          if (! isEmpty(allUsersData) ){
+            let allData = await Promise.all( allUsersData.map( async (item)=>{ 
+                   let demo_1 = ( item.user_option == "opt_3")? await add_win_point(item) : await playMatchCard_remove(item);
+                 } ));
+    
+        
+              return  true ;
+          }else{  console.log( "no data found!.. ");  return false ;   }
+          
+             
+  
+          console.log(allUsersData)
+        } catch (error) { console.log(error); return false ;  }
+      } 
+      
+
    const get_card_result_add_20  =  async(req,res)=>{
     try {  
               /// this function used by red card 
@@ -1017,6 +1058,40 @@ const add_win_point = async(req,res)=>{
          } catch (error) { console.log( " modal funtion day_match_getID call == ", error);
                                return false ;  }
   }
+
+  const day_match_add = async(date) =>{
+    try {   
+         // let date = getcurntDate();
+         //   let date = "2022-10-28";   
+
+       const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
+      // const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
+       const session_url = `https://dsg-api.com/custom/zimbori/soccer/get_matches_day?day=${date}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
+      
+      
+            // console.log("session_url == ",session_url);
+               var config = { method: 'get',url: session_url,
+                                headers: { 'Authorization': 'Basic '+ encodedToken }
+                             };
+                   
+               let response = await axios(config);
+               
+               
+               if(response){
+                 
+                 let data =  isArray(response.data.datasportsgroup.competition)? response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match :response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match ;
+                 
+             
+             if(data.length >0 ) {
+     
+              return data;  
+     
+            }else{  return false; }    
+        }
+         } catch (error) { console.log( " modal funtion day_match_add call == ", error);
+                               return false ;  }
+  }
+
 
  const card_08_befor_call = async(match_id)=>{
     try {
@@ -1668,7 +1743,7 @@ const getCardResult_16_END  =  async(req,res)=>{
                 let card_id =  mongoose.Types.ObjectId("635fbe7ac52f44e554d78390");
                 
 
-            
+            console.log("live_match_id",live_match_id)
             let pipeline  = [] ;
             if(! isEmpty(req.data[0].match_id)){
                 pipeline.push({$match: {match_id: live_match_id}});
@@ -1684,6 +1759,7 @@ const getCardResult_16_END  =  async(req,res)=>{
 
 
         let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
+        console.log("allUsersData",allUsersData)
         if (! isEmpty(allUsersData) ){
           let allData = await Promise.all( allUsersData.map( async (item)=>{ 
                  let demo_1 = ( item.user_option == "opt_4")? await add_win_point(item) : await playMatchCard_remove(item);
@@ -2347,10 +2423,10 @@ const getCardResult_22_END  =  async(req,res)=>{
 
 
 
-module.exports = {day_match_getID,match_card_number,match_card_0011,match_card_0013,matchCardAllData,matchCardEventAllData,get_card_result_add_4,
+module.exports = {day_match_getID,day_match_add,match_card_number,match_card_0011,match_card_0013,matchCardAllData,matchCardEventAllData,get_card_result_add_4,
                     get_card_result_add_7,get_card_result_add_1, get_card_result_add_11,get_card_result_add_13,
                     get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
-                    get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,card_08_befor_call,get_card_result_add_08,
+                    get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,getCardResult_18_END,card_08_befor_call,get_card_result_add_08,
                     get_card_result_add_37,card_39_befor_call,get_card_result_add_39,card_34_befor_call,get_card_result_add_34,
                     get_card_result_add_34_endTimesCall,get_card_result_add_26,get_card_result_add_31,get_card_result_add_5,
                     getCardGreaterThan_16,getCardResult_16_END,getCardGreaterThan_03, getCardResult_03_END,getCardGreaterThan_06,getCardResult_06_END,getCardGreaterThan_09,

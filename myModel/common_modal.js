@@ -6,6 +6,9 @@ const user_tbl = require('../models/user');
 const logins= require('../models/logins');     
 const user_logs = require('../models/user_logs');  
 const user_reportings_tbl = require('../models/user_reportings');
+  
+ const used_power_ups_tbl   = require ("../models/used_power_ups");
+ const user_allotted_powerups_tbl   = require ("../models/user_allotted_powerUps");
 
 const sentEmail = async (req,res) => {
    var email =  req.email; 
@@ -180,7 +183,23 @@ const ArrChunks =  async (array, size = 1)=>{
                               results.push(array.splice(0, size));
                             }
                             return results;
-                          };
+                   };
+const userPowerUpsData = async(user_id)=>{
+
+  let usedPoweUps_count = await used_power_ups_tbl.find({user_id}).countDocuments();
+  let userUsedpowerpus  = await user_allotted_powerups_tbl.find({user_id});
+  let userpowers        = isEmpty(userUsedpowerpus)? 0 : userUsedpowerpus[0].power_up_count;
+
+    return {userpowers,usedPoweUps_count};
+}
+
+const saveData = async(object,tbl)=>{
+
+          let add = new tbl(object);
+          let res = await add.save(); 
+         let sendData =  (res)? res :false ;
+          return  sendData;
+}
 
 module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,
-          rows_count,ArrChunks,before_after_Date,isArray,isObject};
+          rows_count,ArrChunks,before_after_Date,isArray,isObject,userPowerUpsData,saveData};
