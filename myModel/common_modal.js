@@ -89,7 +89,7 @@ function gen_str (length) {
      date.setDate(date.getDate() + parseInt(days));
      var finalDate = date.getFullYear()+'-'+ (date.getMonth()+1) +'-'+date.getDate();
      return finalDate;
- }
+ } 
 
 const send_mobile_otp = async (req,res)=>{
     console.log('common modal ==');
@@ -201,5 +201,13 @@ const saveData = async(object,tbl)=>{
           return  sendData;
 }
 
-module.exports = { getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,
+const my_utc_time = (date = false)=>{
+    let mydate = ''; 
+         mydate = (date)? date.toUTCString() : new Date().toUTCString();
+         let time_u = Math.floor( new Date(mydate).getTime() / 1000); 
+          return  time_u ;
+    }
+
+
+module.exports = {my_utc_time, getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,
           rows_count,ArrChunks,before_after_Date,isArray,isObject,userPowerUpsData,saveData};

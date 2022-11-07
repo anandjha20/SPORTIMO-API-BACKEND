@@ -53,8 +53,6 @@ const all_list_come = async(ids,num) =>{
         } catch (error) {  console.log('try error',error); return false; }
 }
 
-
-
 const autoincremental  = async(seq_id,mymodals) =>{
     try { 
                         

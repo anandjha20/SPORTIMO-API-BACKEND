@@ -1,6 +1,6 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
-const { userPowerUpsData,getcurntDate,getTime,saveData, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
+const {my_utc_time, userPowerUpsData,getcurntDate,getTime,saveData, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
 const { sendNotificationAdd } = require('../myModel/helper_fun');
 const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
 const  {MyBasePath} = require("../myModel/image_helper");
@@ -15,8 +15,10 @@ const { poll_percent} = require('../myModel/helper_fun');
     const playMatchCards_tbl   = require('../models/playMatchCards');   
     const play_match_cards     = require ("../models/playMatchCards");
     const used_power_ups_tbl   = require ("../models/used_power_ups");
-    const user_allotted_powerups_tbl   = require ("../models/user_allotted_powerUps");
+    const power_ups_tbl   = require ("../models/power_ups");
 
+    const user_allotted_powerups_tbl   = require ("../models/user_allotted_powerUps");
+    const team_matches_tbl = require("../models/team_matches");
 
    const prediction_card_categories = require("../models/prediction_card_categories")     
 class predictionController {   
@@ -281,7 +283,11 @@ class predictionController {
               let card_id          = req.body.card_id;
               let card_cat_id      = req.body.card_cat_id;  
               let point            = req.body.point;  
-               // || isEmpty(time_range_start)  ||  isEmpty(time_range_end)
+              let powerUpPoints    = req.body.powerUpPoints;
+              
+              powerUpPoints = (powerUpPoints>1)? powerUpPoints : 1;
+
+              // || isEmpty(time_range_start)  ||  isEmpty(time_range_end)
          
               if( isEmpty(match_card_id) || isEmpty(user_id) || isEmpty(user_option) ||
                        isEmpty(match_id) || isEmpty(card_id)  ){
@@ -292,15 +298,35 @@ class predictionController {
            if(checkuserData){
                return res.status(200).send({"status":true,"msg":'user already play this card' , "body":checkuserData  }) ;  
            }   
+/////////////////////////////////////////////////////////////
+            
+            let {userpowers,usedPoweUps_count} = await userPowerUpsData(user_id); 
 
-        let add = new playMatchCards_tbl({ match_card_id,user_id,user_option,time_range_start,
-                                          time_range_end,match_id,card_id,card_cat_id,point });
+            console.log({userpowers,usedPoweUps_count});                   
+
+            if(userpowers == 0 && usedPoweUps_count == 0 && (powerUpPoints > 1) ){
+              return res.status(200).send({"status":false,"msg":'You are not permission denied for powerUpPoints uses' }) ;   
+            }else if(usedPoweUps_count >= userpowers && (powerUpPoints > 1) ){
+              return res.status(200).send({"status":false,"msg": 'You are not permission denied for powerUpPoints uses'}) ;   
+              }else if(userpowers == 0 && (powerUpPoints > 1) ){ 
+                return res.status(200).send({"status":false,"msg":'You are not permission denied for powerUpPoints uses '}) ;   
+                }else{
+         /////////////////////////////////////////////////////////////
+                let add = new playMatchCards_tbl({ match_card_id,user_id,user_option,time_range_start,
+                                          time_range_end,match_id,card_id,card_cat_id,point,powerUpPoints });
              
                      add.save((err, data) => {
                            if (err) {  console.log(err);
                              return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
-                         }else{ return res.status(200).send({"status":true,"msg":'Match Card Created Successfully' , "body":data  }) ;            
+                         }else{
+                              
+                               let savedd = (powerUpPoints > 1)? saveData({user_id,match_id,card_id,"power_up_type":"score_multiplier"},used_power_ups_tbl) : '' ; 
+                                
+                          
+                          return res.status(200).send({"status":true,"msg":'Match Card Created Successfully' , "body":data  }) ;            
                         } });
+
+              }
            
         }catch (error) {  console.log(error); 
                return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
@@ -406,53 +432,74 @@ class predictionController {
                     let card_id          = req.body.card_id;
                     let card_cat_id      = req.body.card_cat_id;
                     let point            = req.body.point;
+                    let utc_time         = req.body.utc_time;
 
             if( isEmpty(match_card_id) || isEmpty(user_id)  || 
                   isEmpty(user_option) || isEmpty(match_id) || isEmpty(card_id) || 
                   isEmpty(card_cat_id)  ){
                   return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
-                      }   
+                      }  
+          // get match date time            
+          let matchData   = await team_matches_tbl.findOne({"_id":match_id},'date_utc');            
+            // get power Ups time (in minits ); 
+          let powerUpData = await power_ups_tbl.findOne({"power_up_type" : "change_prediction_card_answer"},'powerup_value');            
+          let result  = false; 
+          
+          
+    if(matchData && powerUpData){
+            let match_second = my_utc_time(matchData.date_utc);
+          //  let cur_second =  utc_time ; //my_utc_time();
+            let cur_second = my_utc_time();
+
+            // match second add on powerpus seconds
+            match_second  =  match_second + (60* powerUpData.powerup_value);
+          
+            result = (cur_second <= match_second)? true : false ; 
+
+      // return res.status(200).send({"status":true,"msg":'Success',"body":{powerUpData,result,match_second,cur_second,"date":matchData.date_utc} }) ;   
+
+      }else{
+        return res.status(200).send({"status":false,"msg":'Invalid match id' }) ;   
+       
+      }                      
+
  let {userpowers,usedPoweUps_count} = await userPowerUpsData(user_id); 
 
        console.log({userpowers,usedPoweUps_count});                   
  
   if(userpowers == 0 && usedPoweUps_count == 0 ){
-        return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation' , "body": ''}) ;   
+        return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation' }) ;   
       }else if(usedPoweUps_count >= userpowers){
-        return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation' , "body": ''}) ;   
+        return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation' }) ;   
+        }else{
+                if(result == true){
+                  return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation Time out '}) ;   
+                }
         }
   
-     
-      //return res.status(200).send({"status":false,"msg":'success' , "body": savedd }) ;   
-          
-
+    
        let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end ,match_id,
                                card_id, card_cat_id,point };                
       
-     playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
+         playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
      
         if(err){ console.log(err);
-          return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+          return res.status(200).send({"status":false,"msg":'An error occurred' }) ;   
       }else if(!isEmpty(updatedUser)){
-            let savedd =  saveData({user_id,match_id,card_id,"power_up_type":"score_multiplier"},used_power_ups_tbl)  ; 
+            let savedd = (result)? saveData({user_id,match_id,card_id,"power_up_type":"change_prediction_card_answer"},used_power_ups_tbl) : '' ; 
                 return res.status(200).send({"status":true,"msg":'Play Match Card Updated Successfully' , "body":updatedUser  }) ;   
-          }else{ return res.status(200).send({"status":false,"msg":'Invalid Play Match Card Id ' , "body": ''}) ;   
-                 
-        } 
+          }else{ return res.status(200).send({"status":false,"msg":'Invalid Play Match Card Id '}) ;   
+                  } 
         });
-
-
-
-           
+     
     }catch (error) {  console.log(error); 
-               return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
+               return res.status(200).send({"status":false,"msg":'No data add' }) ;          
    
            }
          
    
        }
-
-     
+           
        static playMatchCard_delete = async(req,res)=>{
         try {
                 let id = req.params.id;

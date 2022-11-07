@@ -32,6 +32,9 @@ Router.get("/get_card_0020",ConjobController.get_card_0020);
 Router.get("/get_card_0023",ConjobController.get_card_0023); 
 Router.get("/get_card_0036",ConjobController.get_card_0036); 
 Router.post("/update_match_data_by_date",ConjobController.update_match_data_by_date);  
+// add on mhn
+Router.get("/get_card_02",ConjobController.get_card_02); 
+Router.get("/get_card_21",ConjobController.get_card_21); 
 
 
 Router.get("/matchResult_show",ConjobController.matchResult_show);   

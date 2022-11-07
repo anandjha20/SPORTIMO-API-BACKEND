@@ -10,6 +10,7 @@ const playMatchCard_schema = new Schema({
                                            user_id          : {type:Schema.Types.ObjectId,ref:"user_tbl",required:true },  
                                            user_option      : {type:String,trim:true,default:'' },
                                            point            : {type:Number , default:1 }, 
+                                           powerUpPoints    : {type:Number , default:1 }, 
                                            ans              : {type:String , default:'' }, 
                                            time_range_start :  {type:Number , default:0 }, 
                                            time_range_end   :  {type:Number , default : 0 }, 

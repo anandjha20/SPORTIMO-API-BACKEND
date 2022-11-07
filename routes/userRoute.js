@@ -184,7 +184,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
      // match_card_list route   
       router.post('/match_card_list',predictionController.match_card_list); 
      // router.post('/match_card_list_2',predictionController.match_card_list_2); 
-
+ 
       // play Match  card add    
       router.post('/playMatchCard_add',predictionController.playMatchCard_add);
       router.post('/my_playMatchCard_list',predictionController.my_playMatchCard_list);

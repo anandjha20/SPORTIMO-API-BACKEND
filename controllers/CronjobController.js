@@ -21,8 +21,8 @@ const { day_match_getID,day_match_add, match_card_number, match_card_0011, match
   get_card_result_add_37, card_39_befor_call, get_card_result_add_39, card_34_befor_call, get_card_result_add_34,
   get_card_result_add_31, get_card_result_add_5, get_card_result_add_34_endTimesCall, get_card_result_add_26,
   getCardGreaterThan_16, getCardResult_16_END, getCardGreaterThan_03, getCardResult_03_END, getCardGreaterThan_06, getCardResult_06_END, getCardGreaterThan_09,
-  getCardResult_09_END, getCardGreaterThan_19, getCardResult_19_END, getCardGreaterThan_22, getCardResult_22_END
-} = require("../myModel/Live_match_api_helper");
+  getCardResult_09_END, getCardGreaterThan_19, getCardResult_19_END, getCardGreaterThan_22, getCardResult_22_END,
+  get_card_result_add_21,getCardResult_21_END,get_card_result_add_02,getCardResult_02_END } = require("../myModel/Live_match_api_helper");
 const { Promise } = require("mongoose");
 
 class ConjobController {
@@ -69,7 +69,151 @@ class ConjobController {
     }
   }
 ////////// //////////////////////// start  used function for card ////////////////////////////////////////////////
-  static get_card_16 = async (req, res) => {
+         
+        static get_card_21 = async (req, res) => {
+              try {
+
+              
+                let match_id = "2701241"//req.body.match_id; // 2701198;
+                console.log("get_card-21 match_id is  === ", match_id);
+                let data = await matchCardEventAllData(match_id);
+                if (data) {
+                  let sum = data.events[0].corners[0].event;
+
+                  let team_a_original_name = data.team_a_original_name;
+                  let team_b_original_name = data.team_b_original_name;
+
+                  // check event count     
+                  let shots_count = await match_event_shot_tbl.find({ "match_id": match_id, "event_type": "corners" }, "shots_count");
+                  let right_ans = '';
+                  console.log(shots_count)
+                  if (isEmpty(shots_count)) {
+                    // add event count row   for  match_event_shot table   
+                    let add = new match_event_shot_tbl({
+                      match_id, "event_type": "corners", "shots_count": sum.length
+                    });
+                    let add_rows = await add.save();
+
+
+                    if (sum.length > 0) {
+                      if (team_a_original_name == sum[0].team) {
+                        right_ans = "opt_1";
+                      } else if (team_b_original_name == sum[0].team) {
+                        right_ans = "opt_2";
+                      } else { right_ans = "opt_3"; }
+                      console.log("first function call == ");
+                      // this function use for user card result set  on  
+                      let resss = await get_card_result_add_21({ right_ans, match_id });
+                    }
+
+                    return res.status(200).send({ 'status': true, 'msg': 'success', 'body': shots_count });
+
+                  } else {
+                    let num_my = shots_count[0].shots_count;
+                    let all_arr = sum[num_my];
+
+
+                    if (all_arr) {
+                      if (team_a_original_name == all_arr.team) {
+                        right_ans = "opt_1";
+                      } else if (team_b_original_name == all_arr.team) {
+                        right_ans = "opt_2";
+                      } else { right_ans = "opt_3"; }
+
+                      // this function use for user card result set  on  
+                      let resss = await get_card_result_add_21({ right_ans, match_id });
+
+                      // match_event count update 
+                      let match_eventUpdate = match_event_shot_tbl.findOneAndUpdate({ "match_id": match_id, "event_type": "corners" }, { $set: { "shots_count": sum.length } }, { new: true }, (err, updatedUser) => {
+                        if (err) { console.log(err); return false } else { return true }
+                      });
+
+
+
+                    }
+
+                    return res.status(200).send({ 'status': true, 'msg': 'success 11', 'body': all_arr });
+                  }
+                } else {
+                  return res.status(200).send({ 'status': false, 'msg': 'No Data Found!..', 'body': '' });
+
+                }
+
+              } catch (error) {
+                console.log(error);
+                return res.status(200).send({ 'status': false, 'msg': 'servr error' });
+              }
+            }
+
+        static get_card_02 = async (req, res) => {
+              try {
+
+              
+                let match_id = "2701241"//req.body.match_id; // 2701198;
+                console.log("get_card-21 match_id is  === ", match_id);
+                let data = await matchCardEventAllData(match_id);
+                if (data) {
+                  let sum = data.events[0].bookings[0].event;
+
+                  // check event count     
+                  let shots_count = await match_event_shot_tbl.find({ "match_id": match_id, "event_type": "yellow_card_02" }, "shots_count");
+                  let right_ans = '';
+                  console.log(shots_count)
+                  if (isEmpty(shots_count) ) {
+                    // add event count row   for  match_event_shot table   
+                    let add = new match_event_shot_tbl({
+                      match_id, "event_type": "yellow_card_02", "shots_count": sum.length
+                    });
+                    let add_rows = await add.save();
+
+
+                    if (sum.length > 0) {
+                      if (sum[0].type=="yellow_card") {
+                        right_ans = "opt_1";
+                        console.log("first function call == ");
+                        // this function use for user card result set  on  
+                        let resss = await get_card_result_add_02({ right_ans, match_id });
+                      } 
+                    }
+
+                    return res.status(200).send({ 'status': true, 'msg': 'success', 'body': shots_count });
+
+                  } else {
+                    let num_my = shots_count[0].shots_count;
+                    let all_arr = sum[num_my];
+
+
+                    if (all_arr) {
+                      if (all_arr.type=="yellow_card") {
+                        right_ans = "opt_1";
+                        let resss = await get_card_result_add_02({ right_ans, match_id });
+                      }
+                      // this function use for user card result set  on  
+
+                      // match_event count update 
+                      let match_eventUpdate = match_event_shot_tbl.findOneAndUpdate({ "match_id": match_id, "event_type": "yellow_card_02" }, { $set: { "shots_count": sum.length } }, { new: true }, (err, updatedUser) => {
+                        if (err) { console.log(err); return false } else { return true }
+                      });
+
+
+
+                    }
+
+                    return res.status(200).send({ 'status': true, 'msg': 'success 11', 'body': all_arr });
+                  }
+                } else {
+                  return res.status(200).send({ 'status': false, 'msg': 'No Data Found!..', 'body': '' });
+
+                }
+
+              } catch (error) {
+                console.log(error);
+                return res.status(200).send({ 'status': false, 'msg': 'servr error' });
+              }
+            }
+
+/////////////////---------------------------------------------////////////////////////////////////////
+static get_card_16 = async (req, res) => {
     try {
 
       let response = await day_match_getID();
@@ -774,7 +918,11 @@ static get_card_008 = async (req, res) => {
         let dx09 = await getCardResult_09_END({data});   // **** make date 2022-11-02 ***
         let dx19   = await getCardResult_19_END({data});  // **** make date 2022-11-02 ***
          let dx22   = await getCardResult_22_END({data});   // **** make date 2022-11-02 ***
-
+      /// add this function by mhn
+         let dx21 = await getCardResult_21_END({data});  
+         let dx2 = await getCardResult_02_END({data});  
+ 
+ 
         return res.status(200).send({ 'status': true, 'msg': "success", 'body': "" });
       } else {
         return res.status(200).send({ 'status': false, 'msg': 'This match result not show time ', "body": "" });
