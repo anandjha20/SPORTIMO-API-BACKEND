@@ -111,11 +111,14 @@ const userReportImg =  img_upload('./assets/user_img','image');
     // chat group add   group participant 
      router.post('/chat_group_add',chatController.chat_group_add);
      router.post('/group_participant_add',chatController.group_participant_add);
-     router.get('/chat_group_list/:id?',chatController.chat_group_list);                       
+     router.get('/chat_group_list/:id?',chatController.chat_group_list);  
+     
+     
      router.get('/group_participant_list/:id?',chatController.group_participant_list);                       
    
    // get Firebase Chat Data 
     router.get('/getFirebaseChatData',FirebaseController.getFirebaseChatData); 
+    router.get('/firebase_group_list/:id?',FirebaseController.firebase_group_list); 
 
 
     // get introSlider list  

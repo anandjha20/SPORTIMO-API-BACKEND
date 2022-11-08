@@ -17,7 +17,9 @@
      const user_tokens_tbl = require('../models/user_tokens');
      const team_matches = require('../models/team_matches');
     const block_user_tbl = require("../models/block_user");
-   const transaction_tbls = require("../models/transactions")    
+   const transaction_tbls = require("../models/transactions") ;
+   const geq_tbl= require('../models/geq_tbl');
+   const geq_answers= require('../models/geq_answers');   
     const mongoose = require('mongoose');
 
     const  poll_percent = async(poll_id) =>{
@@ -333,5 +335,56 @@ const sendNotificationAdd = (my_obj )=>{
 
   } 
 
-module.exports = { poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne,
+  const geqWin = async (req)=>{
+    try{
+      console.log(req)
+        let _id=req._id;
+        let geq_id=req.geq_id;
+        let user_id=req.user_id;
+        let match_id=req.match_id;
+        let points=req.points;
+        let type="credit";
+        let points_by="geq";
+        if(!isEmpty(req)){
+          let data = await geq_answers.findOneAndUpdate({_id},{active:0,status:"win"});
+          let transaction= transaction_tbls({geq_id,user_id,match_id,points,type,points_by});
+          let tDATA= await transaction.save()
+          if(tDATA){
+            return true;
+          }else{
+            return false;
+          }
+        }else{
+          console.log("111111")
+          return false;
+        }
+    }catch (error){
+        console.log(error);
+        return false;
+    }
+  }
+  
+  const geqLose = async (req)=>{
+  try{
+    console.log(req)
+      let _id=req._id;
+      if(!isEmpty(req)){
+        let data = await geq_answers.findOneAndUpdate({_id},{active:0,status:"lose"});
+        if(data){
+          return true;
+        }else{
+          return false;
+        }
+      }else{
+        return false;
+      }
+  }catch (error){
+      console.log(error);
+      return false;
+  }
+  }
+  
+  
+
+module.exports = {geqWin,geqLose, poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne,
             myBlockUserIds,matchWinUsersRank,matchWinUsersRank_one,AllMatchWinUsersRank,AllMatchWinUsersRank_one }

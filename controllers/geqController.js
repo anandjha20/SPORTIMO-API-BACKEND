@@ -1,12 +1,17 @@
 let  express_2 = require('express');
   
 const { rows_count,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
+const { geqWin , geqLose } = require('../myModel/helper_fun');
    
   
  const geq_tbl= require('../models/geq_tbl');
  const geq_answers= require('../models/geq_answers');
-    
+ const transactions_tbl = require('../models/transactions');
+
+
 class geqController { 
+
+ 
 
   static add_geq = async (req,res)=>{
     try {
@@ -17,11 +22,11 @@ class geqController {
          let duration = req.body.duration;
          
          let qus = req.body.qus;      let qus_ara = req.body.qus_ara;
-         let ops_1 = req.body.ops_1;  let ops_1_ara = req.body.ops_1_ara;
-         let ops_2 = req.body.ops_2;  let ops_2_ara = req.body.ops_2_ara;
-         let ops_3 = req.body.ops_3;  let ops_3_ara = req.body.ops_3_ara;
-         let ops_4 = req.body.ops_4;  let ops_4_ara = req.body.ops_4_ara;
-         let ops_5 = req.body.ops_5;  let ops_5_ara = req.body.ops_5_ara;
+         let opt_1 = req.body.opt_1;  let opt_1_ara = req.body.opt_1_ara;
+         let opt_2 = req.body.opt_2;  let opt_2_ara = req.body.opt_2_ara;
+         let opt_3 = req.body.opt_3;  let opt_3_ara = req.body.opt_3_ara;
+         let opt_4 = req.body.opt_4;  let opt_4_ara = req.body.opt_4_ara;
+         let opt_5 = req.body.opt_5;  let opt_5_ara = req.body.opt_5_ara;
          
          let reward_type    = req.body.reward_type;
          let reward_quantity = req.body.reward_quantity;
@@ -33,9 +38,9 @@ class geqController {
          let targeted_team = req.body.targeted_team;
          let targeted_league = req.body.targeted_league;
 
-         const details={match_id,match_name,event,appearance_time,duration,qus,qus_ara,ops_1,ops_1_ara,ops_2,ops_2_ara,ops_3,ops_3_ara,ops_4,ops_4_ara,ops_5,ops_5_ara,reward_type,reward_quantity,reward_condition,targeted_country,targeted_sport,targeted_player,targeted_team,targeted_league};
+         const details={match_id,match_name,event,appearance_time,duration,qus,qus_ara,opt_1,opt_1_ara,opt_2,opt_2_ara,opt_3,opt_3_ara,opt_4,opt_4_ara,opt_5,opt_5_ara,reward_type,reward_quantity,reward_condition,targeted_country,targeted_sport,targeted_player,targeted_team,targeted_league};
 
-         if(!isEmpty(match_id) || !isEmpty(event) || !isEmpty(qus) || !isEmpty(qus_ara) || !isEmpty(ops_1) || !isEmpty(ops_1_ara) || !isEmpty(ops_2) || !isEmpty(ops_2_ara) ||!isEmpty(ops_3) || !isEmpty(ops_3_ara)){
+         if(!isEmpty(match_id) || !isEmpty(event) || !isEmpty(qus) || !isEmpty(qus_ara) || !isEmpty(opt_1) || !isEmpty(opt_1_ara) || !isEmpty(opt_2) || !isEmpty(opt_2_ara) ||!isEmpty(opt_3) || !isEmpty(opt_3_ara)){
              let obj=new geq_tbl(details);
              let response=await obj.save()
              if(!isEmpty(response)){
@@ -64,11 +69,11 @@ static update_geq = async (req,res)=>{
             let duration = req.body.duration;
             
             let qus = req.body.qus;      let qus_ara = req.body.qus_ara;
-            let ops_1 = req.body.ops_1;  let ops_1_ara = req.body.ops_1_ara;
-            let ops_2 = req.body.ops_2;  let ops_2_ara = req.body.ops_2_ara;
-            let ops_3 = req.body.ops_3;  let ops_3_ara = req.body.ops_3_ara;
-            let ops_4 = req.body.ops_4;  let ops_4_ara = req.body.ops_4_ara;
-            let ops_5 = req.body.ops_5;  let ops_5_ara = req.body.ops_5_ara;
+            let opt_1 = req.body.opt_1;  let opt_1_ara = req.body.opt_1_ara;
+            let opt_2 = req.body.opt_2;  let opt_2_ara = req.body.opt_2_ara;
+            let opt_3 = req.body.opt_3;  let opt_3_ara = req.body.opt_3_ara;
+            let opt_4 = req.body.opt_4;  let opt_4_ara = req.body.opt_4_ara;
+            let opt_5 = req.body.opt_5;  let opt_5_ara = req.body.opt_5_ara;
             
             let reward_type    = req.body.reward_type;
             let reward_quantity = req.body.reward_quantity;
@@ -88,16 +93,16 @@ static update_geq = async (req,res)=>{
             if(!isEmpty(duration)){details={...details,duration}};
             if(!isEmpty(qus)){details={...details,qus}};
             if(!isEmpty(qus_ara)){details={...details,qus_ara}};
-            if(!isEmpty(ops_1)){details={...details,ops_1}};
-            if(!isEmpty(ops_2)){details={...details,ops_2}};
-            if(!isEmpty(ops_3)){details={...details,ops_3}};
-            if(!isEmpty(ops_4)){details={...details,ops_4}};
-            if(!isEmpty(ops_5)){details={...details,ops_5}};
-            if(!isEmpty(ops_1_ara)){details={...details,ops_1_ara}};
-            if(!isEmpty(ops_2_ara)){details={...details,ops_2_ara}};
-            if(!isEmpty(ops_3_ara)){details={...details,ops_3_ara}};
-            if(!isEmpty(ops_4_ara)){details={...details,ops_4_ara}};
-            if(!isEmpty(ops_5_ara)){details={...details,ops_5_ara}};
+            if(!isEmpty(opt_1)){details={...details,opt_1}};
+            if(!isEmpty(opt_2)){details={...details,opt_2}};
+            if(!isEmpty(opt_3)){details={...details,opt_3}};
+            if(!isEmpty(opt_4)){details={...details,opt_4}};
+            if(!isEmpty(opt_5)){details={...details,opt_5}};
+            if(!isEmpty(opt_1_ara)){details={...details,opt_1_ara}};
+            if(!isEmpty(opt_2_ara)){details={...details,opt_2_ara}};
+            if(!isEmpty(opt_3_ara)){details={...details,opt_3_ara}};
+            if(!isEmpty(opt_4_ara)){details={...details,opt_4_ara}};
+            if(!isEmpty(opt_5_ara)){details={...details,opt_5_ara}};
             if(!isEmpty(reward_type)){details={...details,reward_type}};
             if(!isEmpty(reward_quantity)){details={...details,reward_quantity}};
             if(!isEmpty(reward_condition)){details={...details,reward_condition}};
@@ -264,6 +269,42 @@ static geq_list = async (req,res)=>{
     }
             
   } 
+
+  static geq_ans_update = async (req,res)=>{
+    try {
+         let _id = req.body.geq_id;
+         let correct_ans = req.body.correct_ans;
+         
+         if(!isEmpty(_id) ){
+            let geq_data=await geq_tbl.findOneAndUpdate({_id},{correct_ans,result_disclosed:1},{new:true})
+            let response=await geq_answers.find({"geq_id":_id,active:1});
+            response.map(async (item)=>{
+                if(item.user_ans==correct_ans){
+                  console.log("=============")  
+                  let win = await geqWin({_id:item._id,geq_id:_id,user_id:item.user_id,points:geq_data.reward_quantity,match_id:geq_data.match_id})
+                }else{
+                  console.log("---------")
+                    let lose = await geqLose({_id:item._id})
+                }
+            })
+            
+            if(!isEmpty(response)){
+                 res.status(200).send({'status':true,'msg':'success','body':geq_data});
+             }else{
+                 res.status(200).send({'status':false,'msg':'no data found'});
+             }
+
+         }else{
+            res.status(200).send({'status':false,'msg':'all field required'});
+         }
+        
+    } catch (error) { console.log(error);
+        res.status(200).send({'status':false,'msg':'server error','body':''});
+    }
+            
+  } 
+
+
 
 
 }

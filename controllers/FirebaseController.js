@@ -7,7 +7,7 @@ const local_default = require("../local_default.json");
     credential: admin.credential.cert(serviceAccount),
     databaseURL: local_default.FIRBASEDBURL, //   ..process.env.FIRBASEDBURL ,
   });
-
+  
   const FirebaseDB = admin.firestore();
 
 class FirebaseController {
@@ -47,12 +47,25 @@ class FirebaseController {
         let group_id = req.params.id; 
       
          // let snaps = await FirebaseDB.collection('messages')
-           
+        
                         if(isEmpty(group_id)){
                           var snaps = await FirebaseDB.collection('groups').get();    ///.doc('chats').collection('chats').get();    
                         }else{
                           var snaps = await FirebaseDB.collection('groups') .where('id', '=',group_id).get();   //collection('chats').get();   
-                        }
+                     
+                     //   snaps = await FirebaseDB.collection("groups") .where('id', '=',group_id).get().then((querySnapshot) => {
+                             // querySnapshot.map((doc) => { console.log(`${doc.chats} => ${doc.data()}`);})
+                      //          console.log(" fgggfgf ==== ",querySnapshot);
+                     //   });
+                     
+                      //  const snaps = await FirebaseDB.collection("groups").doc("635cc5d0f1943a31ef50c4f2").collection('chats').doc('B6pMAPPULNxJI7c0qEPX').get();
+
+                      ///  console.log(snaps.data());          
+
+
+                      }
+              // console.log("firebase call === ",snaps);          
+   
           //  .where('id', '=',group_id)
                         //.where('uid', '=',group_id)
                             //.orderBy('_createTime._seconds', 'desc')
@@ -60,18 +73,36 @@ class FirebaseController {
                        // .get();
                             
                       let job = [];    
-                      snaps.forEach(doc => {
-                        job.push(doc.data());
-                         //  job.push(doc); 
-                            });
+                      snaps.forEach( async doc => {
+                        
+                     
+                        // let m_res = await FirebaseDB.collection('chats').doc(doc.id).get();
+                        //      //  let m_res = await FirebaseDB.collection('chats').where("id").get();  
+                     
+                     
+                        //      let snapshot = await FirebaseDB.firestore()
+                        //      .collection('groups')
+                        //      .doc('0bayKbCiAchc0Vy9XuxT')
+                        //      .collection('qa')
+                        //      .get()
+                             
+                        //      snapshot.forEach(doc =>{ 
+                        //        console.log('hello', doc.data())
+                        //      })   
+                     
+                     
+                     
+                             job.push(doc.data() );
+                        //  job.push(doc); 
+                           });
               
-                      return  res.status(200).send({"status":true, "msg": "success", "body": job}); 
+                      return  res.status(200).send({"status":true, "msg": "success", "body": job }); 
               
                 } catch (error) {  console.log("demo tesing ==  ",error);
                   return res.status(200).send({"status":false, "msg": error, "body": ''}); 
                 }
 
-}
+    }
 
 
 

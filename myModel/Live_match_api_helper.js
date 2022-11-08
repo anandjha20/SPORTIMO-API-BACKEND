@@ -2385,7 +2385,7 @@ const getCardGreaterThan_22 = async(match_id)=>{
                                    
      //  return allUsersData ;                  
        
-        console.log( "live game mint nums  ==========", game_minute);                             
+        console.log( "live game mint nums ======", game_minute);                             
                              
     if (! isEmpty(allUsersData) ){
       let allData = await Promise.all( allUsersData.map( async (item)=>{ 

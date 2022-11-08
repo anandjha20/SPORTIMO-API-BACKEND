@@ -257,6 +257,8 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
  router.put('/update_geq',geqController.update_geq);
  router.post('/geq_list',geqController.geq_list);
  router.delete('/delete_geq/:id?',geqController.delete_geq);
+ router.post('/geq_ans_update',geqController.geq_ans_update);
+ 
  
   
  router.post('/all_user_prediction',predictionController.all_user_prediction);
