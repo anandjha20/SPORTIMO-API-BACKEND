@@ -702,20 +702,40 @@ class predictionController {
                     
                 }   
 
-static akk = async(req,res)=>{
+static my_played_matches = async(req,res)=>{
   try{        
         let  user_id = req.params.id;
           let pipeLine = [];
-          pipeLine.push({"$match":{"user_id":user_id}});
-          pipeLine.push( {$group: { _id: "$grade",  records: { $push: "$$ROOT" } } });
 
+       // let newId = mongoose.ObjectId(user_id);  matchDatatbl
+        let newId =  mongoose.Types.ObjectId(user_id);
+   
+        
+        pipeLine.push({$match:{"user_id":newId,"active":false}});
+
+       pipeLine.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'team_matches_tbl'} });
+        pipeLine.push({$unwind : "$team_matches_tbl"});
+
+        pipeLine.push({ $lookup: {from: 'prediction_cards', localField: 'card_id', foreignField: '_id', as: 'card_tbl'} });
+        pipeLine.push({$unwind : "$card_tbl"});
+
+
+       pipeLine.push({ $project: {"_id":0,"match_name":"$team_matches_tbl.match_name", "card_name":"$card_tbl.name","qus":"$card_tbl.qus", "match_card_id":1,"card_id":1,"match_id":1,"result":1 }});
+    
+    
+      pipeLine.push( {$group: { _id: "$match_id",  total_cards : { $sum: 1 },records: { $push: "$$ROOT" }  } });
+    
+     // pipeLine.push({ $lookup: {from: 'team_matches', localField: '_id', foreignField: 'match_id', as: 'matchDatatbl'} });
+         
         let datas =  await playMatchCards_tbl.aggregate(pipeLine).exec();
-               
+          
+                    console.log('pipeLine == ',pipeLine);    
+          
            if(!isEmpty(datas)){
                  // let records = await play_match_cards.find(whr).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
                   res.status(200).send({'status':true,'msg':"success",  'body':datas });
                 }else{
-                  res.status(200).send({'status':true,'msg':"No data found!.." });
+                  res.status(200).send({'status':true,'msg':"No data found!..",'body':datas  });
                 }  
 
         } catch (error) { console.log(error);

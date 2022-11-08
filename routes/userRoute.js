@@ -238,7 +238,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
      
      
    /// testing routs  
-      router.get('/akk/:id?',predictionController.akk); 
+      router.get('/my_played_matches/:id?',predictionController.my_played_matches); 
 
 
 
