@@ -9,22 +9,24 @@ import IconButton from '@mui/material/IconButton';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Moment from 'moment';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import Swal from 'sweetalert2';
 
 export default function TableGameEngagemt(props) {
 
     const [pageCount, setpageCount] = useState('');
     const [guestUser, setGuest] = React.useState(0);
-
     const [data, setData] = useState([]);
     const [responce, setResponce] = useState([]);
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const header = ({ 'token': `${token}` });
     const options = ({ headers: header });
-
     const limit = 10;
-    
     const formsave = (e, page)=>{
         e.preventDefault();
           const data = new FormData(e.target);
@@ -45,6 +47,7 @@ export default function TableGameEngagemt(props) {
            })
           
      }
+
 
     const geqlist = async () => {
         const datadammy = {}
@@ -170,6 +173,45 @@ const editFun = (id, item)=>{
   const matchOptions = (matchname.length > 0) ? matchname.map((item) => {
     return { value: item._id, label: item.match_name };
   }) : [];
+
+  const [open, setOpen] = React.useState(false);
+  const [itemdata, setItem] = React.useState([]);
+  const handleClickOpen = (item) => {
+    setOpen(true);
+    console.log(item);
+    setItem(item);
+};
+
+const handleClose = () => {
+    setOpen(false);
+};
+
+
+
+const formresult = async (e)=>{
+    e.preventDefault();
+      const data = new FormData(e.target);
+     const Formvlaues = Object.fromEntries(data.entries());
+    //  let demodata={"match_id":"634a6b9df68bced78a4844e4"}
+      console.log('Formvlaues === ', Formvlaues);
+        await axios.post(`/web_api/geq_ans_update`,Formvlaues)
+       .then(res => {
+        if (res.status) {
+            let data = res.data;
+            if (data.status) { 
+                toast.success(data.msg);
+                setOpen(false);
+                return geqlist();
+                
+            } else {
+                toast.error(data.msg);
+            }
+        }
+       })
+      
+  }
+  
+
   useEffect(() => {
     SelectMatch();
   }, [])
@@ -231,6 +273,7 @@ const editFun = (id, item)=>{
                                     <th scope="col">Rewards Coins</th>
                                     <th scope="col">Appearance Time</th>
                                     <th scope="col">Duration</th>
+                                    <th>Result</th>
                                     <th scope="col" className="text-end">Actions</th>
                                 </tr>
                             </thead>
@@ -252,7 +295,10 @@ const editFun = (id, item)=>{
                                             <td>{item.reward_quantity}</td>
                                             <td>{item.appearance_time}</td>
                                             <td>{item.duration}</td>
-                                           
+                                           <td>
+                                             { item.result_disclosed == true ? <> <span>Result Disclosed</span></> : null}
+                                            {item.result_disclosed == false ? <><Button  onClick={(e) => { handleClickOpen(item); }}  type='submit' className="mr-3 btn-pd btnBg">Disclose</Button></> : null }
+                                            </td>
                                             {/* <td>{Moment(item.date).format("DD/MM/YYYY")}</td> */}
                                             <td className="text-end">
                                                 <div className="d-flex justtify-content-end">
@@ -303,6 +349,35 @@ const editFun = (id, item)=>{
                 <div>
                 </div>
             </div>
+
+            <Dialog className="notifi-style" open={open} onClose={handleClose}>
+                        <DialogTitle><i className="fal fa-paper-plane"></i> &nbsp;Result Disclose</DialogTitle>
+                        <DialogContent>
+                            <form onSubmit={(e)=>formresult(e)}>
+                            <div className="col-lg-12 mt-2 mb-3 reletive mb-3">
+                            <input type="hidden" value={itemdata._id} name="geq_id" />
+                            <span className="react-select-title">Select Rewards Type</span>
+                            <select className="form-control" name="correct_ans">
+                                <option disabled>Please Select</option>
+                                {itemdata.opt_1 !== "" ?  <><option value="opt_1">{itemdata.opt_1}</option></> : null}
+                                {itemdata.opt_2 !== "" ?  <><option value="opt_2">{itemdata.opt_2}</option></> : null}
+                                {itemdata.opt_3 !== "" ?  <><option value="opt_3">{itemdata.opt_3}</option></> : null}
+                                {itemdata.opt_4 !== "" ?  <><option value="opt_4">{itemdata.opt_4}</option></> : null}
+                                {itemdata.opt_5 !== "" ?  <><option value="opt_5">{itemdata.opt_5}</option></> : null}
+{/*                                 
+                                <option value="opt_2">{itemdata.opt_2}</option>
+                                <option value="opt_3">{itemdata.opt_3}</option>
+                                <option value="opt_4">{itemdata.opt_4}</option>
+                                <option value="opt_5">{itemdata.opt_5}</option> */}
+                            </select>
+                        </div>
+                            <DialogActions className="mb-0">
+                            <Button className="mr-3" onClick={handleClose}>Cancel</Button>
+                            <Button type="submit" variant="contained" className="mr-3 btn-pd btnBg">Submit</Button>
+                             </DialogActions>
+                            </form>
+                        </DialogContent>
+                      </Dialog>
            
         </>
 

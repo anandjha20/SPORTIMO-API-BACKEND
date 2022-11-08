@@ -74701,7 +74701,8 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-sub, 
 .camp_list .nav-link-child .nav-sub, 
 .preference_list .nav-master-child .nav-sub, 
-.sponer_list .nav-spon-local .nav-sub 
+.sponer_list .nav-spon-local .nav-sub, 
+.analytics .nav-anlitcys-child .nav-sub 
 {
     max-height: 100vh;
     transition: all 2s;
@@ -74710,6 +74711,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link,
 .camp_list .nav-link-child .nav-link,
 .preference_list .nav-master-child .nav-link,
+.analytics .nav-anlitcys-child .nav-link,
 .sponer_list .nav-spon-local .nav-link
 {
     background-color: #1f242a;
@@ -74729,6 +74731,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link:after,
 .camp_list .nav-link-child .nav-link:after,
 .preference_list .nav-master-child .nav-link:after,
+.analytics .nav-anlitcys-child .nav-link:after,
 .sponer_list .nav-spon-local .nav-link:after
 {
     content: "";
@@ -74746,6 +74749,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link .shape1, .faq_list .nav-link-local .nav-link .shape2, 
 .camp_list .nav-link-child .nav-link .shape1, .camp_list .nav-link-child .nav-link .shape2, 
 .preference_list .nav-master-child .nav-link .shape1, .preference_list .nav-master-child .nav-link .shape2,
+.analytics .nav-anlitcys-child .nav-link .shape1, .analytics .nav-anlitcys-child .nav-link .shape2,
 .sponer_list .nav-spon-local .nav-link .shape1, .sponer_list .nav-spon-local .nav-link .shape2
 {
     background: #1f242a;
@@ -74753,6 +74757,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link:before, 
 .camp_list .nav-link-child .nav-link:before, 
 .preference_list .nav-master-child .nav-link:before,
+.analytics .nav-anlitcys-child .nav-link:before,
 .sponer_list .nav-spon-local .nav-link:before
 {
     content: "";
@@ -74771,6 +74776,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link .sidemenu-label, 
 .camp_list .nav-link-child .nav-link .sidemenu-label,
 .preference_list .nav-master-child .nav-link .sidemenu-label,
+.analytics .nav-anlitcys-child .nav-link .sidemenu-label,
 .sponer_list .nav-spon-local .nav-link .sidemenu-label
 {
     color: #fff;
@@ -74778,6 +74784,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link .sidemenu-icon, 
 .camp_list .nav-link-child .nav-link .sidemenu-icon,
 .preference_list .nav-master-child .nav-link .sidemenu-icon,
+.analytics .nav-anlitcys-child .nav-link .sidemenu-icon,
 .sponer_list .nav-spon-local .nav-link .sidemenu-icon
 {
     background: #5d6063;
@@ -74786,6 +74793,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link:after, .faq_list .nav-link-local .nav-link:before,
 .camp_list .nav-link-child .nav-link:after, .camp_list .nav-link-child .nav-link:before,
 .preference_list .nav-master-child .nav-link:after, .preference_list .nav-master-child .nav-link:before,
+.analytics .nav-anlitcys-child .nav-link:after, .analytics .nav-anlitcys-child .nav-link:before,
 .sponer_list .nav-spon-local .nav-link:after, .sponer_list .nav-spon-local .nav-link:before
 {
     border-right: 20px solid #171e24;
@@ -74794,6 +74802,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link .sidemenu-icon, 
 .camp_list .nav-link-child .nav-link .sidemenu-icon, 
 .preference_list .nav-master-child .nav-link .sidemenu-icon, 
+.analytics .nav-anlitcys-child .nav-link .sidemenu-icon, 
 .sponer_list .nav-spon-local .nav-link .sidemenu-icon 
 {
     font-size: 18px;
@@ -74811,6 +74820,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link .shape1,
 .camp_list .nav-link-child .nav-link .shape1,
 .preference_list .nav-master-child .nav-link .shape1,
+.analytics .nav-anlitcys-child .nav-link .shape1,
 .sponer_list .nav-spon-local .nav-link .shape1
 {
     position: absolute;
@@ -74823,6 +74833,7 @@ padding: 8px 12px 8px;
 .faq_list .nav-link-local .nav-link .shape2, 
 .camp_list .nav-link-child .nav-link .shape2, 
 .preference_list .nav-master-child .nav-link .shape2, 
+.analytics .nav-anlitcys-child .nav-link .shape2, 
 .sponer_list .nav-spon-local .nav-link .shape2 
 {
     position: absolute;

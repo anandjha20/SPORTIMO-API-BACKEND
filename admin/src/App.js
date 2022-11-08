@@ -55,6 +55,10 @@ import ViewUserPointsTransaction from "./LeaderBoard/ViewUserPointsTransaction";
 import CreateAvatar from "./AvatarManagement/CreateAvatar";
 import UserPredistions from "./PredictionManagement/userPredictionList";
 import UserPredictionListDetail from "./PredictionManagement/UserPredictionListDetail";
+import GEQAnalyticsMangement from "./AnalyticsMangement/GEQAnalyticsMangement";
+import SupportAnalyticsMangement from "./AnalyticsMangement/SupportAnalyticsMangement";
+import ProfileAnalyticsMangement from "./AnalyticsMangement/ProfileAnalyticsMangement";
+import UserAnalyticsMangement from "./AnalyticsMangement/UserAnalyticsMangement";
 
 function App() {
 
@@ -166,6 +170,15 @@ function App() {
         <Route path="/preference/teams" element={ <TeamsPreference /> } />
         <Route path="/preference/leagues" element={ <LeaguesPreference /> } />
         <Route path="/preference/players" element={ <PlayersPreference /> } />
+
+        {/*AnalyticsMangement */} 
+        <Route path="/analytics/user" element={ <UserAnalyticsMangement /> } />
+        <Route path="/analytics/geq" element={ <GEQAnalyticsMangement /> } />
+        <Route path="/analytics/support" element={ <SupportAnalyticsMangement /> } />
+        <Route path="/analytics/user-profile" element={ <ProfileAnalyticsMangement /> } />
+        {/* <Route path="/preference/teams" element={ <TeamsPreference /> } />
+        <Route path="/preference/leagues" element={ <LeaguesPreference /> } />
+        <Route path="/preference/players" element={ <PlayersPreference /> } /> */}
        
       </Routes>
     </>

@@ -544,26 +544,26 @@ function GameEngagementQuestions() {
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(English)</span></label>
-                              <input type='text' autoComplete="off" name='ops_1' placeholder="Enter Answer" className="card-control form-control" />
+                              <input type='text' autoComplete="off" name='opt_1' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
 
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(Arabic)</span></label>
-                              <input type='text' autoComplete="off" name='ops_1_ara' placeholder="Enter Answer" className="card-control form-control" />
+                              <input type='text' autoComplete="off" name='opt_1_ara' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
 
                           
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(English)</span></label>
-                              <input type='text' autoComplete="off" name='ops_2' placeholder="Enter Answer" className="card-control form-control" />
+                              <input type='text' autoComplete="off" name='opt_2' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
 
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(Arabic)</span></label>
-                              <input type='text' autoComplete="off" name='ops_2_ara' placeholder="Enter Answer" className="card-control form-control" />
+                              <input type='text' autoComplete="off" name='opt_2_ara' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
                            
                             <div className="col-lg-12">
@@ -574,26 +574,38 @@ function GameEngagementQuestions() {
 
                                   <div className="col-lg-6 mb-4">
                                     <label className="title-col mb-0">Answer 3 <span className="text-blue">(English)</span></label>
-                                    <input type='text' autoComplete="off" name='ops_3' placeholder="Enter Answer" className="card-control form-control" />
+                                    <input type='text' autoComplete="off" name='opt_3' placeholder="Enter Answer" className="card-control form-control" />
 
                                   </div>
 
                                   <div className="col-lg-6 mb-4">
                                     <label className="title-col mb-0">Answer 3 <span className="text-blue">(Arabic)</span></label>
-                                    <input type='text' autoComplete="off" name='ops_3_ara' placeholder="Enter Answer" className="card-control form-control" />
+                                    <input type='text' autoComplete="off" name='opt_3_ara' placeholder="Enter Answer" className="card-control form-control" />
 
                                   </div>
 
                                  
                                   <div className="col-lg-6 mb-4">
                                     <label className="title-col mb-0">Answer 4 <span className="text-blue">(English)</span></label>
-                                    <input type='text' autoComplete="off" name='ops_4' placeholder="Enter Answer" className="card-control form-control" />
+                                    <input type='text' autoComplete="off" name='opt_4' placeholder="Enter Answer" className="card-control form-control" />
                                   </div>
 
 
                                   <div className="col-lg-6 mb-4">
                                     <label className="title-col mb-0">Answer 4 <span className="text-blue">(Arabic)</span></label>
-                                    <input type='text' autoComplete="off" name='ops_4_ara' placeholder="Enter Answer" className="card-control form-control" />
+                                    <input type='text' autoComplete="off" name='opt_4_ara' placeholder="Enter Answer" className="card-control form-control" />
+
+                                  </div>
+
+                                  <div className="col-lg-6 mb-4">
+                                    <label className="title-col mb-0">Answer 5 <span className="text-blue">(English)</span></label>
+                                    <input type='text' autoComplete="off" name='opt_5' placeholder="Enter Answer" className="card-control form-control" />
+                                  </div>
+
+
+                                  <div className="col-lg-6 mb-4">
+                                    <label className="title-col mb-0">Answer 5 <span className="text-blue">(Arabic)</span></label>
+                                    <input type='text' autoComplete="off" name='opt_5_ara' placeholder="Enter Answer" className="card-control form-control" />
 
                                   </div>
 

@@ -41,6 +41,10 @@ const onRemoveClick1 = (e) => {
 		event.currentTarget.classList.toggle('show');
 		
 	};
+	// const handleProfile = (event) => {
+	// 	event.currentTarget.classList.toggle('show');
+		
+	// };
 	const handleActive = (event) => {
 		event.currentTarget.classList.toggle('active');
 	};
@@ -281,6 +285,29 @@ return (
 							<span className="sidemenu-label">Admin Settings</span></NavLink>
 						</li> 
 						
+						
+						
+						<li className="nav-item nav-anlitcys-child" onClick={handleProfile}>
+							<a  className="nav-link with-sub cursor"><span className="shape1"></span>
+							<span className="shape2"></span>
+							<i className="fad fad fa-user-shield sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Analytics</span><i className="angle fe fe-chevron-right"></i></a>
+							 <ul className="nav-sub">
+								<li className="nav-sub-item">
+									<NavLink  to="/analytics/user" className="nav-sub-link">User Analytics</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/analytics/geq" className="nav-sub-link">GEQ Analytics</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/analytics/support" className="nav-sub-link">Support Analytics</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/analytics/user-profile" className="nav-sub-link">User Profile Analytics</NavLink>
+								</li>
+								
+							</ul>
+						</li>
 						
 					
 					</ul>
