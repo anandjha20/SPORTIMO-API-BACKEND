@@ -20,7 +20,8 @@ const user_reportings_tbl = require('../models/user_reportings');
 const user_chat_blocks_tbl = require("../models/user_chat_blocks");
 const block_user_tbl = require("../models/block_user");
 const user_complaint_tbl = require('../models/user_complaint');    
-
+const geq_answers= require('../models/geq_answers');
+const transactions_tbl = require('../models/transactions');
 
 class analyticsController { 
  
@@ -143,6 +144,29 @@ class analyticsController {
 
 
     }
+    static geq_analytics = async (req,res)=>{
+      try {
+            let geq_id=req.body.geq_id;
+  
+            let whr={};
+            if(!isEmpty(geq_id)){whr={...whr,geq_id}}
+  
+            let total_player_answered_qeq = await geq_answers.find(whr).countDocuments();
+            let total_player_gain_qeq_points = await transactions_tbl.find({points_by:"geq",...whr}).countDocuments();
+            
+            let analytics={
+              total_player_answered_qeq,
+              total_player_gain_qeq_points
+            };
+          return  res.status(200).send({'status':true,'msg':"success",'body':analytics});
+        } catch (error) {
+          console.log(error)
+          return  res.status(200).send({'status':false,'msg':"server error",'body':''});
+        }
+  
+  
+    }
+
 
 }
 

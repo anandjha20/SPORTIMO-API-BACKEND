@@ -702,11 +702,29 @@ class predictionController {
                     
                 }   
 
-                
+static akk = async(req,res)=>{
+  try{        
+        let  user_id = req.params.id;
+          let pipeLine = [];
+          pipeLine.push({"$match":{"user_id":user_id}});
+          pipeLine.push( {$group: { _id: "$grade",  records: { $push: "$$ROOT" } } });
+
+        let datas =  await playMatchCards_tbl.aggregate(pipeLine).exec();
+               
+           if(!isEmpty(datas)){
+                 // let records = await play_match_cards.find(whr).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
+                  res.status(200).send({'status':true,'msg':"success",  'body':datas });
+                }else{
+                  res.status(200).send({'status':true,'msg':"No data found!.." });
+                }  
+
+        } catch (error) { console.log(error);
+          res.status(200).send({'status':false,'msg':"Server error"});
+      }       
  
     }
 
-
+  }
 
 
     module.exports = predictionController ;   

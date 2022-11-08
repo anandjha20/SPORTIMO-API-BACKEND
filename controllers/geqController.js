@@ -151,7 +151,7 @@ static geq_list = async (req,res)=>{
         
                 
                 let offest = (page -1 ) * 10 ; 
-                const records = await query2.skip(offest).limit(10);
+                const records = await query2.skip(offest).limit(10).sort({date:-1});
                 //let paths =MyBasePath(req,res); 
                   
         
@@ -216,6 +216,8 @@ static geq_list = async (req,res)=>{
          const details={geq_id,user_id,user_ans};
 
          if(!isEmpty(geq_id) || !isEmpty(user_id) || !isEmpty(user_ans) ){
+          let data= await geq_answers.findOne({geq_id,user_id});
+          if(isEmpty(data)){
              let obj=new geq_answers(details);
              let response=await obj.save()
              if(!isEmpty(response)){
@@ -223,7 +225,9 @@ static geq_list = async (req,res)=>{
              }else{
                  res.status(200).send({'status':false,'msg':'something went wrong','body':''});
              }
-
+          }else{
+            res.status(200).send({'status':false,'msg':'already played'});
+          }
          }else{
             res.status(200).send({'status':false,'msg':'all field required'});
          }
@@ -288,10 +292,10 @@ static geq_list = async (req,res)=>{
                 }
             })
             
-            if(!isEmpty(response)){
+            if(!isEmpty(geq_data)){
                  res.status(200).send({'status':true,'msg':'success','body':geq_data});
              }else{
-                 res.status(200).send({'status':false,'msg':'no data found'});
+                 res.status(200).send({'status':false,'msg':'something went wrong','body':''});
              }
 
          }else{

@@ -117,8 +117,9 @@ const userReportImg =  img_upload('./assets/user_img','image');
      router.get('/group_participant_list/:id?',chatController.group_participant_list);                       
    
    // get Firebase Chat Data 
-    router.get('/getFirebaseChatData',FirebaseController.getFirebaseChatData); 
-    router.get('/firebase_group_list/:id?',FirebaseController.firebase_group_list); 
+   /// new updated firebase key add routs
+   router.get('/FirebaseGroupChatData/:id?',FirebaseController.FirebaseGroupChatData); 
+   router.get('/FirebaseChatData/:id?',FirebaseController.FirebaseChatData);  
 
 
     // get introSlider list  
@@ -234,6 +235,10 @@ const userReportImg =  img_upload('./assets/user_img','image');
 
    // make by mhn
       router.put('/update_google_id/',UserController.update_google_id); 
+     
+     
+   /// testing routs  
+      router.get('/akk/:id?',predictionController.akk); 
 
 
 

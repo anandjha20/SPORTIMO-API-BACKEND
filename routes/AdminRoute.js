@@ -122,10 +122,10 @@ const token_check =  require('../middleware/token_check');
     router.get('/firebase_group_chat_data/:id?',FirebaseController.firebase_group_chat_data);      
     router.get('/getFirebaseUser_list/:id?',FirebaseController.getFirebaseUser_list);      
     router.get('/getFirebaseUser/:id?',FirebaseController.getFirebaseUser);      
-    router.get('/firebase_group_list/:id?',FirebaseController.firebase_group_list);      
-    router.get('/getFirebaseChatData/:id?',FirebaseController.getFirebaseChatData);      
-    router.get('/getFirebaseChatData_new/:id?',FirebaseController.getFirebaseChatData_new);      
-           
+   /// new updated firebase key add routs
+    router.get('/FirebaseGroupChatData/:id?',FirebaseController.FirebaseGroupChatData); 
+     router.get('/FirebaseChatData/:id?',FirebaseController.FirebaseChatData);  
+
     /////   sports crud Route 
                       
      router.post('/sports',MasterImgUpload,MasterController.sports_add);             
@@ -274,6 +274,9 @@ router.post('/all_user_analytics',analyticsController.all_user_analytics);
 router.post('/user_profile_analytics',analyticsController.user_profile_analytics); 
 router.post('/polls_analytics',analyticsController.polls_analytics); 
 router.post('/support_analytics',analyticsController.support_analytics); 
+router.post('/geq_analytics',analyticsController.geq_analytics); 
+
+
 
 
 

@@ -22,7 +22,7 @@ const geq = new Schema({
          correct_ans: { type: String,enum: ['opt_1', 'opt_2', 'opt_3', 'opt_4', 'opt_5',''], default :'' },
          result_disclosed: { type: Boolean , default :0 },
          reward_type    : { type: String,default :'' },
-         reward_quantity: { type: String , default :'' },
+         reward_quantity: { type: Number , default :0 },
          reward_condition: { type: String , default :'' },
 
          targeted_country: { type: String, default :'' },
