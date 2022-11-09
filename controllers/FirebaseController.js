@@ -42,11 +42,11 @@ class FirebaseController {
  }
 
 
- static FirebaseGroupChatData = async(req,res)=>{
+ static FirebaseGroupListData = async(req,res)=>{
   try {
-        let group_id = req.params.id; 
+           let group_id = req.params.id; 
       
-         // let snaps = await FirebaseDB.collection('messages')
+               // let snaps = await FirebaseDB.collection('messages')
         
                         if(isEmpty(group_id)){
                           var snaps = await FirebaseDB.collection('groups').get();    ///.doc('chats').collection('chats').get();    
@@ -59,17 +59,55 @@ class FirebaseController {
                             job.push(doc.data() );
                         //  job.push(doc); 
                            });
-                 if(job){ let sendTOData = await Promise.all( job.map(async (item)=>{
-                           
-                         let snapshot = await FirebaseDB.collection('groups').doc(item.id).collection('chats').get();
+                 
+          if(job){              
+              return  res.status(200).send({"status":true, "msg": "success", "body": job }); 
+        }else{
+              return  res.status(200).send({"status":false, "msg": "No data Found1..", "body": '' }); 
+        }
 
-                             let chatData = [] ;
-                             snapshot.forEach(async (chank) =>{ 
-                                   chatData.push(chank.data() );
+                    
+              
+                } catch (error) {  console.log("demo tesing ==  ",error);
+                  return res.status(200).send({"status":false, "msg": error, "body": ''}); 
+                }
+
+    }
+
+
+
+
+
+
+  static FirebaseGroupChatData = async(req,res)=>{
+  try {
+        let group_id = req.params.id; 
+      
+          // let snaps = await FirebaseDB.collection('messages')
+        
+                        if(isEmpty(group_id)){
+                          var snaps = await FirebaseDB.collection('groups').get();    ///.doc('chats').collection('chats').get();    
+                        }else{
+                          var snaps = await FirebaseDB.collection('groups') .where('id', '=',group_id).get();   //collection('chats').get();   
+                            }
+          
+                      let job = []; let i = 1;   
+                      snaps.forEach( async doc => {
+                            job.push(doc.data() );
+                        //  job.push(doc); 
+                            });
+                  if(job){ let sendTOData = await Promise.all( job.map(async (item)=>{
+                            
+                          let snapshot = await FirebaseDB.collection('groups').doc(item.id).collection('chats').get();
+
+                              let chatData = [] ;
+                              snapshot.forEach(async (chank) =>{ 
+                                    chatData.push(chank.data() );
                               }) ;
-                           item.chatData = chatData; 
+                              delete item["members"] ; 
+                            item.chatData = chatData; 
                           return item;
-                   }));
+                    }));
                         
               return  res.status(200).send({"status":true, "msg": "success", "body": sendTOData }); 
         }else{
@@ -83,7 +121,7 @@ class FirebaseController {
                 }
 
     }
-
+    
 
     static FirebaseChatData = async(req,res)=>{
       try {

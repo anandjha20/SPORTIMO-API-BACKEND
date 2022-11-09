@@ -522,13 +522,12 @@ class MasterController {
             let offest = (page -1 ) * 10 ; 
             const records = await query2.skip(offest).limit(10);
             let paths =MyBasePath(req,res); 
-            console.log(records[0].time_utc+"5:30")
                 
 
         res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
 
         } catch (error) { console.log(error);
-        res.status(200).send({'status':false,'msg':error,'body':''});
+        res.status(200).send({'status':false,'msg':"server error"});
         }
                         
     }    

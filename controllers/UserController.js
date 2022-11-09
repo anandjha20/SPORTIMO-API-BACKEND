@@ -1,6 +1,6 @@
     let  express_2 = require('express');
     let mongoose = require('mongoose');
-    
+    const axios  = require('axios');  
 
 
   
@@ -1288,17 +1288,18 @@ static verify_nickName = async(req,res)=>{
         try {
           let mobile=req.body.mobile;
           const session_url = `https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx`;
+
           let xml=`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
           xmlns:tem="http://tempuri.org/">
            <soapenv:Header/>
            <soapenv:Body>
            <tem:SendPinCode>
            <tem:MSISDN>${mobile}</tem:MSISDN>
-           <tem:ServiceID>2</tem:ServiceID>
+           <tem:ServiceID>8</tem:ServiceID>
           <tem:Lang>AR</tem:Lang>
            </tem:SendPinCode>
            </soapenv:Body>
-          </soapenv:Envelope>`
+          </soapenv:Envelope>`;
           var config = {
             method: 'get',
             url: session_url,
@@ -1306,7 +1307,7 @@ static verify_nickName = async(req,res)=>{
           };
     
           let response = await axios(config,xml);
-
+            console.log("sms call == ", response); 
  
 // let response=await axios.post('https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx',
 // xml,
@@ -1322,11 +1323,11 @@ static verify_nickName = async(req,res)=>{
 
 
 
-            return res.status(200).send({ 'status': true, 'msg': 'success',body:response });
+            return res.status(200).send({ 'status': true, 'msg': 'success',"body":response });
           
         } catch (error) {
           console.log(error);
-          return res.status(200).send({ 'status': false, 'msg': error, 'body': '' });
+          return res.status(200).send({ 'status': false, 'msg': error,  });
         }
       }
 
