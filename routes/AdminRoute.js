@@ -278,6 +278,8 @@ router.post('/user_profile_analytics',analyticsController.user_profile_analytics
 router.post('/polls_analytics',analyticsController.polls_analytics); 
 router.post('/support_analytics',analyticsController.support_analytics); 
 router.post('/geq_analytics',analyticsController.geq_analytics); 
+router.post('/chat_analytics',FirebaseController.chat_analytics); 
+
 
 
 

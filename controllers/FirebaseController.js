@@ -246,6 +246,36 @@ static getFirebaseChatData_new = async(req,res)=>{
           return  res.status(200).send({"status":false, "msg": error, "body": ''}); 
         });
     }
+
+    static chat_analytics = async (req,res)=>{
+      try {
+        let total_user=[]  
+        //let chatData= (await FirebaseDB.collection('groups').get())
+        // let snaps = await (await admin.auth().listUsers()).users.length;
+        // let collection =await FirebaseDB.listCollections()
+        let publicRoomData=await (await FirebaseDB.collection('groups').get()).docs;        
+        publicRoomData.map((item)=>{
+          let data=item._fieldsProto.members.arrayValue.values;
+          data.map((i)=>{
+            if(!total_user.includes(i.mapValue.fields.uid.stringValue)){
+              total_user.push(i.mapValue.fields.uid.stringValue)
+            }
+          })
+        });
+
+            let analytics={
+              total_public_room_playes:total_user.length,
+              total_playes_having_aceess_commenting:total_user.length
+            };
+          return  res.status(200).send({'status':true,'msg':"success",'body':analytics});
+        } catch (error) {
+          console.log(error)
+          return  res.status(200).send({'status':false,'msg':"server error",'body':''});
+        }
+  
+  
+    }
+
 }
 
 module.exports = FirebaseController ;     

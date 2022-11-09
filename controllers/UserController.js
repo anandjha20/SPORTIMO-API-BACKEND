@@ -1,7 +1,8 @@
-    let  express_2 = require('express');
+     let  express_2 = require('express');
     let mongoose = require('mongoose');
     const axios  = require('axios');  
-
+    const xml2js  = require('xml2js');  
+ 
 
   
 const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date } = require('../myModel/common_modal');
@@ -630,22 +631,16 @@ $gte: seven_dayDate } };
        }else{
                    let datas = await block_user_tbl.find(whr1);
                            if(datas.length >0 ){ 
-
-                                   
-
-
-                                               var query = block_user_tbl.remove(whr1);
-
-
-                                               query.exec((err, data) => { 
+                                      var query = block_user_tbl.remove(whr1);
+                                        query.exec((err, data) => { 
                                                    if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
                                                }else{     
                                                    let type_status = 1; 
                                                    let title = `${to_name.name} you have unblocked by ${F_name.name}`;  
                                                    let msg   = `${to_name.name} you have unblocked by ${F_name.name}`;  
-                                               let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile",category_type:"block"}); 
-                                               return res.status(200).send({"status":true,"msg":'this blocked user  Delete  Successfully' , "body":''  }) ; 
-                                       } });
+                                    let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile",category_type:"block"}); 
+                                    return res.status(200).send({"status":true,"msg":'this blocked user  Delete  Successfully' , "body":''  }) ; 
+                            } });
                                
                            }else{     
                        
@@ -745,6 +740,7 @@ static verify_nickName = async(req,res)=>{
                                 let biometric    = req.body.biometric;
                                 let notifications = req.body.notifications;
                                 let follower = req.body.follower;
+                                let firebase_token = req.body.firebase_token ;
 
                                 music_sound = (music_sound == 1)? 1 : 0;
                                 haptics     = (haptics == 1)? 1 : 0;
@@ -756,7 +752,7 @@ static verify_nickName = async(req,res)=>{
                                 console.log("get all data ==  ",req.body);
 
 
-                        user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {music_sound,haptics,chat,biometric,notifications,follower }},{new: true}, (err,updatedUser)=>{
+                        user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {music_sound,haptics,chat,biometric,notifications,follower,firebase_token }},{new: true}, (err,updatedUser)=>{
                         if(err) {  console.log(err);
                             return res.status(200).send({"status":false,"msg":'some errors '}) ;          
                         }
@@ -1286,46 +1282,77 @@ static verify_nickName = async(req,res)=>{
                    
       }     
 
-      static sms_api_test = async (req, res) => {
+      static sms_api_test = async (req, res) =>{
         try {
-          let mobile=req.body.mobile;
-          const session_url = `https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx`;
-
-          let xml=`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-          xmlns:tem="http://tempuri.org/">
-           <soapenv:Header/>
-           <soapenv:Body>
-           <tem:SendPinCode>
-           <tem:MSISDN>${mobile}</tem:MSISDN>
-           <tem:ServiceID>8</tem:ServiceID>
-          <tem:Lang>AR</tem:Lang>
-           </tem:SendPinCode>
-           </soapenv:Body>
-          </soapenv:Envelope>`;
+          let mobile=req.params.mobile;
+        let url = "https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx";
+     
+            // <?xml version="1.0" encoding="UTF-8"?>
+          let xml_parm =`
+                <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                        xmlns:tem="http://tempuri.org/">
+                        <soapenv:Header/>
+                        <soapenv:Body>
+                        <tem:SendPinCode>
+                        <tem:MSISDN>${mobile}</tem:MSISDN>
+                        <tem:ServiceID>8</tem:ServiceID>
+                        <tem:Lang>EN</tem:Lang>
+                        </tem:SendPinCode>
+                        </soapenv:Body>
+                        </soapenv:Envelope>`;
           var config = {
-            method: 'get',
-            url: session_url,
-            headers: { 'Content-Type': 'text/xml' }
+            // method: 'get',
+            // url: url,
+            //  data :xml,
+           // headers: { 'Content-Type': 'text/xml', "encoding" : "UTF-8" }
+            headers: {'Content-Type': 'text/xml'}
           };
+         
     
-          let response = await axios(config,xml);
-            console.log("sms call == ", response); 
- 
-// let response=await axios.post('https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx',
-// xml,
-// {headers:
-// {'Content-Type': 'text/xml'}
-// })
-// const sampleHeaders = {
-//     'user-agent': 'sampleTest',
-//     'Content-Type': 'text/xml;charset=UTF-8',
-//     'soapAction': 'https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl#LatLonListZipCode',
-//   };
-// let response = await soapRequest({ url: session_url, headers: sampleHeaders, xml: xml, timeout: 1000 });
+          
+        //  let response = await axios.get(url,xml_parm,config);
+
+
+     //   let dds =  xml2js.parseString(response.data);
 
 
 
-            return res.status(200).send({ 'status': true, 'msg': 'success',"body":response.status });
+
+         //   console.log("sms api call status == ",dds ); 
+        //     console.log("sms call == ", response.data); 
+ ////////////////////////////////////////////////                   
+ axios.post( url,xml_parm,{
+        headers: {
+            'Content-Type': 'text/xml'
+           // SOAPAction: 'http://xyzxyzxyz/xyz/xyz/ObtenerSaldoDeParcelaDeEmprestimo'
+        }
+    })
+    .then((response)=>{
+         // xml2js to parse the xml response from the server 
+         // to a json object and then be able to iterate over it.
+
+         xml2js.parseString(response.data, (err, result) => {
+            
+            if(err) {
+                throw err;
+            }
+            console.log( "new api call 22 ", result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0]);
+            return res.status(200).send({ 'status': true, 'msg': 'success',"body": result });
+          //  return result  ;  
+            console.log( "new api call",    result); // ['SendPinCodeResult']
+        });
+                                  
+    })  .catch((error)=>{
+                
+        console.log(error)
+        return res.status(200).send({ 'status': false, 'msg': error,  }); 
+    })
+
+        
+   
+         
+////////////////////////////////////////////////
+          
           
         } catch (error) {
           console.log(error);
@@ -1333,7 +1360,7 @@ static verify_nickName = async(req,res)=>{
         }
       }
 
-
+ 
 }
 
   
