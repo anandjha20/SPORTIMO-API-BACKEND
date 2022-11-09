@@ -123,8 +123,11 @@ const token_check =  require('../middleware/token_check');
     router.get('/getFirebaseUser_list/:id?',FirebaseController.getFirebaseUser_list);      
     router.get('/getFirebaseUser/:id?',FirebaseController.getFirebaseUser);      
    /// new updated firebase key add routs
-    router.get('/FirebaseGroupChatData/:id?',FirebaseController.FirebaseGroupChatData); 
+    router.get('/FirebaseGroupChatData/:id',FirebaseController.FirebaseGroupChatData); 
      router.get('/FirebaseChatData/:id?',FirebaseController.FirebaseChatData);  
+
+     router.get('/FirebaseGroupListData',FirebaseController.FirebaseGroupListData);  
+     router.get('/FirebaseGroupUserList/:id',FirebaseController.FirebaseGroupListData);  
 
     /////   sports crud Route 
                       
@@ -260,7 +263,7 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
  router.post('/geq_ans_update',geqController.geq_ans_update);
  
  
-  
+   
  router.post('/all_user_prediction',predictionController.all_user_prediction);
  router.post('/user_prediction/:id?',predictionController.user_prediction);
 

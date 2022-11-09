@@ -167,6 +167,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
           }); 
   // get notification list  
   router.post('/notification_list/:id?',NotificationController.notification_list); 
+  router.post('/notification_delete/:id?',NotificationController.notification_delete); 
    
 //  user reports route      
     router.post('/report_reason_types/:id?',ReportReasonController.report_reason_types);

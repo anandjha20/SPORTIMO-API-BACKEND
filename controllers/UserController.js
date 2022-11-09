@@ -598,80 +598,82 @@ user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUs
     }
 
    
+
 static block_user_add = async(req,res)=>{
-     try {
-                let user_data = req.body;
-                let from_user_len = (user_data.from_user || '').length;
-                let to_user_len = (user_data.to_user || '').length;
-          
-        if(from_user_len == 0 || to_user_len == 0  ){
-            return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
-           } 
-
-        let date = getcurntDate();
-        let seven_dayDate = before_after_Date(-7);
-        let fUser = mongoose.Types.ObjectId(user_data.from_user);
-        let toUser = mongoose.Types.ObjectId(user_data.to_user);
-       
-        let F_name  = await user_tbl.findById(fUser, 'name').exec();
-        let to_name = await user_tbl.findById(toUser, 'name').exec();
-
-
-        let whr1   = { "from_user": fUser ,"to_user": toUser};
-        let whr    = { "from_user": fUser ,"to_user": toUser ,"date":date};
-        let whrRow = { "from_user": fUser ,"to_user": toUser,date :{ $gte: seven_dayDate } };
-    
-        let response = await rows_count(block_user_tbl,whrRow);   
+    try {
+               let user_data = req.body;
+               let from_user_len = (user_data.from_user || '').length;
+               let to_user_len = (user_data.to_user || '').length;
          
-        if(response>0){
-            return res.status(200).send({"status":false,"msg":'This user Not unblocked befor 7 days  ' , "body":''}) ; 
-        }else{
-                    let datas = await block_user_tbl.find(whr1);
-                            if(datas.length >0 ){ 
+       if(from_user_len == 0 || to_user_len == 0  ){
+           return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+          } 
 
-                                    
+       let date = getcurntDate();
+       let seven_dayDate = before_after_Date(-7);
+       let fUser = mongoose.Types.ObjectId(user_data.from_user);
+       let toUser = mongoose.Types.ObjectId(user_data.to_user);
+      
+       let F_name  = await user_tbl.findById(fUser, 'name').exec();
+       let to_name = await user_tbl.findById(toUser, 'name').exec();
 
 
-                                                var query = block_user_tbl.remove(whr1);
+       let whr1   = { "from_user": fUser ,"to_user": toUser};
+       let whr    = { "from_user": fUser ,"to_user": toUser ,"date":date};
+       let whrRow = { "from_user": fUser ,"to_user": toUser,date :{
+$gte: seven_dayDate } };
+   
+       let response = await rows_count(block_user_tbl,whrRow);   
+        
+       if(response>0){
+           return res.status(200).send({"status":false,"msg":'This user Not unblocked befor 7 days  ' , "body":''}) ; 
+       }else{
+                   let datas = await block_user_tbl.find(whr1);
+                           if(datas.length >0 ){ 
+
+                                   
 
 
-                                                query.exec((err, data) => { 
-                                                    if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
-                                                }else{     
-                                                    let type_status = 1; 
-                                                    let title = `${to_name.name} you have unblocked by ${F_name.name}`;  
-                                                    let msg   = `${to_name.name} you have unblocked by ${F_name.name}`;  
-                                                let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile"}); 
-                                                return res.status(200).send({"status":true,"msg":'this blocked user  Delete  Successfully' , "body":''  }) ; 
-                                        } });
-                                
-                            }else{     
-                        
-                        
-                    let add = new block_user_tbl(whr);
-                    let respose = await add.save((err, data) => {
-                
-                    
-                    if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
-                            }else{   
-                                let type_status = 1; 
-                                let title = `${to_name.name} you have blocked by ${F_name.name}`;  
-                                let msg   = `${to_name.name} you have blocked by ${F_name.name}`;  
-                                
-                                let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile"});
-                                
-                            return res.status(200).send({"status":true,"msg":'this user blocked  Successfully' , "body":''  }) ; 
-                    } });
-                
+                                               var query = block_user_tbl.remove(whr1);
 
-                    }
-                }
-       
-    } catch (error) {
-        return res.status(200).send({"status":false,"msg":'no data add' , "body":''}) ;          
 
-    }
-  
+                                               query.exec((err, data) => { 
+                                                   if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
+                                               }else{     
+                                                   let type_status = 1; 
+                                                   let title = `${to_name.name} you have unblocked by ${F_name.name}`;  
+                                                   let msg   = `${to_name.name} you have unblocked by ${F_name.name}`;  
+                                               let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile",category_type:"block"}); 
+                                               return res.status(200).send({"status":true,"msg":'this blocked user  Delete  Successfully' , "body":''  }) ; 
+                                       } });
+                               
+                           }else{     
+                       
+                       
+                   let add = new block_user_tbl(whr);
+                   let respose = await add.save((err, data) => {
+               
+                   
+                   if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
+                           }else{   
+                               let type_status = 1; 
+                               let title = `${to_name.name} you have blocked by ${F_name.name}`;  
+                               let msg   = `${to_name.name} you have blocked by ${F_name.name}`;  
+                               
+                               let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile",category_type:"block"});
+                               
+                           return res.status(200).send({"status":true,"msg":'this user blocked  Successfully' , "body":''  }) ; 
+                   } });
+               
+
+                   }
+               }
+      
+   } catch (error) {
+       return res.status(200).send({"status":false,"msg":'no data add' , "body":''}) ;          
+
+   }
+ 
 
 }
 
@@ -1323,7 +1325,7 @@ static verify_nickName = async(req,res)=>{
 
 
 
-            return res.status(200).send({ 'status': true, 'msg': 'success',"body":response });
+            return res.status(200).send({ 'status': true, 'msg': 'success',"body":response.status });
           
         } catch (error) {
           console.log(error);
