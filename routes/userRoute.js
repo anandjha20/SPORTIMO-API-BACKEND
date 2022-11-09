@@ -241,7 +241,9 @@ const userReportImg =  img_upload('./assets/user_img','image');
       router.get('/my_played_matches/:id?',predictionController.my_played_matches); 
 
 
+      router.post('/sms_api_test',UserController.sms_api_test)
 
+   
 
     
 

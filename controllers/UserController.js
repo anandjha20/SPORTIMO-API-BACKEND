@@ -1284,8 +1284,55 @@ static verify_nickName = async(req,res)=>{
                    
       }     
 
+      static sms_api_test = async (req, res) => {
+        try {
+          let mobile=req.body.mobile;
+          const session_url = `https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx`;
+          let xml=`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+          xmlns:tem="http://tempuri.org/">
+           <soapenv:Header/>
+           <soapenv:Body>
+           <tem:SendPinCode>
+           <tem:MSISDN>${mobile}</tem:MSISDN>
+           <tem:ServiceID>2</tem:ServiceID>
+          <tem:Lang>AR</tem:Lang>
+           </tem:SendPinCode>
+           </soapenv:Body>
+          </soapenv:Envelope>`
+          var config = {
+            method: 'get',
+            url: session_url,
+            headers: { 'Content-Type': 'text/xml' }
+          };
+    
+          let response = await axios(config,xml);
+
+ 
+// let response=await axios.post('https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx',
+// xml,
+// {headers:
+// {'Content-Type': 'text/xml'}
+// })
+// const sampleHeaders = {
+//     'user-agent': 'sampleTest',
+//     'Content-Type': 'text/xml;charset=UTF-8',
+//     'soapAction': 'https://graphical.weather.gov/xml/DWMLgen/wsdl/ndfdXML.wsdl#LatLonListZipCode',
+//   };
+// let response = await soapRequest({ url: session_url, headers: sampleHeaders, xml: xml, timeout: 1000 });
+
+
+
+            return res.status(200).send({ 'status': true, 'msg': 'success',body:response });
+          
+        } catch (error) {
+          console.log(error);
+          return res.status(200).send({ 'status': false, 'msg': error, 'body': '' });
+        }
+      }
+
 
 }
+
   
 
 module.exports = UserController ;      
