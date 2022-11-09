@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 const local_default = require('./local_default.json')
 //mongoose.connect('mongodb://localhost:27017/football_db');
 //mongoose.connect('mongodb://root:rootadmin@mbc-dev-sportsapp.cluster-ca4ypuzoojjz.us-east-1.docdb.amazonaws.com:27017/sportimo?tls=true&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false',{tlsCAFile: `rds-combined-ca-bundle.pem`});
-mongoose.connect(`mongodb://admin:root@44.200.156.53:3000/sportimo?authSource=admin`);
+mongoose.connect(`mongodb://admin:root@10.8.0.106:3000/sportimo?authSource=admin`);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
