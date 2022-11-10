@@ -94,11 +94,14 @@ function gen_str (length) {
  } 
 
  
-const send_mobile_otp_new = async (req,res)=>{
+const send_mobile_otp_new = async(req,res)=>{
   //try {   
-    let mobile = req.mobile;
+            console.log("otp modal call ", req); 
+
+    let mobile = req.mobile;  
+    console.log("otp modal mobile  ", mobile); 
   let url = "https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx";
-            
+               
         let xml_parm =`
                 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                         xmlns:tem="http://tempuri.org/">
@@ -114,10 +117,17 @@ const send_mobile_otp_new = async (req,res)=>{
             axios.post( url,xml_parm,{ headers: { 'Content-Type': 'text/xml' }
                 }).then((response)=>{
                       xml2js.parseString(response.data, (err, result) => {
-                                  if(err) { throw err; }
-                  let Gen_otp = result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0];
-                  return Gen_otp;
-              });
+                                  if(err) { console.log(err); return false;}else{
+                        
+                  var  Gen_otp = result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0];
+                console.log('ss opt === ',Gen_otp ) ;
+                return Gen_otp; 
+
+              
+            //  return result ; // Gen_otp;
+                 }
+
+              });              
                                         
           })  .catch((error)=>{  console.log(error); return false;})
                                    

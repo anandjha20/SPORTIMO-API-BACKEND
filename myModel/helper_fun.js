@@ -72,42 +72,41 @@ const autoincremental  = async(seq_id,mymodals) =>{
 } 
 
 const sendNotificationAdd = (my_obj )=>{
-                try {
-                       // console.log("fun call ==  ",my_obj);  
-                       // return false;        
-                    let user_id=my_obj.toUser;
-                     let title = my_obj.title ;  
-                     let msg = my_obj.msg ;  
-                     let type_status = my_obj.type_status ;  
-                     let category_type = my_obj.category_type ;  
-                     let module_id = my_obj.module_id ;  
-                     let module_type = my_obj.module_type ;
-                     
-                     
+  try {
+         // console.log("fun call ==  ",my_obj);  
+         // return false;        
+      let user_id=my_obj.user_id;
+       let title = my_obj.title ;  
+       let msg = my_obj.msg ;  
+       let type_status = my_obj.type_status ;  
+       let category_type = my_obj.category_type ;  
+       let module_id = my_obj.module_id ;  
+       let module_type = my_obj.module_type ;
+       
+       
 
-                       let m_id =  String(module_id);
-                      // console.log("sendNotificationAdd == ", module_id);
-                    let date = getcurntDate(); 
-                       let addData = {title:title,message:msg,type_status:type_status,user_id:user_id };
-                       
-                       if(! isEmpty(category_type)){addData.category_type = category_type ; }
-                       if(! isEmpty(m_id)){addData.module_id = m_id  }
-                       if(! isEmpty(module_type)){addData.module_type = module_type ; }
-                     
-                       if(addData.module_id == 'undefined' ){ addData.module_id = '' }
-                       if(addData.user_id == 'undefined' ){ addData.user_id = '' }
-                       //console.log("sendData == ", addData);
-                          
-                        let add = new notification_tbl(addData);
-                            add.save((err,data)=>{
-                                if(err){  console.log('try error====   ',err); return false; }else{
-                                    console.log('sendNotification success data ===   ',data); return true;
-                                    }
-                            });   
-                    } catch (error){ console.log('some error ====',error); return false; }
+         let m_id =  String(module_id);
+        // console.log("sendNotificationAdd == ", module_id);
+      let date = getcurntDate(); 
+         let addData = {title:title,message:msg,type_status:type_status,user_id:user_id };
+         
+         if(! isEmpty(category_type)){addData.category_type = category_type ; }
+         if(! isEmpty(m_id)){addData.module_id = m_id  }
+         if(! isEmpty(module_type)){addData.module_type = module_type ; }
+       
+         if(addData.module_id == 'undefined' ){ addData.module_id = '' }
+         if(addData.user_id == 'undefined' ){ addData.user_id = '' }
+         //console.log("sendData == ", addData);
+            
+          let add = new notification_tbl(addData);
+              add.save((err,data)=>{
+                  if(err){  console.log('try error====   ',err); return false; }else{
+                      console.log('sendNotification success data ===   ',data); return true;
+                      }
+              });   
+      } catch (error){ console.log('some error ====',error); return false; }
 
-        }      
-
+}  
      const userBlocked_fun = async( user_id)=>{
           try {
                  let user_rows = await rows_count(user_reportings_tbl,{reported_user_id:user_id,autoBlockStatus:false});
@@ -383,8 +382,24 @@ const sendNotificationAdd = (my_obj )=>{
       return false;
   }
   }
-  
+ 
+const preferences_ar_convart = async(tbl,preferences) =>{
+    try{    
+          
+        if(isEmpty(preferences)){return false;}
+       let arr =  preferences.split(",");
+       let whr = {"name":{ $in :arr}};
+       console.log("array data == ", whr);
+      let dx = await tbl.find(whr,'name_ara');
+       if(dx){
+        let responce =   dx.map((item)=>item.name_ara );
+         return responce.toString();
+       }
+      console.log("result ddd == ", dx);
+        return (dx)? dx :false; 
+      } catch (error) { return false; }
+}
   
 
 module.exports = {geqWin,geqLose, poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne,
-            myBlockUserIds,matchWinUsersRank,matchWinUsersRank_one,AllMatchWinUsersRank,AllMatchWinUsersRank_one }
+            myBlockUserIds,matchWinUsersRank,matchWinUsersRank_one,AllMatchWinUsersRank,AllMatchWinUsersRank_one,preferences_ar_convart }

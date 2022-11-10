@@ -10,6 +10,7 @@ const Userschema = new Schema({
           doc_type: { type: String,default: ''},
           token: { type: String, default: '' },
           city: { type: String, default: '' },
+          date_of_birth: { type: String, default: '' },
           address: { type: String, default: '' },
           user_language : { type: String,enum: ['Arabic', 'English'],  default: 'English' },
 
