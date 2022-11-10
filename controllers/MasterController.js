@@ -497,40 +497,51 @@ class MasterController {
                 
                 }        
    
-  static all_team_match_list_mobile = async (req,res)=>{
-        try {
-            let  id = req.params.id;
-            let page  = req.body.page;
-            let s_date  = req.body.s_date;
-            let e_date  = req.body.e_date;
-            let name    = req.body.name;
-            let whr = {};
-            let date = before_after_Date(-1); 
-            if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
-            if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}else{
-                whr.date_utc ={$gte : date}; 
-            } 
-            page = (isEmpty(page)
-    || page == 0 )? 1 :page ; 
-            if(!isEmpty(id)){whr = {_id: id} ;} 
+static all_team_match_list_mobile = async (req,res)=>{
+    try {
+        let  id = req.params.id;
+        let page  = req.body.page;
+        let s_date  = req.body.s_date;
+        let e_date  = req.body.e_date;
+        let name    = req.body.name;
+        let language= req.body.language;
+        let whr = {};
+        let date = before_after_Date(-1); 
+        if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
+        if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}else{
+            whr.date_utc ={$gte : date}; 
+        } 
+        page = (isEmpty(page)
+
+|| page == 0 )? 1 :page ; 
+        if(!isEmpty(id)){whr = {_id: id} ;} 
+    
+        let query =  team_matches.find(whr).sort({date_utc:1}) ;
+            const query2 =  query.clone();
+        const counts = await query.countDocuments();
+
         
-            let query =  team_matches.find(whr).sort({date_utc:1}) ;
-                const query2 =  query.clone();
-            const counts = await query.countDocuments();
-
+        let offest = (page -1 ) * 10 ; 
+        const records = await query2.skip(offest).limit(10);
+        records.map((item)=>{
+            if(language=="ar"){
+                item.match_name=item.match_name_ara;
+                item.team_a_name=item.team_a_name_ara;
+                item.team_a_short_name=item.team_a_short_name_ara;
+                item.team_b_name=item.team_b_name_ara;
+                item.team_b_short_name=item.team_b_short_name_ara;
+            }
+        }) 
+        let paths =MyBasePath(req,res); 
             
-            let offest = (page -1 ) * 10 ; 
-            const records = await query2.skip(offest).limit(10);
-            let paths =MyBasePath(req,res); 
-                
 
-        res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+    res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
 
-        } catch (error) { console.log(error);
-        res.status(200).send({'status':false,'msg':"server error"});
-        }
-                        
-    }    
+    } catch (error) { console.log(error);
+    res.status(200).send({'status':false,'msg':"server error"});
+    }
+                    
+}     
 
     static deleteOne=async (req,res)=>{
         let _id=req.body._id

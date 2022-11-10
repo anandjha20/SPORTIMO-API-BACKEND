@@ -5,7 +5,7 @@
  
 
   
-const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date } = require('../myModel/common_modal');
+const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date,send_mobile_otp_new } = require('../myModel/common_modal');
 const { autoincremental,sendNotificationAdd,myBlockUserIds } = require('../myModel/helper_fun');
 
   const  {MyBasePath} = require("../myModel/image_helper");
@@ -149,6 +149,7 @@ class UserController {
               let check_type = checkuser[0].user_type;  let msgtodiv = '';   
                 if(check_type == 1){
                     send_mobile_otp({mobile,otp}); 
+                   
                     msgtodiv = 'otp sent to your mobile please check know ';
                 }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
                     sentEmail({email,otp}); 
@@ -215,13 +216,13 @@ class UserController {
                 return res.status(200).send({"status":false,"msg":'All Field Required ' , "body":''}) ;     
             }
 
+            let sportimo_id = Math.floor(Math.random() * 9000000) + 1000000; 
             let otp = Math.floor(Math.random() * 900000) + 100000; 
             let date = getcurntDate(); 
             
             let token = gen_str(99);
            
             let seq_id = await autoincremental('seq_id',user_tbl);
-            //console.log("seq_id is ==",seq_id);
             
          if(user_type == 1 || user_type == 2 || user_type == 3 || user_type == 4 || user_type == 5 ){ }else{
                 return res.status(200).send({"status":false,"msg":'Invalid User type Field Value '}) ;     
@@ -253,7 +254,7 @@ let user = await user_tbl.find(condition_obj);
                               let ddsq = user_logs_add(updatedUser._id,'login');  
                 return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
                }else{
-                let add =new user_tbl({ user_type, date,device_id,token,otp,seq_id,firebase_token});
+                let add =new user_tbl({ user_type, date,device_id,token,otp,seq_id,firebase_token,sportimo_id:"guest:"+sportimo_id});
     
                          add.save( (err, data) => {
                               if (err) {        
@@ -271,7 +272,7 @@ let user = await user_tbl.find(condition_obj);
             });       
                 
             ///////////////////////////////////////////////////////////////////////////
-        }
+        }else{
 
 
     let checkuser = ( user_type == 2 || user_type == 3 || user_type == 4 )? await user_tbl.find({email }).exec() : await user_tbl.find({mobile}).exec() ;
@@ -281,23 +282,27 @@ let user = await user_tbl.find(condition_obj);
     console.log('checkuser == ',checkuser)  ;         
            
      if(checkuser.length >0 ){
-        let check_user_id = checkuser[0]._id;   
-        const doc = await user_tbl.findOneAndUpdate({ _id: check_user_id},{ otp: otp },
+        let check_user_id = checkuser[0]._id; 
+        let check_type = checkuser[0].user_type;  let msgtodiv = '';   
+       
+        var apiGenOtp =10000;  // otp ;
+       
+        if(check_type == 1){  
+            //send_mobile_otp({mobile,otp});   
+            apiGenOtp =  await send_mobile_otp_new({mobile}); 
+            msgtodiv = 'otp sent to your mobile please check know ';
+        }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
+               sentEmail({email,otp}); 
+            msgtodiv = 'otp sent to your Email please check know ';
+        } 
+
+            console.log("apiGenOtp == ",apiGenOtp);
+        const doc = await user_tbl.findOneAndUpdate({ _id: check_user_id},{ otp: apiGenOtp },
                                      { upsert: true, useFindAndModify: false });
          
-              let check_type = checkuser[0].user_type;  let msgtodiv = '';   
-                if(check_type == 1){
-                    send_mobile_otp({mobile,otp}); 
-                    msgtodiv = 'otp sent to your mobile please check know ';
-                }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
-                    sentEmail({email,otp}); 
-                    msgtodiv = 'otp sent to your Email please check know ';
-                }  
-
-   
-                return res.status(200).send({"status":true,"msg":msgtodiv, "body":checkuser[0]._id }) ;     
+             return res.status(200).send({"status":true,"msg":msgtodiv, "body":checkuser[0]._id }) ;     
          }
-              
+         console.log("apiGenOtp == ",apiGenOtp);
             let add =new user_tbl({
                 name: name,
                 email: email,
@@ -309,7 +314,8 @@ let user = await user_tbl.find(condition_obj);
                  otp : otp,
                  token : token,
                  seq_id : seq_id,
-                 firebase_token : firebase_token
+                 firebase_token : firebase_token,
+                 sportimo_id:sportimo_id
             });             
 
            
@@ -319,7 +325,8 @@ let user = await user_tbl.find(condition_obj);
                  let msgtodiv2 = '';
 
                 if(user_type == 1){
-                    send_mobile_otp({mobile,otp}); 
+                   // send_mobile_otp({mobile,otp}); 
+                    send_mobile_otp_new({mobile}); 
                       msgtodiv2 = 'otp sent to your mobile please check know ';
                 }else  if(user_type == 2 || user_type == 3 || user_type == 4 ){
                     sentEmail({email,otp}); 
@@ -330,7 +337,8 @@ let user = await user_tbl.find(condition_obj);
                 }else{
                     return res.status(200).send({"status":false,"msg":'no data add ' }) ;           
                 } 
-            }   
+            } 
+          }  
         } catch (error) { console.log("user register api == ",error);
             return res.status(200).send({"status":false,"msg":'Server errror' }) ;          
                
@@ -338,7 +346,6 @@ let user = await user_tbl.find(condition_obj);
       
 
     }
-
 
 
 static resend_otp_2 = async(req,res) =>{
@@ -472,8 +479,6 @@ query.exec(function (err, person) {
 
 }
 
-
-
 static user_profile_update = async(req,res)=>{
     try {
     
@@ -484,6 +489,7 @@ static user_profile_update = async(req,res)=>{
         let  nickname    = req.body.nickname ;
         let  status_msg  = req.body.status_msg ;
         let  gender  = req.body.gender ;
+        let  date_of_birth  = req.body.date_of_birth ;
 
         let  country = req.body.country;   
         
@@ -526,6 +532,7 @@ static user_profile_update = async(req,res)=>{
   if(!isEmpty(email)){ myobjs.email = email }
   if(!isEmpty(city)){ myobjs.city = city }
   if(!isEmpty(address)){ myobjs.address = address }
+  if(!isEmpty(date_of_birth)){ myobjs.date_of_birth = date_of_birth }
 
     
 ///////////////////////////////////////////////////////////////////////////////      
@@ -552,6 +559,7 @@ user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUs
   
 
 }
+  
 
 
    static user_preference_update = async(req,res)=>{
@@ -1109,7 +1117,9 @@ static verify_nickName = async(req,res)=>{
                     let otp = Math.floor(Math.random() * 900000) + 100000;
                     let save=await user_tbl.findOneAndUpdate({_id},{$set:{otp:otp}},{new:true});
                     if(save){
-                        send_mobile_otp({mobile:new_mobile,otp});
+                       // send_mobile_otp({mobile:new_mobile,otp});
+                        send_mobile_otp_new({mobile:new_mobile});
+
                         return res.status(200).send({status:true,msg:'otp sent to your mobile , please verify userself by otp'}); 
                     }else{
                         return res.status(200).send({status:false,msg:'something went wrong , please try again!!!'});
@@ -1286,9 +1296,8 @@ static verify_nickName = async(req,res)=>{
         try {
           let mobile=req.params.mobile;
         let url = "https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx";
-     
-            // <?xml version="1.0" encoding="UTF-8"?>
-          let xml_parm =`
+            
+        let xml_parm =`
                 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                         xmlns:tem="http://tempuri.org/">
                         <soapenv:Header/>
@@ -1300,27 +1309,8 @@ static verify_nickName = async(req,res)=>{
                         </tem:SendPinCode>
                         </soapenv:Body>
                         </soapenv:Envelope>`;
-          var config = {
-            // method: 'get',
-            // url: url,
-            //  data :xml,
-           // headers: { 'Content-Type': 'text/xml', "encoding" : "UTF-8" }
-            headers: {'Content-Type': 'text/xml'}
-          };
          
-    
-          
-        //  let response = await axios.get(url,xml_parm,config);
-
-
-     //   let dds =  xml2js.parseString(response.data);
-
-
-
-
-         //   console.log("sms api call status == ",dds ); 
-        //     console.log("sms call == ", response.data); 
- ////////////////////////////////////////////////                   
+ ////////////////// Axios api call //////////////////////////////                   
  axios.post( url,xml_parm,{
         headers: {
             'Content-Type': 'text/xml'
@@ -1328,25 +1318,15 @@ static verify_nickName = async(req,res)=>{
         }
     })
     .then((response)=>{
-         // xml2js to parse the xml response from the server 
-         // to a json object and then be able to iterate over it.
-
-         xml2js.parseString(response.data, (err, result) => {
-            
-            if(err) {
-                throw err;
-            }
-            console.log( "new api call 22 ", result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0]);
-            return res.status(200).send({ 'status': true, 'msg': 'success',"body": result });
-          //  return result  ;  
-            console.log( "new api call",    result); // ['SendPinCodeResult']
+                xml2js.parseString(response.data, (err, result) => {
+                            if(err) { throw err; }
+            let Gen_otp = result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0];
+            console.log( "new api call 22 ",Gen_otp );
+           
+            return Gen_otp;
         });
                                   
-    })  .catch((error)=>{
-                
-        console.log(error)
-        return res.status(200).send({ 'status': false, 'msg': error,  }); 
-    })
+    })  .catch((error)=>{  console.log(error); return false;})
 
         
    

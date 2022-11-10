@@ -2,6 +2,8 @@
 var nodemailer = require('nodemailer');
 let mongoose = require('mongoose');
 var axios = require('axios');
+const xml2js  = require('xml2js');  
+ 
 const user_tbl = require('../models/user'); 
 const logins= require('../models/logins');     
 const user_logs = require('../models/user_logs');  
@@ -91,6 +93,35 @@ function gen_str (length) {
      return finalDate;
  } 
 
+ 
+const send_mobile_otp_new = async (req,res)=>{
+  //try {   
+    let mobile = req.mobile;
+  let url = "https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx";
+            
+        let xml_parm =`
+                <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                        xmlns:tem="http://tempuri.org/">
+                        <soapenv:Header/>
+                        <soapenv:Body>
+                        <tem:SendPinCode>
+                        <tem:MSISDN>${mobile}</tem:MSISDN>
+                        <tem:ServiceID>8</tem:ServiceID>
+                        <tem:Lang>EN</tem:Lang>
+                        </tem:SendPinCode>
+                        </soapenv:Body>
+                        </soapenv:Envelope>`;
+            axios.post( url,xml_parm,{ headers: { 'Content-Type': 'text/xml' }
+                }).then((response)=>{
+                      xml2js.parseString(response.data, (err, result) => {
+                                  if(err) { throw err; }
+                  let Gen_otp = result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0];
+                  return Gen_otp;
+              });
+                                        
+          })  .catch((error)=>{  console.log(error); return false;})
+                                   
+}
 const send_mobile_otp = async (req,res)=>{
     console.log('common modal ==');
 let mobile = req.mobile;
@@ -210,4 +241,4 @@ const my_utc_time = (date = false)=>{
 
 
 module.exports = {my_utc_time, getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,
-          rows_count,ArrChunks,before_after_Date,isArray,isObject,userPowerUpsData,saveData};
+          rows_count,ArrChunks,before_after_Date,isArray,isObject,userPowerUpsData,saveData,send_mobile_otp_new};
