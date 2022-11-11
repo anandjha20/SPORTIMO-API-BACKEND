@@ -7,9 +7,27 @@ import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
-
+import moment from "moment";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import Fade from '@mui/material/Fade';
 
 function GroupChatManagement() {
+
+
+
+    const [anchorEl, setAnchorEl] = React.useState();
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+
+
+
 
     const bottomRef = useRef();
     const scrollToBottom = () => {
@@ -18,8 +36,8 @@ function GroupChatManagement() {
 
     const [data, setData] = useState([])
     const [dataDetail, setDataDetail] = useState([])
-    const { _id } = useParams();
-
+    const [items, setItems] = useState([])
+    const { id } = useParams();
     let formData = {};
     let token = localStorage.getItem("token");
     let header = ({ 'token': `${token}` });
@@ -27,83 +45,49 @@ function GroupChatManagement() {
 
     const ChatDetails = async () => {
         const sanData = { page: "1", rows: "1" }
-        const result = await axios.get(`/web_api/firebase_group_chat_data/idMq9Tp9Egn3ic1Fqd7Y`, sanData, options1);
-        const dataDetail = result.data.body;
+        const result = await axios.get(`/web_api/FirebaseGroupChatData/${id}`, sanData, options1);
+        const dataDetail = result.data.body[0].chatData;
+        const items = result.data.body[0];
+
+        const t = new Date( dataDetail[0].time._seconds );
+        const formatted = moment(t).format("dd.mm.yyyy hh:MM:ss");
+        console.log(formatted + " ======= sunil");
+        
+        const datasd = 1667996024
+        setItems(items)
         setDataDetail(dataDetail);
         console.log(dataDetail);
     }
 
-    // const ChatMessage = async () =>
-    // {
-    //     await axios.get(`/web_api/user_complaint_chat_list/${_id}`, options1)
-    //     .then(res => {
-    //       const userData = res.data.body;
-    //       const userDataId = res.data.body[0].complaint_id;
-    //       setData(userData);
-    //       console.log(userData); 
-    //     })
-    // }
-
     useEffect(() => {
         //    ChatMessage();
         ChatDetails();
-        //    FaqList()
-        //scrollToBottom()
-        //setInterval(() =>  scrollToBottom([]),  1000, );
     }, []);
 
+const handleblock = (uid) =>
+ {
+    const setDataForm = {
+        user_id: uid,
+        block_status: "1"
+    }
+    axios.post(`/web_api/adminUserChatBlockUnblock`, setDataForm)
+        .then(res => {
+            if (res.status) {
+                let data = res.data;
+                if (data.status) {
+                    toast.success(data.msg);
+                    setAnchorEl(null);
+                    //  return CompList();
+                } else {
+                    toast.error(data.msg);
+                }
+            }
+            else {
+                toast.error(data.msg);
+            }
 
-
-    ///////////////// Chat APi call /////////////////
-    // const saveFormData = async (e) => {
-    //     e.preventDefault();
-    //     try {
-
-    //         let message = (e.target.elements.message !== 'undefined') ? e.target.elements.message.value : '';
-    //         let complaint_id = (e.target.elements.complaint_id !== 'undefined') ? e.target.elements.complaint_id.value : '';
-    //         let sender_type = (e.target.elements.sender_type !== 'undefined') ? e.target.elements.sender_type.value : '';
-
-    //         let dataToSend2 = {
-    //             "sender_type": sender_type,
-    //             "complaint_id": complaint_id,
-    //             "message": message,
-    //         }
-
-    //         console.log("new values == ", dataToSend2);
-
-    //         // let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
-
-    //         axios.post(`/web_api/user_complaint_chat_add`, dataToSend2, options1)
-    //             .then(res => {
-    //                 if (res.status) {
-
-    //                   let data = res.data;
-    //                     if (data.status) {
-    //                         e.target.reset();        
-    //                        toast.success(data.msg); 
-    //                        return axios.get(`/web_api/user_complaint_chat_list/${_id}`)
-    //                             .then(res => {
-    //                                 const userData = res.data.body;
-    //                                 setData(userData);
-    //                             });                 
-    //                     } else {
-    //                        toast.error(data.msg);
-    //                         e.target.reset();   
-    //                     }
-    //                 }
-    //                 else {
-    //                     toast.error('something went wrong please try again..');
-    //                     e.target.reset();   
-    //                 }
-
-    //             })
-    //             .catch(error => {
-    //                 console.log(this.state);
-    //             })
-
-    //     } catch (err) { console.error(err); toast.error('some errror'); return false; }
-    // }
-
+        })
+ }
 
 
     return (
@@ -143,10 +127,10 @@ function GroupChatManagement() {
                                                 <div className="img_width_chat">
                                                 <img src='/assets/images/no-image.png' />
                                              </div>
-
-                                             <h6 className="">Cricket Batting Game</h6>
-                                            <h6 className="dis"></h6>
-
+                                           <div>
+                                             <h6 className="">{items.name}</h6>
+                                            <h6 className="dis">Total Members : {items.size}</h6>
+                                            </div>
                                          {/*{dataDetail.image !== '' ? <> <img src={dataDetail.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }   
                                          </div>
                                          <div>
@@ -172,8 +156,34 @@ function GroupChatManagement() {
                                                             </div>
                                                             <div className="msg-bubble">
                                                                 <div className="msg-info">
-                                                                    <div className="msg-info-name"></div>
-                                                                    <div className="msg-info-time">12:45</div>
+                                                                    <div className="msg-info-name">{daTa.sendBy}</div>
+                                                                    <div className="msg-info-time">
+                                                                    {/* {daTa.time._seconds} */}
+                                                                    <div>
+                                                                    <Button className="blockbtn"
+                                                                        id="fade-button"
+                                                                        aria-controls={open ? 'fade-menu' : undefined}
+                                                                        aria-haspopup="true"
+                                                                        aria-expanded={open ? 'true' : undefined}
+                                                                        onClick={handleClick}
+                                                                        variant="outlined"
+                                                                    >
+                                                                        <i className="fal fa-ellipsis-v"></i>
+                                                                    </Button>
+                                                                    <Menu
+                                                                        id="fade-menu"
+                                                                        MenuListProps={{
+                                                                        'aria-labelledby': 'fade-button',
+                                                                        }}
+                                                                        anchorEl={anchorEl}
+                                                                        open={open}
+                                                                        onClose={handleClose}
+                                                                        TransitionComponent={Fade}
+                                                                    >
+                                                                        <MenuItem onClick={(e) => handleblock(daTa.uid)}>Block</MenuItem>
+                                                                    </Menu>
+                                                                    </div>
+                                                                    </div>
                                                                 </div>
                                                                 <div className="msg-text">
                                                                 {daTa.message}

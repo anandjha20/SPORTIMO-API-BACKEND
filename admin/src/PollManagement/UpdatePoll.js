@@ -660,33 +660,27 @@ export default function UpdatePoll() {
     polldetail();
   }, []);
 
-//   const [isChecked, setIsChecked] = useState(0);
-//   const handleOnChangeCustomer = (event) => {
-//     if(isChecked == 1)
-//     {
-//         setIsChecked(0);
-//         // let isChecked = event.target.checked;
-//         // console.log(isChecked)
-//     }
- 
-//     if(event.target.checked) {
-//       alert("Checkbox checked!");
-//     }
-//   //  console.log(isChecked + "test") 
-//  };
-
-
-
+  const [agreement, setAgreement] = React.useState(false);
+  const [isChecked, setIsChecked] = useState(0);
+  const handleOnChangeCustomer = (event) => {
+    if(isChecked == 0)
+    {
+        setIsChecked(1);
+        setAgreement(true);
+    }
+    else 
+    {
+      setIsChecked(0);
+      setAgreement(false);
+    }
+  //  console.log(isChecked + "test") 
+ };
 
   /////////////////// Poll Detail Api Call ///////////////////////////////////////
 
   return (
     <>
-
       <Header />
-
-
-      
       <div className="main-content side-content pt-0">
         <div className="container-fluid">
           <div className="inner-body">
@@ -725,9 +719,11 @@ export default function UpdatePoll() {
                           <div className="row">
                           {/* {datadetail.poll_type} */}
         {/* <label class="col-lg-10  form-check-label col-form-label  fw-semibold fs-6" for="flexSwitchCheckDefault">Add Customer</label> */}
-                    {/* <div class="col-lg-2 form-check form-switch  ">
-                        <input class="" type="checkbox" name="addCustomer"  role="switch" id="flexSwitchCheckDefault" onChange={(event) => handleOnChangeCustomer()} />
-                      </div> */}
+                    
+                    <div class="col-lg-2 form-check form-switch">
+                      <label htmlFor="ckheck">test</label>
+                        <input class="" type="checkbox" checked={agreement} name="addCustomer" id="ckheck"  value="1" role="switch"  onChange={(event) => handleOnChangeCustomer()} />
+                      </div>
 
                       {datadetail.poll_type !== "" ? <>true</> : <>haa</>}
                     </div>

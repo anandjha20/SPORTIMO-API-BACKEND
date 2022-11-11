@@ -38,6 +38,7 @@ import AllListNotification from "./NotificationManagement/AllListNotification";
 import AddNotification from "./NotificationManagement/AddNotification";
 import ReportReason from "./ReportReasonMangement/ReportReason";
 import GroupList from "./GroupChatManagement/GroupList";
+import UsersListGroup from "./GroupChatManagement/UsersListGroup";
 import GroupChatManagement from "./GroupChatManagement/GroupChatManagement";
 import UserReportList from "./ReportReasonMangement/UserReportList";
 import UserChatBlockedList from "./ChatManagement/UserChatBlockedList";
@@ -115,7 +116,8 @@ function App() {
 
         {/*Group Chat Management */} 
         <Route path="/groups" element={ <GroupList /> } />
-        <Route path="/groups/chat" element={ <GroupChatManagement /> } />
+        <Route path="/groups/members/:id" element={ <UsersListGroup /> } />
+        <Route path="/groups/chat/:id" element={ <GroupChatManagement /> } />
 
         {/*ReportReasonManagement */} 
         <Route path="/report" element={ <ReportReason /> } />

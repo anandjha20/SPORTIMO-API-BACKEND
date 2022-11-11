@@ -358,7 +358,7 @@ const formresult = async (e)=>{
                             <input type="hidden" value={itemdata._id} name="geq_id" />
                             <span className="react-select-title">Select Rewards Type</span>
                             <select className="form-control" name="correct_ans">
-                                <option disabled>Please Select</option>
+                                <option disabled selected>Please Select</option>
                                 {itemdata.opt_1 !== "" ?  <><option value="opt_1">{itemdata.opt_1}</option></> : null}
                                 {itemdata.opt_2 !== "" ?  <><option value="opt_2">{itemdata.opt_2}</option></> : null}
                                 {itemdata.opt_3 !== "" ?  <><option value="opt_3">{itemdata.opt_3}</option></> : null}
