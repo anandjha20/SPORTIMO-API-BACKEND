@@ -1089,8 +1089,11 @@ static get_card_008 = async (req, res) => {
  
   static update_match_data_by_date = async (req, res) => {
     try {
-      //let date = req.body.date;
-      let date = getcurntDate();
+      let date = req.body.date;
+     if(date==undefined){
+        date = getcurntDate();
+      }
+      console.log(date)
 
       let response = await day_match_add(date)
       
@@ -1105,13 +1108,13 @@ static get_card_008 = async (req, res) => {
               "team_a_id": item.team_a_id,
               "team_a_name": item.team_a_name,
               "team_a_name_ara": ara.team_a_name,
-              "team_a_logo": item.team_a_logo,
+              "team_a_logo": ara.team_a_logo,
               "team_a_short_name": item.team_a_short_name,
               "team_a_short_name_ara": ara.team_a_short_name,
               "team_b_id": item.team_b_id,
               "team_b_name": item.team_b_name,
               "team_b_name_ara": ara.team_b_name,
-              "team_b_logo": item.team_b_logo,
+              "team_b_logo": ara.team_b_logo,
               "team_b_short_name": item.team_b_short_name,
               "team_b_short_name_ara": ara.team_b_short_name,
               "date_utc": item.date_utc,
@@ -1134,7 +1137,7 @@ static get_card_008 = async (req, res) => {
       })
 
 
-      return res.status(200).send({ 'status': true, 'msg': 'success', 'body':""});
+      return res.status(200).send({ 'status': true, 'msg': 'success', 'body': response });
 
       } else {
         return res.status(200).send({ 'status': false, 'msg': 'No Data Found!..' });
@@ -1144,8 +1147,7 @@ static get_card_008 = async (req, res) => {
       console.log(error);
       return res.status(200).send({ 'status': false, 'msg': error, 'body': '' });
     }
-     }
-   
+     }   
 }
 
 
