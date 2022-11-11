@@ -95,9 +95,9 @@ function gen_str (length) {
 
  
 const send_mobile_otp_new = async(req,res)=>{
-  //try {   
-            console.log("otp modal call ", req); 
-
+  try {   
+           
+    let myFenOTP = 0 ; 
     let mobile = req.mobile;  
     console.log("otp modal mobile  ", mobile); 
   let url = "https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx";
@@ -114,23 +114,20 @@ const send_mobile_otp_new = async(req,res)=>{
                         </tem:SendPinCode>
                         </soapenv:Body>
                         </soapenv:Envelope>`;
-            axios.post( url,xml_parm,{ headers: { 'Content-Type': 'text/xml' }
-                }).then((response)=>{
-                      xml2js.parseString(response.data, (err, result) => {
+       let ssdd =     await axios.post( url,xml_parm,{ headers: { 'Content-Type': 'text/xml' }
+                             }).then( async(response)=>{
+                              return   await  xml2js.parseString(response.data, (err,result) => {
                                   if(err) { console.log(err); return false;}else{
-                        
-                  var  Gen_otp = result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0];
-                console.log('ss opt === ',Gen_otp ) ;
-                return Gen_otp; 
+                                      var  Gen_otp = result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0];
+                                     console.log('ss opt === ',Gen_otp ) ;
+                                     myFenOTP = Gen_otp;
+                                    return  Gen_otp;    
+                                 } });    })  .catch((error)=>{  console.log(error); return false;})
+   
+               return myFenOTP;    
+                                 
+      } catch (error) { console.log(error);return false; }
 
-              
-            //  return result ; // Gen_otp;
-                 }
-
-              });              
-                                        
-          })  .catch((error)=>{  console.log(error); return false;})
-                                   
 }
 const send_mobile_otp = async (req,res)=>{
     console.log('common modal ==');

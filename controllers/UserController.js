@@ -407,6 +407,10 @@ static verify_otp = async(req,res)=>{
         let user_id    = req.body.user_id;
         let otp    = req.body.otp;
         
+        
+        otp = ( otp.charAt( 0 ) === '0' )? otp.slice( 1 ) : otp ;
+
+       
         let otp_len = (otp || '').length;    let user_id_len = (user_id || '').length;
      
         if(otp_len == 0 || user_id_len == 0){
@@ -421,10 +425,12 @@ query.exec(function (err, person) {
     return res.status(200).send({"status":false,"msg":'Invalid User' }) ; 
   } 
   // Prints "Space Ghost is a talk show host."
+
+  console.log(" db user  otp is == ", person.otp); 
   let ddsq = user_logs_add(person._id,'login');  
   if(person.otp == otp){
     return res.status(200).send({"status":true,"msg":'Success' , "body": person }) ;     
-  }else{  console.log(person); 
+  }else{ // console.log(person); 
     return res.status(200).send({"status":false,"msg":'Invalid otp'}) ;     
   }
 
@@ -1182,6 +1188,7 @@ static verify_nickName = async(req,res)=>{
         let new_email=req.body.email;
       
         let new_mobile=req.body.mobile;
+          
         let userDetails= await user_tbl.find({"_id":_id});
         if(!isEmpty(new_email)){
             if(userDetails[0].email!=new_email){
@@ -1208,13 +1215,13 @@ static verify_nickName = async(req,res)=>{
             if(userDetails[0].mobile!=new_mobile){
                 let data=await user_tbl.find({mobile:new_mobile});
                 if(data.length==0){
-                    let otp = Math.floor(Math.random() * 900000) + 100000;
+                  //  let otp = Math.floor(Math.random() * 900000) + 100000;
+                
+                     let otp = await send_mobile_otp_new({"mobile":new_mobile});
+
                     let save=await user_tbl.findOneAndUpdate({_id},{$set:{otp:otp}},{new:true});
                     if(save){
-                        send_mobile_otp({mobile:new_mobile,otp});
-                      // let dd = await send_mobile_otp_new({mobile:new_mobile});
-
-                        return res.status(200).send({status:true,msg:'otp sent to your mobile , please verify userself by otp'}); 
+                      return res.status(200).send({status:true,msg:'otp sent to your mobile , please verify userself by otp'}); 
                     }else{
                         return res.status(200).send({status:false,msg:'something went wrong , please try again!!!'});
                     }
@@ -1389,7 +1396,7 @@ static verify_nickName = async(req,res)=>{
       static sms_api_test = async (req, res) =>{
         try {
           let mobile=req.params.mobile;
-        let data = await send_mobile_otp_new(mobile); 
+        let data = await send_mobile_otp_new({mobile}); 
         console.log("otp new gen == ",data);       
        if(!isEmpty(data)){
             return res.status(200).send({ 'status': true, 'data': data  });
