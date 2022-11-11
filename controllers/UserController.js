@@ -5,7 +5,7 @@
  
 
   
-const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date,send_mobile_otp_new } = require('../myModel/common_modal');
+const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date,send_mobile_otp_new,getLocalDateTime } = require('../myModel/common_modal');
 const { autoincremental,sendNotificationAdd,myBlockUserIds,preferences_ar_convart } = require('../myModel/helper_fun');
 
   const  {MyBasePath} = require("../myModel/image_helper");
@@ -234,6 +234,7 @@ if(user_type==1){condition_obj={...condition_obj,mobile}};
 if(user_type==2){condition_obj={...condition_obj,email}};
 
 let user = await user_tbl.find(condition_obj);
+
     if( ! isEmpty(user) &&  user[0].is_deleted==1){
         
     return res.status(200).send({"status":false,"msg":'your account was deleted..register yourself first!!! '}) ;
@@ -280,13 +281,13 @@ let user = await user_tbl.find(condition_obj);
     let sendmsg = ( user_type == 2 || user_type == 3 || user_type == 4 )? "Email already exists" :  "Mobile already exists" ;
 
 
-    console.log('checkuser == ',checkuser)  ;         
+  //  console.log('checkuser == ',checkuser)  ;         
            
      if(checkuser.length >0 ){
         let check_user_id = checkuser[0]._id; 
         let check_type = checkuser[0].user_type;  let msgtodiv = '';   
        
-        var apiGenOtp =10000;  // otp ;
+        var apiGenOtp = 10000;  // otp ;
        
         if(check_type == 1){  
             //send_mobile_otp({mobile,otp});   
@@ -332,9 +333,6 @@ let user = await user_tbl.find(condition_obj);
            
                     let allsaveData =  await add.save();
             if(allsaveData){
-
-               
-
                 if(user_type == 2 || user_type == 3 || user_type == 4 ){
                     sentEmail({email,otp}); 
                     msgtodiv2 = 'otp sent to your Email please check know ';
@@ -1342,7 +1340,7 @@ static verify_nickName = async(req,res)=>{
         }
     }
 
-    static match_details = async (req,res)=>{
+    static match_details_old = async (req,res)=>{
         try{
             let _id=req.body.id;
             let user_id=req.body.user_id;
@@ -1369,6 +1367,43 @@ static verify_nickName = async(req,res)=>{
             return res.status(200).send({"status":false,"msg":"server error"});
         }
     }
+
+    static match_details = async (req,res)=>{
+        try{
+            let _id=req.body.id;
+            let user_id=req.body.user_id;
+            let zone=req.body.zone;
+               
+            let condition_obj={};
+            if(!isEmpty(_id)){condition_obj={...condition_obj,_id}}
+             let response=await team_matches.find(condition_obj)
+             console.log()
+             let local=await getLocalDateTime({date_utc:response[0].date_utc,time_utc:response[0].time_utc,zone})
+             response.map((item)=>{
+                item.date_utc=local.local_date;
+                item.time_utc=local.local_time;
+             });
+             
+             let total_cards=await match_cards.find({"match_id":_id}).countDocuments()
+             let total_played_cards=await play_match_cards_tbl.find({"match_id":_id,"user_id":user_id}).countDocuments()
+            let transaction= await transaction_tbls.find({"match_id":_id,"user_id":user_id});
+            let score=0;
+            transaction.map((item)=>{
+                score+=item.points;
+            })
+            if(response.length>0){
+                return res.status(200).send({"status":true,"msg":"data found","body":response,total_cards,total_played_cards,score});
+            }else{
+                return res.status(200).send({"status":false,"msg":"no data found"})
+            }
+        
+        }catch (err){
+            console.log(err)
+            return res.status(200).send({"status":false,"msg":"server error"});
+        }
+    }
+    
+
     static update_google_id = async(req,res)=> {
         try{   
              let user_id  = req.body.user_id;

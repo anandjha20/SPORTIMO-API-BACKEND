@@ -1093,8 +1093,7 @@ static get_card_008 = async (req, res) => {
      if(date==undefined){
         date = getcurntDate();
       }
-      console.log(date)
-
+      
       let response = await day_match_add(date)
       
     if (response) {

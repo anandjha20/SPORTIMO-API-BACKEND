@@ -86,6 +86,31 @@ function gen_str (length) {
     
     
   }  
+
+  const getLocalDateTime = (data) =>{
+    let date_utc=(data.date_utc);
+    let day=date_utc.getDate();
+    let month=date_utc.getMonth()+1;
+    let year=date_utc.getFullYear();
+    let time=data.time_utc;
+    let dateTimeStr=year+"-"+month+"-"+day+"T"+time+".000Z";
+    let zone=(data.zone==undefined?'':data.zone);
+    let str = ''
+    if(zone=="GMT"){str=new Date(dateTimeStr).toLocaleString('en-UK', { timeZone: 'Europe/London' });}else
+    if(zone=="IST"){str=new Date(dateTimeStr).toLocaleString('en-UK', { timeZone: 'Asia/kolkata' });}else
+    {str=new Date(dateTimeStr).toLocaleString('en-UK', { timeZone: 'Asia/dubai' });}
+      
+    let yyyy=str.substring(6,10)
+    let mm=str.substring(3,5)
+    let dd=str.substring(0,2)
+    let t=yyyy+"-"+mm+"-"+dd+"T"+str.substring(12,20)+".000Z"
+    local_date=new Date(t)
+    local_time=str.substring(12,20)
+    console.log({local_date,local_time})
+    return {local_date,local_time}
+  }  
+
+
  const before_after_Date = (days)=>{
         var date = new Date();
      date.setDate(date.getDate() + parseInt(days));
@@ -117,7 +142,7 @@ const send_mobile_otp_new = async(req,res)=>{
        let ssdd =     await axios.post( url,xml_parm,{ headers: { 'Content-Type': 'text/xml' }
                              }).then( async(response)=>{
                               return   await  xml2js.parseString(response.data, (err,result) => {
-                                  if(err) { console.log(err); return false;}else{
+                                  if(err) { console.log( "modal, otp  api call :- server error ", err); return false;}else{
                                       var  Gen_otp = result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0];
                                      console.log('ss opt === ',Gen_otp ) ;
                                      myFenOTP = Gen_otp;
@@ -126,7 +151,7 @@ const send_mobile_otp_new = async(req,res)=>{
    
                return myFenOTP;    
                                  
-      } catch (error) { console.log(error);return false; }
+      } catch (error) { console.log('modal, otp :- server error ',error);return false; }
 
 }
 const send_mobile_otp = async (req,res)=>{
@@ -247,5 +272,5 @@ const my_utc_time = (date = false)=>{
     }
 
 
-module.exports = {my_utc_time, getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,
+module.exports = {getLocalDateTime,my_utc_time, getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,
           rows_count,ArrChunks,before_after_Date,isArray,isObject,userPowerUpsData,saveData,send_mobile_otp_new};
