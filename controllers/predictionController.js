@@ -518,7 +518,7 @@ class predictionController {
         } catch (error) { return res.status(200).send({"status":true,"msg":'Some error' , "body":''}) ; }
 
     }
-   
+      
    
     static match_card_list_old = async (req,res)=>{
       try {
@@ -578,7 +578,7 @@ class predictionController {
              if(!isEmpty(card_cat_id)){cardCat={...cardCat,card_cat_id}}
              let condition_obj={};
             if(!isEmpty(req.body.match_id)){
-              condition_obj={...condition_obj,match_id:req.body.match_id}
+              condition_obj = {...condition_obj,match_id:req.body.match_id}
             }
          
             let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
@@ -595,8 +595,7 @@ class predictionController {
                 if(records){ records.map((item)=> { 
                   if(typeof item.card_id === 'object' && item.card_id !== null){
                       
-                    if(language != '' && language == 'ar'){ 
-                                  
+                      if(language != '' && language == 'ar'){ 
                                 item.card_id.name = item.card_id.name_ara;
                                 item.card_id.qus = item.card_id.qus_ara;
                                 item.card_id.ops_1 = item.card_id.ops_1_ara;

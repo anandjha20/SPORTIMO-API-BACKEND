@@ -571,8 +571,8 @@ static all_team_match_list_mobile = async (req,res)=>{
         
         let offest = (page -1 ) * 10 ; 
         const records = await query2.skip(offest).limit(10);
-        records.map(async (item)=>{
-            let local=await getLocalDateTime({date_utc:item.date_utc,time_utc:item.time_utc,zone})
+        records.map( (item)=>{
+            let local= getLocalDateTime({date_utc:item.date_utc,time_utc:item.time_utc,zone})
             item.date_utc=local.local_date;
             item.time_utc=local.local_time;
             if(language=="ar"){
