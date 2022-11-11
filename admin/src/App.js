@@ -38,6 +38,7 @@ import AllListNotification from "./NotificationManagement/AllListNotification";
 import AddNotification from "./NotificationManagement/AddNotification";
 import ReportReason from "./ReportReasonMangement/ReportReason";
 import GroupList from "./GroupChatManagement/GroupList";
+import UsersListGroup from "./GroupChatManagement/UsersListGroup";
 import GroupChatManagement from "./GroupChatManagement/GroupChatManagement";
 import UserReportList from "./ReportReasonMangement/UserReportList";
 import UserChatBlockedList from "./ChatManagement/UserChatBlockedList";
@@ -55,6 +56,10 @@ import ViewUserPointsTransaction from "./LeaderBoard/ViewUserPointsTransaction";
 import CreateAvatar from "./AvatarManagement/CreateAvatar";
 import UserPredistions from "./PredictionManagement/userPredictionList";
 import UserPredictionListDetail from "./PredictionManagement/UserPredictionListDetail";
+import GEQAnalyticsMangement from "./AnalyticsMangement/GEQAnalyticsMangement";
+import SupportAnalyticsMangement from "./AnalyticsMangement/SupportAnalyticsMangement";
+import ProfileAnalyticsMangement from "./AnalyticsMangement/ProfileAnalyticsMangement";
+import UserAnalyticsMangement from "./AnalyticsMangement/UserAnalyticsMangement";
 
 function App() {
 
@@ -111,7 +116,8 @@ function App() {
 
         {/*Group Chat Management */} 
         <Route path="/groups" element={ <GroupList /> } />
-        <Route path="/groups/chat" element={ <GroupChatManagement /> } />
+        <Route path="/groups/members/:id" element={ <UsersListGroup /> } />
+        <Route path="/groups/chat/:id" element={ <GroupChatManagement /> } />
 
         {/*ReportReasonManagement */} 
         <Route path="/report" element={ <ReportReason /> } />
@@ -166,6 +172,15 @@ function App() {
         <Route path="/preference/teams" element={ <TeamsPreference /> } />
         <Route path="/preference/leagues" element={ <LeaguesPreference /> } />
         <Route path="/preference/players" element={ <PlayersPreference /> } />
+
+        {/*AnalyticsMangement */} 
+        <Route path="/analytics/user" element={ <UserAnalyticsMangement /> } />
+        <Route path="/analytics/geq" element={ <GEQAnalyticsMangement /> } />
+        <Route path="/analytics/support" element={ <SupportAnalyticsMangement /> } />
+        <Route path="/analytics/user-profile" element={ <ProfileAnalyticsMangement /> } />
+        {/* <Route path="/preference/teams" element={ <TeamsPreference /> } />
+        <Route path="/preference/leagues" element={ <LeaguesPreference /> } />
+        <Route path="/preference/players" element={ <PlayersPreference /> } /> */}
        
       </Routes>
     </>

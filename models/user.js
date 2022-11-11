@@ -1,4 +1,4 @@
- const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
@@ -6,9 +6,11 @@ const Schema = mongoose.Schema;
 const Userschema = new Schema({
 
           name: { type: String, default: ''},
+          sportimo_id: { type: String, required: true },
           doc_type: { type: String,default: ''},
           token: { type: String, default: '' },
           city: { type: String, default: '' },
+          date_of_birth: { type: String, default: '' },
           address: { type: String, default: '' },
           user_language : { type: String,enum: ['Arabic', 'English'],  default: 'English' },
 
@@ -38,17 +40,16 @@ const Userschema = new Schema({
           google_id  : { type: String ,default: ''},
           music_sound : { type: String,enum: [0,1], default: '0' },
           haptics : { type: String,enum: [0,1], default: '0' },
-          chat : { type: String,enum: [0,1], default: '0' },          
+          chat : { type: String,enum: [0,1], default: '1' },          
           biometric  : { type: String,enum: [0,1], default: '0'},
-          notifications : { type: String,enum: [0,1], default: '0' }, 
+          notifications : { type: String,enum: [0,1], default: '1' }, 
           chatBlockStatus :{type:Boolean,default: 0 },
           firebase_token :  { type: String ,default: ''},
           profile_type : {type:String, enum :["public","private"] ,default: "public" },  
           points: { type: Number, default: 0 },
-          follower : {type:Boolean,default: 0 },
+          follower : {type:Boolean,default: 1 },
 
         });
 
 
 module.exports = mongoose.model('user_tbl', Userschema);
-

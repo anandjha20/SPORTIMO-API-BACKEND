@@ -3,13 +3,13 @@ import Select from 'react-select';
 
 import { useState,useEffect } from "react";
 import axios from "axios";
-
+import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
               
 export default function SelectTageting() {
-
+    const navigate = useNavigate();
     const [sport_lists, setSport_lists] = React.useState([]);
     const [league_lists, setLeague_lists] = React.useState([]);
     const [team_lists, setTeam_lists] = React.useState([]);
@@ -33,6 +33,7 @@ export default function SelectTageting() {
                 setval(data.body);
              // toast.success(data.msg);
             } else {
+              navigate("/");
               toast.error(data.msg);
             }
           }

@@ -16,6 +16,7 @@ function FaqList() {
           document.body.className = "main-body leftmenu";
         }
       }, []);
+      
     return (
         <>
         <ToastContainer/>

@@ -20,63 +20,64 @@ const user_reportings_tbl = require('../models/user_reportings');
 const user_chat_blocks_tbl = require("../models/user_chat_blocks");
 const block_user_tbl = require("../models/block_user");
 const user_complaint_tbl = require('../models/user_complaint');    
-
+const geq_answers= require('../models/geq_answers');
+const transactions_tbl = require('../models/transactions');
 
 class analyticsController { 
-    
-    static all_user_analytics = async (req,res)=>{
-        try {
-            let country=req.body.country;
-            let s_date=req.body.s_date;
-            let e_date=req.body.e_date;
-            let log_s_date=req.body.log_s_date;
-            let log_e_date=req.body.log_e_date;
-            let regitser_user_condition={};
-            if(!isEmpty(country)){regitser_user_condition={...regitser_user_condition,country}};
-            if(!isEmpty(s_date)&&!isEmpty(e_date)){regitser_user_condition={...regitser_user_condition,date:{$gte:s_date,$lte:e_date}}}else
-            if(!isEmpty(s_date)){regitser_user_condition={...regitser_user_condition,date:{$gte:s_date}}}else
-            if(!isEmpty(e_date)){regitser_user_condition={...regitser_user_condition,date:{$lte:e_date}}}
-            
-            let log_condition={};
-            if(!isEmpty(log_s_date)&&!isEmpty(log_e_date)){log_condition={...log_condition,date:{$gte:log_s_date,$lte:log_e_date}}}else
-            if(!isEmpty(log_s_date)){log_condition={...log_condition,date:{$gte:log_s_date}}}else
-            if(!isEmpty(log_e_date)){log_condition={...log_condition,date:{$lte:log_e_date}}}
+ 
+  static all_user_analytics = async (req,res)=>{
+    try {
+        let country=req.body.country;
+        let s_date=req.body.s_date;
+        let e_date=req.body.e_date;
+        let whr={};
+        let log_date={};
+        if(!isEmpty(s_date)&&!isEmpty(e_date)){whr={...whr,date:{$gte:s_date,$lte:e_date}};log_date={...log_date,date:{$gte:s_date,$lte:e_date}};}else
+        if(!isEmpty(s_date)){whr={...whr,date:{$gte:s_date}};log_date={...log_date,date:{$gte:s_date}};}else
+        if(!isEmpty(e_date)){whr={...whr,date:{$lte:e_date}};log_date={...log_date,date:{$lte:e_date}};}
         
-            let total_user = await user_tbl.find(regitser_user_condition).countDocuments();
-            let total_registered_user = await user_tbl.find({user_type:[1,2,3,4]}).countDocuments();
-            let total_unregistered_user = await user_tbl.find({user_type:5}).countDocuments();
-            let mobile_user = await user_tbl.find({user_type:1}).countDocuments();
-            let email_user = await user_tbl.find({user_type:2}).countDocuments();
-            let google_user = await user_tbl.find({user_type:3}).countDocuments();
-            let apple_user = await user_tbl.find({user_type:4}).countDocuments();
-            let guest_user = await user_tbl.find({user_type:5}).countDocuments();
-            let english_language_user = await user_tbl.find({user_language:'English'}).countDocuments();
-            let arabic_language_user = await user_tbl.find({user_language:'Arabic'}).countDocuments();
-            let total_login = await logins.find(log_condition).countDocuments();
-                
+        let pipeline=[{$match:log_date},
+          {$lookup:{foreignField:"_id",localField:"user_id",from:"user_tbls",as:"user"}},
+          {$unwind:"$user"},
+          ]
+        if(!isEmpty(country)){whr={...whr,country};pipeline.push({$match:{"user.country":country}})};
+        
+        
+        let total_user = await user_tbl.find(whr).countDocuments();
+        let total_registered_user = await user_tbl.find({user_type:[1,2,3,4],...whr}).countDocuments();
+        let total_unregistered_user = await user_tbl.find({user_type:5,...whr}).countDocuments();
+        let mobile_user = await user_tbl.find({user_type:1,...whr}).countDocuments();
+        let email_user = await user_tbl.find({user_type:2,...whr}).countDocuments();
+        let google_user = await user_tbl.find({user_type:3,...whr}).countDocuments();
+        let apple_user = await user_tbl.find({user_type:4,...whr}).countDocuments();
+        let guest_user = await user_tbl.find({user_type:5,...whr}).countDocuments();
+        let english_language_user = await user_tbl.find({user_language:'English',...whr}).countDocuments();
+        let arabic_language_user = await user_tbl.find({user_language:'Arabic',...whr}).countDocuments();
+        let total_login = await logins.aggregate(pipeline);
             
-            let analytics={
-              total_user,
-              total_registered_user,
-              total_unregistered_user,
-              mobile_user,
-              email_user,
-              google_user,
-              apple_user,
-              guest_user,
-              english_language_user,
-              arabic_language_user,
-              total_login
-            };
-            return  res.status(200).send({'status':true,'msg':"success",'body':analytics});
-          } catch (error) {
-            return  res.status(200).send({'status':false,'msg':"server error",'body':''});
-          }
-  
-  
+        
+        let analytics={
+          total_user:total_user,
+          total_registered_user:total_registered_user,
+          total_unregistered_user:total_unregistered_user,
+          mobile_user:mobile_user,
+          email_user:email_user,
+          google_user:google_user,
+          apple_user:apple_user,
+          guest_user:guest_user,
+          english_language_user:english_language_user,
+          arabic_language_user:arabic_language_user,
+          total_login:total_login.length
+        };
+        return  res.status(200).send({'status':true,'msg':"success",'body':analytics});
+      } catch (error) {console.log(error)
+        return  res.status(200).send({'status':false,'msg':"server error",'body':''});
       }
 
-      static user_profile_analytics = async (req,res)=>{
+
+      }
+
+   static user_profile_analytics = async (req,res)=>{
         try {
             let total_reporting_user = await user_reportings_tbl.distinct("reporting_user_id");
             let total_chat_block = await user_chat_blocks_tbl.distinct("user_id");
@@ -142,7 +143,30 @@ class analyticsController {
       }
 
 
-  }
+    }
+    static geq_analytics = async (req,res)=>{
+      try {
+            let geq_id=req.body.geq_id;
+  
+            let whr={};
+            if(!isEmpty(geq_id)){whr={...whr,geq_id}}
+  
+            let total_player_answered_qeq = await geq_answers.find(whr).countDocuments();
+            let total_player_gain_qeq_points = await transactions_tbl.find({points_by:"geq",...whr}).countDocuments();
+            
+            let analytics={
+              total_player_answered_qeq,
+              total_player_gain_qeq_points
+            };
+          return  res.status(200).send({'status':true,'msg':"success",'body':analytics});
+        } catch (error) {
+          console.log(error)
+          return  res.status(200).send({'status':false,'msg':"server error",'body':''});
+        }
+  
+  
+    }
+
 
 }
 

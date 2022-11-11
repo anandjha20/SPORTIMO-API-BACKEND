@@ -14,7 +14,7 @@ const { MyBasePath } = require("../myModel/image_helper");
 
 
 const team_matches = require('../models/team_matches');
-const { day_match_getID,day_match_add, match_card_number, match_card_0011, match_card_0013, matchCardAllData, matchCardEventAllData, get_card_result_add_4,
+const { match_data_ara,day_match_getID,day_match_add, match_card_number, match_card_0011, match_card_0013, matchCardAllData, matchCardEventAllData, get_card_result_add_4,
   get_card_result_add_7, get_card_result_add_1, get_card_result_add_11, get_card_result_add_13,
   get_card_result_add_15, get_card_result_add_17, get_card_result_add_20, get_card_result_add_23,
   get_card_result_add_36, get_card_result_add_10, get_card_result_add_18,getCardResult_18_END, card_08_befor_call, get_card_result_add_08,
@@ -1087,23 +1087,35 @@ static get_card_008 = async (req, res) => {
     }
   }
  
-  
   static update_match_data_by_date = async (req, res) => {
     try {
       let date = req.body.date;
+     if(date==undefined){
+        date = getcurntDate();
+      }
+      
       let response = await day_match_add(date)
       
     if (response) {
         response.map(async (item)=>{
+          let ara= await match_data_ara(item.match_id)
+          console.log(ara)
         let match_details={
               "match_id": item.match_id,
               "match_name": item.team_a_name+" vs "+item.team_b_name,
+              "match_name_ara": ara.team_a_name+" ضد "+ara.team_b_name,
               "team_a_id": item.team_a_id,
               "team_a_name": item.team_a_name,
+              "team_a_name_ara": ara.team_a_name,
+              "team_a_logo": ara.team_a_logo,
               "team_a_short_name": item.team_a_short_name,
+              "team_a_short_name_ara": ara.team_a_short_name,
               "team_b_id": item.team_b_id,
               "team_b_name": item.team_b_name,
+              "team_b_name_ara": ara.team_b_name,
+              "team_b_logo": ara.team_b_logo,
               "team_b_short_name": item.team_b_short_name,
+              "team_b_short_name_ara": ara.team_b_short_name,
               "date_utc": item.date_utc,
               "time_utc": item.time_utc,
               "last_updated": item.last_updated,
@@ -1134,10 +1146,7 @@ static get_card_008 = async (req, res) => {
       console.log(error);
       return res.status(200).send({ 'status': false, 'msg': error, 'body': '' });
     }
-  }
-
-
-   
+     }   
 }
 
 

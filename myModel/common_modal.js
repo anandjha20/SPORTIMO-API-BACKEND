@@ -2,6 +2,8 @@
 var nodemailer = require('nodemailer');
 let mongoose = require('mongoose');
 var axios = require('axios');
+const xml2js  = require('xml2js');  
+ 
 const user_tbl = require('../models/user'); 
 const logins= require('../models/logins');     
 const user_logs = require('../models/user_logs');  
@@ -84,6 +86,31 @@ function gen_str (length) {
     
     
   }  
+
+  const getLocalDateTime = (data) =>{
+    let date_utc=(data.date_utc);
+    let day=date_utc.getDate();
+    let month=date_utc.getMonth()+1;
+    let year=date_utc.getFullYear();
+    let time=data.time_utc;
+    let dateTimeStr=year+"-"+month+"-"+day+"T"+time+".000Z";
+    let zone=(data.zone==undefined?'':data.zone);
+    let str = ''
+    if(zone=="GMT"){str=new Date(dateTimeStr).toLocaleString('en-UK', { timeZone: 'Europe/London' });}else
+    if(zone=="IST"){str=new Date(dateTimeStr).toLocaleString('en-UK', { timeZone: 'Asia/kolkata' });}else
+    {str=new Date(dateTimeStr).toLocaleString('en-UK', { timeZone: 'Asia/dubai' });}
+      
+    let yyyy=str.substring(6,10)
+    let mm=str.substring(3,5)
+    let dd=str.substring(0,2)
+    let t=yyyy+"-"+mm+"-"+dd+"T"+str.substring(12,20)+".000Z"
+    local_date=new Date(t)
+    local_time=str.substring(12,20)
+    console.log({local_date,local_time})
+    return {local_date,local_time}
+  }  
+
+
  const before_after_Date = (days)=>{
         var date = new Date();
      date.setDate(date.getDate() + parseInt(days));
@@ -91,6 +118,42 @@ function gen_str (length) {
      return finalDate;
  } 
 
+ 
+const send_mobile_otp_new = async(req,res)=>{
+  try {   
+           
+    let myFenOTP = 0 ; 
+    let mobile = req.mobile;  
+    console.log("otp modal mobile  ", mobile); 
+  let url = "https://mbc.mobc.com/PinCodeAPI/PinCodeAPI.asmx";
+               
+        let xml_parm =`
+                <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                        xmlns:tem="http://tempuri.org/">
+                        <soapenv:Header/>
+                        <soapenv:Body>
+                        <tem:SendPinCode>
+                        <tem:MSISDN>${mobile}</tem:MSISDN>
+                        <tem:ServiceID>8</tem:ServiceID>
+                        <tem:Lang>EN</tem:Lang>
+                        </tem:SendPinCode>
+                        </soapenv:Body>
+                        </soapenv:Envelope>`;
+       let ssdd =     await axios.post( url,xml_parm,{ headers: { 'Content-Type': 'text/xml' }
+                             }).then( async(response)=>{
+                              return   await  xml2js.parseString(response.data, (err,result) => {
+                                  if(err) { console.log( "modal, otp  api call :- server error ", err); return false;}else{
+                                      var  Gen_otp = result['soap:Envelope']['soap:Body'][0]['SendPinCodeResponse'][0]['SendPinCodeResult'][0]['Response'][0]['GeneratePinCode'][0]['PinCode'][0];
+                                     console.log('ss opt === ',Gen_otp ) ;
+                                     myFenOTP = Gen_otp;
+                                    return  Gen_otp;    
+                                 } });    })  .catch((error)=>{  console.log(error); return false;})
+   
+               return myFenOTP;    
+                                 
+      } catch (error) { console.log('modal, otp :- server error ',error);return false; }
+
+}
 const send_mobile_otp = async (req,res)=>{
     console.log('common modal ==');
 let mobile = req.mobile;
@@ -209,5 +272,5 @@ const my_utc_time = (date = false)=>{
     }
 
 
-module.exports = {my_utc_time, getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,
-          rows_count,ArrChunks,before_after_Date,isArray,isObject,userPowerUpsData,saveData};
+module.exports = {getLocalDateTime,my_utc_time, getTime,sentEmail,gen_str,getcurntDate,send_mobile_otp,isEmpty,user_logs_add,FulldateTime,
+          rows_count,ArrChunks,before_after_Date,isArray,isObject,userPowerUpsData,saveData,send_mobile_otp_new};

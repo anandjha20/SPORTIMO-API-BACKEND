@@ -111,11 +111,15 @@ const userReportImg =  img_upload('./assets/user_img','image');
     // chat group add   group participant 
      router.post('/chat_group_add',chatController.chat_group_add);
      router.post('/group_participant_add',chatController.group_participant_add);
-     router.get('/chat_group_list/:id?',chatController.chat_group_list);                       
+     router.get('/chat_group_list/:id?',chatController.chat_group_list);  
+     
+     
      router.get('/group_participant_list/:id?',chatController.group_participant_list);                       
    
    // get Firebase Chat Data 
-    router.get('/getFirebaseChatData',FirebaseController.getFirebaseChatData); 
+   /// new updated firebase key add routs
+   router.get('/FirebaseGroupChatData/:id?',FirebaseController.FirebaseGroupChatData); 
+   router.get('/FirebaseChatData/:id?',FirebaseController.FirebaseChatData);  
 
 
     // get introSlider list  
@@ -163,6 +167,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
           }); 
   // get notification list  
   router.post('/notification_list/:id?',NotificationController.notification_list); 
+  router.post('/notification_delete/:id?',NotificationController.notification_delete); 
    
 //  user reports route      
     router.post('/report_reason_types/:id?',ReportReasonController.report_reason_types);
@@ -231,9 +236,16 @@ const userReportImg =  img_upload('./assets/user_img','image');
 
    // make by mhn
       router.put('/update_google_id/',UserController.update_google_id); 
+     
+     
+   /// testing routs  
+      router.get('/my_played_matches/:id?',predictionController.my_played_matches); 
 
+      router.post('/sms_api_test/:mobile?',UserController.sms_api_test)
 
+      router.get('/sms_api_test/:mobile?',UserController.sms_api_test)
 
+   
 
     
 

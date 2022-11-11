@@ -344,10 +344,10 @@ class ComplaintController{
                
              let complaint_id = req.body.complaint_id;    let complaint_id_len   = (complaint_id || '').length;       
              let message = req.body.message;                let message_len = (message || '').length;       
-             let sender_type = req.body.sender_type;                    let  sender_type_len = (sender_type || '').length;       
-              
+             let sender_type = req.body.sender_type;       let  sender_type_len = (sender_type || '').length;       
+             let user_id =  req.body.user_id;               let  user_id_len = (user_id || '').length; 
           
-              if(complaint_id_len == 0 || message_len == 0 || sender_type_len == 0 ){
+              if(complaint_id_len == 0 || message_len == 0 || sender_type_len == 0 || user_id_len==0){
                        return res.status(200).send({"status":false,"msg":'All field Required'}) ;       
                  }
                 
@@ -372,7 +372,7 @@ class ComplaintController{
 
                        let module_type = "complaint";
                        let module_id  = response._id;
-                        let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id});
+                        let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,user_id});
                               
                         let data = await userSentNotification({ "user_id": complaint_id,"title":title,"details":msg});
 
@@ -387,7 +387,6 @@ class ComplaintController{
                      return res.status(200).send({"status":false,"msg":'No data add'}) ;          
                      }
                  }
-
      
     static user_complaint_chat_list = async (req,res)=>{
     try {
@@ -424,7 +423,7 @@ class ComplaintController{
                 let msg = `complaint marked closed by admin Click here to view.`; 
                 let module_type = "complaint";
                 let module_id  = updatedUser._id;
-                let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id});
+                let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,"user_id":com_user_id});
                 let demo3 = userSentNotification({"user_id":com_user_id,"details": msg,title});
              return res.status(200).json({ "status":true,"msg": "Complaint marked as closed successfully." ,
                                              "body":updatedUser });
@@ -439,7 +438,6 @@ class ComplaintController{
             }
                     
                 }   
-
 }
    
 

@@ -1,11 +1,12 @@
-    let  express_2 = require('express');
+     let  express_2 = require('express');
     let mongoose = require('mongoose');
-    
-
+    const axios  = require('axios');  
+    const xml2js  = require('xml2js');  
+ 
 
   
-const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date } = require('../myModel/common_modal');
-const { autoincremental,sendNotificationAdd,myBlockUserIds } = require('../myModel/helper_fun');
+const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date,send_mobile_otp_new,getLocalDateTime } = require('../myModel/common_modal');
+const { autoincremental,sendNotificationAdd,myBlockUserIds,preferences_ar_convart } = require('../myModel/helper_fun');
 
   const  {MyBasePath} = require("../myModel/image_helper");
   
@@ -28,6 +29,7 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds } = require('../myMod
     const play_match_cards_tbl = require("../models/playMatchCards");     
 const team_matches = require('../models/team_matches');
 const userArchive = require('../models/userArchive');     
+const request_tbl = require('../models/request');     
 
 
 
@@ -148,6 +150,7 @@ class UserController {
               let check_type = checkuser[0].user_type;  let msgtodiv = '';   
                 if(check_type == 1){
                     send_mobile_otp({mobile,otp}); 
+                   
                     msgtodiv = 'otp sent to your mobile please check know ';
                 }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
                     sentEmail({email,otp}); 
@@ -199,7 +202,7 @@ class UserController {
     }
 
     static registration = async(req,res)=>{
-        try {  
+      //  try {  
             let  mobile = req.body.mobile;      let email     = req.body.email;
             let address = req.body.address;     let user_type = req.body.user_type;
             let name    = req.body.name;        let device_id = req.body.device_id;
@@ -214,13 +217,13 @@ class UserController {
                 return res.status(200).send({"status":false,"msg":'All Field Required ' , "body":''}) ;     
             }
 
+            let sportimo_id = Math.floor(Math.random() * 9000000) + 1000000; 
             let otp = Math.floor(Math.random() * 900000) + 100000; 
             let date = getcurntDate(); 
             
             let token = gen_str(99);
            
             let seq_id = await autoincremental('seq_id',user_tbl);
-            //console.log("seq_id is ==",seq_id);
             
          if(user_type == 1 || user_type == 2 || user_type == 3 || user_type == 4 || user_type == 5 ){ }else{
                 return res.status(200).send({"status":false,"msg":'Invalid User type Field Value '}) ;     
@@ -231,6 +234,7 @@ if(user_type==1){condition_obj={...condition_obj,mobile}};
 if(user_type==2){condition_obj={...condition_obj,email}};
 
 let user = await user_tbl.find(condition_obj);
+
     if( ! isEmpty(user) &&  user[0].is_deleted==1){
         
     return res.status(200).send({"status":false,"msg":'your account was deleted..register yourself first!!! '}) ;
@@ -252,7 +256,7 @@ let user = await user_tbl.find(condition_obj);
                               let ddsq = user_logs_add(updatedUser._id,'login');  
                 return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
                }else{
-                let add =new user_tbl({ user_type, date,device_id,token,otp,seq_id,firebase_token});
+                let add =new user_tbl({ user_type, date,device_id,token,otp,seq_id,firebase_token,sportimo_id:"guest:"+sportimo_id});
     
                          add.save( (err, data) => {
                               if (err) {        
@@ -270,33 +274,47 @@ let user = await user_tbl.find(condition_obj);
             });       
                 
             ///////////////////////////////////////////////////////////////////////////
-        }
+        }else{
 
 
     let checkuser = ( user_type == 2 || user_type == 3 || user_type == 4 )? await user_tbl.find({email }).exec() : await user_tbl.find({mobile}).exec() ;
     let sendmsg = ( user_type == 2 || user_type == 3 || user_type == 4 )? "Email already exists" :  "Mobile already exists" ;
 
 
-    console.log('checkuser == ',checkuser)  ;         
+  //  console.log('checkuser == ',checkuser)  ;         
            
      if(checkuser.length >0 ){
-        let check_user_id = checkuser[0]._id;   
-        const doc = await user_tbl.findOneAndUpdate({ _id: check_user_id},{ otp: otp },
+        let check_user_id = checkuser[0]._id; 
+        let check_type = checkuser[0].user_type;  let msgtodiv = '';   
+       
+        var apiGenOtp = 10000;  // otp ;
+       
+        if(check_type == 1){  
+            //send_mobile_otp({mobile,otp});   
+            apiGenOtp =  await send_mobile_otp_new({mobile}); 
+            msgtodiv = 'otp sent to your mobile please check know ';
+        }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
+               sentEmail({email,otp}); 
+            msgtodiv = 'otp sent to your Email please check know ';
+        } 
+
+            console.log("apiGenOtp == ",apiGenOtp);
+    let newOtp = (check_type == 1)? apiGenOtp : otp;
+    
+         console.log("new oootp == ", newOtp); 
+
+        const doc = await user_tbl.findOneAndUpdate({ _id: check_user_id},{ otp: newOtp },
                                      { upsert: true, useFindAndModify: false });
          
-              let check_type = checkuser[0].user_type;  let msgtodiv = '';   
-                if(check_type == 1){
-                    send_mobile_otp({mobile,otp}); 
-                    msgtodiv = 'otp sent to your mobile please check know ';
-                }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
-                    sentEmail({email,otp}); 
-                    msgtodiv = 'otp sent to your Email please check know ';
-                }  
-
-   
-                return res.status(200).send({"status":true,"msg":msgtodiv, "body":checkuser[0]._id }) ;     
+             return res.status(200).send({"status":true,"msg":msgtodiv, "body":checkuser[0]._id }) ;     
          }
-              
+         let msgtodiv2 = ''; let apiGenOtp_2 = 1000;
+         if(user_type == 1){
+            // send_mobile_otp({mobile,otp}); 
+            apiGenOtp_2 = await send_mobile_otp_new({mobile}); 
+               msgtodiv2 = 'otp sent to your mobile please check know ';
+         }
+         console.log("apiGenOtp == ",apiGenOtp_2);
             let add =new user_tbl({
                 name: name,
                 email: email,
@@ -305,22 +323,17 @@ let user = await user_tbl.find(condition_obj);
                   date: date,  
                  mobile:mobile,
                  device_id:device_id,
-                 otp : otp,
+                 otp : (user_type == 1)? apiGenOtp_2 : otp,
                  token : token,
                  seq_id : seq_id,
-                 firebase_token : firebase_token
+                 firebase_token : firebase_token,
+                 sportimo_id:sportimo_id
             });             
 
            
                     let allsaveData =  await add.save();
             if(allsaveData){
-
-                 let msgtodiv2 = '';
-
-                if(user_type == 1){
-                    send_mobile_otp({mobile,otp}); 
-                      msgtodiv2 = 'otp sent to your mobile please check know ';
-                }else  if(user_type == 2 || user_type == 3 || user_type == 4 ){
+                if(user_type == 2 || user_type == 3 || user_type == 4 ){
                     sentEmail({email,otp}); 
                     msgtodiv2 = 'otp sent to your Email please check know ';
                 }  
@@ -329,15 +342,15 @@ let user = await user_tbl.find(condition_obj);
                 }else{
                     return res.status(200).send({"status":false,"msg":'no data add ' }) ;           
                 } 
-            }   
-        } catch (error) { console.log("user register api == ",error);
-            return res.status(200).send({"status":false,"msg":'Server errror' }) ;          
+            } 
+          }  
+        // } catch (error) { console.log("user register api == ",error);
+        //     return res.status(200).send({"status":false,"msg":'Server errror' }) ;          
                
-        }           
+        // }             
       
 
     }
-
 
 
 static resend_otp_2 = async(req,res) =>{
@@ -392,6 +405,10 @@ static verify_otp = async(req,res)=>{
         let user_id    = req.body.user_id;
         let otp    = req.body.otp;
         
+        
+        otp = ( otp.charAt( 0 ) === '0' )? otp.slice( 1 ) : otp ;
+
+       
         let otp_len = (otp || '').length;    let user_id_len = (user_id || '').length;
      
         if(otp_len == 0 || user_id_len == 0){
@@ -406,10 +423,12 @@ query.exec(function (err, person) {
     return res.status(200).send({"status":false,"msg":'Invalid User' }) ; 
   } 
   // Prints "Space Ghost is a talk show host."
+
+  console.log(" db user  otp is == ", person.otp); 
   let ddsq = user_logs_add(person._id,'login');  
   if(person.otp == otp){
     return res.status(200).send({"status":true,"msg":'Success' , "body": person }) ;     
-  }else{  console.log(person); 
+  }else{ // console.log(person); 
     return res.status(200).send({"status":false,"msg":'Invalid otp'}) ;     
   }
 
@@ -425,7 +444,7 @@ query.exec(function (err, person) {
 
 }
 
-static user_profile_view = async(req,res)=>{
+static user_profile_view_old = async(req,res)=>{
     try {
             let user_id     = req.body.user_id;        let view_user_id  = req.body.view_user_id;
             let user_id_len = (user_id || '').length;  let view_user_id_len = (view_user_id || '').length;
@@ -472,6 +491,71 @@ query.exec(function (err, person) {
 }
 
 
+static user_profile_view = async(req,res)=>{
+    try {
+            let user_id     = req.body.user_id;        let view_user_id  = req.body.view_user_id;
+            let user_id_len = (user_id || '').length;  let view_user_id_len = (view_user_id || '').length;
+     
+        if( user_id_len == 0 || view_user_id_len == 0 ){
+            return res.status(200).send({"status":false,"msg":'All Field Required ' }) ;     
+        }
+        
+////////////////////////////////////
+
+const checkusers = await block_user_tbl.find({ 'from_user': user_id,'to_user': view_user_id}).countDocuments();
+
+
+const checkFollowStatus = await follower_tbls.find({ follower_id : user_id,following_id: view_user_id}).countDocuments();
+
+var view_user_count = await user_tbl.find({ '_id': view_user_id, "user_language": "Arabic"}).countDocuments();
+    var person = await user_tbl.findOne({ '_id': user_id }) ; 
+    if (!isEmpty(person)){
+        var paths =MyBasePath(req,res); 
+    if (view_user_count > 0){
+       
+      
+            person.image = (person.image == '')? '': `${paths}/image/assets/user_img/${person.image}` ;      
+            person.block_status = checkusers;
+         let sport_preferences =  person.sport_preferences;
+         let league_preference =  person.league_preference;
+         let team_preference =  person.team_preference;
+         let player_preference =  person.player_preference;
+         
+         person.sport_preferences = await preferences_ar_convart(sport_tbl, sport_preferences);
+         person.league_preference = await preferences_ar_convart(League_tbl, league_preference);
+         person.team_preference   = await preferences_ar_convart(Team_tbl, team_preference);
+         person.player_preference = await preferences_ar_convart(Player_tbl, player_preference);
+         
+        
+       
+         return res.status(200).send({"status":true,"msg":'Success' , "body": person ,'blockuser':checkusers,'followStatus':checkFollowStatus }) ;  
+     
+    }else{
+
+        person.image = (person.image == '')? '': `${paths}/image/assets/user_img/${person.image}` ;      
+        person.block_status = checkusers;
+        return res.status(200).send({"status":true,"msg":'Success' , "body": person ,'blockuser':checkusers,'followStatus':checkFollowStatus }) ;  
+     
+       }   
+
+
+
+    }else{
+      return res.status(200).send({"status":false,"msg":'Invalid User' }) ; 
+
+     } 
+
+
+///////////////////////////////////////////
+
+
+} catch (error) { console.log("some error is == ",error);
+    return res.status(200).send({status:false,msg:'some error'}) ;          
+
+}
+
+}
+
 
 static user_profile_update = async(req,res)=>{
     try {
@@ -483,6 +567,7 @@ static user_profile_update = async(req,res)=>{
         let  nickname    = req.body.nickname ;
         let  status_msg  = req.body.status_msg ;
         let  gender  = req.body.gender ;
+        let  date_of_birth  = req.body.date_of_birth ;
 
         let  country = req.body.country;   
         
@@ -525,6 +610,7 @@ static user_profile_update = async(req,res)=>{
   if(!isEmpty(email)){ myobjs.email = email }
   if(!isEmpty(city)){ myobjs.city = city }
   if(!isEmpty(address)){ myobjs.address = address }
+  if(!isEmpty(date_of_birth)){ myobjs.date_of_birth = date_of_birth }
 
     
 ///////////////////////////////////////////////////////////////////////////////      
@@ -551,6 +637,7 @@ user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUs
   
 
 }
+  
 
 
    static user_preference_update = async(req,res)=>{
@@ -598,82 +685,79 @@ user_tbl.findOneAndUpdate({_id: id},{$set : myobjs},{new: true}, (err, updatedUs
     }
 
    
-static block_user_add = async(req,res)=>{
-     try {
-                let user_data = req.body;
-                let from_user_len = (user_data.from_user || '').length;
-                let to_user_len = (user_data.to_user || '').length;
-          
-        if(from_user_len == 0 || to_user_len == 0  ){
-            return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
-           } 
 
-        let date = getcurntDate();
-        let seven_dayDate = before_after_Date(-7);
-        let fUser = mongoose.Types.ObjectId(user_data.from_user);
-        let toUser = mongoose.Types.ObjectId(user_data.to_user);
-       
-        let F_name  = await user_tbl.findById(fUser, 'name').exec();
-        let to_name = await user_tbl.findById(toUser, 'name').exec();
-
-
-        let whr1   = { "from_user": fUser ,"to_user": toUser};
-        let whr    = { "from_user": fUser ,"to_user": toUser ,"date":date};
-        let whrRow = { "from_user": fUser ,"to_user": toUser,date :{ $gte: seven_dayDate } };
+    static block_user_add = async(req,res)=>{
+        try {
+                   let user_data = req.body;
+                   let from_user_len = (user_data.from_user || '').length;
+                   let to_user_len = (user_data.to_user || '').length;
+             
+           if(from_user_len == 0 || to_user_len == 0  ){
+               return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+              } 
     
-        let response = await rows_count(block_user_tbl,whrRow);   
-         
-        if(response>0){
-            return res.status(200).send({"status":false,"msg":'This user Not unblocked befor 7 days  ' , "body":''}) ; 
-        }else{
-                    let datas = await block_user_tbl.find(whr1);
-                            if(datas.length >0 ){ 
-
-                                    
-
-
-                                                var query = block_user_tbl.remove(whr1);
-
-
-                                                query.exec((err, data) => { 
-                                                    if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
-                                                }else{     
-                                                    let type_status = 1; 
-                                                    let title = `${to_name.name} you have unblocked by ${F_name.name}`;  
-                                                    let msg   = `${to_name.name} you have unblocked by ${F_name.name}`;  
-                                                let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile"}); 
-                                                return res.status(200).send({"status":true,"msg":'this blocked user  Delete  Successfully' , "body":''  }) ; 
-                                        } });
-                                
-                            }else{     
-                        
-                        
-                    let add = new block_user_tbl(whr);
-                    let respose = await add.save((err, data) => {
-                
-                    
-                    if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
-                            }else{   
-                                let type_status = 1; 
-                                let title = `${to_name.name} you have blocked by ${F_name.name}`;  
-                                let msg   = `${to_name.name} you have blocked by ${F_name.name}`;  
-                                
-                                let demo = sendNotificationAdd({title,msg,type_status,"toUser":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile"});
-                                
-                            return res.status(200).send({"status":true,"msg":'this user blocked  Successfully' , "body":''  }) ; 
-                    } });
-                
-
-                    }
-                }
+           let date = getcurntDate();
+           let seven_dayDate = before_after_Date(-7);
+           let fUser = mongoose.Types.ObjectId(user_data.from_user);
+           let toUser = mongoose.Types.ObjectId(user_data.to_user);
+          
+           let F_name  = await user_tbl.findById(fUser, 'name').exec();
+           let to_name = await user_tbl.findById(toUser, 'name').exec();
+    
+    
+           let whr1   = { "from_user": fUser ,"to_user": toUser};
+           let whr    = { "from_user": fUser ,"to_user": toUser ,"date":date};
+           let whrRow = { "from_user": fUser ,"to_user": toUser,date :{
+    
+    $gte: seven_dayDate } };
        
-    } catch (error) {
-        return res.status(200).send({"status":false,"msg":'no data add' , "body":''}) ;          
-
+           let response = await rows_count(block_user_tbl,whrRow);   
+            
+           if(response>0){
+               return res.status(200).send({"status":false,"msg":'This user Not unblocked befor 7 days  ' , "body":''}) ; 
+           }else{
+                       let datas = await block_user_tbl.find(whr1);
+                               if(datas.length >0 ){ 
+                                          var query = block_user_tbl.remove(whr1);
+                                            query.exec((err, data) => { 
+                                                       if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
+                                                   }else{     
+                                                       let type_status = 1; 
+                                                       let title = `${to_name.name} you have unblocked by ${F_name.name}`;  
+                                                       let msg   = `${to_name.name} you have unblocked by ${F_name.name}`;  
+                                        let demo = sendNotificationAdd({title,msg,type_status,"user_id":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile",category_type:"block"}); 
+                                        return res.status(200).send({"status":true,"msg":'this blocked user  Delete  Successfully' , "body":''  }) ; 
+                                } });
+                                   
+                               }else{     
+                           
+                           
+                       let add = new block_user_tbl(whr);
+                       let respose = await add.save((err, data) => {
+                   
+                       
+                       if (err) {  return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;            
+                               }else{   
+                                   let type_status = 1; 
+                                   let title = `${to_name.name} you have blocked by ${F_name.name}`;  
+                                   let msg   = `${to_name.name} you have blocked by ${F_name.name}`;  
+                                   
+                                   let demo = sendNotificationAdd({title,msg,type_status,"user_id":user_data.to_user,"module_id":user_data.from_user,"module_type":"profile",category_type:"block"});
+                                   
+                               return res.status(200).send({"status":true,"msg":'this user blocked  Successfully' , "body":''  }) ; 
+                       } });
+                   
+    
+                       }
+                   }
+          
+       } catch (error) {
+           return res.status(200).send({"status":false,"msg":'no data add' , "body":''}) ;          
+    
+       }
+     
+    
     }
-  
-
-}
 
 static verify_nickName = async(req,res)=>{
         let {user_id,nickname} = req.body;    
@@ -743,6 +827,7 @@ static verify_nickName = async(req,res)=>{
                                 let biometric    = req.body.biometric;
                                 let notifications = req.body.notifications;
                                 let follower = req.body.follower;
+                                let firebase_token = req.body.firebase_token ;
 
                                 music_sound = (music_sound == 1)? 1 : 0;
                                 haptics     = (haptics == 1)? 1 : 0;
@@ -754,7 +839,7 @@ static verify_nickName = async(req,res)=>{
                                 console.log("get all data ==  ",req.body);
 
 
-                        user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {music_sound,haptics,chat,biometric,notifications,follower }},{new: true}, (err,updatedUser)=>{
+                        user_tbl.findByIdAndUpdate({ _id:user_id} ,{$set: {music_sound,haptics,chat,biometric,notifications,follower,firebase_token }},{new: true}, (err,updatedUser)=>{
                         if(err) {  console.log(err);
                             return res.status(200).send({"status":false,"msg":'some errors '}) ;          
                         }
@@ -897,34 +982,53 @@ static verify_nickName = async(req,res)=>{
 
             }   
             
-      static userFollower_add = async (req,res)=>{
+            static userFollower_add = async (req,res)=>{
                 try{
                             let follower_id=req.body.follower_id;
                             let following_id=req.body.following_id;
                             let date=getcurntDate()
                             if(isEmpty(follower_id)||isEmpty(following_id)){
                                 return res.status(200).send({"status":false,"msg":"all field required","body":''});
-                            }
+                            }else{
                     let check_rows =  await rows_count(follower_tbls,{follower_id,following_id}) ;     
 
                 if(check_rows>0){
                             await follower_tbls.deleteOne({follower_id,following_id})
                     return res.status(200).send({"status":false,"msg":"This user unfollowed"});        
-                  }            
-
-                  let obj=new follower_tbls({follower_id,following_id,date});
+                  }else{            
+                  let user=await user_tbl.find({_id:following_id}); 
+                  console.log(user)
+                  if(user[0].profile_type=="private"){
+                    let details={
+                        user_id:following_id,
+                        another_user_id:follower_id,
+                        
+                    }
+                    let obj=new request_tbl(details);
                     let response= await obj.save();
                     if(isEmpty(response)){
-                        return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
+                         return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
+                    }
+                    else{
+                        return res.status(200).send({"status":true,"msg":"following request sent","body": response });
+                    }  
+                  }else{
+                  let obj=new follower_tbls({follower_id,following_id});
+                    let response= await obj.save();
+                    if(isEmpty(response)){
+                         return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
                     }
                     else{
                         return res.status(200).send({"status":true,"msg":"user Followed Successfully","body": response });
                     }
-                
+                  }
+                }
+              }
             }catch(error) { console.log(error);
                 return res.status(200).send({"status":false,"msg":"server error","body":''});
             }
-            }      
+            }   
+      
       static follower_list = async (req,res)=>{
                 try{
                           /// block_user_tbls
@@ -1082,6 +1186,7 @@ static verify_nickName = async(req,res)=>{
         let new_email=req.body.email;
       
         let new_mobile=req.body.mobile;
+          
         let userDetails= await user_tbl.find({"_id":_id});
         if(!isEmpty(new_email)){
             if(userDetails[0].email!=new_email){
@@ -1108,11 +1213,13 @@ static verify_nickName = async(req,res)=>{
             if(userDetails[0].mobile!=new_mobile){
                 let data=await user_tbl.find({mobile:new_mobile});
                 if(data.length==0){
-                    let otp = Math.floor(Math.random() * 900000) + 100000;
+                  //  let otp = Math.floor(Math.random() * 900000) + 100000;
+                
+                     let otp = await send_mobile_otp_new({"mobile":new_mobile});
+
                     let save=await user_tbl.findOneAndUpdate({_id},{$set:{otp:otp}},{new:true});
                     if(save){
-                        send_mobile_otp({mobile:new_mobile,otp});
-                        return res.status(200).send({status:true,msg:'otp sent to your mobile , please verify userself by otp'}); 
+                      return res.status(200).send({status:true,msg:'otp sent to your mobile , please verify userself by otp'}); 
                     }else{
                         return res.status(200).send({status:false,msg:'something went wrong , please try again!!!'});
                     }
@@ -1233,7 +1340,7 @@ static verify_nickName = async(req,res)=>{
         }
     }
 
-    static match_details = async (req,res)=>{
+    static match_details_old = async (req,res)=>{
         try{
             let _id=req.body.id;
             let user_id=req.body.user_id;
@@ -1260,6 +1367,43 @@ static verify_nickName = async(req,res)=>{
             return res.status(200).send({"status":false,"msg":"server error"});
         }
     }
+
+    static match_details = async (req,res)=>{
+        try{
+            let _id=req.body.id;
+            let user_id=req.body.user_id;
+            let zone=req.body.zone;
+               
+            let condition_obj={};
+            if(!isEmpty(_id)){condition_obj={...condition_obj,_id}}
+             let response=await team_matches.find(condition_obj)
+             console.log()
+             let local=await getLocalDateTime({date_utc:response[0].date_utc,time_utc:response[0].time_utc,zone})
+             response.map((item)=>{
+                item.date_utc=local.local_date;
+                item.time_utc=local.local_time;
+             });
+             
+             let total_cards=await match_cards.find({"match_id":_id}).countDocuments()
+             let total_played_cards=await play_match_cards_tbl.find({"match_id":_id,"user_id":user_id}).countDocuments()
+            let transaction= await transaction_tbls.find({"match_id":_id,"user_id":user_id});
+            let score=0;
+            transaction.map((item)=>{
+                score+=item.points;
+            })
+            if(response.length>0){
+                return res.status(200).send({"status":true,"msg":"data found","body":response,total_cards,total_played_cards,score});
+            }else{
+                return res.status(200).send({"status":false,"msg":"no data found"})
+            }
+        
+        }catch (err){
+            console.log(err)
+            return res.status(200).send({"status":false,"msg":"server error"});
+        }
+    }
+    
+
     static update_google_id = async(req,res)=> {
         try{   
              let user_id  = req.body.user_id;
@@ -1284,8 +1428,85 @@ static verify_nickName = async(req,res)=>{
                    
       }     
 
+      static sms_api_test = async (req, res) =>{
+        try {
+          let mobile=req.params.mobile;
+        let data = await send_mobile_otp_new({mobile}); 
+        console.log("otp new gen == ",data);       
+       if(!isEmpty(data)){
+            return res.status(200).send({ 'status': true, 'data': data  });
+       }else{
+          return res.status(200).send({ 'status': false, 'data': ''  });
+       } 
+          
+         
+////////////////////////////////////////////////
+          
+          
+        } catch (error) {
+          console.log(error);
+          return res.status(200).send({ 'status': false, 'msg': error,  });
+        }
+      }
 
+
+      static request_list= async (req,res)=>{
+        try{
+              let user_id=req.params.id;
+              if(!isEmpty(user_id)){
+                let request=await request_tbl.find({user_id})
+                  if(!isEmpty(request)){
+                      return res.status(200).send({"status":true,"msg":"success","body":request});        
+                  }else{
+                      return res.status(200).send({"status":false,"msg":"no request found "});
+                  }
+              }else{
+                  return res.status(200).send({"status":false,"msg":"requestID required","body":''});
+              }
+      
+          }catch (error){
+              console.log(error);
+              return res.status(200).send({"status":false,"msg":"server error","body":''});
+          }
+      } 
+
+      static request_action= async (req,res)=>{
+        try{
+              let _id=req.params.id;
+              let action=req.body.action;
+              let date=getcurntDate()
+              if(!isEmpty(_id)){
+                let request=await request_tbl.findOneAndDelete({_id});
+                console.log(request)
+                  if(!isEmpty(request)){
+                    if(action=="accept"){
+                      let details={
+                        following_id:request.user_id,
+                        follower_id:request.another_user_id,
+                        
+                      }
+                      let obj=new follower_tbls(details);
+                      let data=obj.save()
+                      return res.status(200).send({"status":true,"msg":"request accepted","body":request});        
+                    }else{
+                      return res.status(200).send({"status":true,"msg":"request deleted","body":request});
+                    }
+                  }else{
+                      return res.status(200).send({"status":false,"msg":"no request found "});
+                  }
+              }else{
+                  return res.status(200).send({"status":false,"msg":"requestID required","body":''});
+              }
+      
+          }catch (error){
+              console.log(error);
+              return res.status(200).send({"status":false,"msg":"server error","body":''});
+          }
+      } 
+
+ 
 }
+
   
 
 module.exports = UserController ;      

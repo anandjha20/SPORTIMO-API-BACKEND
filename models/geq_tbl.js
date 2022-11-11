@@ -13,14 +13,16 @@ const geq = new Schema({
          duration: { type: String },
          
          qus: { type: String , required: true }, qus_ara: { type: String , required: true },
-         ops_1: { type: String, required: true },  ops_1_ara: { type: String, required: true },
-         ops_2: { type: String, required: true},  ops_2_ara: { type: String, required: true },
-         ops_3: { type: String, required: true },  ops_3_ara: { type: String, required: true },
-         ops_4: { type: String, default :'' },  ops_4_ara: { type: String, default :'' },
-         ops_5: { type: String, default :'' },  ops_5_ara: { type: String, default :'' },
+         opt_1: { type: String, required: true },  opt_1_ara: { type: String, required: true },
+         opt_2: { type: String, required: true},  opt_2_ara: { type: String, required: true },
+         opt_3: { type: String, default :'' },  opt_3_ara: { type: String, default :'' },
+         opt_4: { type: String, default :'' },  opt_4_ara: { type: String, default :'' },
+         opt_5: { type: String, default :'' },  opt_5_ara: { type: String, default :'' },
          
+         correct_ans: { type: String,enum: ['opt_1', 'opt_2', 'opt_3', 'opt_4', 'opt_5',''], default :'' },
+         result_disclosed: { type: Boolean , default :0 },
          reward_type    : { type: String,default :'' },
-         reward_quantity: { type: String , default :'' },
+         reward_quantity: { type: Number , default :0 },
          reward_condition: { type: String , default :'' },
 
          targeted_country: { type: String, default :'' },

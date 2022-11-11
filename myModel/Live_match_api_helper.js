@@ -127,6 +127,37 @@ const match_event_shot_tbl = require('../models/match_event_shots');
              return false ; 
          }
   }
+
+  const match_data_ara = async(match_id) =>{
+    try {   
+            
+       const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
+       //const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
+       const session_url = `https://dsg-api.com/custom/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json&lang=ar`;
+             
+       //  console.log("session_url == ",session_url);
+               var config = {  
+                 method: 'get',           
+                 url: session_url,
+                 headers: { 'Authorization': 'Basic '+ encodedToken }
+               };
+   
+               let response = await axios(config);
+               if(response){
+                 //console.log(response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].round[0].list[0].match)
+                 //let datas = response.data.datasportsgroup.tour.tour_season.competition.season.discipline.gender.round.list.match;
+                 let datas = response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].round[0].list[0].match[0];
+              return datas;
+          }else{   return false; }    
+
+
+     
+         } catch (error) { console.log( "modal match_card_001 call == ", error);
+             return false ; 
+         }
+  }
+
+
   const matchCardEventAllData = async(match_id) =>{
     try {   
             
@@ -2385,7 +2416,7 @@ const getCardGreaterThan_22 = async(match_id)=>{
                                    
      //  return allUsersData ;                  
        
-        console.log( "live game mint nums  ==========", game_minute);                             
+        console.log( "live game mint nums ======", game_minute);                             
                              
     if (! isEmpty(allUsersData) ){
       let allData = await Promise.all( allUsersData.map( async (item)=>{ 
@@ -2635,7 +2666,7 @@ const get_card_result_add_02  =  async(req,res)=>{
 
 //////////////=====================================//////////////////////////////
 
-module.exports = {day_match_getID,day_match_add,match_card_number,match_card_0011,match_card_0013,matchCardAllData,matchCardEventAllData,get_card_result_add_4,
+module.exports = {match_data_ara,day_match_getID,day_match_add,match_card_number,match_card_0011,match_card_0013,matchCardAllData,matchCardEventAllData,get_card_result_add_4,
                     get_card_result_add_7,get_card_result_add_1, get_card_result_add_11,get_card_result_add_13,
                     get_card_result_add_15,get_card_result_add_17, get_card_result_add_20,get_card_result_add_23,
                     get_card_result_add_36,get_card_result_add_10,get_card_result_add_18,getCardResult_18_END,card_08_befor_call,get_card_result_add_08,

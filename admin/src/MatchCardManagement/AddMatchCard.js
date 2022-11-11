@@ -83,7 +83,7 @@ export default function AddMatchCard() {
 
  
   const CardCategoryOption = (CardCate.length > 0) ? CardCate.map((item) => {
-    return { value: item._id, label: item.name };
+    return { value: item._id, label: <>{item.name} ({item.card_type})</> };
   }) : [];
 
   useEffect(() => {
