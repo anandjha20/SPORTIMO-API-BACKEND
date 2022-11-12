@@ -20,6 +20,7 @@
     "multer": "^1.4.5-lts.1",
     "node-cron": "^3.0.2",
     "nodemailer": "^6.7.7",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "xml2js": "^0.4.23"
   }
 }
