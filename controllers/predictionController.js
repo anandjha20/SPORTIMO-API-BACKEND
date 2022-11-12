@@ -589,28 +589,98 @@ class predictionController {
             let userpowers = isEmpty(userUsedpowerpus)? 0 : userUsedpowerpus[0].power_up_count;
           
               console.log("condition_obj == ", condition_obj);
-          let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat).sort({_id:-1});
-          
-               let data=[]
-                if(records){ records.map((item)=> { 
+        // let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat).sort({_id:-1});
+                                                    // { path: 'match_card_id', populate: { path: 'card_id'}}
+        
+       let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat)
+                        .populate('match_id',' match_name team_a_name team_a_name_ara team_b_name team_b_name_ara').sort({_id:-1});
+          let data=[]
+                if(records){  Promise.all(records.map(async(item,index)=> { 
                   if(typeof item.card_id === 'object' && item.card_id !== null){
-                      
+
                       if(language != '' && language == 'ar'){ 
+
                                 item.card_id.name = item.card_id.name_ara;
-                                item.card_id.qus = item.card_id.qus_ara;
-                                item.card_id.ops_1 = item.card_id.ops_1_ara;
-                                item.card_id.ops_2 = item.card_id.ops_2_ara;
-                                item.card_id.ops_3 = item.card_id.ops_3_ara;
-                                item.card_id.ops_4 = item.card_id.ops__ara;
-                              }
+                                item.card_id.qus  = item.card_id.qus_ara;
+
+                             let matchData =JSON.parse(JSON.stringify(item.match_id)) ;
+                         
+                            
+                              //  item.card_id.ops_1 = item.card_id.ops_1_ara;
+                              ///  item.card_id.ops_2 = item.card_id.ops_2_ara;
+                              //  item.card_id.ops_3 = item.card_id.ops_3_ara;
+                              //  item.card_id.ops_4 = item.card_id.ops_4_ara;
+                            
+                              // option 1 tame name 
+                              if((item.card_id.ops_1 == 'Team A')){
+                                  item.card_id.ops_1 =  matchData.team_a_name_ara ;
+                                 }else  if((item.card_id.ops_1 == 'Team B')){
+                                    item.card_id.ops_1 =  matchData.team_b_name_ara ;
+                                  }else{
+                                    item.card_id.ops_1 = item.card_id.ops_1_ara;
+                                  }
+
+                                // option 2 tame name    
+                                      if((item.card_id.ops_2 == 'Team A')){
+                                        item.card_id.ops_2 =  matchData.team_a_name_ara ;
+                                      }else  if((item.card_id.ops_2 == 'Team B')){
+                                        item.card_id.ops_2 = matchData.team_b_name_ara ;
+                                      }else{
+                                        item.card_id.ops_2 = item.card_id.ops_2_ara;
+                                      }
+                                  // option 3 tame name 
+                                  if((item.card_id.ops_3 == 'Team A')){
+                                    item.card_id.ops_3 =  matchData.team_a_name_ara ;
+                                  }else  if((item.card_id.ops_3 == 'Team B')){
+                                    item.card_id.ops_3 =  matchData.team_b_name_ara ; 
+                                  }else{
+                                    item.card_id.ops_3 = item.card_id.ops_3_ara;
+                                  }
+                                // option 4 tame name    
+                                  if((item.card_id.ops_4 == 'Team A')){
+                                    item.card_id.ops_4 =  matchData.team_a_name_ara ;
+                                  }else  if((item.card_id.ops_4 == 'Team B')){
+                                    item.card_id.ops_4 =  matchData.team_b_name_ara ;
+                                  }else{
+                                    item.card_id.ops_4 = item.card_id.ops_4_ara;
+                                  }
+                          
+                      }else{
+                                 // option 1 tame name 
+                                    if((item.card_id.ops_1 == 'Team A')){
+                                      item.card_id.ops_1 = item.match_id.team_a_name;
+                                    }else  if((item.card_id.ops_1 == 'Team B')){
+                                      item.card_id.ops_1 = item.match_id.team_b_name;  
+                                    }
+                                 // option 2 tame name    
+                                    if((item.card_id.ops_2 == 'Team A')){
+                                      item.card_id.ops_2 = item.match_id.team_a_name;
+                                    }else  if((item.card_id.ops_2 == 'Team B')){
+                                      item.card_id.ops_2 = item.match_id.team_b_name;  
+                                    }
+                                // option 3 tame name 
+                                if((item.card_id.ops_3 == 'Team A')){
+                                  item.card_id.ops_3 = item.match_id.team_a_name;
+                                }else  if((item.card_id.ops_3 == 'Team B')){
+                                  item.card_id.ops_3 = item.match_id.team_b_name;  
+                                }
+                              // option 4 tame name    
+                                if((item.card_id.ops_4 == 'Team A')){
+                                  item.card_id.ops_4 = item.match_id.team_a_name;
+                                }else  if((item.card_id.ops_4 == 'Team B')){
+                                  item.card_id.ops_4 = item.match_id.team_b_name;  
+                                }
+
+                         }
   
-                              data.push(item) ;
+                              data.push( item) ;
                                 
                             }
                          
-                 })
+                 }));
                          
                   //  let sendData = { all_card_count,played_cards_count,"list":data };
+                    
                     let sendData = { all_card_count,played_cards_count, userpowers,usedPoweUps_count, "list":data };
 
                            return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,

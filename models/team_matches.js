@@ -6,6 +6,9 @@ const Schema = mongoose.Schema;
 const team_match_schema = new Schema({
              match_id    : {type:String,require:true, unique: true},
              match_name  : {type:String ,require:true },
+             league_logo  : {type:String ,require:true },
+             league_name  : {type:String ,require:true },
+             league_id  : {type:String ,require:true },
              team_a_id     : {type:String,require:true },
              team_a_name  : { type : String,require:true  },
              team_a_short_name : { type : String ,require:true },

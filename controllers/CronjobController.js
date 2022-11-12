@@ -1087,6 +1087,7 @@ static get_card_008 = async (req, res) => {
     }
   }
  
+
   static update_match_data_by_date = async (req, res) => {
     try {
       let date = req.body.date;
@@ -1094,16 +1095,21 @@ static get_card_008 = async (req, res) => {
         date = getcurntDate();
       }
       
+
       let response = await day_match_add(date)
       
     if (response) {
         response.map(async (item)=>{
-          let ara= await match_data_ara(item.match_id)
-          console.log(ara)
+          let detail= await match_data_ara(item.match_id)
+          let ara=detail.data;
+          let league=detail.league_data;
         let match_details={
               "match_id": item.match_id,
               "match_name": item.team_a_name+" vs "+item.team_b_name,
               "match_name_ara": ara.team_a_name+" ضد "+ara.team_b_name,
+              "league_logo": league.logo,
+              "league_name": league.original_name,
+              "league_id": league.season_id,
               "team_a_id": item.team_a_id,
               "team_a_name": item.team_a_name,
               "team_a_name_ara": ara.team_a_name,
@@ -1124,7 +1130,6 @@ static get_card_008 = async (req, res) => {
               "score_b": item.score_b,
               "live": item.live[0]
           }
-
         let findOld=await team_matches_tbl.find({match_id:item.match_id});
         if(!isEmpty(findOld)){
           let update=await team_matches_tbl.findOneAndUpdate({match_id:item.match_id},match_details);
@@ -1146,7 +1151,8 @@ static get_card_008 = async (req, res) => {
       console.log(error);
       return res.status(200).send({ 'status': false, 'msg': error, 'body': '' });
     }
-     }   
+     }
+
 }
 
 
