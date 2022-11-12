@@ -1,7 +1,7 @@
 let  express_2 = require('express');
 let mongoose = require('mongoose');
 
-
+  
   
 
 const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date } = require('../myModel/common_modal');
@@ -591,7 +591,7 @@ static all_matches_leaderboard_old = async (req,res)	=>{
 		return res.status(200).send({"status":false,"msg":"server error"});
 	}
 
-}
+}  
 
 static bonus_points = async (req,res)	=>{		
 	try{
@@ -675,11 +675,6 @@ static add_transaction2 = async (req,res)	=>{
 	}
 
 }
-
-
-
-
-
 
 }
 
