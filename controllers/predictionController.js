@@ -1,7 +1,7 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
 const {my_utc_time, userPowerUpsData,getcurntDate,getTime,saveData, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
-const { sendNotificationAdd } = require('../myModel/helper_fun');
+const {matchWinUsersRank_one, sendNotificationAdd } = require('../myModel/helper_fun');
 const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
 const  {MyBasePath} = require("../myModel/image_helper");
 const { poll_percent} = require('../myModel/helper_fun');
@@ -16,6 +16,7 @@ const { poll_percent} = require('../myModel/helper_fun');
     const play_match_cards     = require ("../models/playMatchCards");
     const used_power_ups_tbl   = require ("../models/used_power_ups");
     const power_ups_tbl   = require ("../models/power_ups");
+    const transactions = require ("../models/transactions");
 
     const user_allotted_powerups_tbl   = require ("../models/user_allotted_powerUps");
     const team_matches_tbl = require("../models/team_matches");
@@ -771,48 +772,54 @@ class predictionController {
                     
                 }   
 
-static my_played_matches = async(req,res)=>{
-  try{        
-        let  user_id = req.params.id;
-          let pipeLine = [];
-
-       // let newId = mongoose.ObjectId(user_id);  matchDatatbl
-        let newId =  mongoose.Types.ObjectId(user_id);
-   
+  static my_played_matches = async(req,res)=>{
+    try{        
+          let  user_id = req.params.id;
+          let  match_id = req.body.match_id;
+            let pipeLine = [];
+  
+          // let newId = mongoose.ObjectId(user_id);  matchDatatbl
+          let newId =  mongoose.Types.ObjectId(user_id);
+          if(!isEmpty(match_id)){
+            let matchId =  mongoose.Types.ObjectId(match_id);
+            pipeLine.push({$match:{"user_id":newId,"match_id":matchId,"active":false}});
+          }else{
+            pipeLine.push({$match:{"user_id":newId,"active":false}});
+          }
         
-        pipeLine.push({$match:{"user_id":newId,"active":false}});
-
-       pipeLine.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'team_matches_tbl'} });
-        pipeLine.push({$unwind : "$team_matches_tbl"});
-
-        pipeLine.push({ $lookup: {from: 'prediction_cards', localField: 'card_id', foreignField: '_id', as: 'card_tbl'} });
-        pipeLine.push({$unwind : "$card_tbl"});
-
-
-       pipeLine.push({ $project: {"_id":0,"match_name":"$team_matches_tbl.match_name", "card_name":"$card_tbl.name","qus":"$card_tbl.qus", "match_card_id":1,"card_id":1,"match_id":1,"result":1 }});
+          pipeLine.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'team_matches_tbl'} });
+          pipeLine.push({$unwind : "$team_matches_tbl"});
+  
+          pipeLine.push({ $lookup: {from: 'prediction_cards', localField: 'card_id', foreignField: '_id', as: 'card_tbl'} });
+          pipeLine.push({$unwind : "$card_tbl"});
+  
+  
+          pipeLine.push({ $project: {"_id":0,"match_name":"$team_matches_tbl.match_name", "card_name":"$card_tbl.name","qus":"$card_tbl.qus", "match_card_id":1,"card_id":1,"match_id":1,"result":1,"point":1 }});
+      
+      
+        pipeLine.push( {$group: { _id: "$match_id",  total_cards : { $sum: 1 }  ,records: { $push: "$$ROOT" }  } });
+      
+        pipeLine.push({ $lookup: {from: 'team_matches', localField: '_id', foreignField: '_id', as: 'matchData'} });
+          let datas =  await playMatchCards_tbl.aggregate(pipeLine).exec();
+            
+        let gameData=[];  
+        let abc=await Promise.all( datas.map(async (item)=>{
+            let total_win=await transactions.find({"user_id":user_id,"match_id":item._id}).countDocuments()
+            let userReankData = await matchWinUsersRank_one( item._id.toString(),user_id);
+            gameData.push({...item,total_win,rank:userReankData.rank,points:userReankData.points})
+          }));
+                      
+              if(!isEmpty(gameData)){
+                    res.status(200).send({'status':true,'msg':"success",  'body':gameData });
+                  }else{
+                    res.status(200).send({'status':true,'msg':"No data found!..",'body':gameData  });
+                  }  
+  
+          } catch (error) { console.log(error);
+            res.status(200).send({'status':false,'msg':"Server error"});
+        }       
     
-    
-      pipeLine.push( {$group: { _id: "$match_id",  total_cards : { $sum: 1 },records: { $push: "$$ROOT" }  } });
-    
-     // pipeLine.push({ $lookup: {from: 'team_matches', localField: '_id', foreignField: 'match_id', as: 'matchDatatbl'} });
-         
-        let datas =  await playMatchCards_tbl.aggregate(pipeLine).exec();
-          
-                    console.log('pipeLine == ',pipeLine);    
-          
-           if(!isEmpty(datas)){
-                 // let records = await play_match_cards.find(whr).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
-                  res.status(200).send({'status':true,'msg':"success",  'body':datas });
-                }else{
-                  res.status(200).send({'status':true,'msg':"No data found!..",'body':datas  });
-                }  
-
-        } catch (error) { console.log(error);
-          res.status(200).send({'status':false,'msg':"Server error"});
-      }       
- 
-    }
-
+      }
   }
 
 

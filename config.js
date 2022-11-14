@@ -1,19 +1,17 @@
-var mongoose = require('mongoose');
-const local_default = require('./local_default.json')
+ var mongoose = require('mongoose'); 
+const local_default = require('./local_default.json');
  // mongoose.connect('mongodb://localhost:27017/football_db');
   mongoose.connect('mongodb://admin:root@13.127.63.71:27017/sportimo?authSource=admin');
  // mongoose.connect('mongodb://admin:root@100.26.5.179:300/sportimo?authSource=admin');
 //mongoose.connect('mongodb://admin:root@3.236.132.255:3000/sportimo?authSource=admin');
 //mongoose.connect(local_default.DB_url);
-
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 
 db.once('open', function callback () {
-  console.log("mongodb database connected");
-
-});
-
+     console.log("mongodb database connected");
+   });
+                
 exports.test = function(req,res) {
   res.render('test');
 };
@@ -22,6 +20,15 @@ exports.test = function(req,res) {
 
 
 
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////
 
 
 
