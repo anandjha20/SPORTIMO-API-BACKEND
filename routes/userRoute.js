@@ -67,8 +67,10 @@ const userReportImg =  img_upload('./assets/user_img','image');
           router.post('/verify_otp',UserController.verify_otp);         
           router.put('/user_preference_update/:id',UserController.user_preference_update);         
         
-          /// PollController route list      
+          /// PollCon troller route list      
           router.post('/poll_list/:id?',user_token_check,PollController.poll_list);      
+          router.post('/upcomming_poll_list/:id?',PollController.upcomming_poll_list);      
+        
           router.post('/poll_participant',user_token_check,PollController.poll_participant);      
           router.post('/poll_result_show/:poll_id ?',user_token_check,PollController.poll_result_show);      
           router.get('/my_polls/:id ?',user_token_check,PollController.my_polls);      

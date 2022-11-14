@@ -83,7 +83,55 @@ class PollController {
 
     }
 
-      
+    static upcomming_poll_list = async (req,res)=>{
+      try {
+           
+                  let language =  req.body.language ; 
+                  let  id = req.params.id;
+               
+                 // let s_date  = getcurntDate();
+                  let s_date  = "2022-11-11";
+                
+
+                  let page  = req.body.page;  
+                    page = (isEmpty(page)
+          || page == 0 )? 1 :page ; 
+        
+        
+          let whr ={};
+         
+         
+           whr.date = { $gte: s_date } ;
+         
+       
+          if(!isEmpty(id)){whr = {_id: id} ;} 
+          let query =  poll_tbl.find(whr).populate('match','match_name').sort({_id:-1});
+            
+           const query2 =  query.clone();
+           const counts = await query.countDocuments();   
+       
+           let offest = (page -1 ) * 10 ; 
+           const records = await query2.skip(offest).limit(10);
+
+           records.map((item)=> { if(language != '' && language == 'ar'){
+                                    item.qus = item.qus_ara ;
+                                    item.ops_1 = item.ops_1_ara ;
+                                    item.ops_2 = item.ops_2_ara ;
+                                    item.ops_3 = item.ops_3_ara ;
+                                    item.ops_4 = item.ops_4_ara ;
+                                
+                                }
+          
+                           return item;
+                 });      
+
+        return res.status(200).send({'status':true,'msg':  (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
+
+      } catch (error) { console.log(error);
+        return  res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error" ,'body':''});
+      }
+             
+          } 
     static poll_list = async (req,res)=>{
       try {
            
