@@ -871,7 +871,7 @@ static verify_nickName = async(req,res)=>{
             }
 
              // get_autocomplete_users
-           static get_autocomplete_users = async(req,res)=>{
+   static get_autocomplete_users = async(req,res)=>{
                             try {
                                 let name    = req.body.name;
                                 if(isEmpty(name)){
@@ -982,52 +982,68 @@ static verify_nickName = async(req,res)=>{
 
             }   
             
-            static userFollower_add = async (req,res)=>{
-                try{
-                            let follower_id=req.body.follower_id;
-                            let following_id=req.body.following_id;
-                            let date=getcurntDate()
-                            if(isEmpty(follower_id)||isEmpty(following_id)){
-                                return res.status(200).send({"status":false,"msg":"all field required","body":''});
-                            }else{
-                    let check_rows =  await rows_count(follower_tbls,{follower_id,following_id}) ;     
+    static userFollower_add = async (req,res)=>{
+        try{
+                    let follower_id=req.body.follower_id;
+                    let following_id=req.body.following_id;
+                    let follower_user_data=await user_tbl.find({_id:follower_id});
+                    let following_user_data=await user_tbl.find({_id:following_id});
+                    console.log({follower_user_data,following_user_data})
+                    let date=getcurntDate()
+                    if(isEmpty(follower_id)||isEmpty(following_id)){
+                        return res.status(200).send({"status":false,"msg":"all field required","body":''});
+                    }else{
+            let check_rows =  await rows_count(follower_tbls,{follower_id,following_id}) ;     
 
-                if(check_rows>0){
-                            await follower_tbls.deleteOne({follower_id,following_id})
-                    return res.status(200).send({"status":false,"msg":"This user unfollowed"});        
-                  }else{            
-                  let user=await user_tbl.find({_id:following_id}); 
-                  console.log(user)
-                  if(user[0].profile_type=="private"){
-                    let details={
-                        user_id:following_id,
-                        another_user_id:follower_id,
-                        
-                    }
-                    let obj=new request_tbl(details);
-                    let response= await obj.save();
-                    if(isEmpty(response)){
-                         return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
-                    }
-                    else{
-                        return res.status(200).send({"status":true,"msg":"following request sent","body": response });
-                    }  
-                  }else{
-                  let obj=new follower_tbls({follower_id,following_id});
-                    let response= await obj.save();
-                    if(isEmpty(response)){
-                         return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
-                    }
-                    else{
-                        return res.status(200).send({"status":true,"msg":"user Followed Successfully","body": response });
-                    }
-                  }
-                }
-              }
-            }catch(error) { console.log(error);
-                return res.status(200).send({"status":false,"msg":"server error","body":''});
+        if(check_rows>0){
+                    await follower_tbls.deleteOne({follower_id,following_id});
+                    let type_status = 1; 
+                    let title = `${following_user_data[0].name} you have unfollowed by ${follower_user_data[0].name}`;  
+                    let msg   = `${following_user_data[0].name} you have unfollowed by ${follower_user_data[0].name}`;  
+            let demo = sendNotificationAdd({title,msg,type_status,"user_id":following_id,"module_id":follower_id,"module_type":"profile",category_type:"unfollow"}); 
+   
+            return res.status(200).send({"status":false,"msg":"This user unfollowed"});        
+          }else{            
+          if(following_user_data[0].profile_type=="private"){
+            let details={
+                user_id:following_id,
+                another_user_id:follower_id,
+                
             }
-            }   
+            let obj=new request_tbl(details);
+            let response= await obj.save();
+            if(isEmpty(response)){
+                  return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
+            }
+            else{
+              let type_status = 1; 
+              let title = `${following_user_data[0].name} you have received an following request by ${follower_user_data[0].name}`;  
+              let msg   = `${following_user_data[0].name} you have received an following request by ${follower_user_data[0].name}`;  
+      let demo = sendNotificationAdd({title,msg,type_status,"user_id":following_id,"module_id":follower_id,"module_type":"profile",category_type:"request"}); 
+
+                return res.status(200).send({"status":true,"msg":"following request sent","body": response });
+            }  
+          }else{
+          let obj=new follower_tbls({follower_id,following_id});
+            let response= await obj.save();
+            if(isEmpty(response)){
+                  return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
+            }
+            else{
+              let type_status = 1; 
+              let title = `${following_user_data[0].name} you have followed by ${follower_user_data[0].name}`;  
+              let msg   = `${following_user_data[0].name} you have followed by ${follower_user_data[0].name}`;  
+          let demo = sendNotificationAdd({title,msg,type_status,"user_id":following_id,"module_id":follower_id,"module_type":"profile",category_type:"follow"}); 
+
+                return res.status(200).send({"status":true,"msg":"user Followed Successfully","body": response });
+            }
+          }
+        }
+      }
+    }catch(error) { console.log(error);
+        return res.status(200).send({"status":false,"msg":"server error","body":''});
+    }
+    }   
       
       static follower_list = async (req,res)=>{
                 try{
@@ -1081,26 +1097,26 @@ static verify_nickName = async(req,res)=>{
             }
             }        
 
-     static remove_follower = async (req,res)=>{
-                try{
-                            let follower_id=req.body.follower_id;
-                            let following_id=req.body.following_id;
-                            if(isEmpty(follower_id)||isEmpty(following_id)){
-                                return res.status(200).send({"status":false,"msg":"all field required","body":''});
-                            }
-                    
-                    let response =await follower_tbls.deleteOne({follower_id,following_id})
-                    if(isEmpty(response)){
-                        return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
-                    }
-                    else{
-                        return res.status(200).send({"status":true,"msg":"removed",});
-                    }
+  static remove_follower = async (req,res)=>{
+            try{
+                        let follower_id=req.body.follower_id;
+                        let following_id=req.body.following_id;
+                        if(isEmpty(follower_id)||isEmpty(following_id)){
+                            return res.status(200).send({"status":false,"msg":"all field required","body":''});
+                        }
                 
-            }catch(error) { console.log(error);
-                return res.status(200).send({"status":false,"msg":"server error","body":''});
-            }
-            }      
+                let response =await follower_tbls.deleteOne({follower_id,following_id})
+                if(isEmpty(response)){
+                    return res.status(200).send({"status":false,"msg":"something went wrong","body":''});        
+                }
+                else{
+                    return res.status(200).send({"status":true,"msg":"removed",});
+                }
+            
+        }catch(error) { console.log(error);
+            return res.status(200).send({"status":false,"msg":"server error","body":''});
+        }
+      }      
 
      static delete_user= async (req,res)=>{
            try{

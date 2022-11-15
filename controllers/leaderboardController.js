@@ -26,6 +26,7 @@ const follower_tbls = require("../models/follower_users");
 const transaction_tbls = require("../models/transactions")      
 const prediction_card_tbl = require("../models/prediction_cards");      
 const team_matches = require('../models/team_matches');
+const admin_settings = require('../models/admin_settings');
 
 
 
@@ -401,16 +402,27 @@ static user_point_details = async (req,res)=>{
 static  all_matches_leaderboard = async (req,res)	=>{		
 		try{
 			let user_id = req.body.user_id ; 
+			let s_date = req.body.s_date;
+			let e_date = req.body.e_date;
+			let match_id = req.body.match_id;
 
-            let response = await transaction_tbls.aggregate([ {$match: {points_by: 'match'}}, { $group: {"_id": "$match_id"}} ],);   
-
-		 if(response){
+			if(!isEmpty(match_id)){
+				var response=[];
+				let matchId=mongoose.Types.ObjectId(match_id);
+				response.push(matchId)
+			
+			}else if(!isEmpty(s_date) && !isEmpty(e_date)){
+				var response = await transaction_tbls.distinct('match_id',{date:{$gte:s_date,$lte:e_date}});   
+			}else{
+				var response = await transaction_tbls.distinct('match_id');   
+			}
+			
+		 if(response){	
 				let sumdata = [];     
 
-				console.log("jk === ",response);
 			let forGat = await Promise.all(response.map( async(item)=>{
-				  let matchTopWinners =  await matchWinUsersRank( item._id.toString() ); 
-				  let userReankData = await matchWinUsersRank_one( item._id.toString(),user_id);
+				  let matchTopWinners =  await matchWinUsersRank( item.toString() ); 
+					let userReankData = await matchWinUsersRank_one( item.toString(),user_id);
 
 										if(! isEmpty(matchTopWinners)) { sumdata.push({ matchTopWinners,userReankData}) } } ));
       		
@@ -675,6 +687,46 @@ static add_transaction2 = async (req,res)	=>{
 	}
 
 }
+
+static rankBonus = async (match_id)=>{
+	try{
+		let rankBonus=await admin_settings.findOne()
+		let match=await team_matches.findOne({match_id},"_id")
+		let topRanker=await matchWinUsersRank((match._id).toString());
+		if(!isEmpty(topRanker)){
+			for(let i=0;i<10;i++){
+			let obj={
+				type:"credit",
+				points_by:"admin",
+				description:"rank bonus",
+				user_id:topRanker[i]._id.user_id,
+				match_id:topRanker[i]._id.match_id
+			}
+			if(i<1){
+				obj.points=rankBonus.rank_1_bonus;
+			}else if(i<3){
+				obj.points=rankBonus.rank_2to3_bonus;
+			}else if(i<5){
+				obj.points=rankBonus.rank_4to5_bonus;
+			}else if(i<10){
+				obj.points=rankBonus.rank_6to10_bonus;
+			}
+			let transaction=new transaction_tbls(obj);
+			let aa=await transaction.save()
+			let user=await user_tbl.findOneAndUpdate({_id:topRanker[i]._id.user_id},{$inc:{points:obj.points}},{new:true})
+				
+			}
+			
+		}else{
+			return false
+		}
+	}catch (error){
+		console.log(error);
+		return false
+	}
+}
+
+
 
 }
 

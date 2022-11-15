@@ -557,14 +557,10 @@ static all_team_match_list_mobile = async (req,res)=>{
         if(!isEmpty(user_id)){
             let whr = {};
             let matches=await playMatchCards.distinct('match_id',{"user_id":user_id})
-            console.log("=+",matches)
             if(!isEmpty(matches)){whr._id = matches ;} 
             if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
             if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}
-            page = (isEmpty(page)
-
-    
-            || page == 0 )? 1 :page ; 
+            page = (isEmpty(page) || page == 0 )? 1 :page ; 
             if(!isEmpty(id)){whr = {_id: id} ;} 
             let query =  team_matches.find(whr).sort({date_utc:1}) ;
                 const query2 =  query.clone();

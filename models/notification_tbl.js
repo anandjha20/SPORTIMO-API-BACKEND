@@ -14,7 +14,7 @@ const sprtschema = new Schema({
                         type_status: { type: String,enum:[0,1] ,default : 0 },   // 0 = in app Notification, 1 = Send Notification 
                         module_type :  {type :String,default : ''},
                         module_id :  {type :String, default : ''},
-                        category_type:{ type: String, lowercase:true, enum:['system','hints','results','news','block' ],default : 'system' },    //  System notification, hints, results, news,
+                        category_type:{ type: String, lowercase:true, enum:['system','hints','results','news','block','follow','unfollow','request' ],default : 'system' },    //  System notification, hints, results, news,
                         country: {type : String, default : ''},   
                         sports: {type : String, default : ''},
                         leagues: {type : String, default : ''},

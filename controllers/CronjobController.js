@@ -13,6 +13,9 @@ const match_event_shot_tbl = require('../models/match_event_shots');
 const { MyBasePath } = require("../myModel/image_helper");
 
 
+const leaderboardController = require('../controllers/leaderboardController');
+
+
 const team_matches = require('../models/team_matches');
 const { match_data_ara,day_match_getID,day_match_add, match_card_number, match_card_0011, match_card_0013, matchCardAllData, matchCardEventAllData, get_card_result_add_4,
   get_card_result_add_7, get_card_result_add_1, get_card_result_add_11, get_card_result_add_13,
@@ -884,16 +887,16 @@ static get_card_008 = async (req, res) => {
       //  if( (!isEmpty( data)) && (!isEmpty(data.winner) && data.winner != 'yet unknown' )){
 
       if ((!isEmpty(data)) && (data[0].status == 'Played')) {
-           let dx1 = await get_card_result_add_1({data});  
-               let dx4  = await get_card_result_add_4({data});  
-           let dx5  = await get_card_result_add_5({data});  
-           let dx7 = await get_card_result_add_7({data});  
+          let dx1 = await get_card_result_add_1({data});  //stat
+              let dx4  = await get_card_result_add_4({data});  //stat
+           let dx5  = await get_card_result_add_5({data});  //stat
+           let dx7 = await get_card_result_add_7({data});  //stat
 
-         let dx8 =   await get_card_result_add_08({data});  //  *******spl fun ***
+         let dx8 =   await get_card_result_add_08({data}); //stat //  *******spl fun ***
 
-          let dx11  = await get_card_result_add_11({data});  ///
-         let dx13 = await get_card_result_add_13({data});     ///
-          let dx15 = await get_card_result_add_15({data});  ///
+          let dx11  = await get_card_result_add_11({data});  //stat
+         let dx13 = await get_card_result_add_13({data});     //stat
+          let dx15 = await get_card_result_add_15({data});  //stat
 
         //test
         let dx18 = await getCardResult_18_END({data});  
@@ -908,7 +911,7 @@ static get_card_008 = async (req, res) => {
         let dx37   = await get_card_result_add_37({data});  
         let dx39   = await get_card_result_add_39({data});   // *******spl fun ***  
         
-         let dx10  = await get_card_result_add_10({data});  
+          let dx10  = await get_card_result_add_10({data});  
          let dx26  = await get_card_result_add_26({data});
          let dx31  = await get_card_result_add_31({data}); 
         
@@ -922,7 +925,9 @@ static get_card_008 = async (req, res) => {
          let dx21 = await getCardResult_21_END({data});  
          let dx2 = await getCardResult_02_END({data});  
  
- 
+      //top rankers bonus
+        let bonus = await leaderboardController.rankBonus(match_id)
+
         return res.status(200).send({ 'status': true, 'msg': "success", 'body': "" });
       } else {
         return res.status(200).send({ 'status': false, 'msg': 'This match result not show time ', "body": "" });
