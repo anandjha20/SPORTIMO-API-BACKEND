@@ -147,9 +147,8 @@ const match_event_shot_tbl = require('../models/match_event_shots');
                  //console.log(response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].round[0].list[0].match)
                  //let datas = response.data.datasportsgroup.tour.tour_season.competition.season.discipline.gender.round.list.match;
                  let data = response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].round[0].list[0].match[0];
-                 let league_logo = response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].logo;
-              
-                 return {data,league_logo};
+                 let league_data = response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0];
+                 return {data,league_data};
           }else{   return false; }    
 
 
@@ -157,8 +156,7 @@ const match_event_shot_tbl = require('../models/match_event_shots');
          } catch (error) { console.log( "modal match_card_001 call == ", error);
              return false ; 
          }
-  }
-  
+  }  
 
   const matchCardEventAllData = async(match_id) =>{
     try {   
