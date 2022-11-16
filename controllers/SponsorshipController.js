@@ -264,9 +264,6 @@ class Sponsorship {
       
           }
 
-
-
-
             
      static poll_participant = async(req,res)=>{
 
@@ -436,23 +433,22 @@ static my_polls = async (req,res)=>{
               return item;
           })) ; 
           
-          
           return res.status(200).send({"status":true,"msg":'success' , "body":allData}) ;   
         }else{
           return res.status(200).send({"status":false,"msg":'No data found' , "body":''}) ;   
         }
                  
 
-              }
-              catch(err) {  console.log("some error == ",err);
-                  return res.status(200).json({
-                      title: "Something went wrong. Please try again.",
-                      error: true,
-                      details: err
-                  });
-              }
-              
-            }
+      }
+      catch(err) {  console.log("some error == ",err);
+          return res.status(200).json({
+              title: "Something went wrong. Please try again.",
+              error: true,
+              details: err
+          });
+      }
+      
+    }
 
 
 static sponsorship_impressions_count_add = async(req,res)=>{

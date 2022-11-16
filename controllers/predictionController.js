@@ -576,14 +576,15 @@ class predictionController {
              let match_id = req.body.match_id;  
              let user_id = req.body.user_id;  
              let cardCat={};
-             if(!isEmpty(card_cat_id)){cardCat={...cardCat,card_cat_id}}
+             let my_obj={match_id,user_id};
+             if(!isEmpty(card_cat_id)){cardCat={...cardCat,card_cat_id},my_obj={...my_obj,card_cat_id}}
              let condition_obj={};
             if(!isEmpty(req.body.match_id)){
               condition_obj = {...condition_obj,match_id:req.body.match_id}
             }
-         
-            let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
-            let played_cards_count = await playMatchCards_tbl.find({match_id,user_id}).countDocuments();
+            
+            //let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
+            let played_cards_count = await playMatchCards_tbl.find(my_obj).countDocuments();
            
             let usedPoweUps_count = await used_power_ups_tbl.find({user_id}).countDocuments();
             let userUsedpowerpus  = await user_allotted_powerups_tbl.find({match_id,user_id});
@@ -679,7 +680,9 @@ class predictionController {
                             }
                          
                  }));
-                         
+                 
+                 let all_card_count=data.length;
+
                   //  let sendData = { all_card_count,played_cards_count,"list":data };
                     
                     let sendData = { all_card_count,played_cards_count, userpowers,usedPoweUps_count, "list":data };
