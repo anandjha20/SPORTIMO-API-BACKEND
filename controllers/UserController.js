@@ -251,7 +251,6 @@ let user = await user_tbl.find(condition_obj);
                 if(err) {  console.log(err);
                    return  res.status(200).send({"status":false,"msg":'some errors '}) ;   
                 }
-        //console.log(updatedUser.is_deleted,"------------------------------------------------")
                if(updatedUser){
                               let ddsq = user_logs_add(updatedUser._id,'login');  
                 return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
@@ -280,8 +279,6 @@ let user = await user_tbl.find(condition_obj);
     let checkuser = ( user_type == 2 || user_type == 3 || user_type == 4 )? await user_tbl.find({email }).exec() : await user_tbl.find({mobile}).exec() ;
     let sendmsg = ( user_type == 2 || user_type == 3 || user_type == 4 )? "Email already exists" :  "Mobile already exists" ;
 
-
-  //  console.log('checkuser == ',checkuser)  ;         
            
      if(checkuser.length >0 ){
         let check_user_id = checkuser[0]._id; 
@@ -292,13 +289,14 @@ let user = await user_tbl.find(condition_obj);
         if(check_type == 1){  
             //send_mobile_otp({mobile,otp});   
             apiGenOtp =  await send_mobile_otp_new({mobile}); 
+            console.log("apiGenOtp",apiGenOtp)
             msgtodiv = 'otp sent to your mobile please check know ';
         }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
                sentEmail({email,otp}); 
             msgtodiv = 'otp sent to your Email please check know ';
         } 
 
-            console.log("apiGenOtp == ",apiGenOtp);
+           
     let newOtp = (check_type == 1)? apiGenOtp : otp;
     
          console.log("new oootp == ", newOtp); 
@@ -353,7 +351,7 @@ let user = await user_tbl.find(condition_obj);
     }
 
 
-static resend_otp_2 = async(req,res) =>{
+static resend_otp_2_old = async(req,res) =>{
     let language = req.body.language;
     let otp = Math.floor(Math.random() * 900000) + 100000; 
     user_tbl.findByIdAndUpdate(req.params.id,{$set:{otp:otp}},{new:true}).then((docs)=>{
@@ -399,6 +397,56 @@ static resend_otp_2 = async(req,res) =>{
      })
 
     }           
+
+
+    static resend_otp_2 = async(req,res) =>{
+        try{
+        let _id=req.params.id;
+        let language = req.body.language;
+        let otp = Math.floor(Math.random() * 900000) + 100000; 
+        let docs=await user_tbl.findOne({_id})
+        if(docs){
+            let msgtodiv = '';
+            if(docs.user_type == 1){
+                let mobile = docs.mobile;
+                let new_otp_mobile =await  send_mobile_otp_new({mobile});
+                let dd=await user_tbl.findOneAndUpdate({_id},{$set:{otp:new_otp_mobile}}); 
+                 msgtodiv = (language == 'ar')?  'otp أرسلت إلى هاتفك المحمول يرجى التحقق من العلم' : 'otp sent to your mobile please check know';
+            }else{
+                let email = docs.email;
+                let ddd =   sentEmail({email,otp});
+                let dd=await user_tbl.findOneAndUpdate({_id},{$set:{otp:otp}}); 
+                  msgtodiv =   (language == 'ar')? 'otp أرسلت إلى البريد الإلكتروني الخاص بك يرجى التحقق من علم' : 'otp sent to your Email please check know';
+            }
+
+            return res.status(200).json({
+                msg:msgtodiv,
+                status: true,
+              
+            });
+              
+
+        }else {
+        
+
+            return res.status(200).json({
+              title: (language == 'ar')? 'لا يوجد مثل هذا المستخدم' : "no such user exist",
+              error: true,
+              details: err
+          });
+        }
+            
+                
+        }catch (error){
+            return res.status(200).json({
+                title:  "Error occured while adding question.",
+                error: true,
+                details: err
+            });
+
+        }
+    }           
+    
 
 static verify_otp = async(req,res)=>{
     try {
