@@ -584,6 +584,11 @@ class predictionController {
             }
             
             //let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
+            let transaction= await transactions.find({"match_id":match_id,"user_id":user_id});
+            let score=0;
+            transaction.map((item)=>{
+                score+=item.points;
+            })
             let played_cards_count = await playMatchCards_tbl.find(my_obj).countDocuments();
            
             let usedPoweUps_count = await used_power_ups_tbl.find({user_id}).countDocuments();
@@ -688,7 +693,7 @@ class predictionController {
                     let sendData = { all_card_count,played_cards_count, userpowers,usedPoweUps_count, "list":data };
 
                            return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,
-                                  all_card_count,played_cards_count,userpowers,usedPoweUps_count , 'body':data });
+                           score,all_card_count,played_cards_count,userpowers,usedPoweUps_count , 'body':data });
                     }else{
                          return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
                           }
