@@ -13,6 +13,7 @@ const { poll_percent,all_list_come} = require('../myModel/helper_fun');
     const admin_tbl = require('../models/admin');    
     const poll_tbl = require('../models/poll');    
     const Sponsorship_tbl = require('../models/Sponsorship');    
+const { insertMany } = require('../models/user');
     
 class Sponsorship { 
      
@@ -27,10 +28,11 @@ class Sponsorship {
            if(match_len >0)     {whr.match = match;};
            if(view_type_len >0)  {whr.view_type = view_type;};
            if(Fdate_len >0 && Ldate_len >0 ) { whr.Fdate = { $gte: Fdate} ; whr.Fdate = { $lte :Ldate } ; };
-         
-      
-
-             let data = await Sponsorship_tbl.find(whr);
+          let path=MyBasePath(req,res)
+           let data = await Sponsorship_tbl.find(whr);
+           data.map((item)=>{
+              item.image=`${path}/image/assets/sponsorship_image/${item.image}`;
+           })
          
           res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success",'body':data});
   
