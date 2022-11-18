@@ -42,7 +42,10 @@ const userReportImg =  img_upload('./assets/user_img','image');
       let leaderboardController= require("../controllers/leaderboardController");       
       let MasterController = require('../controllers/MasterController');
       let avatarController = require('../controllers/avatarController');
+      let emojiController = require('../controllers/emojiController');
       let geqController = require('../controllers/geqController');
+  
+  
           router.get('/JK/',UserController.dashboardAllCount);
           router.get('/sendEmail/',UserController.User_sendEmail);
           router.post('/league_list/:id?',FootballController.league_list);
@@ -220,7 +223,11 @@ const userReportImg =  img_upload('./assets/user_img','image');
 
     //avatar api
    router.get('/avatar_get',avatarController.avatar_get); 
-   
+  
+    //emoji api
+    router.get('/emoji_get',emojiController.emoji_get); 
+  
+
     //leaderboard api
     router.post('/leaderboard',leaderboardController.leaderboard);
     router.post('/user_point_details',leaderboardController.user_point_details);

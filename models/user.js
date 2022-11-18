@@ -33,7 +33,7 @@ const Userschema = new Schema({
           player_preference:  { type: String,default: '' },
           u_name :  { type: String,default: '' },
           //  nickname :  { type: String,default: '' },
-          status_msg :  { type: String,default: '' },
+          status_msg :  { type: String,default: 'I am available' },
           seq_id : { type: Number,unique: true , default : 1  },
           is_deleted : { type: Number, default : 0 },
           facebook_id : { type: String ,default: ''},

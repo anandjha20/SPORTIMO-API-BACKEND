@@ -255,7 +255,7 @@ let user = await user_tbl.find(condition_obj);
                               let ddsq = user_logs_add(updatedUser._id,'login');  
                 return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
                }else{
-                let add =new user_tbl({ user_type, date,device_id,token,otp,seq_id,firebase_token,sportimo_id:"guest:"+sportimo_id});
+                let add =new user_tbl({name:"guest:"+sportimo_id, user_type, date,device_id,token,otp,seq_id,firebase_token,sportimo_id:"guest:"+sportimo_id});
     
                          add.save( (err, data) => {
                               if (err) {        
@@ -314,7 +314,7 @@ let user = await user_tbl.find(condition_obj);
          }
          console.log("apiGenOtp == ",apiGenOtp_2);
             let add =new user_tbl({
-                name: name,
+                name: sportimo_id,
                 email: email,
                  user_type:user_type,
                 address: address,
@@ -336,7 +336,7 @@ let user = await user_tbl.find(condition_obj);
                     msgtodiv2 = 'otp sent to your Email please check know ';
                 }  
                     console.log('add == ', add);    
-                 return res.status(200).send({"status":true,"msg": msgtodiv2 , "body":add._id }) ;      
+                 return res.status(200).send({"status":true,"msg": msgtodiv2 , "body":allsaveData }) ;      
                 }else{
                     return res.status(200).send({"status":false,"msg":'no data add ' }) ;           
                 } 

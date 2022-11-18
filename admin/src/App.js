@@ -54,6 +54,7 @@ import Leaderboard from "./LeaderBoard/Leaderboard";
 import UpdateGameEnagenent from "./GameEngagementQuestions/UpdateGameEnagenent";
 import ViewUserPointsTransaction from "./LeaderBoard/ViewUserPointsTransaction";
 import CreateAvatar from "./AvatarManagement/CreateAvatar";
+import CreateEmoji from "./EmojiManagement/CreateEmoji";
 import UserPredistions from "./PredictionManagement/userPredictionList";
 import UserPredictionListDetail from "./PredictionManagement/UserPredictionListDetail";
 import GEQAnalyticsMangement from "./AnalyticsMangement/GEQAnalyticsMangement";
@@ -157,7 +158,9 @@ function App() {
         {/*Create Avatar*/} 
         <Route path="/avatar" element={ <CreateAvatar /> } />
        
-
+        {/*Create Emoji*/} 
+        <Route path="/emoji" element={ <CreateEmoji /> } />
+      
         {/*user predicton*/} 
         <Route path="/user_predistions" element={ <UserPredistions /> } />
         <Route path="/user_predistions/details/:id" element={ <UserPredictionListDetail /> } />

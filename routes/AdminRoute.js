@@ -21,6 +21,7 @@ const sponsorImgUpload = sponsorImg.fields([{ name: 'image', maxCount: 1 }]);
 
 const IntroSliderImgUpload =  img_upload('./assets/introSlider_img','image');
 const avatarImgUpload =  img_upload('./assets/avatar_img','image');
+const emojiImgUpload =  img_upload('./assets/emoji','image');
 const MasterImgUpload =  img_upload('./assets/master','image');
 const predictionCardImgUpload = img_upload('./assets/predictionCard_img','image');
  /// import user token middleware  
@@ -45,6 +46,7 @@ const token_check =  require('../middleware/token_check');
   let dashboardController= require("../controllers/dashboardController");
   let geqController= require("../controllers/geqController");
   let avatarController= require("../controllers/avatarController");
+  let emojiController= require("../controllers/emojiController");
   let analyticsController= require("../controllers/analyticsController");
 
   // admin login Routes  
@@ -245,6 +247,11 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.get('/avatar_get',avatarController.avatar_get); 
    router.delete('/avatar_delete/:id',avatarController.avatar_delete);       
  
+  //emoji api 
+  router.post('/emoji_add',emojiImgUpload,emojiController.emoji_add); 
+  router.put('/emoji_update',emojiImgUpload,emojiController.emoji_update); 
+  router.post('/emoji_get',emojiController.emoji_get); 
+  router.delete('/emoji_delete/:id',emojiController.emoji_delete);       
 
     // past_match_list 
    router.post('/past_match_list',MasterController.past_match_list);          
