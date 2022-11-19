@@ -136,7 +136,7 @@ class ReportReasonController {
                         if(!isEmpty(id)){whr = {_id: id} ;} 
 
                 let records =  await report_reason_tbl.find(whr).sort({_id:-1});
-                    
+              console.log(records)      
               if(records.length >0){
 
                  records.map((item)=> {  if(language == 'ar'){item.name = item.name_ara }
@@ -251,7 +251,7 @@ class ReportReasonController {
                             return item; });
                    return res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
              }else{
-                    return res.status(200).send({'status':false,'msg':"No Data Found!..",  'body':'' });
+                    return res.status(200).send({'status':false,'msg':"No Data Found!..",  'body':records });
                   }    
              
            

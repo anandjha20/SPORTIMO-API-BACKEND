@@ -286,6 +286,8 @@ router.post('/polls_analytics',analyticsController.polls_analytics);
 router.post('/support_analytics',analyticsController.support_analytics); 
 router.post('/geq_analytics',analyticsController.geq_analytics); 
 router.post('/chat_analytics',FirebaseController.chat_analytics); 
+router.post('/reported_user_list',analyticsController.reported_user_list); 
+router.get('/user_report_detail/:id?',analyticsController.user_report_detail); 
 
 
 

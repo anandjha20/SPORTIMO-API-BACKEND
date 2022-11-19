@@ -168,6 +168,84 @@ class analyticsController {
     }
 
 
+static reported_user_list = async (req,res)=>{
+  try{
+    let name    = req.body.name;
+    let mobile  = req.body.mobile;
+    let email   = req.body.email;
+    let s_date  = req.body.s_date;
+    let e_date  = req.body.e_date;
+
+    let whr ={};
+    let pipeline=[]
+    if(!isEmpty(name)){pipeline.push({$match:{"name" : { $regex: '.*' + name + '.*' }}}) } ;
+    if(!isEmpty(mobile)){pipeline.push({$match:{"mobile" :mobile}}) } 
+    if(!isEmpty(email)){pipeline.push({$match:{"email" :email}})} 
+    if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date = { $gte:new Date(s_date), $lte:new Date(e_date)} ;} 
+
+    let data = await user_reportings_tbl.aggregate([
+      
+      {
+      '$group': {
+        '_id': '$reporting_user_id', 
+        'total': {
+          '$sum': 1
+        },
+        'date': {
+          '$last': '$date'
+        }
+      }
+     },
+       {
+       '$lookup': {
+         'from': 'user_tbls', 
+        'localField': '_id', 
+        'foreignField': '_id', 
+        'as': 'user',
+        'pipeline':pipeline
+      }
+     },
+     {
+      $unwind:'$user'
+    },
+    
+    {
+      $project:{'_id':1,"total":1,"date":1,"user.name":1,"user.mobile":1,"user.email":1}
+    },{$match:whr},
+    
+  ]);
+
+
+ 
+    return res.status(200).send({status:true,msg:"success",body:data})
+  }catch (error){
+    console.log(error);
+    return res.status(2002).send({status:false,msg:"server error"});
+  }
+}
+
+static user_report_detail = async (req,res)=>{
+  try{
+    let id=req.params.id;
+    if(!isEmpty(id)){
+    let data = await user_reportings_tbl.find({reporting_user_id:id}).populate([{path: 'reported_user_id', select : " name"},{path: 'reporting_user_id', select : " name"},{path: 'reason_id', select : " name"}])
+    console.log(data)
+    if(data){
+      return res.status(200).send({status:true,msg:"success",body:data})
+    }else{
+      return res.status(200).send({status:true,msg:"no data found",body:[]})
+    }
+  }else{
+    return res.status(200).send({status:false,msg:"all field requird"})
+  }
+  
+  }catch (error){
+    console.log(error);
+    return res.status(2002).send({status:false,msg:"server error"});
+  }
+}
+
+
 }
 
 module.exports = analyticsController ;      

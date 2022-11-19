@@ -59,8 +59,11 @@ import UserPredistions from "./PredictionManagement/userPredictionList";
 import UserPredictionListDetail from "./PredictionManagement/UserPredictionListDetail";
 import GEQAnalyticsMangement from "./AnalyticsMangement/GEQAnalyticsMangement";
 import SupportAnalyticsMangement from "./AnalyticsMangement/SupportAnalyticsMangement";
+import ChatAnalyticsMangement from "./AnalyticsMangement/ChatAnalyticsMangement";
 import ProfileAnalyticsMangement from "./AnalyticsMangement/ProfileAnalyticsMangement";
 import UserAnalyticsMangement from "./AnalyticsMangement/UserAnalyticsMangement";
+import ReportMangement from "./ReportAnalyticsManagement/ReportManagement";
+import ReportDetail from "./ReportAnalyticsManagement/ReportDetail";
 
 function App() {
 
@@ -180,11 +183,17 @@ function App() {
         <Route path="/analytics/user" element={ <UserAnalyticsMangement /> } />
         <Route path="/analytics/geq" element={ <GEQAnalyticsMangement /> } />
         <Route path="/analytics/support" element={ <SupportAnalyticsMangement /> } />
+        <Route path="/analytics/chat" element={ <ChatAnalyticsMangement /> } />
         <Route path="/analytics/user-profile" element={ <ProfileAnalyticsMangement /> } />
         {/* <Route path="/preference/teams" element={ <TeamsPreference /> } />
         <Route path="/preference/leagues" element={ <LeaguesPreference /> } />
         <Route path="/preference/players" element={ <PlayersPreference /> } /> */}
-       
+
+        {/* ReportManagement */}
+        <Route path="/reports" element={ <ReportMangement/> } />
+        <Route path="/reports/detail/:_id" element={ <ReportDetail/> } />
+
+
       </Routes>
     </>
   );

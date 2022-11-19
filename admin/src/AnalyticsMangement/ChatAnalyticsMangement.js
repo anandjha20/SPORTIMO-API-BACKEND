@@ -8,11 +8,11 @@ import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
 import axios from 'axios';
 
-function SupportAnalyticsMangement() {
+function ChatAnalyticsMangement() {
 
     const [data ,setData] =useState([]) 
     const userlist = async () => {
-      await axios.post(`/web_api/support_analytics`)
+      await axios.post(`/web_api/chat_analytics`)
       .then(resp =>{
         const data = resp.data.body
         setData(data);
@@ -41,12 +41,12 @@ function SupportAnalyticsMangement() {
 
             <div className="page-header">
               <div>
-                <h2 className="main-content-title tx-24 mg-b-5">Support Analytics</h2>
+                <h2 className="main-content-title tx-24 mg-b-5">Chat Analytics</h2>
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <Link to="/home">Home</Link>
                   </li>
-                  <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Support Analytics</li>
+                  <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Chat Analytics</li>
                 </ol>
               </div>
               {/* <div className="d-flex">
@@ -65,17 +65,17 @@ function SupportAnalyticsMangement() {
                       <div className="col-lg-6">
                           <div className="row">
                             <div className="col-lg-12 reletive mb-4">
-                            <label className="title-col">Total Tickets</label>
-                              <input type="text" className="form-control card-input"   readOnly defaultValue={data.total_tickets}  fullWidth  variant="filled" autoComplete="off" />
+                            <label className="title-col">Public Room Players</label>
+                              <input type="text" className="form-control card-input"   readOnly defaultValue={data.total_public_room_playes}  fullWidth  variant="filled" autoComplete="off" />
                             </div>
                             <div className="col-lg-12 reletive mb-4">
-                            <label className="title-col">Total Active Tickets</label>
-                              <input type="text" className="form-control card-input"  readOnly defaultValue={data.total_active_tickets} fullWidth  variant="filled" autoComplete="off" />
+                            <label className="title-col">Players Having Access Commenting</label>
+                              <input type="text" className="form-control card-input" readOnly  defaultValue={data.total_playes_having_aceess_commenting} fullWidth  variant="filled" autoComplete="off" />
                             </div>
 
                             <div className="col-lg-12 reletive mb-4">
-                            <label className="title-col">Total Resolved Tickets </label>
-                              <input type="text" className="form-control card-input" readOnly defaultValue={data.total_resolved_tickets}  fullWidth  variant="filled" autoComplete="off" />
+                            <label className="title-col">Suspended Players </label>
+                              <input type="text" className="form-control card-input" readOnly defaultValue={data.total_suspended_player}  fullWidth  variant="filled" autoComplete="off" />
                             </div>   
 
                              
@@ -100,4 +100,4 @@ function SupportAnalyticsMangement() {
   )
 }
 
-export default SupportAnalyticsMangement
+export default ChatAnalyticsMangement

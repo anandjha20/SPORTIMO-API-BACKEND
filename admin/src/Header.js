@@ -291,6 +291,11 @@ return (
 							<span className="sidemenu-label">Admin Settings</span></NavLink>
 						</li> 
 						
+						<li className="nav-item" >
+							<NavLink  to="/reports" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fad fa-flag-alt sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Reports</span></NavLink>
+						</li> 
 						
 						
 						<li className="nav-item nav-anlitcys-child" onClick={handleProfile}>
@@ -310,6 +315,9 @@ return (
 								</li>
 								<li className="nav-sub-item">
 									<NavLink  to="/analytics/user-profile" className="nav-sub-link">User Profile Analytics</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/analytics/chat" className="nav-sub-link">Chat Analytics</NavLink>
 								</li>
 								
 							</ul>

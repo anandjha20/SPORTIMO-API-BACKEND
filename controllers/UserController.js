@@ -30,6 +30,8 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds,preferences_ar_convar
 const team_matches = require('../models/team_matches');
 const userArchive = require('../models/userArchive');     
 const request_tbl = require('../models/request');     
+const notification_tbl = require('../models/notification_tbl');
+const request = require('../models/request');
 
 
 
@@ -1067,7 +1069,7 @@ static verify_nickName = async(req,res)=>{
               let type_status = 1; 
               let title = `${following_user_data[0].name} you have received an following request by ${follower_user_data[0].name}`;  
               let msg   = `${following_user_data[0].name} you have received an following request by ${follower_user_data[0].name}`;  
-      let demo = sendNotificationAdd({title,msg,type_status,"user_id":following_id,"module_id":follower_id,"module_type":"profile",category_type:"request"}); 
+              let demo = sendNotificationAdd({title,msg,type_status,"user_id":following_id,"module_id":follower_id,"module_type":"profile",category_type:"request"}); 
 
                 return res.status(200).send({"status":true,"msg":"following request sent","body": response });
             }  
@@ -1536,30 +1538,35 @@ static verify_nickName = async(req,res)=>{
 
       static request_action= async (req,res)=>{
         try{
-              let _id=req.params.id;
+              let _id=req.body._id;
               let action=req.body.action;
               let date=getcurntDate()
               if(!isEmpty(_id)){
-                let request=await request_tbl.findOneAndDelete({_id});
-                console.log(request)
-                  if(!isEmpty(request)){
+                let notification=await notification_tbl.findOneAndDelete({_id});
+                console.log(notification)
+                if(!isEmpty(notification)){
+                    let following_id=notification.user_id;
+                    let follower_id=notification.module_id;
+                            
                     if(action=="accept"){
                       let details={
-                        following_id:request.user_id,
-                        follower_id:request.another_user_id,
+                        following_id,
+                        follower_id,
                         
                       }
                       let obj=new follower_tbls(details);
                       let data=obj.save()
-                      return res.status(200).send({"status":true,"msg":"request accepted","body":request});        
+                      let request=await request_tbl.findOneAndDelete({user_id:following_id,another_user_id:follower_id});
+                      return res.status(200).send({"status":true,"msg":"request accepted"});        
                     }else{
-                      return res.status(200).send({"status":true,"msg":"request deleted","body":request});
+                        let request=await request_tbl.findOneAndDelete({user_id:following_id,another_user_id:follower_id});
+                      return res.status(200).send({"status":true,"msg":"request deleted"});
                     }
                   }else{
-                      return res.status(200).send({"status":false,"msg":"no request found "});
+                      return res.status(200).send({"status":false,"msg":"no data found "});
                   }
               }else{
-                  return res.status(200).send({"status":false,"msg":"requestID required","body":''});
+                  return res.status(200).send({"status":false,"msg":"all field required"});
               }
       
           }catch (error){

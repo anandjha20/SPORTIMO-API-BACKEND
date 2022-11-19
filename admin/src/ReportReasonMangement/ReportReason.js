@@ -111,6 +111,7 @@ export default function ReportReason() {
                 const totalPage = (Math.ceil(total / limit));
                 setpageCount(totalPage);
                 setData(userData);
+                console.log({userData,total})
             })
     }
     useEffect(() => {

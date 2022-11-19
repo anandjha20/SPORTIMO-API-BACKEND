@@ -2,6 +2,8 @@ const admin = require('firebase-admin');
 const { isEmpty } = require('../myModel/common_modal');
 const serviceAccount = require("../serviceAccountKey.json");
 const local_default = require("../local_default.json"); 
+const user_chat_blocks_tbl = require("../models/user_chat_blocks");
+ 
 
   admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -249,10 +251,9 @@ static getFirebaseChatData_new = async(req,res)=>{
 
     static chat_analytics = async (req,res)=>{
       try {
-        let total_user=[]  
-        //let chatData= (await FirebaseDB.collection('groups').get())
-        // let snaps = await (await admin.auth().listUsers()).users.length;
-        // let collection =await FirebaseDB.listCollections()
+        let total_user=[];
+        let total_suspended_player=await user_chat_blocks_tbl.find({block_type:"admin"}).countDocuments()
+   
         let publicRoomData=await (await FirebaseDB.collection('groups').get()).docs;        
         publicRoomData.map((item)=>{
           let data=item._fieldsProto.members.arrayValue.values;
@@ -265,7 +266,8 @@ static getFirebaseChatData_new = async(req,res)=>{
 
             let analytics={
               total_public_room_playes:total_user.length,
-              total_playes_having_aceess_commenting:total_user.length
+              total_playes_having_aceess_commenting:total_user.length,
+              total_suspended_player:total_suspended_player
             };
           return  res.status(200).send({'status':true,'msg':"success",'body':analytics});
         } catch (error) {
