@@ -591,7 +591,7 @@ static all_team_match_list_mobile = async (req,res)=>{
         let date = before_after_Date(-1);
         console.log(date) 
         if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
-        if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}//else{whr.date_utc ={$gte : date}; } 
+        if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}else{whr.date_utc ={$gte : date}; } 
         page = (isEmpty(page)
 
 
