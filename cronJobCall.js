@@ -444,7 +444,7 @@ cron.schedule('5 0 * * *', async (req,res) => {
 
 
 //// poll result show function calling cronjob api 
-cron.schedule('    *', async (req,res) => {
+cron.schedule('* * * * *', async (req,res) => {
   try {
   let response = await day_match_getID();
   let sumArr = [];
