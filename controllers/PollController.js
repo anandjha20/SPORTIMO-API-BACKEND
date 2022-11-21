@@ -2,8 +2,8 @@ let  express_2 = require('express');
 const mongoose = require('mongoose');
 const { sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
 const { sendNotificationAdd } = require('../myModel/helper_fun');
-  const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
-
+const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
+const {matchCardAllData} = require('../myModel/Live_match_api_helper')
 const { poll_percent} = require('../myModel/helper_fun');
    
   
@@ -14,7 +14,8 @@ const { poll_percent} = require('../myModel/helper_fun');
     const poll_tbl = require('../models/poll');    
     const poll_result_tbl = require('../models/poll_result');    
     const poll_skips_tbl = require('../models/poll_skips');  
-    const prediction_cart_categories = require("../models/prediction_card_categories")     
+    const prediction_cart_categories = require("../models/prediction_card_categories");     
+const team_matches = require('../models/team_matches');
 class PollController {   
       static jk_test = async(req,res)=>{
               
@@ -521,47 +522,47 @@ static my_polls_old = async(req,res)=>{
 }  
 
 
-      static my_polls = async (req,res)=>{
-                try{
-                  let pipeline = [];
-                  
-                      pipeline.push({$match:{user_id:  mongoose.Types.ObjectId(req.params.id)}});
-                  
-              //    pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user'} });
-                pipeline.push({ $lookup: {from: 'poll_tbls', localField: 'poll_id', foreignField: '_id', as: 'pollData'} });
-             
-                //   pipeline.push({ $unwind: "$user" });
-                  pipeline.push({ $unwind: "$pollData" });
+  static my_polls = async (req,res)=>{
+            try{
+              let pipeline = [];
               
-               pipeline.push({ $project: {"_id":1,"user_ans":1,"poll_id":1,"match":"$pollData.match","poll_qs":"$pollData.qus","ops_1":"$pollData.ops_1",
-                  "ops_2":"$pollData.ops_2","ops_3":"$pollData.ops_3","ops_4":"$pollData.ops_4"} });
-        
-      let someData = await poll_result_tbl.aggregate(pipeline).exec();
-
-        if(someData.length >0){
-
-          let allData = await Promise.all( someData.map( async (item)=>{
-            item.poll_parcents = await poll_percent(item.poll_id);
-              return item;
-          })) ; 
+                  pipeline.push({$match:{user_id:  mongoose.Types.ObjectId(req.params.id)}});
+              
+          //    pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user'} });
+            pipeline.push({ $lookup: {from: 'poll_tbls', localField: 'poll_id', foreignField: '_id', as: 'pollData'} });
           
+            //   pipeline.push({ $unwind: "$user" });
+              pipeline.push({ $unwind: "$pollData" });
           
-          return res.status(200).send({"status":true,"msg":'success' , "body":allData}) ;   
-        }else{
-          return res.status(200).send({"status":false,"msg":'No data found' , "body":''}) ;   
+            pipeline.push({ $project: {"_id":1,"user_ans":1,"poll_id":1,"match":"$pollData.match","poll_qs":"$pollData.qus","ops_1":"$pollData.ops_1",
+              "ops_2":"$pollData.ops_2","ops_3":"$pollData.ops_3","ops_4":"$pollData.ops_4"} });
+    
+  let someData = await poll_result_tbl.aggregate(pipeline).exec();
+
+    if(someData.length >0){
+
+      let allData = await Promise.all( someData.map( async (item)=>{
+        item.poll_parcents = await poll_percent(item.poll_id);
+          return item;
+      })) ; 
+      
+      
+      return res.status(200).send({"status":true,"msg":'success' , "body":allData}) ;   
+    }else{
+      return res.status(200).send({"status":false,"msg":'No data found' , "body":''}) ;   
+    }
+              
+
+          }
+          catch(err) {  console.log("some error == ",err);
+              return res.status(200).json({
+                  title: "Something went wrong. Please try again.",
+                  error: true,
+                  details: err
+              });
+          }
+              
         }
-                 
-
-              }
-              catch(err) {  console.log("some error == ",err);
-                  return res.status(200).json({
-                      title: "Something went wrong. Please try again.",
-                      error: true,
-                      details: err
-                  });
-              }
-                  
-            }
              
  static poll_result_disclosed = async(req,res)=>{
         try {
@@ -639,6 +640,60 @@ static my_polls_old = async(req,res)=>{
         return  res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"}); 
       }
     }
+
+  static poll_result_show=async (req,res)=>{
+    try{
+      let match_id=req.body.match_id;
+      let matchData=await team_matches.findOne({match_id})
+      if(!isEmpty(matchData)){
+        let live_minute=matchData.live.game_minute==''?0:parseInt(matchData.live.game_minute);
+        let status=matchData.status;
+        let poll=await poll_tbl.find({"match_id":match_id,"result_type":"Disclosed","disclosed_status":0})  
+        if(!isEmpty(poll)){
+          if(status=="Played"){
+            let dd=await Promise.all( poll.map(async (item)=>{
+              let type_status =  (item.noti_status == 1)? 1 : 0 ; 
+              let title = `${item.match} Poll Result has been disclosed ` ;  
+              let msg = `${item.match} Poll Result has been disclosed Click here to view.`; 
+              let category_type = 'results';
+              let module_type = "polls";
+              let module_id  = item._id;
+              let demo =  sendNotificationAdd({title,msg,type_status,category_type,module_type,module_id});
+              //let noti_damo =   pollDisclosed_noti_fun({title,poll_id:item.id,details:msg});             
+              let poll=await poll_tbl.findOneAndUpdate({"_id":item._id},{disclosed_status:1});  
+            }))
+            return res.status(200).send({status:true,msg:"poll result disclosed for played match"})
+           }else{
+            let dd=await Promise.all( poll.map(async (item)=>{
+              let apperance_time=item.apperance_time;
+              let time_duration=item.time_duration;
+              let minutes=parseInt(apperance_time.substring(0,2))+parseInt(time_duration.substring(0,2))
+              if(live_minute>minutes){
+                let type_status =  (item.noti_status == 1)? 1 : 0 ; 
+                let title = `${item.match} Poll Result has been disclosed ` ;  
+                let msg = `${item.match} Poll Result has been disclosed Click here to view.`; 
+                let category_type = 'results';
+                let module_type = "polls";
+                let module_id  = item._id;
+                let demo =  sendNotificationAdd({title,msg,type_status,category_type,module_type,module_id});
+                //let noti_damo =   pollDisclosed_noti_fun({title,poll_id:item.id,details:msg});             
+                let poll=await poll_tbl.findOneAndUpdate({"_id":item._id},{disclosed_status:1});
+              }  
+            }))
+            return res.status(200).send({status:true,msg:"poll result disclosed for playing match"}) 
+          }
+        }else{
+          return res.status(200).send({status:false,msg:"no polls in this match"});  
+        }
+      }else{
+        return res.status(200).send({status:false,msg:"invalid match_id"})  ;
+      }
+    }catch (error){
+      console.log(error)
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
+
 
 
 }

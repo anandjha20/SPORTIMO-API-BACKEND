@@ -1554,10 +1554,16 @@ static verify_nickName = async(req,res)=>{
                         follower_id,
                         
                       }
-                      let obj=new follower_tbls(details);
-                      let data=obj.save()
+                      let follower = await user_tbl.findOne({_id:follower_id});
+                      let following = await user_tbl.findOne({_id:following_id});
+                      let obj = new follower_tbls(details);
+                      let data = obj.save()
                       let request=await request_tbl.findOneAndDelete({user_id:following_id,another_user_id:follower_id});
-                      return res.status(200).send({"status":true,"msg":"request accepted"});        
+                      let type_status = 1; 
+                      let title = `${follower.name} your request has been accepted by ${following.name}`;  
+                      let msg   = `${follower.name} your request has been accepted by ${following.name}`;  
+                      let demo = sendNotificationAdd({title,msg,type_status,"user_id":follower_id,"module_id":following_id,"module_type":"profile",category_type:"follow"}); 
+                     return res.status(200).send({"status":true,"msg":"request accepted"});        
                     }else{
                         let request=await request_tbl.findOneAndDelete({user_id:following_id,another_user_id:follower_id});
                       return res.status(200).send({"status":true,"msg":"request deleted"});

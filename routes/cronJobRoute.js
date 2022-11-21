@@ -4,6 +4,7 @@ const ConjobController = require('../controllers/CronjobController');
 const Router = express.Router(); 
 
 const CronjobController = require("../controllers/CronjobController") ;
+const PollController = require("../controllers/PollController") ;
 
 Router.get("/pollResultNotification",CronjobController.pollResultNotification);
 
@@ -40,6 +41,12 @@ Router.get("/get_card_21",ConjobController.get_card_21);
 Router.get("/matchResult_show",ConjobController.matchResult_show);   
 Router.get("/jkk",ConjobController.jkk);   
 Router.get("/match_run",ConjobController.match_run);   
+
+//POLL RESULT DISCLOSE
+Router.get("/poll_result_show",PollController.poll_result_show);   
+
+
+
 
   
    
