@@ -12,7 +12,7 @@ cron.schedule('* * * * *', async (req,res) => {
      
       let response = await day_match_getID();
       let sumArr = [];
-      let url = 'http://34.204.253.168:3000/open_api/get_card_008';
+      let url = 'http://100.26.5.179:3000/open_api/get_card_008';
      // let url = 'http://localhost:3600/open_api/get_card_008';
      
   if(response){  
@@ -38,7 +38,7 @@ cron.schedule('* * * * *', async (req,res) => {
         try {
         let response = await day_match_getID();
         let sumArr = [];
-        let url = `http://34.204.253.168:3000/open_api/matchResult_show`;
+        let url = `http://100.26.5.179:3000/open_api/matchResult_show`;
         //let url = `http://localhost:3600/open_api/matchResult_show`;
         if(response){  
         let allData =  await Promise.all( response.map( async (item)=>{
@@ -65,7 +65,7 @@ cron.schedule('* * * * *', async (req,res) => {
      let response = await day_match_getID();
      let sumArr = [];
  
-     let url = 'http://34.204.253.168:3000/open_api/get_card_21';
+     let url = 'http://100.26.5.179:3000/open_api/get_card_21';
     // let url = 'http://localhost:3600/open_api/get_card_21';
    
  if(response){  
@@ -93,7 +93,7 @@ cron.schedule('* * * * *', async (req,res) => {
       let response = await day_match_getID();
       let sumArr = [];
   
-      let url = 'http://34.204.253.168:3000/open_api/get_card_02';
+      let url = 'http://100.26.5.179:3000/open_api/get_card_02';
      // let url = 'http://localhost:3600/open_api/get_card_03';
     
   if(response){  
@@ -123,7 +123,7 @@ cron.schedule('* * * * *', async (req,res) => {
               let response = await day_match_getID();
               let sumArr = [];
           
-              let url = 'http://34.204.253.168:3000/open_api/get_card_03';
+              let url = 'http://100.26.5.179:3000/open_api/get_card_03';
              // let url = 'http://localhost:3600/open_api/get_card_03';
             
       if(response){  
@@ -153,7 +153,7 @@ cron.schedule('* * * * *', async (req,res) => {
       let response = await day_match_getID();
       let sumArr = [];
   
-      let url = 'http://34.204.253.168:3000/open_api/get_card_06';
+      let url = 'http://100.26.5.179:3000/open_api/get_card_06';
      // let url = 'http://localhost:3600/open_api/get_card_06';
     
   if(response){  
@@ -182,7 +182,7 @@ cron.schedule('* * * * *', async (req,res) => {
       let response = await day_match_getID();
       let sumArr = [];
   
-      let url = 'http://34.204.253.168:3000/open_api/get_card_09';
+      let url = 'http://100.26.5.179:3000/open_api/get_card_09';
     //  let url = 'http://localhost:3600/open_api/get_card_09';
     
   if(response){  
@@ -211,7 +211,7 @@ cron.schedule('* * * * *', async (req,res) => {
       let response = await day_match_getID();
       let sumArr = [];
   
-      let url = 'http://34.204.253.168:3000/open_api/get_card_16';
+      let url = 'http://100.26.5.179:3000/open_api/get_card_16';
      // let url = 'http://localhost:3600/open_api/get_card_16';
     
   if(response){  
@@ -241,7 +241,7 @@ cron.schedule('* * * * *', async (req,res) => {
       let response = await day_match_getID();
       let sumArr = [];
   
-      let url = 'http://34.204.253.168:3000/open_api/get_card_18';
+      let url = 'http://100.26.5.179:3000/open_api/get_card_18';
      // let url = 'http://localhost:3600/open_api/get_card_18';
     
   if(response){  
@@ -270,7 +270,7 @@ cron.schedule('* * * * *', async (req,res) => {
       let response = await day_match_getID();
       let sumArr = [];
   
-      let url = 'http://34.204.253.168:3000/open_api/get_card_19';
+      let url = 'http://100.26.5.179:3000/open_api/get_card_19';
      // let url = 'http://localhost:3600/open_api/get_card_19';
     
   if(response){  
@@ -299,7 +299,7 @@ cron.schedule('* * * * *', async (req,res) => {
       let response = await day_match_getID();
       let sumArr = [];
   
-      let url = 'http://34.204.253.168:3000/open_api/get_card_22';
+      let url = 'http://100.26.5.179:3000/open_api/get_card_22';
      // let url = 'http://localhost:3600/open_api/get_card_22';
     
   if(response){  
@@ -327,7 +327,7 @@ cron.schedule('* * * * *', async (req,res) => {
   try {
     let date=await before_after_Date(15)
     console.log(date)
-         let url = 'http://34.204.253.168:3000/open_api/update_match_data_by_date';
+         let url = 'http://100.26.5.179:3000/open_api/update_match_data_by_date';
     // let url = 'http://localhost:3600/open_api/update_match_data_by_date';
             
       var config = { method: 'post',url: url ,data: {} };
@@ -343,8 +343,8 @@ cron.schedule('* * * * *', async (req,res) => {
 //for after 15 days update_match_data_by_date  calling conjon
 cron.schedule('0 0 * * *', async (req,res) => {
   try {
-    let date=await before_after_Date(15)
-         let url = 'http://34.204.253.168:3000/open_api/update_match_data_by_date';
+    let date = await before_after_Date(15)
+         let url = 'http://100.26.5.179:3000/open_api/update_match_data_by_date';
     // let url = 'http://localhost:3600/open_api/update_match_data_by_date';
             
       var config = { method: 'post',url: url ,data: {date} };
@@ -361,7 +361,7 @@ cron.schedule('0 0 * * *', async (req,res) => {
 cron.schedule('1 0 * * *', async (req,res) => {
   try {
     let date=await before_after_Date(1)
-         let url = 'http://34.204.253.168:3000/open_api/update_match_data_by_date';
+         let url = 'http://100.26.5.179:3000/open_api/update_match_data_by_date';
     // let url = 'http://localhost:3600/open_api/update_match_data_by_date';
             
       var config = { method: 'post',url: url ,data: {date} };
@@ -377,7 +377,7 @@ cron.schedule('1 0 * * *', async (req,res) => {
 cron.schedule('2 0 * * *', async (req,res) => {
   try {
     let date=await before_after_Date(2)
-         let url = 'http://34.204.253.168:3000/open_api/update_match_data_by_date';
+         let url = 'http://100.26.5.179:3000/open_api/update_match_data_by_date';
     // let url = 'http://localhost:3600/open_api/update_match_data_by_date';
             
       var config = { method: 'post',url: url ,data: {date} };
@@ -393,7 +393,7 @@ cron.schedule('2 0 * * *', async (req,res) => {
 cron.schedule('3 0 * * *', async (req,res) => {
   try {
     let date=await before_after_Date(3)
-         let url = 'http://34.204.253.168:3000/open_api/update_match_data_by_date';
+         let url = 'http://100.26.5.179:3000/open_api/update_match_data_by_date';
     // let url = 'http://localhost:3600/open_api/update_match_data_by_date';
             
       var config = { method: 'post',url: url ,data: {date} };
@@ -410,7 +410,7 @@ cron.schedule('3 0 * * *', async (req,res) => {
 cron.schedule('4 0 * * *', async (req,res) => {
   try {
     let date=await before_after_Date(4)
-         let url = 'http://34.204.253.168:3000/open_api/update_match_data_by_date';
+         let url = 'http://100.26.5.179:3000/open_api/update_match_data_by_date';
     // let url = 'http://localhost:3600/open_api/update_match_data_by_date';
             
       var config = { method: 'post',url: url ,data: {date} };
@@ -426,7 +426,7 @@ cron.schedule('4 0 * * *', async (req,res) => {
 cron.schedule('5 0 * * *', async (req,res) => {
   try {
     let date=await before_after_Date(5)
-         let url = 'http://34.204.253.168:3000/open_api/update_match_data_by_date';
+         let url = 'http://100.26.5.179:3000/open_api/update_match_data_by_date';
     // let url = 'http://localhost:3600/open_api/update_match_data_by_date';
             
       var config = { method: 'post',url: url ,data: {date} };
