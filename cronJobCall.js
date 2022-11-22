@@ -11,6 +11,7 @@ cron.schedule('* * * * *', async (req,res) => {
   try {
      
       let response = await day_match_getID();
+      console.log("day_match_getID===",response)
       let sumArr = [];
       let url = 'http://100.26.5.179:3000/open_api/get_card_008';
      // let url = 'http://localhost:3600/open_api/get_card_008';
@@ -20,12 +21,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
   let allData =  await Promise.all( response.map( async (item)=>{
           var config = { method: 'get',url: url ,data: {"match_id" :item } };
-            console.log("match_id == ",item);       
+          //  console.log("match_id == ",item);       
           let resp = await axios(config);
           sumArr.push(resp.data);
       })) ;      
       }
-      console.log("cronjob api calling ==", sumArr );
+      //console.log("cronjob api calling ==", sumArr );
 
   } catch(error) { console.log( "cronjob api calling server error  == ", error);
                   return false ; 
@@ -73,12 +74,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
  let allData =  await Promise.all( response.map( async (item)=>{
          var config = { method: 'get',url: url ,data: {"match_id" :item } };
-           console.log("match_id == ",item);       
+          // console.log("match_id == ",item);       
          let resp = await axios(config);
          sumArr.push(resp.data);
      })) ;      
      }
-     console.log("cronjob api calling card -3 ==", sumArr );
+     //console.log("cronjob api calling card -3 ==", sumArr );
 
  } catch(error) { console.log( "cronjob api calling card-3 server error  == ", error);
                  return false ; 
@@ -101,12 +102,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
   let allData =  await Promise.all( response.map( async (item)=>{
           var config = { method: 'get',url: url ,data: {"match_id" :item } };
-            console.log("match_id == ",item);       
+          //  console.log("match_id == ",item);       
           let resp = await axios(config);
           sumArr.push(resp.data);
       })) ;      
       }
-      console.log("cronjob api calling card -3 ==", sumArr );
+      //console.log("cronjob api calling card -3 ==", sumArr );
 
   } catch(error) { console.log( "cronjob api calling card-3 server error  == ", error);
                   return false ; 
@@ -131,12 +132,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
           let allData =  await Promise.all( response.map( async (item)=>{
                   var config = { method: 'get',url: url ,data: {"match_id" :item } };
-                    console.log("match_id == ",item);       
+                  //  console.log("match_id == ",item);       
                   let resp = await axios(config);
                   sumArr.push(resp.data);
               })) ;      
               }
-              console.log("cronjob api calling card -3 ==", sumArr );
+             // console.log("cronjob api calling card -3 ==", sumArr );
 
           } catch(error) { console.log( "cronjob api calling card-3 server error  == ", error);
                           return false ; 
@@ -161,12 +162,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
   let allData =  await Promise.all( response.map( async (item)=>{
           var config = { method: 'get',url: url ,data: {"match_id" :item } };
-            console.log("match_id == ",item);       
+          //  console.log("match_id == ",item);       
           let resp = await axios(config);
           sumArr.push(resp.data);
       })) ;      
       }
-      console.log("cronjob api calling card -6 ==", sumArr );
+      //console.log("cronjob api calling card -6 ==", sumArr );
 
   } catch(error) { console.log( "cronjob api calling card-6 server error  == ", error);
                   return false ; 
@@ -190,12 +191,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
   let allData =  await Promise.all( response.map( async (item)=>{
           var config = { method: 'get',url: url ,data: {"match_id" :item } };
-            console.log("match_id == ",item);       
+         //   console.log("match_id == ",item);       
           let resp = await axios(config);
           sumArr.push(resp.data);
       })) ;      
       }
-      console.log("cronjob api calling card -9 ==", sumArr );
+    //  console.log("cronjob api calling card -9 ==", sumArr );
 
   } catch(error) { console.log( "cronjob api calling card-9 server error  == ", error);
                   return false ; 
@@ -219,12 +220,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
   let allData =  await Promise.all( response.map( async (item)=>{
           var config = { method: 'get',url: url ,data: {"match_id" :item } };
-            console.log("match_id == ",item);       
+          //  console.log("match_id == ",item);       
           let resp = await axios(config);
           sumArr.push(resp.data);
       })) ;      
       }
-      console.log("cronjob api calling card -16 ==", sumArr );
+    //  console.log("cronjob api calling card -16 ==", sumArr );
 
   } catch(error) { console.log( "cronjob api calling card-16 server error  == ", error);
                   return false ; 
@@ -249,12 +250,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
   let allData =  await Promise.all( response.map( async (item)=>{
           var config = { method: 'get',url: url ,data: {"match_id" :item } };
-            console.log("match_id == ",item);       
+          //  console.log("match_id == ",item);       
           let resp = await axios(config);
           sumArr.push(resp.data);  
       })) ;      
       }
-      console.log("cronjob api calling card -22 ==", sumArr );
+    //  console.log("cronjob api calling card -22 ==", sumArr );
 
   } catch(error) { console.log( "cronjob api calling card-22 server error  == ", error);
                   return false ; 
@@ -278,12 +279,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
   let allData =  await Promise.all( response.map( async (item)=>{
           var config = { method: 'get',url: url ,data: {"match_id" :item } };
-            console.log("match_id == ",item);       
+          //  console.log("match_id == ",item);       
           let resp = await axios(config);
           sumArr.push(resp.data);
       })) ;      
       }
-      console.log("cronjob api calling card -19 ==", sumArr );
+    //  console.log("cronjob api calling card -19 ==", sumArr );
 
   } catch(error) { console.log( "cronjob api calling card-19 server error  == ", error);
                   return false ; 
@@ -307,12 +308,12 @@ cron.schedule('* * * * *', async (req,res) => {
 
   let allData =  await Promise.all( response.map( async (item)=>{
           var config = { method: 'get',url: url ,data: {"match_id" :item } };
-            console.log("match_id == ",item);       
+          //  console.log("match_id == ",item);       
           let resp = await axios(config);
           sumArr.push(resp.data);
       })) ;      
       }
-      console.log("cronjob api calling card -22 ==", sumArr );
+    //  console.log("cronjob api calling card -22 ==", sumArr );
 
   } catch(error) { console.log( "cronjob api calling card-22 server error  == ", error);
                   return false ; 
@@ -326,14 +327,14 @@ cron.schedule('* * * * *', async (req,res) => {
 cron.schedule('* * * * *', async (req,res) => {
   try {
     let date=await before_after_Date(15)
-    console.log(date)
+  //  console.log(date)
          let url = 'http://100.26.5.179:3000/open_api/update_match_data_by_date';
     // let url = 'http://localhost:3600/open_api/update_match_data_by_date';
             
       var config = { method: 'post',url: url ,data: {} };
        let resp = await axios(config);
 
-       console.log("update_match_data_by_date is call  ==", resp );
+   //    console.log("update_match_data_by_date is call  ==", resp );
     } catch(error) { console.log( "cronjob api calling update_match_data_by_date rror == ", error);
                  return false ; 
              }    
@@ -367,7 +368,7 @@ cron.schedule('1 0 * * *', async (req,res) => {
       var config = { method: 'post',url: url ,data: {date} };
        let resp = await axios(config);
 
-       console.log("update_match_data_by_date is call  ==", resp );
+   //    console.log("update_match_data_by_date is call  ==", resp );
     } catch(error) { console.log( "cronjob api calling update_match_data_by_date rror == ", error);
                  return false ; 
              }    
@@ -383,7 +384,7 @@ cron.schedule('2 0 * * *', async (req,res) => {
       var config = { method: 'post',url: url ,data: {date} };
        let resp = await axios(config);
 
-       console.log("update_match_data_by_date is call  ==", resp );
+//console.log("update_match_data_by_date is call  ==", resp );
     } catch(error) { console.log( "cronjob api calling update_match_data_by_date rror == ", error);
                  return false ; 
              }    
@@ -399,7 +400,7 @@ cron.schedule('3 0 * * *', async (req,res) => {
       var config = { method: 'post',url: url ,data: {date} };
        let resp = await axios(config);
 
-       console.log("update_match_data_by_date is call  ==", resp );
+   //    console.log("update_match_data_by_date is call  ==", resp );
     } catch(error) { console.log( "cronjob api calling update_match_data_by_date rror == ", error);
                  return false ; 
              }    
@@ -416,7 +417,7 @@ cron.schedule('4 0 * * *', async (req,res) => {
       var config = { method: 'post',url: url ,data: {date} };
        let resp = await axios(config);
 
-       console.log("update_match_data_by_date is call  ==", resp );
+    //   console.log("update_match_data_by_date is call  ==", resp );
     } catch(error) { console.log( "cronjob api calling update_match_data_by_date rror == ", error);
                  return false ; 
              }    
@@ -432,7 +433,7 @@ cron.schedule('5 0 * * *', async (req,res) => {
       var config = { method: 'post',url: url ,data: {date} };
        let resp = await axios(config);
 
-       console.log("update_match_data_by_date is call  ==", resp );
+    //   console.log("update_match_data_by_date is call  ==", resp );
     } catch(error) { console.log( "cronjob api calling update_match_data_by_date rror == ", error);
                  return false ; 
              }    
@@ -458,7 +459,7 @@ cron.schedule('* * * * *', async (req,res) => {
   sumArr.push(resp.data);
   })) ;      
   }
-  console.log("match poll result ==", sumArr );
+  //console.log("match poll result ==", sumArr );
 
   } catch(error) { console.log( "cronjob api calling server error  == ", error);
             return false ;  }    
