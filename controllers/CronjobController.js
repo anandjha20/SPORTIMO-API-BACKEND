@@ -29,6 +29,8 @@ const { match_data_ara,day_match_getID,day_match_add, match_card_number, match_c
 const { Promise } = require("mongoose");
 
 class ConjobController {
+
+  
   static get_card_00122 = async (req, res) => {
     try {
       let match_id = 2701168; // 2701168;
@@ -1004,7 +1006,7 @@ static get_card_008 = async (req, res) => {
       const encodedToken = `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
       const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=round&id=67145&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
 
-      var config = {
+      var config = { 
         method: 'get',
         url: session_url,
         headers: { 'Authorization': 'Basic ' + encodedToken }

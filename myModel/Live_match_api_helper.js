@@ -164,7 +164,7 @@ const match_event_shot_tbl = require('../models/match_event_shots');
             
        const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
        //const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
-       const session_url = `https://dsg-api.com/custom/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
+       const session_url =  `https://dsg-api.com/custom/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
     
        var config = {  
                  method: 'get',           
@@ -178,13 +178,8 @@ const match_event_shot_tbl = require('../models/match_event_shots');
           
            return {"events":datas[0].events,"team_a_original_name": datas[0].team_a_original_name,"team_b_original_name": datas[0].team_b_original_name}
          
-         }else{   return false;
-          
-         }    
-
-
-     
-         } catch (error) { console.log( "modal match_card_001 call == ", error);
+         }else{ return false; }    
+    } catch (error) { console.log( "modal match_card_001 call == ", error);
              return false ; 
          }
   }
@@ -1070,7 +1065,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
   const day_match_getID = async(match_id) =>{
     try {   
          let date = getcurntDate();
-        //    let date = "2022-10-28";   
+          //  let date = "2022-11-21";   
 
        const encodedToken =  `${Buffer.from('zimbori:8PFsL2Ce&!').toString('base64')}`;
       // const session_url = `https://dsg-api.com/clients/zimbori/soccer/get_matches?type=match&id=${match_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
@@ -1088,7 +1083,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                if(response){
                  
                  let datas =  isArray(response.data.datasportsgroup.competition)? response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match :response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match ;
-                 console.log(datas)
+           //      console.log(datas)
             let match_id_arr = [];  
             let time_u = Math.floor( new Date(new Date().toUTCString()).getTime() / 1000); 
          //   console.log("curent time == ", new Date().toUTCString());
@@ -1105,9 +1100,9 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                   //  150 mint ( match end time  ) lat on  9000 seconds
                    let  endSeconds =  seconds + 9000;
                     
-                   console.log("day_match_getID  == ",{startSeconds,endSeconds,time_u});
-                   if(time_u >= endSeconds ){
-                  // if(startSeconds <= time_u  && endSeconds >= time_u  ){   
+             //      console.log("day_match_getID  == ",{startSeconds,endSeconds,time_u});
+                 //  if(time_u >= endSeconds ){
+                   if(startSeconds <= time_u  && endSeconds >= time_u  ){   
                          match_id_arr.push(item.match_id);    
                        }      
                                              
@@ -1541,75 +1536,76 @@ const get_card_result_add_08  =  async(req,res)=>{
      } catch (error) { console.log(error); return false ;  }
     } 
    
- const get_card_result_add_34_endTimesCall  =  async(req,res)=>{
-  try {  
-        
-          const data  = req.data[0].events[0].substitutions[0].event ;
-          if(isArray(data)){
-            let  live_match_id = req.data[0].match_id ;
-                            live_match_id.toString();
-              let live_team_a_id = parseInt(req.data[0].team_a_id) ;
-              let live_team_b_id = parseInt(req.data[0].team_b_id) ;    
-             
-            let card_id =  mongoose.Types.ObjectId("6352762a0148247cf84bc758");
-          
-        let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"card_34"},"shots_count" );
-      
-        let right_ans = '';                
-        if(!isEmpty(shots_count)){
-                let nums = shots_count[0].shots_count;
-                
-            let win_team_id  =  data[nums].team_id;
-           
-           
-
-            if( live_team_a_id  == win_team_id ){ right_ans = "opt_1";}else 
-            if( live_team_b_id  == win_team_id ){ right_ans = "opt_2";}else 
-                { right_ans = "opt_3";} 
-             }      
-
-           
-          let pipeline  = [] ;
-           if(! isEmpty(req.data[0].match_id)){
-               pipeline.push({$match: {match_id: live_match_id}});
-              }
-
-                  pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
-                  pipeline.push({ $unwind: "$play_match_user" });
-                  pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
-                  pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
-                             "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
-                               "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
-                             "match_id": "$play_match_user.match_id","active": "$play_match_user.active",
-                             "powerUpPoints": "$play_match_user.powerUpPoints" } });
-
-
-       let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
-         
-                let result_pass = 0;  let result_fail = 0; 
-           if (!isEmpty(allUsersData) ){
-
-
-            let allData = await Promise.all( allUsersData.map( async (item)=>{
-               if( right_ans == item.user_option ){  result_pass += 1 ;
-                        let demo_1  =  await add_win_point(item); 
-                    }else{      result_fail += 1 ;
-                      let demo_2  =   await playMatchCard_remove(item);
-                    }
+    const get_card_result_add_34_endTimesCall  =  async(req,res)=>{
+      try {  
+            
+              const data  = req.data[0].events[0].substitutions[0].event ;
+              if(isArray(data)){
+                let  live_match_id = req.data[0].match_id ;
+                                live_match_id.toString();
+                  let live_team_a_id = parseInt(req.data[0].team_a_id) ;
+                  let live_team_b_id = parseInt(req.data[0].team_b_id) ;    
+                 
+                let card_id =  mongoose.Types.ObjectId("6352762a0148247cf84bc758");
               
-           
-              } ));
-
-         let obj = {result_pass,result_fail }; 
-              return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
-
-
-         }else{  console.log( "Result not show ");   return false ; 
+            let shots_count  = await match_event_shot_tbl.find({"match_id":live_match_id,"event_type":"card_34"},"shots_count" );
           
-         }
-     } catch (error) { console.log(error); return false ;  }
-    }  
+            let right_ans = 'opt_3';                
+            // if(!isEmpty(shots_count)){
+            //         let nums = shots_count[0].shots_count;
+                    
+            //     let win_team_id  =  data[nums].team_id;
+               
+               
+    
+            //     if( live_team_a_id  == win_team_id ){ right_ans = "opt_1";}else 
+            //     if( live_team_b_id  == win_team_id ){ right_ans = "opt_2";}else 
+            //         { right_ans = "opt_3";} 
+            //      }      
+    
+               
+              let pipeline  = [] ;
+               if(! isEmpty(req.data[0].match_id)){
+                   pipeline.push({$match: {match_id: live_match_id}});
+                  }
+    
+                      pipeline.push({ $lookup: {from: 'play_match_cards', localField: '_id', foreignField: 'match_id', as: 'play_match_user'} });
+                      pipeline.push({ $unwind: "$play_match_user" });
+                      pipeline.push({$match: {"play_match_user.card_id": card_id,"play_match_user.active":true }});
+                      pipeline.push({ $project: {"_id":0,"user_option":"$play_match_user.user_option","point": "$play_match_user.point",
+                                 "ans":"$play_match_user.ans", "user_play_card_id":"$play_match_user._id",
+                                   "user_id":"$play_match_user.user_id","card_id":"$play_match_user.card_id",
+                                 "match_id": "$play_match_user.match_id","active": "$play_match_user.active",
+                                 "powerUpPoints": "$play_match_user.powerUpPoints" } });
+    
+    
+           let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
+             
+                    let result_pass = 0;  let result_fail = 0; 
+               if (!isEmpty(allUsersData) ){
+    
+    
+                let allData = await Promise.all( allUsersData.map( async (item)=>{
+                   if( right_ans == item.user_option ){  result_pass += 1 ;
+                            let demo_1  =  await add_win_point(item); 
+                        }else{      result_fail += 1 ;
+                          let demo_2  =   await playMatchCard_remove(item);
+                        }
+                  
+               
+                  } ));
+    
+             let obj = {result_pass,result_fail }; 
+                  return  obj ;
+              }else{  console.log( "no data found!.. ");  return false ;   }
+    
+    
+             }else{  console.log( "Result not show ");   return false ; 
+              
+             }
+         } catch (error) { console.log(error); return false ;  }
+        }  
+
 /// this function make by mohan
  const get_card_result_add_26  =  async(req,res)=>{
       try {  
