@@ -563,7 +563,7 @@ static all_team_match_list_mobile = async (req,res)=>{
             if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
             if(!isEmpty(id)){whr = {_id: id} ;} 
-            let query =  team_matches.find(whr).sort({date_utc:1}) ;
+            let query =  team_matches.find(whr).sort({date_utc:1,time_utc:-1}) ;
                 const query2 =  query.clone();
             const counts = await query.countDocuments();
     
@@ -599,7 +599,7 @@ static all_team_match_list_mobile = async (req,res)=>{
         || page == 0 )? 1 :page ; 
         if(!isEmpty(id)){whr = {_id: id} ;} 
     
-        let query =  team_matches.find(whr).sort({date_utc:1}) ;
+        let query =  team_matches.find(whr).sort({date_utc:1,time_utc:1}) ;
             const query2 =  query.clone();
         const counts = await query.countDocuments();
 

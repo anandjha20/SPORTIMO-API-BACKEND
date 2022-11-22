@@ -96,9 +96,9 @@ function gen_str (length) {
     let dateTimeStr=year+"-"+month+"-"+day+"T"+time+".000Z";
     let zone=(data.zone==undefined?'':data.zone);
     let str = ''
-    if(zone=="GMT"){str=new Date(dateTimeStr).toLocaleString('en-UK', { timeZone: 'Europe/London' });}else
-    if(zone=="IST"){str=new Date(dateTimeStr).toLocaleString('en-UK', { timeZone: 'Asia/kolkata' });}else
-    {str=new Date(dateTimeStr).toLocaleString('en-UK', { timeZone: 'Asia/dubai' });}
+    if(zone=="GMT"){str=new Date(dateTimeStr).toLocaleString('en-GB', { timeZone: 'Europe/London' });}else
+    if(zone=="IST"){str=new Date(dateTimeStr).toLocaleString('en-GB', { timeZone: 'Asia/kolkata' });}else
+    {str=new Date(dateTimeStr).toLocaleString('en-GB', { timeZone: 'Asia/dubai' });}
       
     let yyyy=str.substring(6,10)
     let mm=str.substring(3,5)
@@ -106,7 +106,6 @@ function gen_str (length) {
     let t=yyyy+"-"+mm+"-"+dd+"T"+str.substring(12,20)+".000Z"
     local_date=new Date(t)
     local_time=str.substring(12,20)
-    console.log({local_date,local_time})
     return {local_date,local_time}
   }  
 

@@ -30,7 +30,24 @@ const { Promise } = require("mongoose");
 
 class ConjobController {
 
-  
+  static cardTesting = async (req, res) => {
+    try {
+            var abc =  await day_match_getID();
+
+         
+
+
+              if(! isEmpty(abc)){
+                return res.status(200).send({ 'status': true, 'msg': 'success',"body": abc });
+              }else{
+                return res.status(200).send({ 'status': false, 'msg': 'servr error2222' });
+              }
+             
+              } catch (error) {
+                console.log(error);
+                return res.status(200).send({ 'status': false, 'msg': 'servr error' });
+              }
+  }
   static get_card_00122 = async (req, res) => {
     try {
       let match_id = 2701168; // 2701168;
