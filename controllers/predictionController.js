@@ -584,7 +584,7 @@ class predictionController {
             }
             
             //let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
-            let transaction= await transactions.find({"match_id":match_id,"user_id":user_id});
+            let transaction= await transactions.find({"match_id":match_id,"user_id":user_id,points_by:"match"});
             let score=0;
             transaction.map((item)=>{
                 score+=item.points;

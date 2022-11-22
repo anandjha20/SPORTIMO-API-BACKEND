@@ -1452,7 +1452,7 @@ static verify_nickName = async(req,res)=>{
              
              let total_cards=await match_cards.find({"match_id":_id}).countDocuments()
              let total_played_cards=await play_match_cards_tbl.find({"match_id":_id,"user_id":user_id}).countDocuments()
-            let transaction= await transaction_tbls.find({"match_id":_id,"user_id":user_id});
+            let transaction= await transaction_tbls.find({"match_id":_id,"user_id":user_id,points_by:"match"});
             let score=0;
             transaction.map((item)=>{
                 score+=item.points;
