@@ -203,7 +203,6 @@ class UserController {
 
     }
 
-
     static registration = async(req,res)=>{
         //  try {  
               let  mobile = req.body.mobile;      let email     = req.body.email;
@@ -256,7 +255,7 @@ class UserController {
                   }
                  if(updatedUser){
                                 let ddsq = user_logs_add(updatedUser._id,'login');  
-                  return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser._id });
+                  return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
                  }else{
                   let add =new user_tbl({name:"guest:"+sportimo_id, user_type, date,device_id,token,otp,seq_id,firebase_token,sportimo_id:"guest:"+sportimo_id});
       
@@ -265,7 +264,7 @@ class UserController {
   
                                   return res.status(200).send({"status":false,"msg":'An error occurred'}) ;            
                                         }else{        let ddsqq = user_logs_add(data._id,'login');   
-                                        return res.status(200).send({"status":true,"msg":'Guset user add successfully' , "body":data._id  }) ; 
+                                        return res.status(200).send({"status":true,"msg":'Guset user add successfully' , "body":data  }) ; 
                                  } });
                                
                         
