@@ -569,7 +569,7 @@ class predictionController {
               
       }      
 
- static match_card_list = async (req,res)=>{
+   static match_card_list = async (req,res)=>{
         try {
              let language = req.body.language;    // 'name card_type'
              let card_cat_id = req.body.category_id;    // 'name card_type'
@@ -601,7 +601,9 @@ class predictionController {
         
        let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat)
                         .populate('match_id',' match_name team_a_name team_a_name_ara team_b_name team_b_name_ara').sort({_id:-1});
-          let data=[]
+          let data=[];
+          let path=await MyBasePath(req,res);
+          console.log(path)
                 if(records){  Promise.all(records.map(async(item,index)=> { 
                   if(typeof item.card_id === 'object' && item.card_id !== null){
 
@@ -679,7 +681,7 @@ class predictionController {
                                 }
 
                          }
-  
+                        item.card_id.image=`${path}/image/assets/predictionCard_img/${item.card_id.image}`
                               data.push( item) ;
                                 
                             }

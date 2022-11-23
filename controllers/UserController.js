@@ -352,6 +352,7 @@ class UserController {
   
       }
 
+
 static resend_otp_2_old = async(req,res) =>{
     let language = req.body.language;
     let otp = Math.floor(Math.random() * 900000) + 100000; 
