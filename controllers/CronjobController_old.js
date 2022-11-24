@@ -17,7 +17,7 @@ const leaderboardController = require('../controllers/leaderboardController');
 
 
 const team_matches = require('../models/team_matches');
-const {day_match_getID_test, match_data_ara,day_match_getID,day_match_add, match_card_number, match_card_0011, match_card_0013, matchCardAllData, matchCardEventAllData, get_card_result_add_4,
+const { match_data_ara,day_match_getID,day_match_add, match_card_number, match_card_0011, match_card_0013, matchCardAllData, matchCardEventAllData, get_card_result_add_4,
   get_card_result_add_7, get_card_result_add_1, get_card_result_add_11, get_card_result_add_13,
   get_card_result_add_15, get_card_result_add_17, get_card_result_add_20, get_card_result_add_23,
   get_card_result_add_36, get_card_result_add_10, get_card_result_add_18,getCardResult_18_END, card_08_befor_call, get_card_result_add_08,
@@ -32,7 +32,7 @@ class ConjobController {
 
   static cardTesting = async (req, res) => {
     try {
-            var abc =  await day_match_getID_test();
+            var abc =  await day_match_getID();
 
          
 
@@ -48,8 +48,6 @@ class ConjobController {
                 return res.status(200).send({ 'status': false, 'msg': 'servr error' });
               }
   }
-
-
   static get_card_00122 = async (req, res) => {
     try {
       let match_id = 2701168; // 2701168;

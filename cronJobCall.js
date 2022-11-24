@@ -1,7 +1,7 @@
 
 const cron = require('node-cron');
 const axios     = require("axios");
-const {day_match_getID } = require("./myModel/Live_match_api_helper"); 
+const {day_match_getID,day_match_getID_test } = require("./myModel/Live_match_api_helper"); 
 const {before_after_Date} = require('./myModel/common_modal')
 
 
@@ -11,7 +11,8 @@ cron.schedule('* * * * *', async (req,res) => {
   try {
      
       let response = await day_match_getID();
-      console.log("day_match_getID===",response)
+      let id = await day_match_getID_test();
+      console.log("day_match_getID===",id)
       let sumArr = [];
       let url = 'http://100.26.5.179:3000/open_api/get_card_008';
      // let url = 'http://localhost:3600/open_api/get_card_008';
