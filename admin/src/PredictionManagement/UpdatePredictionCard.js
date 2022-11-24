@@ -48,6 +48,7 @@ export default function UpdatePredictionCard() {
       dataToSend2.append('qus', Formvlaues.qus);
       dataToSend2.append('qus_ara', Formvlaues.qus_ara);
       dataToSend2.append('card_color', Formvlaues.card_color);
+      dataToSend2.append('font_color', Formvlaues.font_color);
       dataToSend2.append('ops_1', Formvlaues.ops_1);
       dataToSend2.append('ops_1_ara', Formvlaues.ops_1_ara);
       dataToSend2.append('ops_2', Formvlaues.ops_2);
@@ -227,7 +228,7 @@ const handleTypeSelect = e => {
                             <img src={location.state.rowData.image} className="cardImgage" />
                             </div>
                             
-                            <div className="col-lg-6 reletive mb-4">
+                            <div className="col-lg-12 reletive mb-4">
                             <label className="title-col">Upload Icon</label>
                             <input className="form-control"  name='image' type="file" fullWidth  autoComplete="off" />
                             </div>
@@ -237,7 +238,11 @@ const handleTypeSelect = e => {
                             <input className="form-control"  name='card_color' type="color" fullWidth  autoComplete="off" defaultValue={location.state.rowData.card_color} />
                             </div>
                             
-
+                            <div className="col-lg-6 reletive mb-4">
+                            <label className="title-col">Font Color </label>
+                            <input className="form-control"  name='font_color' type="color" fullWidth  autoComplete="off" defaultValue={location.state.rowData.font_color} />
+                            </div>
+                            
 
                           
 

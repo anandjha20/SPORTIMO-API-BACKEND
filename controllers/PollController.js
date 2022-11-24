@@ -90,8 +90,8 @@ class PollController {
                   let language =  req.body.language ; 
                   let  id = req.params.id;
                
-                 // let s_date  = getcurntDate();
-                  let s_date  = "2022-11-11";
+                  let s_date  = getcurntDate();
+                 // let s_date  = "2022-11-11";
                 
 
                   let page  = req.body.page;  
@@ -169,7 +169,10 @@ class PollController {
            let offest = (page -1 ) * 10 ; 
            const records = await query2.skip(offest).limit(10);
 
-           records.map((item)=> { if(language != '' && language == 'ar'){
+          let dd=await Promise.all( records.map(async(item)=> { 
+                            let total_player=await poll_result_tbl.find({poll_id:item._id}).countDocuments()
+                            
+                            if(language != '' && language == 'ar'){
                                     item.qus = item.qus_ara ;
                                     item.ops_1 = item.ops_1_ara ;
                                     item.ops_2 = item.ops_2_ara ;
@@ -177,9 +180,9 @@ class PollController {
                                     item.ops_4 = item.ops_4_ara ;
                                 
                                 }
-          
+                            
                            return item;
-                 });      
+                 }));      
 
         return res.status(200).send({'status':true,'msg':  (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
 

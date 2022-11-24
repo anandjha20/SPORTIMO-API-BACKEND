@@ -507,7 +507,7 @@ static all_team_match_list_mobile_old = async (req,res)=>{
         let name    = req.body.name;
         let language= req.body.language;
         let whr = {};
-        let date = before_after_Date(-1); 
+        let date = before_after_Date(); 
         if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
         if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}else{
             whr.date_utc ={$gte : date}; 
@@ -546,7 +546,6 @@ static all_team_match_list_mobile_old = async (req,res)=>{
 
 static all_team_match_list_mobile = async (req,res)=>{
     try {
-        console.log(req.get('host'))
         let  id = req.params.id;
         let page  = req.body.page;
         let s_date  = req.body.s_date;
@@ -589,7 +588,7 @@ static all_team_match_list_mobile = async (req,res)=>{
         
         }else{
         let whr = {};
-        let date = before_after_Date(-1);
+        let date = before_after_Date();
         console.log(date) 
         if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
         if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}else{whr.date_utc ={$gte : date}; } 

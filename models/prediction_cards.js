@@ -9,6 +9,7 @@ const prediction_card_schema = new Schema({
              card_type : { type: String,enum: ['Game-based', 'Event-based','Time-based','Time-Decay'], default :'Game-based' },
              card_cat_id : {type:Schema.Types.ObjectId,ref:"prediction_card_categories",require:true },
              card_color : { type:String, datault : "white"},   
+             font_color : { type:String, datault : "#ffffff"},   
              image : { type:String, datault : ""},
              qus: { type: String , required: true }, qus_ara: { type: String , datault: '' },
 

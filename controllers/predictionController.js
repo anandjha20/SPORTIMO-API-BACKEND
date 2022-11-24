@@ -70,6 +70,7 @@ class predictionController {
                        
                            "image": image,
                          "card_color": user_data.card_color,             
+                         "font_color": user_data.font_color,             
 
                        "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
                        "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,
@@ -99,6 +100,7 @@ class predictionController {
        static prediction_card_update = async(req,res)=>{
             try {
                     let id = req.params.id;
+                    console.log(req.body)
                   let user_data = req.body;
                     if(isEmpty(id)){
                       updateData.image = image 
@@ -116,6 +118,7 @@ class predictionController {
                                   "card_cat_id":user_data.card_cat_id,
                                   "time_range":user_data.time_range,
                                   "card_color": user_data.card_color,             
+                                  "font_color": user_data.font_color,             
 
                                   "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
                                   "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,
@@ -569,7 +572,7 @@ class predictionController {
               
       }      
 
-   static match_card_list = async (req,res)=>{
+ static match_card_list = async (req,res)=>{
         try {
              let language = req.body.language;    // 'name card_type'
              let card_cat_id = req.body.category_id;    // 'name card_type'

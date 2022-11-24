@@ -203,6 +203,7 @@ class UserController {
 
     }
 
+
     static registration = async(req,res)=>{
         //  try {  
               let  mobile = req.body.mobile;      let email     = req.body.email;
@@ -352,7 +353,7 @@ class UserController {
   
       }
 
-
+      
 static resend_otp_2_old = async(req,res) =>{
     let language = req.body.language;
     let otp = Math.floor(Math.random() * 900000) + 100000; 
