@@ -152,8 +152,8 @@ class PollController {
 || page == 0 )? 1 :page ; 
         
         
-          let whr ={};
-          if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*', $options: 'i' } ;} 
+          let whr ={match:"All"};
+          //if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*', $options: 'i' } ;} 
           if(!isEmpty(poll_type)){whr.poll_type = poll_type;} 
           if(!isEmpty(disclosed_status)){whr.disclosed_status = disclosed_status;} 
           if(!isEmpty(fee_type)){whr.fee_type = fee_type;} 
@@ -161,7 +161,7 @@ class PollController {
          
           if(!isEmpty(leagues)){whr.leagues = { $regex: '.*' + leagues + '.*' } ;} 
           if(!isEmpty(id)){whr = {_id: id} ;} 
-          let query =  poll_tbl.find(whr).populate('match','match_name').sort({_id:-1});
+          let query =  poll_tbl.find(whr).sort({_id:-1});
             
            const query2 =  query.clone();
            const counts = await query.countDocuments();   

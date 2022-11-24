@@ -314,8 +314,9 @@ export default function CreatePoll(props) {
         })
     }
  
-  const matchOptions = (matchname.length > 0) ? matchname.map((item) => {
-    return { value: item.match_id, label: item.match_name };
+  let matchOptions=[{ value: 0, label: "All" }]
+  let data = (matchname.length > 0) ? matchname.map((item) => {
+    matchOptions.push({ value: item.match_id, label: item.match_name });
   }) : [];
   useEffect(() => {
     SelectMatch();

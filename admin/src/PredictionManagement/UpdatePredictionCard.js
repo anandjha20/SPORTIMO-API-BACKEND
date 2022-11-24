@@ -101,7 +101,6 @@ export default function UpdatePredictionCard() {
     CardCategory();
 }, [])
 
-
   const cardTypeOptions = [
     { value: 'Game-based', label: 'Game-based' },
     { value: 'Event-based', label: 'Event-based' },
@@ -142,7 +141,12 @@ const handleTypeSelect = e => {
     setSelectedOption(e.value);
   };
 
-  return (
+  let card_cat_name='';
+  let daa=CardCate.map((item)=>{
+    if(item._id == location.state.rowData.card_cat_id){card_cat_name=item.name}
+  })
+  console.log({card_cat_name})
+    return (
     <>
 
       <Header />
@@ -187,22 +191,27 @@ const handleTypeSelect = e => {
                             
                             <div className="col-lg-6 reletive mb-4">
                             <label className="title-col">Card Name <span className="text-blue">(English)</span></label>
-                              <input type="text" defaultValue={location.state.rowData.name} className="form-control card-input"  name='name'  fullWidth  variant="filled" autoComplete="off" />
+                              <input readOnly type="text" defaultValue={location.state.rowData.name} className="form-control card-input"  name='name'  fullWidth  variant="filled" autoComplete="off" />
                             </div>
 
                             <div className="col-lg-6 reletive mb-4">
                             <label className="title-col">Card Name <span className="text-blue">(Arabic)</span></label>
-                              <input type="text" defaultValue={location.state.rowData.name_ara} className="form-control card-input"  name='name_ara'  fullWidth  variant="filled" autoComplete="off" />
+                              <input readOnly type="text" defaultValue={location.state.rowData.name_ara} className="form-control card-input"  name='name_ara'  fullWidth  variant="filled" autoComplete="off" />
                             </div>
 
                             <div className="col-lg-6 reletive mb-4">
                             <label className="title-col">Card Type </label>
-                              <Select name="card_type" className="card-select" 
+                            <input readOnly type="text" defaultValue={location.state.rowData.card_type} className="form-control card-input"  name='card_type'  fullWidth  variant="filled" autoComplete="off" />
+                              {/* <Select  name="card_type" className="card-select" 
                               defaultValue={{ label : location.state.rowData.card_type, value: location.state.rowData.card_type }}
                               menuPortalTarget={document.body} onChange={selectCardType}
-                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={cardTypeOptions} />
+                                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={cardTypeOptions} /> */}
                             </div>
 
+                            <div className="col-lg-6 reletive mb-4">
+                            <label className="title-col">Card Category </label>
+                            <input readOnly type="text" defaultValue={card_cat_name} className="form-control card-input"  name='card_type'  fullWidth  variant="filled" autoComplete="off" />
+                            </div>
                             {dataSelectType !== "" ? <>
                             <div className="col-lg-6 reletive mb-4">
                             <label className="title-col">Time-Range</label>
@@ -213,17 +222,6 @@ const handleTypeSelect = e => {
                             </> : null}
 
 
-                            <div className="col-lg-6 reletive mb-4">
-                            <label className="title-col">Card Category </label>
-                            <Select name="card_cat_id" className="card-select" menuPortalTarget={document.body} 
-                                onChange={handleTypeSelect}
-                                 options={cardTypeCategory}
-                                 value={cardTypeCategory.filter(function(option) {
-                                    return option.value === selectedOption;
-                                  })}
-                                  styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} 
-                                />
-                            </div>
                             <div className="col-lg-12 reletive">
                             <img src={location.state.rowData.image} className="cardImgage" />
                             </div>
@@ -309,22 +307,22 @@ const handleTypeSelect = e => {
 
                                <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Point (Answer 1) </label>
-                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_1} readOnly placeholder="Enter Point" className="card-control form-control" />
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_1}  placeholder="Enter Point" className="card-control form-control" />
                             </div>
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Point (Answer 2) </label>
-                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_2} readOnly placeholder="Enter Point" className="card-control form-control" />
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_2}  placeholder="Enter Point" className="card-control form-control" />
                             </div>
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Point (Answer 3) </label>
-                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_3} readOnly placeholder="Enter Point" className="card-control form-control" />
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_3}  placeholder="Enter Point" className="card-control form-control" />
                             </div>
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Point (Answer 4) </label>
-                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_4} readOnly placeholder="Enter Point" className="card-control form-control" />
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_4}  placeholder="Enter Point" className="card-control form-control" />
                             </div>
 
 
