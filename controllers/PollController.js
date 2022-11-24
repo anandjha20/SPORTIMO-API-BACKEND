@@ -168,7 +168,7 @@ class PollController {
        
            let offest = (page -1 ) * 10 ; 
            const records = await query2.skip(offest).limit(10);
-
+          let data=[];  
           let dd=await Promise.all( records.map(async(item)=> { 
                             let total_player=await poll_result_tbl.find({poll_id:item._id}).countDocuments()
                             
@@ -180,11 +180,11 @@ class PollController {
                                     item.ops_4 = item.ops_4_ara ;
                                 
                                 }
-                            
+                          data.push({...item._doc,total_player})  
                            return item;
                  }));      
 
-        return res.status(200).send({'status':true,'msg':  (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
+        return res.status(200).send({'status':true,'msg':  (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':data });
 
       } catch (error) { console.log(error);
         return  res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error" ,'body':''});
@@ -546,6 +546,8 @@ static my_polls_old = async(req,res)=>{
 
       let allData = await Promise.all( someData.map( async (item)=>{
         item.poll_parcents = await poll_percent(item.poll_id);
+        item.total_player=await poll_result_tbl.find({poll_id:item.poll_id}).countDocuments()
+
           return item;
       })) ; 
       
