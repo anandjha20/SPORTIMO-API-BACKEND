@@ -537,8 +537,8 @@ static my_polls_old = async(req,res)=>{
             //   pipeline.push({ $unwind: "$user" });
               pipeline.push({ $unwind: "$pollData" });
           
-            pipeline.push({ $project: {"_id":1,"user_ans":1,"poll_id":1,"match":"$pollData.match","poll_qs":"$pollData.qus","ops_1":"$pollData.ops_1",
-              "ops_2":"$pollData.ops_2","ops_3":"$pollData.ops_3","ops_4":"$pollData.ops_4"} });
+            // pipeline.push({ $project: {"_id":1,"user_ans":1,"poll_id":1,"match":"$pollData.match","poll_qs":"$pollData.qus","ops_1":"$pollData.ops_1",
+            //   "ops_2":"$pollData.ops_2","ops_3":"$pollData.ops_3","ops_4":"$pollData.ops_4"} });
     
   let someData = await poll_result_tbl.aggregate(pipeline).exec();
 
