@@ -300,7 +300,7 @@ const { poll_percent} = require('../myModel/helper_fun');
                 }   
             
           let matchData=await team_matches_tbl.findOne({_id:match_id});
-          if(matchData.status!="Played"){
+          if(matchData.status=="Played"){
             return res.status(200).send({"status":false,"msg":"Cards cannot be played from this section because match is ended!!"})
           }else if(matchData.status!="Fixture" && card_cat_id=="632b13b83fdfc0f533c51dea"){
               return res.status(200).send({"status":false,"msg":"Cards cannot be played from this section because match is started!!"})
