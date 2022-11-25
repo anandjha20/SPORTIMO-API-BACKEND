@@ -21,8 +21,9 @@ const { poll_percent} = require('../myModel/helper_fun');
     const user_allotted_powerups_tbl   = require ("../models/user_allotted_powerUps");
     const team_matches_tbl = require("../models/team_matches");
 
-   const prediction_card_categories = require("../models/prediction_card_categories")     
-class predictionController {   
+   const prediction_card_categories = require("../models/prediction_card_categories");     
+
+   class predictionController {   
      
    
 
@@ -297,50 +298,58 @@ class predictionController {
                        isEmpty(match_id) || isEmpty(card_id)  ){
              return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
                 }   
-              
-           let checkuserData = await playMatchCards_tbl.findOne({user_id,match_card_id});
-           if(checkuserData){
-               return res.status(200).send({"status":true,"msg":'user already play this card' , "body":checkuserData  }) ;  
-           }   
-/////////////////////////////////////////////////////////////
+            
+          let matchData=await team_matches_tbl.findOne({_id:match_id});
+
+          if(matchData.status!="Fixture" && card_cat_id=="632b13b83fdfc0f533c51dea"){
+              return res.status(200).send({"status":false,"msg":"Cards cannot be played from this section because match is started!!"})
+          }else{
+
+            
+            let checkuserData = await playMatchCards_tbl.findOne({user_id,match_card_id});
+            if(checkuserData){
+              return res.status(200).send({"status":true,"msg":'user already play this card' , "body":checkuserData  }) ;  
+            }   
+            /////////////////////////////////////////////////////////////
             
             let {userpowers,usedPoweUps_count} = await userPowerUpsData(user_id); 
-
+            
             console.log({userpowers,usedPoweUps_count});                   
-
+            
             if(userpowers == 0 && usedPoweUps_count == 0 && (powerUpPoints > 1) ){
               return res.status(200).send({"status":false,"msg":'You are not permission denied for powerUpPoints uses' }) ;   
             }else if(usedPoweUps_count >= userpowers && (powerUpPoints > 1) ){
               return res.status(200).send({"status":false,"msg": 'You are not permission denied for powerUpPoints uses'}) ;   
-              }else if(userpowers == 0 && (powerUpPoints > 1) ){ 
-                return res.status(200).send({"status":false,"msg":'You are not permission denied for powerUpPoints uses '}) ;   
-                }else{
-         /////////////////////////////////////////////////////////////
-                let add = new playMatchCards_tbl({ match_card_id,user_id,user_option,time_range_start,
-                                          time_range_end,match_id,card_id,card_cat_id,point,powerUpPoints });
-             
-                     add.save((err, data) => {
-                           if (err) {  console.log(err);
-                             return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
-                         }else{
-                              
-                               let savedd = (powerUpPoints > 1)? saveData({user_id,match_id,card_id,"power_up_type":"score_multiplier"},used_power_ups_tbl) : '' ; 
-                                
-                          
-                          return res.status(200).send({"status":true,"msg":'Match Card Created Successfully' , "body":data  }) ;            
-                        } });
-
+            }else if(userpowers == 0 && (powerUpPoints > 1) ){ 
+              return res.status(200).send({"status":false,"msg":'You are not permission denied for powerUpPoints uses '}) ;   
+            }else{
+              /////////////////////////////////////////////////////////////
+              let add = new playMatchCards_tbl({ match_card_id,user_id,user_option,time_range_start,
+                time_range_end,match_id,card_id,card_cat_id,point,powerUpPoints });
+                
+                add.save((err, data) => {
+                  if (err) {  console.log(err);
+                    return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                  }else{
+                    
+                    let savedd = (powerUpPoints > 1)? saveData({user_id,match_id,card_id,"power_up_type":"score_multiplier"},used_power_ups_tbl) : '' ; 
+                    
+                    
+                    return res.status(200).send({"status":true,"msg":'Match Card Created Successfully' , "body":data  }) ;            
+                  } });
+                  
+                }
               }
-           
-        }catch (error) {  console.log(error); 
-               return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
-   
-           }
-         
-   
-        }   
-        static my_playMatchCard_list = async (req,res)=>{
-          try {
+                
+              }catch (error) {  console.log(error); 
+                return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
+                
+              }
+              
+              
+            }   
+            static my_playMatchCard_list = async (req,res)=>{
+              try {
               let language = req.body.language;    
               let user_id = req.body.user_id;    
               let match_id = req.body.match_id;    
@@ -443,6 +452,13 @@ class predictionController {
                   isEmpty(card_cat_id)  ){
                   return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
                       }  
+            let played_card_details=await playMatchCards_tbl.findById(id);
+            let matchDetails=await team_matches_tbl.findOne({_id:match_id});
+            //console.log({played_card_details,matchDetails})
+            if(matchDetails.status!="Fixture" && played_card_details.user_option!=user_option){
+              return res.status(200).send({"status":false,"msg":'Cannot change answer because match is started!!' }) ; 
+            }
+
           // get match date time            
           let matchData   = await team_matches_tbl.findOne({"_id":match_id},'date_utc');            
             // get power Ups time (in minits ); 
@@ -472,12 +488,12 @@ class predictionController {
        console.log({userpowers,usedPoweUps_count});                   
  
   if(userpowers == 0 && usedPoweUps_count == 0 ){
-        return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation' }) ;   
+        return res.status(200).send({"status":false,"msg": "You have no any powerup" }) ;   
       }else if(usedPoweUps_count >= userpowers){
-        return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation' }) ;   
+        return res.status(200).send({"status":false,"msg":"You have already used all powerup's" }) ;   
         }else{
                 if(result == true){
-                  return res.status(200).send({"status":false,"msg":'You are not permission denied for card updation Time out '}) ;   
+                  return res.status(200).send({"status":false,"msg":'Time out '}) ;   
                 }
         }
   
@@ -507,6 +523,12 @@ class predictionController {
        static playMatchCard_delete = async(req,res)=>{
         try {
                 let id = req.params.id;
+                let cardData=await playMatchCards_tbl.findById(id);
+                let matchData=await team_matches_tbl.findById(cardData.match_id);
+                if(matchData.status!="Fixture"){
+                  return res.status(200).send({"status":false,"msg":"Cards cannot be deleted because match is started!!" }) ;  
+                }else{ 
+                
                 playMatchCards_tbl.findByIdAndDelete(id, function (err, docs) {
               if (err){  console.log("playMatchCard_delete === ",err);        
 
@@ -518,7 +540,7 @@ class predictionController {
                 return res.status(200).send({"status":false,"msg":'Invalid play Match Card Id ' , "body":''}) ;  
               }
           });
-
+        }
         } catch (error) { return res.status(200).send({"status":true,"msg":'Some error' , "body":''}) ; }
 
     }
@@ -592,8 +614,9 @@ class predictionController {
             transaction.map((item)=>{
                 score+=item.points;
             })
-            let played_cards_count = await playMatchCards_tbl.find(my_obj).countDocuments();
-           
+            let played_cards = await playMatchCards_tbl.distinct('card_id',my_obj)
+            let played_cards_count = played_cards.length;
+            if(!isEmpty(played_cards)){condition_obj = {...condition_obj,card_id:{$nin:played_cards}}};
             let usedPoweUps_count = await used_power_ups_tbl.find({user_id}).countDocuments();
             let userUsedpowerpus  = await user_allotted_powerups_tbl.find({match_id,user_id});
             let userpowers = isEmpty(userUsedpowerpus)? 0 : userUsedpowerpus[0].power_up_count;
