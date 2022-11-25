@@ -300,8 +300,9 @@ const { poll_percent} = require('../myModel/helper_fun');
                 }   
             
           let matchData=await team_matches_tbl.findOne({_id:match_id});
-
-          if(matchData.status!="Fixture" && card_cat_id=="632b13b83fdfc0f533c51dea"){
+          if(matchData.status!="Played"){
+            return res.status(200).send({"status":false,"msg":"Cards cannot be played from this section because match is ended!!"})
+          }else if(matchData.status!="Fixture" && card_cat_id=="632b13b83fdfc0f533c51dea"){
               return res.status(200).send({"status":false,"msg":"Cards cannot be played from this section because match is started!!"})
           }else{
 
@@ -621,7 +622,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             let userUsedpowerpus  = await user_allotted_powerups_tbl.find({match_id,user_id});
             let userpowers = isEmpty(userUsedpowerpus)? 0 : userUsedpowerpus[0].power_up_count;
           
-              console.log("condition_obj == ", condition_obj);
+         //     console.log("condition_obj == ", condition_obj);
         // let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat).sort({_id:-1});
                                                     // { path: 'match_card_id', populate: { path: 'card_id'}}
         
@@ -629,7 +630,6 @@ const { poll_percent} = require('../myModel/helper_fun');
                         .populate('match_id',' match_name team_a_name team_a_name_ara team_b_name team_b_name_ara').sort({_id:-1});
           let data=[];
           let path=await MyBasePath(req,res);
-          console.log(path)
                 if(records){  Promise.all(records.map(async(item,index)=> { 
                   if(typeof item.card_id === 'object' && item.card_id !== null){
 
