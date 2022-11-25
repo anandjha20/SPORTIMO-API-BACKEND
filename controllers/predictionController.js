@@ -830,16 +830,20 @@ const { poll_percent} = require('../myModel/helper_fun');
           pipeLine.push({$unwind : "$card_tbl"});
   
   
-          pipeLine.push({ $project: {"_id":0,"match_name":"$team_matches_tbl.match_name", "card_name":"$card_tbl.name","qus":"$card_tbl.qus", "match_card_id":1,"card_id":1,"match_id":1,"result":1,"point":1 }});
+          pipeLine.push({ $project: {"_id":0,"match_name":"$team_matches_tbl.match_name", "card_name":"$card_tbl.name","card_icon":"$card_tbl.image","card_color":"$card_tbl.card_color","font_color":"$card_tbl.font_color","qus":"$card_tbl.qus", "match_card_id":1,"card_id":1,"match_id":1,"result":1,"point":1 }});
       
       
         pipeLine.push( {$group: { _id: "$match_id",  total_cards : { $sum: 1 }  ,records: { $push: "$$ROOT" }  } });
       
         pipeLine.push({ $lookup: {from: 'team_matches', localField: '_id', foreignField: '_id', as: 'matchData'} });
           let datas =  await playMatchCards_tbl.aggregate(pipeLine).exec();
-            
+          let path=await MyBasePath(req,res);    
         let gameData=[];  
         let abc=await Promise.all( datas.map(async (item)=>{
+          item.records.map((i)=>{
+            //console.log(i)
+            i.card_icon=`${path}/image/assets/predictionCard_img/${i.card_icon}`
+          })
             let total_win=await transactions.find({"user_id":user_id,"match_id":item._id}).countDocuments()
             let userReankData = await matchWinUsersRank_one( item._id.toString(),user_id);
             gameData.push({...item,total_win,rank:userReankData.rank,points:userReankData.points})
