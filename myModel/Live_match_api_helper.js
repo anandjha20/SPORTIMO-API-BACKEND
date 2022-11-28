@@ -1316,7 +1316,12 @@ if(data){
                   let YellowTotalPoint = parseInt(Yellow.team_a)+parseInt(Yellow.team_b); 
                 
                   let totoal_point = RedTotalPoint + YellowTotalPoint;
-
+                 
+                  if(totoal_point == "NaN")
+                    {
+                        console.log ("card_39_befor_call totoal_point == ", totoal_point) ;
+                        return false;   
+                    } 
                  
 
                   let shots_count  = await match_event_shot_tbl.find({"match_id":match_id,"event_type":"card_39"},"shots_count" );
