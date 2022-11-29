@@ -52,7 +52,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             try {   
               let user_data = req.body;
 
-              console.log(user_data); 
+              //console.log(user_data); 
                if(isEmpty(user_data.name)){
                           return res.status(200).send({"status":false,"msg":'name filed Required' , "body":''}) ; 
                     }   
@@ -101,7 +101,7 @@ const { poll_percent} = require('../myModel/helper_fun');
        static prediction_card_update = async(req,res)=>{
             try {
                     let id = req.params.id;
-                    console.log(req.body)
+                    //console.log(req.body)
                   let user_data = req.body;
                     if(isEmpty(id)){
                       updateData.image = image 
@@ -156,8 +156,8 @@ const { poll_percent} = require('../myModel/helper_fun');
 
     static prediction_card_list = async (req,res)=>{
             try {
-                let language = req.body.language;
-                console.log('prediction_card_list is call ==',  language );
+                 let language = req.body.language;
+                // console.log('prediction_card_list is call ==',  language );
                 let records = await prediction_cards_tbl.find().sort({_id:-1});
                 let paths =MyBasePath(req,res);    
                    
@@ -315,7 +315,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             
             let {userpowers,usedPoweUps_count} = await userPowerUpsData(user_id); 
             
-            console.log({userpowers,usedPoweUps_count});                   
+            //console.log({userpowers,usedPoweUps_count});                   
             
             if(userpowers == 0 && usedPoweUps_count == 0 && (powerUpPoints > 1) ){
               return res.status(200).send({"status":false,"msg":'You are not permission denied for powerUpPoints uses' }) ;   
@@ -486,7 +486,7 @@ const { poll_percent} = require('../myModel/helper_fun');
 
  let {userpowers,usedPoweUps_count} = await userPowerUpsData(user_id); 
 
-       console.log({userpowers,usedPoweUps_count});                   
+       //console.log({userpowers,usedPoweUps_count});                   
  
   if(userpowers == 0 && usedPoweUps_count == 0 ){
         return res.status(200).send({"status":false,"msg": "You have no any powerup" }) ;   
@@ -557,7 +557,7 @@ const { poll_percent} = require('../myModel/helper_fun');
           if(!isEmpty(req.body.match_id)){
             condition_obj={...condition_obj,match_id:req.body.match_id}
           }
-            console.log("condition_obj == ", condition_obj);
+            //console.log("condition_obj == ", condition_obj);
           let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat).sort({_id:-1});
         
              let data=[]
@@ -744,7 +744,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             if(!isEmpty(match_id)){
             let records = await play_match_cards.find({match_id}).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
             records.map( (item)=>{
-              console.log(item)
+              //console.log(item)
               if(item.user_option=="ops_1"){item.user_option=item.card_id.ops_1};
               if(item.user_option=="ops_2"){item.user_option=item.card_id.ops_2};
               if(item.user_option=="ops_3"){item.user_option=item.card_id.ops_3};
@@ -767,7 +767,7 @@ const { poll_percent} = require('../myModel/helper_fun');
               if(!isEmpty(match_id)){
               let records = await play_match_cards.find({match_id}).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
               records.map( (item)=>{
-                console.log(item)
+                //console.log(item)
                 if(item.user_option=="ops_1"){item.user_option=item.card_id.ops_1};
                 if(item.user_option=="ops_2"){item.user_option=item.card_id.ops_2};
                 if(item.user_option=="ops_3"){item.user_option=item.card_id.ops_3};

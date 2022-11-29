@@ -1103,9 +1103,10 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                    let  endSeconds =  seconds + 9000;
                     
                    //  if(time_u >= endSeconds ){
-                     match_id_arr.push(item.match_id);    
-                     if(startSeconds <= time_u  && endSeconds >= time_u  ){   
-                     console.log("day_match_getID  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
+                     if( item.status!="Fixture" ){   
+                       match_id_arr.push(item.match_id);    
+                //    if(startSeconds <= time_u  && endSeconds >= time_u  ){   
+                      console.log("day_match_getID  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
                   
                   }      
                                              
@@ -1156,7 +1157,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                if(response){
                  
                  let datas =  isArray(response.data.datasportsgroup.competition)? response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match :response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match ;
-           //      console.log(datas)
+                 //console.log(datas)
             let match_id_arr = [];  
             let time_u = Math.floor( (new Date().getTime()) / 1000); 
          //   console.log("curent time == ", new Date().toUTCString());
@@ -1172,13 +1173,13 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                   
                   //  150 mint ( match end time  ) lat on  9000 seconds
                    let  endSeconds =  seconds + 9000;
-                    
+                  
                    //  if(time_u >= endSeconds ){
-                     console.log("day_match_getID  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
-
-                      if(startSeconds <= time_u  && endSeconds >= time_u  ){   
+                     //  if( item.status!="Fixture" ){   
+                       console.log("day_match_getID_test  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
+                       if(startSeconds <= time_u  && endSeconds >= time_u  ){   
                        match_id_arr.push(item.match_id);    
-                                      
+                  
                   }      
                                              
                   }); 
@@ -1317,13 +1318,11 @@ if(data){
                   let YellowTotalPoint = parseInt(Yellow.team_a)+parseInt(Yellow.team_b); 
                 
                   let totoal_point = RedTotalPoint + YellowTotalPoint;
-                 
                   if(totoal_point == "NaN")
                     {
                         console.log ("card_39_befor_call totoal_point == ", totoal_point) ;
                         return false;   
-                    } 
-                 
+                    }                 
 
                   let shots_count  = await match_event_shot_tbl.find({"match_id":match_id,"event_type":"card_39"},"shots_count" );
                   //console.log("shots_count data == ",shots_count);

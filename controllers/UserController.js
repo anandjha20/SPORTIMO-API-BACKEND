@@ -153,10 +153,10 @@ class UserController {
                 if(check_type == 1){
                     send_mobile_otp({mobile,otp}); 
                    
-                    msgtodiv = 'otp sent to your mobile please check know ';
+                    msgtodiv = 'OTP sent to your mobile !!';
                 }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
                     sentEmail({email,otp}); 
-                    msgtodiv = 'otp sent to your Email please check know ';
+                    msgtodiv = 'OTP sent to your email !!';
                 }  
 
    
@@ -185,10 +185,10 @@ class UserController {
 
                 if(user_type == 1){
                     send_mobile_otp({mobile,otp}); 
-                      msgtodiv2 = 'otp sent to your mobile please check know ';
+                      msgtodiv2 = 'OTP sent to your mobile !!';
                 }else  if(user_type == 2 || user_type == 3 || user_type == 4 ){
                     sentEmail({email,otp}); 
-                    msgtodiv2 = 'otp sent to your Email please check know ';
+                    msgtodiv2 = 'OTP sent to your email !!';
                 }  
                     console.log('add == ', add);    
                  return res.status(200).send({"status":true,"msg": msgtodiv2 , "body":add._id }) ;      
@@ -293,10 +293,10 @@ class UserController {
               //send_mobile_otp({mobile,otp});   
               apiGenOtp =  await send_mobile_otp_new({mobile}); 
               console.log("apiGenOtp",apiGenOtp)
-              msgtodiv = 'otp sent to your mobile please check know ';
+              msgtodiv = 'OTP sent to your mobile !!';
           }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
                  sentEmail({email,otp}); 
-              msgtodiv = 'otp sent to your Email please check know ';
+              msgtodiv = 'OTP sent to your email !!';
           } 
   
              
@@ -313,7 +313,7 @@ class UserController {
            if(user_type == 1){
               // send_mobile_otp({mobile,otp}); 
               apiGenOtp_2 = await send_mobile_otp_new({mobile}); 
-                 msgtodiv2 = 'otp sent to your mobile please check know ';
+                 msgtodiv2 = 'OTP sent to your mobile !!';
            }
            console.log("apiGenOtp == ",apiGenOtp_2);
               let add =new user_tbl({
@@ -336,7 +336,7 @@ class UserController {
               if(allsaveData){
                   if(user_type == 2 || user_type == 3 || user_type == 4 ){
                       sentEmail({email,otp}); 
-                      msgtodiv2 = 'otp sent to your Email please check know ';
+                      msgtodiv2 = 'OTP sent to your email !!';
                   }  
                       console.log('add == ', add);    
                    return res.status(200).send({"status":true,"msg": msgtodiv2 , "body":allsaveData._id }) ;      
@@ -364,12 +364,12 @@ static resend_otp_2_old = async(req,res) =>{
             if(docs.user_type == 1){
                 let mobile = docs.mobile;
                 let ddd =  send_mobile_otp({mobile,otp}); 
-                 msgtodiv = (language == 'ar')?  'otp أرسلت إلى هاتفك المحمول يرجى التحقق من العلم' : 'otp sent to your mobile please check know';
+                 msgtodiv = (language == 'ar')?  'تم إرسال OTP إلى هاتفك المحمول !!' : 'OTP sent to your mobile !!';
             }else{
                 let email = docs.email;
                 let ddd =   sentEmail({email,otp});
   
-                  msgtodiv =   (language == 'ar')? 'otp أرسلت إلى البريد الإلكتروني الخاص بك يرجى التحقق من علم' : 'otp sent to your Email please check know';
+                  msgtodiv =   (language == 'ar')? 'تم إرسال OTP إلى بريدك الإلكتروني !!' : 'OTP sent to your email !!';
             }
 
 
@@ -414,12 +414,12 @@ static resend_otp_2_old = async(req,res) =>{
                 let mobile = docs.mobile;
                 let new_otp_mobile =await  send_mobile_otp_new({mobile});
                 let dd=await user_tbl.findOneAndUpdate({_id},{$set:{otp:new_otp_mobile}}); 
-                 msgtodiv = (language == 'ar')?  'otp أرسلت إلى هاتفك المحمول يرجى التحقق من العلم' : 'otp sent to your mobile please check know';
+                 msgtodiv = (language == 'ar')?  'تم إرسال OTP إلى هاتفك المحمول !!' : 'OTP sent to your mobile !!';
             }else{
                 let email = docs.email;
                 let ddd =   sentEmail({email,otp});
                 let dd=await user_tbl.findOneAndUpdate({_id},{$set:{otp:otp}}); 
-                  msgtodiv =   (language == 'ar')? 'otp أرسلت إلى البريد الإلكتروني الخاص بك يرجى التحقق من علم' : 'otp sent to your Email please check know';
+                  msgtodiv =   (language == 'ar')? 'تم إرسال OTP إلى بريدك الإلكتروني !!' : 'OTP sent to your email !!';
             }
 
             return res.status(200).json({

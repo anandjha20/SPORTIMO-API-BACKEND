@@ -56,10 +56,10 @@ class ConjobController {
       // yellow card no == 6    
       let dates = req.body.date;  /// getcurntDate();
       let tomarro_date = before_after_Date(1);
-      console.log("tomarro_date == ", tomarro_date);
+      //console.log("tomarro_date == ", tomarro_date);
       let whr = { date_utc: { $gte: dates, $lte: tomarro_date } };
 
-      console.log(whr);
+      //console.log(whr);
       let data = await team_matches_tbl.find(whr);
       if (data) {
         let data2 = await matchCardAllData(data[0].match_id);
@@ -99,7 +99,7 @@ class ConjobController {
 
               
                 let match_id = "2701241"//req.body.match_id; // 2701198;
-                console.log("get_card-21 match_id is  === ", match_id);
+                //console.log("get_card-21 match_id is  === ", match_id);
                 let data = await matchCardEventAllData(match_id);
                 if (data) {
                   let sum = data.events[0].corners[0].event;
