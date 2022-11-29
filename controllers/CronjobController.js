@@ -174,7 +174,7 @@ class ConjobController {
 
               
                 let match_id = "2701241"//req.body.match_id; // 2701198;
-                console.log("get_card-21 match_id is  === ", match_id);
+                //console.log("get_card-21 match_id is  === ", match_id);
                 let data = await matchCardEventAllData(match_id);
                 if (data) {
                   let sum = data.events[0].bookings[0].event;
@@ -246,7 +246,7 @@ static get_card_16 = async (req, res) => {
       if (response) {
 
         let allData = await Promise.all(response.map(async (item) => {
-          console.log("match_id is == ", item);
+         // console.log("match_id is == ", item);
           let resp = await getCardGreaterThan_16(item);
 
           sumArr.push(resp);
@@ -268,7 +268,7 @@ static get_card_16 = async (req, res) => {
       let sumArr = [];
       if (response) {
         let allData = await Promise.all(response.map(async (item) => {
-          console.log("match_id is == ", item);
+        //  console.log("match_id is == ", item);
           let resp = await getCardGreaterThan_03(item);
           sumArr.push(resp);
         }));
@@ -290,7 +290,7 @@ static get_card_16 = async (req, res) => {
       let sumArr = [];
       if (response) {
         let allData = await Promise.all(response.map(async (item) => {
-          console.log("match_id is == ", item);
+        //  console.log("match_id is == ", item);
           let resp = await getCardGreaterThan_06(item);
           sumArr.push(resp);
         }));
@@ -312,7 +312,7 @@ static get_card_16 = async (req, res) => {
       let sumArr = [];
       if (response) {
         let allData = await Promise.all(response.map(async (item) => {
-          console.log("match_id is == ", item);
+        //  console.log("match_id is == ", item);
           let resp = await getCardGreaterThan_09(item);
           sumArr.push(resp);
         }));
@@ -333,7 +333,7 @@ static get_card_16 = async (req, res) => {
       let sumArr = [];
       if (response) {
         let allData = await Promise.all(response.map(async (item) => {
-          console.log("match_id is == ", item);
+        //  console.log("match_id is == ", item);
           let resp = await getCardGreaterThan_19(item);
           sumArr.push(resp);
         }));
@@ -353,7 +353,7 @@ static get_card_16 = async (req, res) => {
       let sumArr = [];
       if (response) {
         let allData = await Promise.all(response.map(async (item) => {
-          console.log("match_id is == ", item);
+        //  console.log("match_id is == ", item);
           let resp = await getCardGreaterThan_22(item);
           sumArr.push(resp);
         }));
@@ -374,7 +374,7 @@ static get_card_16 = async (req, res) => {
 
    
     let match_id = req.body.match_id; // 2701198;
-    console.log("get_card-18 match_id is  === ", match_id);
+   // console.log("get_card-18 match_id is  === ", match_id);
     let data = await matchCardEventAllData(match_id);
     if (data) {
       let sum = data.events[0].shots_on_target[0].event;
