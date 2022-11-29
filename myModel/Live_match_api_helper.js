@@ -1167,7 +1167,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                    let date =  new Date(new Date(item.date_utc+' : '+ item.time_utc).toUTCString());
                    let seconds = Math.floor(date.getTime() /1000)  ;           
                    // GMT 5.30 hours  to utc time    
-                       seconds  = seconds + 19800 ;
+                    //   seconds  = seconds + 19800 ;
                   
                        let  startSeconds = seconds-60  ;  
                   
@@ -1176,8 +1176,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                   
                    //  if(time_u >= endSeconds ){
                      //  if( item.status!="Fixture" ){   
-                       console.log("day_match_getID_test  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
                        if(startSeconds <= time_u  && endSeconds >= time_u  ){   
+                         console.log("day_match_getID_test  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
                        match_id_arr.push(item.match_id);    
                   
                   }      
