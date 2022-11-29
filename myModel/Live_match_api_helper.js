@@ -1174,10 +1174,11 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                    let  endSeconds =  seconds + 9000;
                     
                    //  if(time_u >= endSeconds ){
-                     if(startSeconds <= time_u  && endSeconds >= time_u  ){   
-                       match_id_arr.push(item.match_id);    
                      console.log("day_match_getID  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
-                  
+
+                      if(startSeconds <= time_u  && endSeconds >= time_u  ){   
+                       match_id_arr.push(item.match_id);    
+                                      
                   }      
                                              
                   }); 
