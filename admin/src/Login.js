@@ -47,9 +47,10 @@ function Login() {
        
         localStorage.setItem("user-info", JSON.stringify(result));
       //  navigate('/home');
-       
-            navigate('/home');
-            toast.success(demo.msg);
+      toast.success(demo.msg);
+       setTimeout(()=>{
+           navigate('/home');
+       },1000)
        
      
     }
