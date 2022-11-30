@@ -23,14 +23,15 @@
     const mongoose = require('mongoose');
 
     const  poll_percent = async(poll_id) =>{
-                    console.log("helper_fun call ==",poll_id)
+                    //console.log("helper_fun call ==",poll_id)
 
                          try { let callData = await poll_result_tbl.aggregate()
                                       .match({ poll_id : poll_id })
                                       .append({ "$group" : {_id:"$user_ans",   count: { $sum: 1 }} })
                                       .allowDiskUse(true)
                                       .exec();
-                              console.log("callData ==",callData);   return callData;     
+                              //console.log("callData ==",callData);  
+                               return callData;     
                           } catch (error) {  console.log('try error',error); return false; }
       
              } 
@@ -47,7 +48,7 @@ const all_list_come = async(ids,num) =>{
              
                 if(data.length >0){  
                     let allData =  data.map((item)=> item[myName]); 
-                        console.log( 'helper fun call ',allData );
+                      //  console.log( 'helper fun call ',allData );
                       return  allData.toString();
                 }
                 
@@ -61,11 +62,11 @@ const autoincremental  = async(seq_id,mymodals) =>{
                 let total = [] ; 
 
                 total =  await mymodals.find().sort({seq_id: -1}).limit(1); 
-            if(total.length )  { console.log("total == ",total )};  
+            //if(total.length )  { console.log("total == ",total )};  
      
             let newSeq = (total.length == 0)? 1 :   Number(total[0][seq_id]) + 1;
-                console.log("fgfgg === ",total[0][seq_id]);
-                console.log("seq  === ",seq_id );        
+               // console.log("fgfgg === ",total[0][seq_id]);
+               // console.log("seq  === ",seq_id );        
          return   newSeq ;    
                
         } catch (error) {   console.log('try error====   ',error); return false; }
@@ -101,7 +102,8 @@ const sendNotificationAdd = (my_obj )=>{
           let add = new notification_tbl(addData);
               add.save((err,data)=>{
                   if(err){  console.log('try error====   ',err); return false; }else{
-                      console.log('sendNotification success data ===   ',data); return true;
+                      //console.log('sendNotification success data ===   ',data);
+                       return true;
                       }
               });   
       } catch (error){ console.log('some error ====',error); return false; }
@@ -110,7 +112,7 @@ const sendNotificationAdd = (my_obj )=>{
      const userBlocked_fun = async( user_id)=>{
           try {
                  let user_rows = await rows_count(user_reportings_tbl,{reported_user_id:user_id,autoBlockStatus:false});
-                      console.log("userBlocked_fun row count == ",user_rows );
+                     // console.log("userBlocked_fun row count == ",user_rows );
                       if(user_rows >= 5){
                           /// send notification this user 
                           let title = `your chat has been blocked`;  let details = `your chat has been blocked `;           
@@ -336,7 +338,7 @@ const sendNotificationAdd = (my_obj )=>{
 
   const geqWin = async (req)=>{
     try{
-      console.log(req)
+      //console.log(req)
         let _id=req._id;
         let geq_id=req.geq_id;
         let user_id=req.user_id;
@@ -354,7 +356,7 @@ const sendNotificationAdd = (my_obj )=>{
             return false;
           }
         }else{
-          console.log("111111")
+         // console.log("111111")
           return false;
         }
     }catch (error){
@@ -365,7 +367,7 @@ const sendNotificationAdd = (my_obj )=>{
   
   const geqLose = async (req)=>{
   try{
-    console.log(req)
+   // console.log(req)
       let _id=req._id;
       if(!isEmpty(req)){
         let data = await geq_answers.findOneAndUpdate({_id},{active:0,status:"lose"});
@@ -389,13 +391,13 @@ const preferences_ar_convart = async(tbl,preferences) =>{
         if(isEmpty(preferences)){return false;}
        let arr =  preferences.split(",");
        let whr = {"name":{ $in :arr}};
-       console.log("array data == ", whr);
+       //console.log("array data == ", whr);
       let dx = await tbl.find(whr,'name_ara');
        if(dx){
         let responce =   dx.map((item)=>item.name_ara );
          return responce.toString();
        }
-      console.log("result ddd == ", dx);
+    //  console.log("result ddd == ", dx);
         return (dx)? dx :false; 
       } catch (error) { return false; }
 }

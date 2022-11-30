@@ -44,7 +44,7 @@ class ConjobController {
               }
              
               } catch (error) {
-                console.log(error);
+               // console.log(error);
                 return res.status(200).send({ 'status': false, 'msg': 'servr error' });
               }
   }

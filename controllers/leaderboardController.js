@@ -56,7 +56,7 @@ class leaderboardController {
 static leaderboard = async (req, res) => {
 	try {
 		let finduserID = await transaction_tbls.find()
-		console.log(finduserID)
+		//console.log(finduserID)
 
 		var matchID = req.body.matchID
 
@@ -227,7 +227,7 @@ static leaderboard2 = async (req, res) => {
 		let finduserID = await transaction_tbls.find();
 
 		var matchID = req.body.match_id;
-			console.log("leaderboard fun call == ",matchID )	;
+			//console.log("leaderboard fun call == ",matchID )	;
 		if (Object.keys(req.body).length == 0) {
 
 			let userIDs = []
@@ -616,7 +616,7 @@ static bonus_points = async (req,res)	=>{
 			return res.status(200).send({"status":false,"msg":"all field required"});
 		}else{
 			let details={points,type,points_by,description,user_id}
-			console.log(details)
+			//console.log(details)
 			let obj = new transaction_tbls(details)
 			let response=await obj.save()
 			

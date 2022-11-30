@@ -202,17 +202,17 @@ const add_win_point = async(req,res)=>{
                    if(powerUpPoints!=undefined){
                      winPoints  =  winPoints * powerUpPoints ;
                     }    
-                   console.log(winPoints)
+                //   console.log(winPoints)
                let add = new transactions_tbl({user_id,"points":winPoints,match_id,card_id,type:"credit",points_by:"match",description :"game win"}); 
                  let datas = await add.save();
                let updata  =  user_tbl.findOneAndUpdate({_id: user_id},{$inc : {points :  winPoints } },{new: true}, (err, updatedUser) => {
                                if(err) { console.log(err);}  });
             let playcardUpdate  =  playMatchCards_tbl.findOneAndUpdate({_id: user_play_card_id},{$set : {active : 0,result: "win"  } },{new: true}, (err, updatedUser) => {
             if(err) { console.log(err);} });   
-                          console.log({datas,updata,playcardUpdate});    
+                        //   console.log({datas,updata,playcardUpdate});    
                       return true ;
                          
-      } catch (error) { console.log(error); console.log("add_win_point fun call ==  4" );    
+      } catch (error) { console.log("add_win_point error",error);     
              return false ;  }
 
     }
@@ -222,8 +222,8 @@ const add_win_point = async(req,res)=>{
             try {
                let user_play_card_id   = req.user_play_card_id;
               let playcardUpdate  =  playMatchCards_tbl.findOneAndUpdate({_id: user_play_card_id},{$set : { active : 0, result: "lose" } },{new: true}, (err, updatedUser) => {
-                if(err) { console.log(err); return false}else{ console.log("remove fun call == ",updatedUser );   return true }  }); 
-              } catch (error) { console.log(err); return false }
+                if(err) { console.log(err); return false}else{    return true }  }); 
+              } catch (error) { console.log("playMatchCard_remove",err); return false }
   }
 
 ////////////////////////////   this function add on card category number  /////////////////////////
@@ -232,7 +232,7 @@ const add_win_point = async(req,res)=>{
     try {  
               /// this function used by red card 
             const  data = req.data[0].team_stats[0].stat[12] ;
-            console.log(data)
+            //console.log(data)
 
             if(!isEmpty(data)){
               let  live_match_id = req.data[0].match_id ;
@@ -277,7 +277,7 @@ const add_win_point = async(req,res)=>{
 
            let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            }else{  console.log( "Result not show ");   return false ; 
@@ -332,7 +332,7 @@ const add_win_point = async(req,res)=>{
 
            let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            }else{  console.log( "Result not show ");   return false ; 
@@ -392,7 +392,7 @@ const add_win_point = async(req,res)=>{
 
            let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            }else{  console.log( "Result not show ");   return false ; 
@@ -454,7 +454,7 @@ const add_win_point = async(req,res)=>{
 
                 let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            }else{    
@@ -496,7 +496,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
   let obj = {result_pass,result_fail }; 
   return  obj ;
-}else{  console.log( "no data found!.. ");  return false ;   }
+}else{    return false ;   }
 
 
            }
@@ -554,7 +554,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
          let obj = {result_pass,result_fail }; 
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
 
 
          }else{  console.log( "Result not show ");   return false ; 
@@ -610,7 +610,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
          let obj = {result_pass,result_fail }; 
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
 
 
          }else{  console.log( "Result not show ");   return false ; 
@@ -674,7 +674,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
          let obj = {result_pass,result_fail }; 
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
 
 
          }else{  console.log( "Result not show ");   return false ; 
@@ -729,7 +729,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
            let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            }else{  console.log( "Result not show ");   return false ; 
@@ -786,7 +786,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
            let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            }else{  console.log( "Result not show ");   return false ; 
@@ -838,7 +838,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
            let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            
@@ -878,7 +878,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
     
         
               return  true ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
           
              
   
@@ -931,7 +931,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
            let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            }else{  console.log( "Result not show ");   return false ; 
@@ -988,7 +988,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
            let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            }else{  console.log( "Result not show ");   return false ; 
@@ -1048,7 +1048,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
            let obj = {result_pass,result_fail }; 
                 return  obj ;
-            }else{  console.log( "no data found!.. ");  return false ;   }
+            }else{    return false ;   }
 
 
            }else{  console.log( "Result not show ");   return false ; 
@@ -1325,7 +1325,7 @@ const get_card_result_add_08  =  async(req,res)=>{
 
          let obj = {result_pass,result_fail }; 
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
 
 
          }else{  console.log( "Result not show ");   return false ; 
@@ -1390,7 +1390,7 @@ const get_card_result_add_08  =  async(req,res)=>{
          let obj = {result_pass,result_fail }; 
          console.log(obj)
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
 
 
          }else{  console.log( "Result not show ");   return false ; 
@@ -1460,7 +1460,7 @@ const get_card_result_add_08  =  async(req,res)=>{
 
          let obj = {result_pass,result_fail }; 
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
 
 
          }else{  console.log( "Result not show ");   return false ; 
@@ -1528,7 +1528,7 @@ const get_card_result_add_08  =  async(req,res)=>{
 
          let obj = {result_pass,result_fail }; 
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
 
 
          }else{  console.log( "Result not show ");   return false ; 
@@ -1598,7 +1598,7 @@ const get_card_result_add_08  =  async(req,res)=>{
     
              let obj = {result_pass,result_fail }; 
                   return  obj ;
-              }else{  console.log( "no data found!.. ");  return false ;   }
+              }else{    return false ;   }
     
     
              }else{  console.log( "Result not show ");   return false ; 
@@ -1658,7 +1658,7 @@ const get_card_result_add_08  =  async(req,res)=>{
   
          let obj = {result_pass,result_fail }; 
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
   
   
          }else{  console.log( "Result not show ");   return false ; 
@@ -1716,7 +1716,7 @@ const get_card_result_add_08  =  async(req,res)=>{
   
        let obj = {result_pass,result_fail }; 
             return  obj ;
-        }else{  console.log( "no data found!.. ");  return false ;   }
+        }else{    return false ;   }
         
   
        }else{  console.log( "Result not show ");   return false ; 
@@ -1850,7 +1850,7 @@ const getCardResult_16_END  =  async(req,res)=>{
   
       
             return  true ;
-        }else{  console.log( "no data found!.. ");  return false ;   }
+        }else{    return false ;   }
         
            
 
@@ -1981,7 +1981,7 @@ const getCardResult_16_END  =  async(req,res)=>{
     
         
               return  true ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
           
               
   
@@ -2114,7 +2114,7 @@ const getCardResult_06_END  =  async(req,res)=>{
   
       
             return  true ;
-        }else{  console.log( "no data found!.. ");  return false ;   }
+        }else{    return false ;   }
         
            
 
@@ -2247,7 +2247,7 @@ const getCardResult_09_END  =  async(req,res)=>{
   
       
             return  true ;
-        }else{  console.log( "no data found!.. ");  return false ;   }
+        }else{    return false ;   }
         
            
 
@@ -2377,7 +2377,7 @@ const getCardResult_19_END  =  async(req,res)=>{
   
       
             return  true ;
-        }else{  console.log( "no data found!.. ");  return false ;   }
+        }else{    return false ;   }
         
            
 
@@ -2506,7 +2506,7 @@ const getCardResult_22_END  =  async(req,res)=>{
   
       
             return  true ;
-        }else{  console.log( "no data found!.. ");  return false ;   }
+        }else{    return false ;   }
         
            
 
@@ -2556,7 +2556,7 @@ const get_card_result_add_21  =  async(req,res)=>{
 
           let obj = {result_pass,result_fail }; 
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
 
 
           
@@ -2596,7 +2596,7 @@ const get_card_result_add_21  =  async(req,res)=>{
   
       
             return  true ;
-        }else{  console.log( "no data found!.. ");  return false ;   }
+        }else{    return false ;   }
         
             
 
@@ -2646,7 +2646,7 @@ const get_card_result_add_02  =  async(req,res)=>{
 
           let obj = {result_pass,result_fail }; 
               return  obj ;
-          }else{  console.log( "no data found!.. ");  return false ;   }
+          }else{    return false ;   }
 
 
           
@@ -2661,7 +2661,7 @@ const get_card_result_add_02  =  async(req,res)=>{
                 let card_id =  mongoose.Types.ObjectId("6368f5fcfa650acac36b0384");
                 
 
-            console.log("live_match_id",live_match_id)
+            //console.log("live_match_id",live_match_id)
             let pipeline  = [] ;
             if(! isEmpty(req.data[0].match_id)){
                 pipeline.push({$match: {match_id: live_match_id}});
@@ -2678,7 +2678,7 @@ const get_card_result_add_02  =  async(req,res)=>{
 
 
         let allUsersData = await team_matches_tbl.aggregate(pipeline).exec();
-        console.log("allUsersData",allUsersData)
+        //console.log("allUsersData",allUsersData)
         if (! isEmpty(allUsersData) ){
           let allData = await Promise.all( allUsersData.map( async (item)=>{ 
                   let demo_1 = ( item.user_option == "opt_2")? await add_win_point(item) : await playMatchCard_remove(item);
@@ -2686,11 +2686,11 @@ const get_card_result_add_02  =  async(req,res)=>{
   
       
             return  true ;
-        }else{  console.log( "no data found!.. ");  return false ;   }
+        }else{    return false ;   }
         
             
 
-        console.log(allUsersData)
+       // console.log(allUsersData)
       } catch (error) { console.log(error); return false ;  }
     } 
  

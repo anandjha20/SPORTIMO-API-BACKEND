@@ -213,7 +213,7 @@ const add_win_point = async(req,res)=>{
                           //console.log({datas,updata,playcardUpdate});    
                       return true ;
                          
-      } catch (error) {  console.log("add_win_point fun call ==  4",error );    
+      } catch (error) {  console.log("add_win_point error",error );    
              return false ;  }
 
     }
@@ -1907,7 +1907,7 @@ const getCardGreaterThan_16 = async(match_id)=>{
           }else{// console.log( "table array length == ", nums ); console.log( "live array length == ", data.length );   
                   return false; }
 
-        }else{      console.log( "match_event_shot_tbl CARD ADD ON  card_16 == " );
+        }else{    //  console.log( "match_event_shot_tbl CARD ADD ON  card_16 == " );
                 ///  add card-16 array index number in match_event_shot_tbl           
                 let add = new match_event_shot_tbl({
                             match_id,"event_type":"card_16" , "shots_count" : 0 });
