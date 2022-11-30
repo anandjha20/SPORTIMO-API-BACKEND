@@ -63,7 +63,7 @@ const match_event_shot_tbl = require('../models/match_event_shots');
 
 
      
-         } catch (error) { console.log( "modal match_card_001 call == ", error);
+         } catch (error) { //console.log( "modal match_card_001 call == ", error);
              return false ; 
          }
   }
@@ -93,7 +93,7 @@ const match_event_shot_tbl = require('../models/match_event_shots');
 
 
      
-         } catch (error) { console.log( "modal match_card_001 call == ", error);
+         } catch (error) { //console.log( "modal match_card_001 call == ", error);
              return false ; 
          }
   }
@@ -123,7 +123,7 @@ const match_event_shot_tbl = require('../models/match_event_shots');
 
 
      
-         } catch (error) { console.log( "modal match_card_001 call == ", error);
+         } catch (error) { //console.log( "modal match_card_001 call == ", error);
              return false ; 
          }
   }
@@ -153,7 +153,7 @@ const match_event_shot_tbl = require('../models/match_event_shots');
 
 
      
-         } catch (error) { console.log( "modal match_card_001 call == ", error);
+         } catch (error) { //console.log( "modal match_card_001 call == ", error);
              return false ; 
          }
   }
@@ -213,7 +213,7 @@ const add_win_point = async(req,res)=>{
                           //console.log({datas,updata,playcardUpdate});    
                       return true ;
                          
-      } catch (error) { console.log(error); console.log("add_win_point fun call ==  4" );    
+      } catch (error) {  console.log("add_win_point fun call ==  4",error );    
              return false ;  }
 
     }
@@ -285,7 +285,8 @@ const add_win_point = async(req,res)=>{
            }else{    return false ; 
             
            }
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error);
+         return false ;  }
    }  
    const get_card_result_add_5  =  async(req,res)=>{
     try {  
@@ -340,7 +341,8 @@ const add_win_point = async(req,res)=>{
            }else{     return false ; 
             
            }
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error);
+         return false ;  }
    }  
    
    
@@ -400,7 +402,8 @@ const add_win_point = async(req,res)=>{
            }else{     return false ; 
             
            }
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error); 
+        return false ;  }
    } 
 
    const get_card_result_add_10  =  async(req,res)=>{
@@ -502,7 +505,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
 
            }
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error); 
+        return false ;  }
    } 
 
 
@@ -562,7 +566,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
          }else{     return false ; 
           
          }
-     } catch (error) { console.log(error); return false ;  }
+     } catch (error) { //console.log(error); 
+      return false ;  }
  }  
  
 
@@ -618,7 +623,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
          }else{     return false ; 
           
          }
-     } catch (error) { console.log(error); return false ;  }
+     } catch (error) { //console.log(error); 
+      return false ;  }
  }  
  
  const get_card_result_add_15  =  async(req,res)=>{
@@ -682,7 +688,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
          }else{     return false ; 
           
          }
-     } catch (error) { console.log(error); return false ;  }
+     } catch (error) { //console.log(error); 
+      return false ;  }
  }         
 
    const get_card_result_add_1  =  async(req,res)=>{
@@ -737,7 +744,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
            }else{     return false ; 
             
            }
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error);
+         return false ;  }
    }    
   const get_card_result_add_17  =  async(req,res)=>{
     try {  
@@ -794,7 +802,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
            }else{     return false ; 
             
            }
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error); 
+        return false ;  }
    } 
    const get_card_result_add_18  =  async(req,res)=>{
     try {  
@@ -844,7 +853,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
 
            
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error);
+         return false ;  }
    } 
   
    const getCardResult_18_END  =  async(req,res)=>{
@@ -885,7 +895,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
              
   
           //console.log(allUsersData)
-        } catch (error) { console.log(error); return false ;  }
+        } catch (error) {// console.log(error);
+           return false ;  }
       } 
       
 
@@ -939,7 +950,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
            }else{     return false ; 
             
            }
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error); 
+        return false ;  }
    }    
    const get_card_result_add_23  =  async(req,res)=>{
         try {  
@@ -996,7 +1008,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
            }else{     return false ; 
             
            }
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error); 
+        return false ;  }
    } 
   
 
@@ -1056,7 +1069,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
            }else{     return false ; 
             
            }
-       } catch (error) { console.log(error); return false ;  }
+       } catch (error) { //console.log(error); 
+        return false ;  }
    } 
 
 
@@ -1204,7 +1218,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
 
             }else{  return false; }    
         }
-         } catch (error) { console.log( " modal funtion day_match_getID call == ", error);
+         } catch (error) {// console.log( " modal funtion day_match_getID call == ", error);
                                return false ;  }
   }
 
@@ -1238,7 +1252,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
      
             }else{  return false; }    
         }
-         } catch (error) { console.log( " modal funtion day_match_add call == ", error);
+         } catch (error) { //console.log( " modal funtion day_match_add call == ", error);
                                return false ;  }
   }
 
@@ -1261,7 +1275,8 @@ if(data){
       }else{
 
         let match_eventUpdate  =  match_event_shot_tbl.findOneAndUpdate({"match_id":match_id,"event_type":"fouls"},{$set : {"team_a" : live_team_a, "team_b" : live_team_b  } },{new: true}, (err, updatedUser) => {
-          if(err) { console.log(err); return false}else{   return true }  }); 
+          if(err) { //console.log(err);
+             return false}else{   return true }  }); 
 
       } 
     
@@ -1270,7 +1285,8 @@ if(data){
    }else{
      return false ;  
         }  
-      } catch (error) {console.log(error); return false ; } 
+      } catch (error) {console.log(error); 
+        return false ; } 
     } 
 
 
@@ -1301,7 +1317,8 @@ if(data){
      }else{
        return false ;  
           }  
-        } catch (error) {console.log(error); return false ; } 
+        } catch (error) {//console.log(error);
+           return false ; } 
       } 
   
 
@@ -1341,7 +1358,8 @@ if(data){
               return true ;
 
               }else{ return false ;   }  
-        } catch (error) {console.log(error); return false ; } 
+        } catch (error) {//console.log(error); 
+          return false ; } 
 
 
  }
@@ -1410,7 +1428,8 @@ const get_card_result_add_08  =  async(req,res)=>{
          }else{     return false ; 
           
          }
-     } catch (error) { console.log(error); return false ;  }
+     } catch (error) { //console.log(error); 
+      return false ;  }
     } 
  
  const get_card_result_add_37  =  async(req,res)=>{
@@ -1475,7 +1494,8 @@ const get_card_result_add_08  =  async(req,res)=>{
          }else{     return false ; 
           
          }
-     } catch (error) { console.log(error); return false ;  }
+     } catch (error) { //console.log(error); 
+      return false ;  }
  } 
 
  const get_card_result_add_39  =  async(req,res)=>{
@@ -1545,7 +1565,8 @@ const get_card_result_add_08  =  async(req,res)=>{
          }else{     return false ; 
           
          }
-     } catch (error) { console.log(error); return false ;  }
+     } catch (error) {//console.log(error); 
+      return false ;  }
  } 
 
 
@@ -1613,7 +1634,8 @@ const get_card_result_add_08  =  async(req,res)=>{
          }else{     return false ; 
           
          }
-     } catch (error) { console.log(error); return false ;  }
+     } catch (error) {// console.log(error); 
+      return false ;  }
     } 
    
     const get_card_result_add_34_endTimesCall  =  async(req,res)=>{
@@ -1683,7 +1705,8 @@ const get_card_result_add_08  =  async(req,res)=>{
              }else{     return false ; 
               
              }
-         } catch (error) { console.log(error); return false ;  }
+         } catch (error) {// console.log(error); 
+          return false ;  }
         }  
 
 /// this function make by mohan
@@ -1743,7 +1766,8 @@ const get_card_result_add_08  =  async(req,res)=>{
          }else{     return false ; 
           
          }
-     } catch (error) { console.log(error); return false ;  }
+     } catch (error) { //console.log(error); 
+      return false ;  }
   } 
 
   /// this function make by mohan
@@ -1801,7 +1825,8 @@ const get_card_result_add_08  =  async(req,res)=>{
        }else{     return false ; 
         
        }
-   } catch (error) { console.log(error); return false ;  }
+   } catch (error) { //console.log(error); 
+    return false ;  }
   } 
 
 const getCardGreaterThan_16 = async(match_id)=>{
@@ -1893,7 +1918,8 @@ const getCardGreaterThan_16 = async(match_id)=>{
      return false ; 
           }
 
-  } catch (error) { console.log( error); return false ;  }
+  } catch (error) { //console.log( error); 
+    return false ;  }
 }
 
 
@@ -1935,7 +1961,8 @@ const getCardResult_16_END  =  async(req,res)=>{
            
 
         //console.log(allUsersData)
-      } catch (error) { console.log(error); return false ;  }
+      } catch (error) { //console.log(error);
+         return false ;  }
     } 
     
     const getCardGreaterThan_03 = async(match_id)=>{
@@ -2026,7 +2053,8 @@ const getCardResult_16_END  =  async(req,res)=>{
             }else{ ; return false ; 
           }
           
-        } catch (error) { console.log( error); return false ;  }
+        } catch (error) {// console.log( error); 
+          return false ;  }
       }
       
   const getCardResult_03_END  =  async(req,res)=>{
@@ -2066,7 +2094,8 @@ const getCardResult_16_END  =  async(req,res)=>{
               
   
             //console.log(allUsersData)
-    } catch (error) { console.log(error); return false ;  }
+    } catch (error) { //console.log(error); 
+      return false ;  }
   } 
      
   const getCardGreaterThan_06 = async(match_id)=>{
@@ -2157,7 +2186,8 @@ const getCardResult_16_END  =  async(req,res)=>{
     }else{ ; return false ; 
           }
 
-  } catch (error) { console.log( error); return false ;  }
+  } catch (error) { //console.log( error); 
+    return false ;  }
 }
 
 
@@ -2199,7 +2229,8 @@ const getCardResult_06_END  =  async(req,res)=>{
            
 
           //console.log(allUsersData)
-  } catch (error) { console.log(error); return false ;  }
+  } catch (error) {// console.log(error);
+     return false ;  }
 }
 
 // pridiction card 
@@ -2291,7 +2322,8 @@ const getCardGreaterThan_09 = async(match_id)=>{
     }else{ ; return false ; 
           }
 
-  } catch (error) { console.log( error); return false ;  }
+  } catch (error) { //console.log( error); 
+    return false ;  }
 }
 
 
@@ -2332,7 +2364,8 @@ const getCardResult_09_END  =  async(req,res)=>{
            
 
           //console.log(allUsersData)
-  } catch (error) { console.log(error); return false ;  }
+  } catch (error) { //console.log(error); 
+    return false ;  }
 } 
 
 
@@ -2424,7 +2457,8 @@ const getCardGreaterThan_19 = async(match_id)=>{
     }else{ ; return false ; 
           }
 
-  } catch (error) { console.log( error); return false ;  }
+  } catch (error) { //console.log( error); 
+    return false ;  }
 }
 
 
@@ -2462,7 +2496,8 @@ const getCardResult_19_END  =  async(req,res)=>{
            
 
           //console.log(allUsersData)
-  } catch (error) { console.log(error); return false ;  }
+  } catch (error) { //console.log(error); 
+    return false ;  }
   } 
 
 // pridiction card -19 functions 
@@ -2553,7 +2588,8 @@ const getCardGreaterThan_22 = async(match_id)=>{
     }else{ ; return false ; 
           }
 
-  } catch (error) { console.log( error); return false ;  }
+  } catch (error) { //console.log( error); 
+    return false ;  }
 }
 
 
@@ -2591,7 +2627,8 @@ const getCardResult_22_END  =  async(req,res)=>{
            
 
           //console.log(allUsersData)
-  } catch (error) { console.log(error); return false ;  }
+  } catch (error) { //console.log(error); 
+    return false ;  }
   } 
 
 //////////////=====================================//////////////////////////////
@@ -2640,7 +2677,8 @@ const get_card_result_add_21  =  async(req,res)=>{
 
 
           
-      } catch (error) { console.log(error); return false ;  }
+      } catch (error) { //console.log(error);
+         return false ;  }
   } 
 
   const getCardResult_21_END  =  async(req,res)=>{
@@ -2681,7 +2719,8 @@ const get_card_result_add_21  =  async(req,res)=>{
             
 
         //console.log(allUsersData)
-      } catch (error) { console.log(error); return false ;  }
+      } catch (error) { //console.log(error);
+         return false ;  }
     } 
   
 const get_card_result_add_02  =  async(req,res)=>{
@@ -2730,7 +2769,8 @@ const get_card_result_add_02  =  async(req,res)=>{
 
 
           
-      } catch (error) { console.log(error); return false ;  }
+      } catch (error) { //console.log(error); 
+        return false ;  }
   } 
 
   const getCardResult_02_END  =  async(req,res)=>{
@@ -2771,7 +2811,8 @@ const get_card_result_add_02  =  async(req,res)=>{
             
 
         //console.log(allUsersData)
-      } catch (error) { console.log(error); return false ;  }
+      } catch (error) { //console.log(error); 
+        return false ;  }
     } 
  
 
