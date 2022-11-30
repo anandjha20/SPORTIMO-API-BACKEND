@@ -110,7 +110,7 @@ class ConjobController {
                   // check event count     
                   let shots_count = await match_event_shot_tbl.find({ "match_id": match_id, "event_type": "corners" }, "shots_count");
                   let right_ans = '';
-                  console.log(shots_count)
+                  //console.log(shots_count)
                   if (isEmpty(shots_count)) {
                     // add event count row   for  match_event_shot table   
                     let add = new match_event_shot_tbl({
@@ -182,7 +182,7 @@ class ConjobController {
                   // check event count     
                   let shots_count = await match_event_shot_tbl.find({ "match_id": match_id, "event_type": "yellow_card_02" }, "shots_count");
                   let right_ans = '';
-                  console.log(shots_count)
+                  //console.log(shots_count)
                   if (isEmpty(shots_count) ) {
                     // add event count row   for  match_event_shot table   
                     let add = new match_event_shot_tbl({
@@ -377,7 +377,7 @@ static get_card_16 = async (req, res) => {
    // console.log("get_card-18 match_id is  === ", match_id);
     let data = await matchCardEventAllData(match_id);
     if (data) {
-      let sum = data.events[0].shots_on_target[0].event;
+      let sum = data.events[0].shots_on_target.length==0?[]:data.events[0].shots_on_target[0].event;
 
       let team_a_original_name = data.team_a_original_name;
       let team_b_original_name = data.team_b_original_name;
@@ -455,16 +455,16 @@ static get_card_008 = async (req, res) => {
       var seconds_old = Math.floor(date_old.getTime() / 1000);
 
       let apperance_times_data = await match_cards_tbl.findOne({ match_id: data._id }, 'apperance_times');
-      let card_apperance_times = parseInt(apperance_times_data.apperance_times) * 60;
+      let card_apperance_times = parseInt(0) * 60;
       let match_time = seconds_old + card_apperance_times;
       let matchEnd_seconds = seconds_old * 9000;
 
-      console.log("seconds_cur == ", seconds_cur);
-      console.log("seconds_old == ", seconds_old);
-      console.log("match_time == ", match_time);
+      //console.log("seconds_cur == ", seconds_cur);
+      //console.log("seconds_old == ", seconds_old);
+      //console.log("match_time == ", match_time);
 
       if (seconds_cur >= match_time) {
-        console.log("this card active");
+        //console.log("this card active");
         card_08_befor_call(match_id);
         card_39_befor_call(match_id);
         card_34_befor_call(match_id);
@@ -949,15 +949,15 @@ static get_card_008 = async (req, res) => {
       //top rankers bonus
         let bonus = await leaderboardController.rankBonus(match_id)
 
-        return res.status(200).send({ 'status': true, 'msg': "success", 'body': "" });
+        return true
       } else {
-        return res.status(200).send({ 'status': false, 'msg': 'This match result not show time ', "body": "" });
+        return false
       }
 
 
     } catch (error) {
       console.log(error);
-      return res.status(200).send({ 'status': false, 'msg': 'servr error' });
+      return false
     }
   }
 

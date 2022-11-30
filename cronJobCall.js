@@ -11,8 +11,7 @@ cron.schedule('* * * * *', async (req,res) => {
   try {
      
       let response = await day_match_getID();
-      let id = await day_match_getID_test();
-      console.log("day_match_getID===",id)
+      console.log("day_match_getID===",response)
       let sumArr = [];
       let url = 'http://100.26.5.179:3000/open_api/get_card_008';
      // let url = 'http://localhost:3600/open_api/get_card_008';

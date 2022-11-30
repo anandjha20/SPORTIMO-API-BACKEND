@@ -72,6 +72,7 @@ function gen_str (length) {
   } 
    const getcurntDate = () =>{
       let date = new Date();
+    //  console.log("getcurntDate",date)
     var dd = date.getDate();
             var mm = date.getMonth() + 1; //January is 0!
             var yyyy = date.getFullYear();

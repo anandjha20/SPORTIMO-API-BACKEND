@@ -1109,18 +1109,18 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                    let date =  new Date(new Date(item.date_utc+' : '+ item.time_utc).toUTCString());
                    let seconds = Math.floor(date.getTime() /1000)  ;           
                    // GMT 5.30 hours  to utc time    
-                       seconds  = seconds + 19800 ;
+                    //   seconds  = seconds + 19800 ;
                   
-                       let  startSeconds = seconds-60  ;  
+                       let  startSeconds = seconds-600  ;  
                   
                   //  150 mint ( match end time  ) lat on  9000 seconds
                    let  endSeconds =  seconds + 9000;
                     
                    //  if(time_u >= endSeconds ){
-                     if( item.status!="Fixture" ){   
-                       match_id_arr.push(item.match_id);    
-                //    if(startSeconds <= time_u  && endSeconds >= time_u  ){   
-                  //    console.log("day_match_getID  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
+                    // if( item.status!="Fixture" ){   
+                      if(startSeconds <= time_u  && endSeconds >= time_u  ){   
+                      match_id_arr.push(item.match_id);    
+                      console.log("day_match_getID  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
                   
                   }      
                                              
@@ -1260,11 +1260,12 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
  const card_08_befor_call = async(match_id)=>{
     try {
           //let id = match_id;           
-          let data = await matchCardAllData(match_id); 
+          let data = await matchCardAllData(match_id);
+         // console.log(data) 
 if(data){
         
-           let live_team_a = data.team_stats.stat[1].team_a ;
-           let live_team_b = data.team_stats.stat[1].team_b ;
+           let live_team_a = data[0].team_stats[0].stat[1].team_a ;
+           let live_team_b = data[0].team_stats[0].stat[1].team_b ;
           let shots_count  = await match_event_shot_tbl.find({"match_id":match_id,"event_type":"fouls"},"team_a team_b" );
           //console.log("shots_count data == ",shots_count);
         if( isEmpty(shots_count)) {
