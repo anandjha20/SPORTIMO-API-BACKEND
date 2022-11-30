@@ -32,7 +32,7 @@ const match_event_shot_tbl = require('../models/match_event_shots');
 
 
      
-         } catch (error) { console.log( "modal match_card_001 call == ", error);
+         } catch (error) { //console.log( "modal match_card_001 call == ", error);
              return false ; 
          }
   }

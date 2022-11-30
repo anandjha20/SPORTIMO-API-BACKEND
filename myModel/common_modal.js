@@ -89,8 +89,8 @@ function gen_str (length) {
 
   const getLocalDateTime = (data) =>{
     let date_utc=(data.date_utc);
-    let day=date_utc.getDate();
-    let month=date_utc.getMonth()+1;
+    let day=date_utc.getDate()<10?"0"+date_utc.getDate():date_utc.getDate();
+    let month=date_utc.getMonth()+1<10?"0"+date_utc.getMonth()+1:date_utc.getMonth()+1;
     let year=date_utc.getFullYear();
     let time=data.time_utc;
     let dateTimeStr=year+"-"+month+"-"+day+"T"+time+".000Z";
@@ -106,6 +106,8 @@ function gen_str (length) {
     let t=yyyy+"-"+mm+"-"+dd+"T"+str.substring(12,20)+".000Z"
     local_date=new Date(t)
     local_time=str.substring(12,20)
+    //console.log({date_utc,dateTimeStr,str,t,local_date,day,month,year})
+    
     return {local_date,local_time}
   }  
 
