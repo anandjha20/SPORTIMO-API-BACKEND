@@ -44,7 +44,6 @@ export default function UpdatePredictionCard() {
       dataToSend2.append('name_ara', Formvlaues.name_ara);
       dataToSend2.append('image', Formvlaues.image);
       dataToSend2.append('card_type', Formvlaues.card_type);
-      dataToSend2.append('card_cat_id', Formvlaues.card_cat_id);
       dataToSend2.append('qus', Formvlaues.qus);
       dataToSend2.append('qus_ara', Formvlaues.qus_ara);
       dataToSend2.append('card_color', Formvlaues.card_color);
@@ -57,6 +56,10 @@ export default function UpdatePredictionCard() {
       dataToSend2.append('ops_3_ara', Formvlaues.ops_3_ara);
       dataToSend2.append('ops_4', Formvlaues.ops_4);
       dataToSend2.append('ops_4_ara', Formvlaues.ops_4_ara);
+      dataToSend2.append('point_1', Formvlaues.point_1);
+      dataToSend2.append('point_2', Formvlaues.point_2);
+      dataToSend2.append('point_3', Formvlaues.point_3);
+      dataToSend2.append('point_4', Formvlaues.point_4);
 
       let response = await axios.put(`/web_api/prediction_card_update/${_id}`, dataToSend2, options1);
       console.log('my fun call', response);
@@ -307,22 +310,22 @@ const handleTypeSelect = e => {
 
                                <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Point (Answer 1) </label>
-                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_1}  placeholder="Enter Point" className="card-control form-control" />
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_1} name="point_1"  placeholder="Enter Point" className="card-control form-control" />
                             </div>
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Point (Answer 2) </label>
-                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_2}  placeholder="Enter Point" className="card-control form-control" />
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_2} name="point_2"  placeholder="Enter Point" className="card-control form-control" />
                             </div>
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Point (Answer 3) </label>
-                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_3}  placeholder="Enter Point" className="card-control form-control" />
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_3} name="point_3"  placeholder="Enter Point" className="card-control form-control" />
                             </div>
 
                             <div className="col-lg-6 mb-4">
                               <label className="title-col mb-0">Point (Answer 4) </label>
-                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_4}  placeholder="Enter Point" className="card-control form-control" />
+                              <input type='number' autoComplete="off" defaultValue={location.state.rowData.point_4} name="point_4"  placeholder="Enter Point" className="card-control form-control" />
                             </div>
 
 

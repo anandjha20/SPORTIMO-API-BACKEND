@@ -111,29 +111,12 @@ const { poll_percent} = require('../myModel/helper_fun');
                  
                     let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
                   
-                    let updateData = {
-                                    "name":user_data.name,
-                                    "name_ara": user_data.name_ara,
-                                  "card_type": user_data.card_type,
-                                  
-                                  "card_cat_id":user_data.card_cat_id,
-                                  "time_range":user_data.time_range,
-                                  "card_color": user_data.card_color,             
-                                  "font_color": user_data.font_color,             
-
-                                  "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
-                                  "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,
-                                  "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,
-                                  "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,
-                                  "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,
-                                
-                        };
-           
+                             
                     
                 if(!isEmpty(image)){updateData.image = image }            
 
 
-                 prediction_cards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new: true}, (err, updatedUser) => {
+                 prediction_cards_tbl.findOneAndUpdate({_id: id},{$set : user_data },{new: true}, (err, updatedUser) => {
             if(err) {  console.log(err);
                 return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
             }else if(!isEmpty(updatedUser)){
