@@ -175,7 +175,7 @@ const token_check =  require('../middleware/token_check');
 
   // get notification list  
   router.post('/notification_list/:id?',NotificationController.notification_list_admin); 
-  router.delete('/notification_delete/:id',NotificationController.notification_delete); 
+  router.delete('/notification_delete/:id',NotificationController.notification_delete_admin); 
   router.post('/addNotification',NotificationController.addNotification); 
 
 

@@ -2,6 +2,7 @@
    const { send_noti } = require("../myModel/Notification_helper");
    
    const notification_tbl = require("../models/notification_tbl");
+   const notification_archive = require("../models/notification_archive");
     
 
 class notificationController {
@@ -40,15 +41,18 @@ class notificationController {
              
             } 
             static notification_list = async (req,res)=>{
+              let language = req.body.language;
               try {
-                   let language = req.body.language;
                       let  id = req.params.id;
                       let page  = req.body.page;
                     
                       let whr = {};
                   page = (isEmpty(page) || page == 0 )? 1 :page ; 
                        if(!isEmpty(id)){whr = {...whr, user_id: [id, '']  }}; 
-      
+                  let archive=await notification_archive.distinct('notification_id',{user_id:id})
+                  if(!isEmpty(archive)){
+                    whr={...whr,_id:{$nin:archive}  }
+                  }
                   let query =  notification_tbl.find(whr).sort({_id:-1});
                     const query2 =  query.clone();
                     const counts = await query.countDocuments();
@@ -63,7 +67,7 @@ class notificationController {
               }
                    
                   }          
-     static notification_delete = async(req,res)=>{
+     static notification_delete_admin = async(req,res)=>{
          try {       let id = req.params.id;
                       notification_tbl.findByIdAndDelete(id, function (err, docs) {
                     if (err){  console.log("notification_delete  === ",err);  
@@ -79,7 +83,34 @@ class notificationController {
               } catch (error) { console.log(error); return res.status(200).send({"status":true,"msg":'Server error' , "body":''}) ; }
      
           }
-        
+
+    static notification_delete_user = async(req,res)=>{
+      try {       let id = req.params.id;
+                  let user_id=req.body.user_id;
+                    notification_tbl.findById(id,async function (err, docs) {
+                  if (err){  console.log("notification_delete  === ",err);  
+                          let getError =  JSON.parse(JSON.stringify(err));
+                    return res.status(200).send({"status":false,"msg":getError.message , "body":''}) ; 
+                    }else if(!isEmpty(docs)){
+                      if(isEmpty(docs.user_id)){
+                        let add =new notification_archive({user_id,notification_id:docs._id});
+                        let data=await add.save()
+                        return res.status(200).send({"status":true,"msg":'Notification Deleted Successfully' , "body":''}) ;   
+                      
+                      }else{
+                        let deleted=await notification_tbl.findByIdAndDelete(id)
+                        return res.status(200).send({"status":true,"msg":'Notification Deleted Successfully' , "body":''}) ;   
+                      }
+                  }else{
+                    return res.status(200).send({"status":false,"msg":'Invalid Notification Id ' , "body":''}) ;  
+                  }
+              });
+  
+            } catch (error) { console.log(error); return res.status(200).send({"status":true,"msg":'Server error' , "body":''}) ; }
+  
+        }
+
+
       static addNotification = async(req,res) =>{
         let title = req.body.title;
         let message = req.body.message;
