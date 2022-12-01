@@ -1,4 +1,3 @@
-
 const cron = require('node-cron');
 const axios     = require("axios");
 const {day_match_getID,day_match_getID_test } = require("./myModel/Live_match_api_helper"); 
@@ -321,25 +320,36 @@ cron.schedule('* * * * *', async (req,res) => {
 
   });
 
-
-
-// update_match_data_by_date  calling conjon
+// update_live_match_data_by_match_id - calling conjon
 cron.schedule('* * * * *', async (req,res) => {
-  try {
-    let date=await before_after_Date(15)
-  //  console.log(date)
-         let url = 'http://100.26.5.179:3000/open_api/update_match_data_by_date';
-    // let url = 'http://localhost:3600/open_api/update_match_data_by_date';
-            
-      var config = { method: 'post',url: url ,data: {} };
-       let resp = await axios(config);
-
-   //    console.log("update_match_data_by_date is call  ==", resp );
-    } catch(error) { console.log( "cronjob api calling update_match_data_by_date rror == ", error);
-                 return false ; 
-             }    
               
-   });
+  try {
+    
+      let response = await day_match_getID();
+      let sumArr = [];
+  
+      let url = 'http://100.26.5.179:3000/open_api/update_live_match_data_by_match_id';
+     // let url = 'http://localhost:3600/open_api/update_live_match_data_by_match_id';
+    
+  if(response){  
+    
+
+  let allData =  await Promise.all( response.map( async (item)=>{
+          var config = { method: 'post',url: url ,data: {"match_id" :item } };
+          //  console.log("match_id == ",item);       
+          let resp = await axios(config);
+          sumArr.push(resp.data);
+      })) ;      
+      }
+    //  console.log("cronjob api calling card -22 ==", sumArr );
+
+  } catch(error) { console.log( "cronjob api calling card-22 server error  == ", error);
+                  return false ; 
+              }    
+
+  });
+
+
 
 //for after 15 days update_match_data_by_date  calling conjon
 cron.schedule('0 0 * * *', async (req,res) => {

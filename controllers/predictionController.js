@@ -183,6 +183,7 @@ const { poll_percent} = require('../myModel/helper_fun');
 
       static match_card_add = async(req,res)=>{
                   try {   
+                    console.log(req.body)
                     let match_name    = req.body.match_name;
                     let match_id      = req.body.match_id;
                     let card_id        = req.body.card_id;
@@ -365,9 +366,11 @@ const { poll_percent} = require('../myModel/helper_fun');
                let whr = (isEmpty(match_id))?   {user_id} : {user_id,match_id}   ;
                     if(!isEmpty(result)){whr={...whr,result}};
            let records = await playMatchCards_tbl.find(whr).populate({ path: 'match_card_id', populate: { path: 'card_id'}}).sort({_id:-1});
-             
-                
-             if(! isEmpty(records)){ records.map((item)=> { 
+            let data=[] 
+           let path=await MyBasePath(req,res);   
+             if(! isEmpty(records)){Promise.all( records.map((item)=> { 
+
+                              item.match_card_id.card_id.image = `${path}/image/assets/predictionCard_img/${item.match_card_id.card_id.image}`;
                               if(language != '' && language == 'ar'){ 
                                     
                                 if(typeof item.match_card_id.card_id === 'object' && item.match_card_id.card_id !== null){
@@ -380,9 +383,15 @@ const { poll_percent} = require('../myModel/helper_fun');
                                 }else{  item.match_card_id = {};}
                                 
                                 // item.card_id.name = item.card_id.name_ara;  
-                                  
+                           
                               }
-                              return item; })
+                              let point=[item.match_card_id.card_id.point_1,item.match_card_id.card_id.point_2,item.match_card_id.card_id.point_3,item.match_card_id.card_id.point_4]
+                              let max_point=point.sort(function(a, b){return b-a})[0]
+                              let min_point=point.sort(function(a, b){return a-b})[0]
+                              data.push({...item._doc,max_point,min_point})
+                                
+                              }))
+                              console.log(data)
             ////////////////////////////////////                
             let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
             let played_cards_count = await playMatchCards_tbl.find({match_id,user_id}).countDocuments();
@@ -390,7 +399,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             let p_counts = await userPowerUpsData(user_id);
            
                  return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,
-                 all_card_count,played_cards_count, "userpowers":p_counts.userpowers ,"usedPoweUps_count":p_counts.usedPoweUps_count, 'body':records });
+                 all_card_count,played_cards_count, "userpowers":p_counts.userpowers ,"usedPoweUps_count":p_counts.usedPoweUps_count, 'body':data });
                       }else{
                             return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
                             }
@@ -434,8 +443,8 @@ const { poll_percent} = require('../myModel/helper_fun');
                 }
                 
         }  
-
-  static playMatchCard_update = async(req,res)=>{
+//power up 
+  static playMatchCard_update_old = async(req,res)=>{
         try {   let id = req.params.id;
                 let match_card_id        = req.body.match_card_id;
                     let user_id          = req.body.user_id;
@@ -520,7 +529,59 @@ const { poll_percent} = require('../myModel/helper_fun');
          
    
        }
+
+       static playMatchCard_update = async(req,res)=>{
+        try {   let id = req.params.id;
+                let match_card_id        = req.body.match_card_id;
+                    let user_id          = req.body.user_id;
+                    let user_option      = req.body.user_option;
+                    let time_range_start = req.body.time_range_start;    
+                    let time_range_end   = req.body.time_range_end;
+                    let match_id         = req.body.match_id;
+                    let card_id          = req.body.card_id;
+                    let card_cat_id      = req.body.card_cat_id;
+                    let point            = req.body.point;
+
+            if( isEmpty(match_card_id) || isEmpty(user_id)  || 
+                  isEmpty(user_option) || isEmpty(match_id) || isEmpty(card_id) || 
+                  isEmpty(card_cat_id)  ){
+                  return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+                      }   
+
+            let matchDetails=await team_matches_tbl.findOne({_id:match_id});
+            //console.log({played_card_details,matchDetails})
+            if(matchDetails.status=="Played"){
+              return res.status(200).send({"status":false,"msg":'Cannot change answer because match is ended!!' }) ; 
+            }else if(matchDetails.status!="Fixture"){
+              return res.status(200).send({"status":false,"msg":'Cannot change answer because match is started!!' }) ; 
+            }else{
+      
+        // let checkName = await rows_count({"name":""})             
+          let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end ,match_id,
+                               card_id, card_cat_id,point };                
+                  
+       playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
+      if(err) {  console.log(err);
+          return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+      }else if(!isEmpty(updatedUser)){
+                  return res.status(200).send({"status":true,"msg":'Play Match Card Updated Successfully' , "body":updatedUser  }) ;   
+          }else{  return res.status(200).send({"status":false,"msg":'Invalid Play Match Card Id ' , "body": ''}) ;   
+                  } 
+        });
+
+
+      }
            
+    }catch (error) {  console.log(error); 
+               return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
+   
+           }
+         
+   
+       }
+
+     
+
        static playMatchCard_delete = async(req,res)=>{
         try {
                 let id = req.params.id;
@@ -615,6 +676,14 @@ const { poll_percent} = require('../myModel/helper_fun');
             transaction.map((item)=>{
                 score+=item.points;
             })
+            let all_card = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat);
+            let all_card_count=0;
+            all_card.map((item)=>{
+              console.log(item)
+              if(item.card_id!=null){
+                all_card_count+=1
+              }
+            })
             let played_cards = await playMatchCards_tbl.distinct('card_id',my_obj)
             let played_cards_count = played_cards.length;
             if(!isEmpty(played_cards)){condition_obj = {...condition_obj,card_id:{$nin:played_cards}}};
@@ -708,13 +777,16 @@ const { poll_percent} = require('../myModel/helper_fun');
 
                          }
                         item.card_id.image=`${path}/image/assets/predictionCard_img/${item.card_id.image}`
-                              data.push( item) ;
+                        let point=[item.card_id.point_1,item.card_id.point_2,item.card_id.point_3,item.card_id.point_4]
+                        let max_point=point.sort(function(a, b){return b-a})[0]
+                        let min_point=point.sort(function(a, b){return a-b})[0]
+                        data.push({...item._doc,max_point,min_point})
                                 
                             }
                          
                  }));
                  
-                 let all_card_count=data.length;
+                
 
                   //  let sendData = { all_card_count,played_cards_count,"list":data };
                     

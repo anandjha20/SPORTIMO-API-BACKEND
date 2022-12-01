@@ -27,6 +27,7 @@ const {day_match_getID_test, match_data_ara,day_match_getID,day_match_add, match
   getCardResult_09_END, getCardGreaterThan_19, getCardResult_19_END, getCardGreaterThan_22, getCardResult_22_END,
   get_card_result_add_21,getCardResult_21_END,get_card_result_add_02,getCardResult_02_END } = require("../myModel/Live_match_api_helper");
 const { Promise } = require("mongoose");
+const { promises } = require("nodemailer/lib/xoauth2");
 
 class ConjobController {
 
@@ -615,7 +616,7 @@ static get_card_008 = async (req, res) => {
       let match_id = 2701168; // 2701168;
 
       let data = await match_card_number(match_id, 8);
-      console.log('get_card_004 == ', data);
+      //console.log('get_card_004 == ', data);
       if (!isEmpty(data)) {
         if (data.team_a > data.team_b) {
           return res.status(200).send({ 'status': true, 'msg': "tam_A win success", 'body': "opt_1", 'data': data });
@@ -649,7 +650,7 @@ static get_card_008 = async (req, res) => {
       let match_id = 2701168; // 2701168;
 
       let data = await match_card_number(match_id, 1);
-      console.log('get_card_004 == ', data);
+      //console.log('get_card_004 == ', data);
       if (!isEmpty(data)) {
         if (data.team_a > data.team_b) {
           return res.status(200).send({ 'status': true, 'msg': "tam_A win success", 'body': "opt_1", 'data': data });
@@ -751,7 +752,7 @@ static get_card_008 = async (req, res) => {
       let match_id = 2701168; // 2701168;
 
       let data = await match_card_0011(match_id);
-      console.log('get_card_004 == ', data);
+      //console.log('get_card_004 == ', data);
       if (!isEmpty(data)) {
         let x = data.team_a - data.team_b;
         let resultx = Math.abs(x);
@@ -949,15 +950,15 @@ static get_card_008 = async (req, res) => {
       //top rankers bonus
         let bonus = await leaderboardController.rankBonus(match_id)
 
-        return true
+        return res.status(200).send({ 'status': true, 'msg': 'success' });
       } else {
-        return false
+        return res.status(200).send({ 'status': false, 'msg': 'no data' });
       }
 
 
     } catch (error) {
       console.log(error);
-      return false
+      return res.status(200).send({ 'status': false, 'msg': 'server error' });
     }
   }
 
@@ -1125,12 +1126,12 @@ static get_card_008 = async (req, res) => {
       let response = await day_match_add(date)
       
     if (response) {
-        response.map(async (item)=>{
+        let dd=await Promise.all( response.map(async (item)=>{
           let detail= await match_data_ara(item.match_id)
           let ara=detail.data;
           let league=detail.league_data;
         let match_details={
-              "match_id": item.match_id,
+              
               "match_name": item.team_a_name+" vs "+item.team_b_name,
               "match_name_ara": ara.team_a_name+" ضد "+ara.team_b_name,
               "league_logo": league.logo,
@@ -1156,16 +1157,17 @@ static get_card_008 = async (req, res) => {
               "score_b": item.score_b,
               "live": item.live[0]
           }
-        let findOld=await team_matches_tbl.find({match_id:item.match_id});
+        let findOld=await team_matches_tbl.findOne({match_id:item.match_id});
         if(!isEmpty(findOld)){
           let update=await team_matches_tbl.findOneAndUpdate({match_id:item.match_id},match_details);
         }else{
+          match_details={...match_details,"match_id": item.match_id,}
           let add=new team_matches_tbl(match_details);
           let data=await add.save();
         }
           
       })
-
+      )
 
       return res.status(200).send({ 'status': true, 'msg': 'success', 'body': response });
 
@@ -1178,6 +1180,67 @@ static get_card_008 = async (req, res) => {
       return res.status(200).send({ 'status': false, 'msg': error, 'body': '' });
     }
      }
+
+     static update_live_match_data_by_match_id = async (req, res) => {
+      try {
+        let match_id = req.body.match_id;
+       
+        let response = await matchCardAllData(match_id);
+        let item=response[0]
+        
+        let detail= await match_data_ara(match_id)
+        
+       if (response) {
+            let ara=detail.data;
+            let league=detail.league_data;
+          let match_details={
+                
+                "match_name": item.team_a_name+" vs "+item.team_b_name,
+                "match_name_ara": ara.team_a_name+" ضد "+ara.team_b_name,
+                "league_logo": league.logo,
+                "league_name": league.original_name,
+                "league_id": league.season_id,
+                "team_a_id": item.team_a_id,
+                "team_a_name": item.team_a_name,
+                "team_a_name_ara": ara.team_a_name,
+                "team_a_logo": ara.team_a_logo,
+                "team_a_short_name": item.team_a_short_name,
+                "team_a_short_name_ara": ara.team_a_short_name,
+                "team_b_id": item.team_b_id,
+                "team_b_name": item.team_b_name,
+                "team_b_name_ara": ara.team_b_name,
+                "team_b_logo": ara.team_b_logo,
+                "team_b_short_name": item.team_b_short_name,
+                "team_b_short_name_ara": ara.team_b_short_name,
+                "date_utc": item.date_utc,
+                "time_utc": item.time_utc,
+                "last_updated": item.last_updated,
+                "status": item.status,
+                "score_a": item.score_a,
+                "score_b": item.score_b,
+                "live": item.live[0]
+            }
+          let findOld=await team_matches_tbl.findOne({match_id});
+          if(!isEmpty(findOld)){
+            let update=await team_matches_tbl.findOneAndUpdate({match_id:item.match_id},match_details);
+            return res.status(200).send({ 'status': true, 'msg': 'success' });
+          }else{
+            return res.status(200).send({ 'status': false, 'msg': 'no data found'  });
+          }
+        
+          
+        } else {
+          return res.status(200).send({ 'status': false, 'msg': 'no data found'  });
+        }
+  
+      } catch (error) {
+        console.log(error);
+        return res.status(200).send({ 'status': false, 'msg': 'server error'  });
+      }
+       }
+  
+
+
 
 }
 

@@ -33,6 +33,7 @@ Router.get("/get_card_0020",ConjobController.get_card_0020);
 Router.get("/get_card_0023",ConjobController.get_card_0023); 
 Router.get("/get_card_0036",ConjobController.get_card_0036); 
 Router.post("/update_match_data_by_date",ConjobController.update_match_data_by_date);  
+Router.post("/update_live_match_data_by_match_id",ConjobController.update_live_match_data_by_match_id);  
 // add on mhn
 Router.get("/get_card_02",ConjobController.get_card_02); 
 Router.get("/get_card_21",ConjobController.get_card_21); 
@@ -44,7 +45,7 @@ Router.get("/cardTesting",ConjobController.cardTesting);
 Router.get("/match_run",ConjobController.match_run);   
 
 //POLL RESULT DISCLOSE
-Router.get("/poll_result_show",PollController.poll_result_show);   
+Router.get("/poll_result_show",PollController.match_poll_result_show);   
 
 
 

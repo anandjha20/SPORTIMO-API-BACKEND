@@ -646,7 +646,7 @@ static my_polls_old = async(req,res)=>{
       }
     }
 
-  static poll_result_show=async (req,res)=>{
+  static match_poll_result_show=async (req,res)=>{
     try{
       let match_id=req.body.match_id;
       let matchData=await team_matches.findOne({match_id})

@@ -521,10 +521,11 @@ useEffect(() => {
                             <label className="title-col">Select Match/league</label>
                               <Select name="match_id" className="card-select" menuPortalTarget={document.body} onChange={handleMatchName}
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={SelectMatchOption} 
-                                defaultValue={ {label: location.state.rowData.match_name, value : location.state.rowData.match_id} }
+                                defaultValue={ {label: location.state.rowData.match_name, value : location.state.rowData.match_id._id} }
                                 />
                             </div>
-                         
+                         {/* {location.state.rowData.match_id} */}
+
                             <div className="col-lg-6 reletive mb-4">
                             <label className="title-col">Select Prediction Card</label>
                               <Select name="card_id" className="card-select" menuPortalTarget={document.body}

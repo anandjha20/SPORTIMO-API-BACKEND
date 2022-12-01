@@ -1079,7 +1079,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                    
                let response = await axios(config);
                
-               
+               console.log("test")
                if(response){
                  
                  let datas =  isArray(response.data.datasportsgroup.competition)? response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match :response.data.datasportsgroup.competition[0].season[0].discipline[0].gender[0].round[0].match ;

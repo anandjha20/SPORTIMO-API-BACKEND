@@ -25,9 +25,12 @@ export default function AddMatchCard() {
       const data = new FormData(e.target);
       let Formvlaues = Object.fromEntries(data.entries());
       console.log("form data is == ", Formvlaues);
-   
-      Formvlaues.time_duration = minute + ':' + second;
-      Formvlaues.apperance_times = hminute + ':' + hsecond;
+      let min=minute==''?"00":minute;
+      let sec=second==''?"00":second
+      let hmin=hminute==''?"00":hminute;
+      let hsec=hsecond==''?"00":hsecond
+      Formvlaues.time_duration = min + ':' + sec;
+      Formvlaues.apperance_times = hmin + ':' + hsec;
       Formvlaues.match_name = matchLegue;
 
       let token = localStorage.getItem("token");
