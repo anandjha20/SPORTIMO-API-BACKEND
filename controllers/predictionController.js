@@ -679,7 +679,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             let all_card = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat);
             let all_card_count=0;
             all_card.map((item)=>{
-              console.log(item)
+             
               if(item.card_id!=null){
                 all_card_count+=1
               }
