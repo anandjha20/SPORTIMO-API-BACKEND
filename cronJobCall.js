@@ -33,27 +33,27 @@ const {before_after_Date} = require('./myModel/common_modal')
 
 //   });
 
-//// match end result show function calling cronjob api 
-// cron.schedule('* * * * *', async (req,res) => {
-//         try {
-//         let response = await day_match_getID();
-//         let sumArr = [];
-//         let url = `http://100.26.5.179:3000/open_api/matchResult_show`;
-//         //let url = `http://localhost:3600/open_api/matchResult_show`;
-//         if(response){  
-//         let allData =  await Promise.all( response.map( async (item)=>{
-//         var config = { method: 'get',url: url ,
-//         data: {"match_id" :item } };
-//         let resp = await axios(config);
-//         sumArr.push(resp.data);
-//         })) ;      
-//         }
-//         console.log("match end result ==", sumArr );
+// match end result show function calling cronjob api 
+cron.schedule('* * * * *', async (req,res) => {
+        try {
+        let response = await day_match_getID();
+        let sumArr = [];
+        let url = `http://100.26.5.179:3000/open_api/matchResult_show`;
+        //let url = `http://localhost:3600/open_api/matchResult_show`;
+        if(response){  
+        let allData =  await Promise.all( response.map( async (item)=>{
+        var config = { method: 'get',url: url ,
+        data: {"match_id" :item } };
+        let resp = await axios(config);
+        sumArr.push(resp.data);
+        })) ;      
+        }
+        console.log("match end result ==", sumArr );
 
-//         } catch(error) { console.log( "cronjob api calling server error  == ", error);
-//                   return false ;  }    
+        } catch(error) { console.log( "cronjob api calling server error  == ", error);
+                  return false ;  }    
 
-//         });
+        });
 
   
 //    //////////////////////////////////////
