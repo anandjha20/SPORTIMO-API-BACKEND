@@ -13,39 +13,40 @@ const user_reportings_tbl = require('../models/user_reportings');
  const user_allotted_powerups_tbl   = require ("../models/user_allotted_powerUps");
 
 const sentEmail = async (req,res) => {
-   var email =  req.email; 
-    var otp =  req.otp;
-console.log(email+" ==jk== "+otp);
+      var email =  req.email; 
+        var otp =  req.otp;
+    console.log(email+" ==jk== "+otp);
 
-var transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: 'jafarkhan17861@gmail.com',
-      pass: 'jyfkrrlurrensqlr',
-    // user: 'donotreply@d49.co.in',
-    //   pass: '&4e=XSQB'
-  }
-});
+    var transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: 'saportimoapk@gmail.com',
+        pass: 'ycduazenkmilnddv'
+        //pass: 'iivyzgskpuskcrgc',
+        // user: 'donotreply@d49.co.in',
+        //   pass: '&4e=XSQB'
+      }
+    });
 
 
-var mailOptions = {
-  from: 'jafarkhan17861@gmail.com',
-  to:email,
-  subject: 'Sending Email using Node.js',
-  text: 'your OTP is " '+ otp +' " do not share this otp' 
- // text : otp
-};
+    var mailOptions = {
+      from: 'saportimoapk@gmail.com',
+      to:email,
+      subject: 'Sending Email using Node.js',
+      text: 'your OTP is " '+ otp +' " do not share this otp' 
+    // text : otp
+    };
 
-transporter.sendMail(mailOptions, function(error, info){
-  if (error) {
-    console.log( 'email error line 34 ===  ',error);
-    return false;     
-  } else {
-    console.log('Email sent: ' + info.messageId);
-    return info.messageId; 
-  }
+    transporter.sendMail(mailOptions, function(error, info){
+      if (error) {
+        console.log( 'email error line 34 ===  ',error);
+        return false;     
+      } else {
+        console.log('Email sent: ' + info.messageId);
+        return info.messageId; 
+      }
 });
 
 

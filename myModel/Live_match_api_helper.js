@@ -845,7 +845,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                         let demo_2  =   await playMatchCard_remove(item);
                       }
                 
-             
+             return item
                 } ));
 
            let obj = {result_pass,result_fail }; 
@@ -1120,7 +1120,7 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                    //  if(time_u >= endSeconds ){
                     // if( item.status!="Fixture" ){   
                       if(startSeconds <= time_u  && endSeconds >= time_u  ){   
-                      match_id_arr.push(item.match_id);    
+                        match_id_arr.push(item.match_id);    
                     //  console.log("day_match_getID  == ",{startSeconds,endSeconds,time_u,match_id:item.match_id});
                   
                   }      
@@ -1263,12 +1263,13 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
           //let id = match_id;           
           let data = await matchCardAllData(match_id);
          // console.log(data) 
-if(data){
+if(data[0].status!="Fixture"){
         
-           let live_team_a = data[0].team_stats[0].stat[1].team_a ;
-           let live_team_b = data[0].team_stats[0].stat[1].team_b ;
-          let shots_count  = await match_event_shot_tbl.find({"match_id":match_id,"event_type":"fouls"},"team_a team_b" );
-          //console.log("shots_count data == ",shots_count);
+           let live_team_a = data[0].team_stats[0].stat[1].team_a==''?0:data[0].team_stats[0].stat[1].team_a ;
+           let live_team_b = data[0].team_stats[0].stat[1].team_b==''?0:data[0].team_stats[0].stat[1].team_b ;
+         // console.log({live_team_a,live_team_b})
+           let shots_count  = await match_event_shot_tbl.find({"match_id":match_id,"event_type":"fouls"} );
+         // console.log("shots_count data == ",shots_count);
         if( isEmpty(shots_count)) {
       // add event count row   for  match_event_shot table   
       let add = new match_event_shot_tbl({
@@ -1296,7 +1297,7 @@ if(data){
       try {
             //let id = match_id;           
             let data = await matchCardAllData(match_id); 
-       if(data){
+       if(data[0].status!="Fixture"){
           
              let substitutions_count  = data[0].events[0].substitutions[0].event.length ;
             
@@ -1328,24 +1329,26 @@ if(data){
  const card_39_befor_call = async(match_id) => {
       try {
             let data = await matchCardAllData(match_id); 
-              if(data){
+            if(data[0].status!="Fixture"){
+            //  console.log(data)  
                 
-                  let Red = data[0].team_stats[0].stat[8];
-                  let Yellow = data[0].team_stats[0].stat[6];
+                  let Red = data[0].team_stats[0].stat[10]==''?"0":data[0].team_stats[0].stat[10]=='';
+                  let Yellow = data[0].team_stats[0].stat[12]==''?"0":data[0].team_stats[0].stat[10]=='';
+                  //console.log({Red,Yellow})
                
                   let RedTotalPoint    = parseInt(Red.team_a)+parseInt(Red.team_b); 
                   let YellowTotalPoint = parseInt(Yellow.team_a)+parseInt(Yellow.team_b); 
                 
                   let totoal_point = RedTotalPoint + YellowTotalPoint;
-                  if(totoal_point == "NaN")
+                  if(totoal_point == NaN)
                     {
-                        console.log ("card_39_befor_call totoal_point == ", totoal_point) ;
+                       // console.log ("card_39_befor_call totoal_point == ", totoal_point) ;
                         return false;   
                     }                 
 
                   let shots_count  = await match_event_shot_tbl.find({"match_id":match_id,"event_type":"card_39"},"shots_count" );
-                  //console.log("shots_count data == ",shots_count);
-                if( isEmpty(shots_count)) {
+                  //console.log("shots_count data == ",{shots_count});
+                if(shots_count.length==0) {
               // add event count row   for  match_event_shot table   
               let add = new match_event_shot_tbl({
                         match_id,"event_type":"card_39" , "shots_count" : totoal_point });
@@ -1836,7 +1839,8 @@ const getCardGreaterThan_16 = async(match_id)=>{
       // this match id get data
     let liveData = await matchCardAllData(match_id); 
      // check match id get data
-    if(liveData){
+    //console.log(liveData[0].events[0].shots_on_target.length)
+    if(liveData[0].status!="Fixture" && liveData[0].events[0].shots_on_target.length!=0){
 
     ///  get short on target event array
       const data  = liveData[0].events[0].shots_on_target[0].event ;
@@ -1914,6 +1918,7 @@ const getCardGreaterThan_16 = async(match_id)=>{
                 let add = new match_event_shot_tbl({
                             match_id,"event_type":"card_16" , "shots_count" : 0 });
                         let add_rows = await add.save(); 
+                        return false
               } 
 
     }else{ 
@@ -1972,7 +1977,8 @@ const getCardResult_16_END  =  async(req,res)=>{
         // this match id get data
     let liveData = await matchCardAllData(match_id); 
      // check match id get data
-     if(liveData){
+     //console.log(liveData[0].events[0].bookings.length)
+     if(liveData[0].status!="Fixture" && liveData[0].events[0].bookings.length!=0){
 
     ///  get short on target event array
       const data  = liveData[0].events[0].bookings[0].event ;
@@ -2050,12 +2056,13 @@ const getCardResult_16_END  =  async(req,res)=>{
                 let add = new match_event_shot_tbl({
                             match_id,"event_type":"card_03_06" , "shots_count" : 0 });
                         let add_rows = await add.save(); 
-              } 
+                        return true;
+                      } 
 
             }else{ ; return false ; 
           }
           
-        } catch (error) {// console.log( error); 
+        } catch (error) { console.log( error); 
           return false ;  }
       }
       
@@ -2104,8 +2111,9 @@ const getCardResult_16_END  =  async(req,res)=>{
         try {   
           // this match id get data
           let liveData = await matchCardAllData(match_id); 
+     //     console.log(liveData[0].events[0].bookings.length)
      // check match id get data
-    if(liveData){
+    if(liveData[0].status!=Fixture && liveData[0].events[0].bookings.length!=0){
 
     ///  get short on target event array
       const data  = liveData[0].events[0].bookings[0].event ;
@@ -2183,6 +2191,7 @@ const getCardResult_16_END  =  async(req,res)=>{
                 let add = new match_event_shot_tbl({
                             match_id,"event_type":"card_06" , "shots_count" : 0 });
                         let add_rows = await add.save(); 
+                        return true;
               } 
 
     }else{ ; return false ; 
@@ -2241,7 +2250,7 @@ const getCardGreaterThan_09 = async(match_id)=>{
       // this match id get data
     let liveData = await matchCardAllData(match_id); 
      // check match id get data
-    if(liveData){
+    if(liveData[0].status!="Fixture" && liveData[0].events[0].fouls.length!=0){
 
     ///  get short on target event array
       const data  = liveData[0].events[0].fouls[0].event ;
@@ -2319,6 +2328,7 @@ const getCardGreaterThan_09 = async(match_id)=>{
                 let add = new match_event_shot_tbl({
                             match_id,"event_type":"card_09" , "shots_count" : 0 });
                         let add_rows = await add.save(); 
+                        return true;
               } 
        
     }else{ ; return false ; 
@@ -2377,7 +2387,7 @@ const getCardGreaterThan_19 = async(match_id)=>{
       // this match id get data
     let liveData = await matchCardAllData(match_id); 
      // check match id get data
-    if(liveData){
+    if(liveData[0].status!="Fixture" && liveData[0].events[0].corners.length!=0){
         ///  get short on target event array
       const data  = liveData[0].events[0].corners[0].event ;
    
@@ -2454,6 +2464,7 @@ const getCardGreaterThan_19 = async(match_id)=>{
                 let add = new match_event_shot_tbl({
                             match_id,"event_type":"card_19" , "shots_count" : 0 });
                         let add_rows = await add.save(); 
+                        return true;
               } 
        
     }else{ ; return false ; 
@@ -2508,7 +2519,7 @@ const getCardGreaterThan_22 = async(match_id)=>{
       // this match id get data
     let liveData = await matchCardAllData(match_id); 
      // check match id get data
-    if(liveData){
+    if(liveData[0].status!="Fixture" && liveData[0].events[0].offside.length!=0){
         ///  get short on target event array
       const data  = liveData[0].events[0].offside[0].event ;
    
@@ -2585,6 +2596,7 @@ const getCardGreaterThan_22 = async(match_id)=>{
                 let add = new match_event_shot_tbl({
                             match_id,"event_type":"card_22" , "shots_count" : 0 });
                         let add_rows = await add.save(); 
+                        return true;
               } 
        
     }else{ ; return false ; 
@@ -2762,7 +2774,7 @@ const get_card_result_add_02  =  async(req,res)=>{
                       let demo_2  =   await playMatchCard_remove(item);
                     }
               
-            
+                 return item;
               } ));
 
           let obj = {result_pass,result_fail }; 

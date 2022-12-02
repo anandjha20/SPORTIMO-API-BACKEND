@@ -99,10 +99,11 @@ class ConjobController {
               try {
 
               
-                let match_id = "2701241"//req.body.match_id; // 2701198;
+                let match_id = req.body.match_id; // 2701198;
                 //console.log("get_card-21 match_id is  === ", match_id);
                 let data = await matchCardEventAllData(match_id);
-                if (data) {
+                
+                if (data && data.events[0].corners.length!=0) {
                   let sum = data.events[0].corners[0].event;
 
                   let team_a_original_name = data.team_a_original_name;
@@ -131,7 +132,7 @@ class ConjobController {
                       let resss = await get_card_result_add_21({ right_ans, match_id });
                     }
 
-                    return res.status(200).send({ 'status': true, 'msg': 'success', 'body': shots_count });
+                    return res.status(200).send({ 'status': true, 'msg': 'success'});
 
                   } else {
                     let num_my = shots_count[0].shots_count;
@@ -174,10 +175,11 @@ class ConjobController {
               try {
 
               
-                let match_id = "2701241"//req.body.match_id; // 2701198;
+                let match_id = req.body.match_id; // 2701198;
                 //console.log("get_card-21 match_id is  === ", match_id);
                 let data = await matchCardEventAllData(match_id);
-                if (data) {
+                //console.log(data.events[0].bookings.length)
+                if (data && data.events[0].bookings.length!=0)  {
                   let sum = data.events[0].bookings[0].event;
 
                   // check event count     
@@ -216,18 +218,17 @@ class ConjobController {
                       // this function use for user card result set  on  
 
                       // match_event count update 
-                      let match_eventUpdate = match_event_shot_tbl.findOneAndUpdate({ "match_id": match_id, "event_type": "yellow_card_02" }, { $set: { "shots_count": sum.length } }, { new: true }, (err, updatedUser) => {
-                        if (err) { console.log(err); return false } else { return true }
-                      });
+                      let match_eventUpdate = match_event_shot_tbl.findOneAndUpdate({ "match_id": match_id, "event_type": "yellow_card_02" }, { $set: { "shots_count": sum.length } }, { new: true });
 
+                      return res.status(200).send({ 'status': true, 'msg': 'success 11'});
 
 
                     }
 
-                    return res.status(200).send({ 'status': true, 'msg': 'success 11', 'body': all_arr });
+                    return res.status(200).send({ 'status': true, 'msg': 'success 11' });
                   }
                 } else {
-                  return res.status(200).send({ 'status': false, 'msg': 'No Data Found!..', 'body': '' });
+                  return res.status(200).send({ 'status': false, 'msg': 'No Data Found!..' });
 
                 }
 
@@ -240,21 +241,21 @@ class ConjobController {
 /////////////////---------------------------------------------////////////////////////////////////////
 static get_card_16 = async (req, res) => {
     try {
+      let match_id = req.body.match_id;
+      // let response = await day_match_getID();
+      // let sumArr = [];
 
-      let response = await day_match_getID();
-      let sumArr = [];
+      // if (response) {
 
-      if (response) {
+      //   let allData = await Promise.all(response.map(async (item) => {
+      //    // console.log("match_id is == ", item);
+          let resp = await getCardGreaterThan_16(match_id);
 
-        let allData = await Promise.all(response.map(async (item) => {
-         // console.log("match_id is == ", item);
-          let resp = await getCardGreaterThan_16(item);
+        //   sumArr.push(resp);
+        // }));
+      //}
 
-          sumArr.push(resp);
-        }));
-      }
-
-      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -16  calling ', 'body': sumArr });
+      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -16  calling ' });
     } catch (error) {
       console.log("cronjob api card -16 calling server error  == ", error);
       return res.status(200).send({ 'status': false, 'msg': 'servr error' });
@@ -264,18 +265,19 @@ static get_card_16 = async (req, res) => {
   }
   static get_card_03 = async (req, res) => {
     try {
-
-      let response = await day_match_getID();
-      let sumArr = [];
-      if (response) {
-        let allData = await Promise.all(response.map(async (item) => {
+      let match_id=req.body.match_id;
+      //let response = await day_match_getID();
+      //let sumArr = [];
+      //if (response) {
+      //  let allData = await Promise.all(response.map(async (item) => {
         //  console.log("match_id is == ", item);
-          let resp = await getCardGreaterThan_03(item);
-          sumArr.push(resp);
-        }));
-      }
+          let resp = await getCardGreaterThan_03(match_id);
+          //console.log({match_id,resp})
+      //    sumArr.push(resp);
+      //  }));
+      //}
 
-      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -03  calling ', 'body': sumArr });
+      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -03  calling ' });
     } catch (error) {
       console.log("cronjob api card -03 calling server error  == ", error);
       return res.status(200).send({ 'status': false, 'msg': 'servr error' });
@@ -286,18 +288,18 @@ static get_card_16 = async (req, res) => {
 
   static get_card_06 = async (req, res) => {
     try {
-
-      let response = await day_match_getID();
-      let sumArr = [];
-      if (response) {
-        let allData = await Promise.all(response.map(async (item) => {
+      let match_id=req.body.match_id;
+      // let response = await day_match_getID();
+      // let sumArr = [];
+      // if (response) {
+      //   let allData = await Promise.all(response.map(async (item) => {
         //  console.log("match_id is == ", item);
-          let resp = await getCardGreaterThan_06(item);
-          sumArr.push(resp);
-        }));
-      }
+          let resp = await getCardGreaterThan_06(match_id);
+      //     sumArr.push(resp);
+      //   }));
+      // }
 
-      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -06  calling ', 'body': sumArr });
+      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -06  calling ' });
     } catch (error) {
       console.log("cronjob api card -06 calling server error  == ", error);
       return res.status(200).send({ 'status': false, 'msg': 'servr error' });
@@ -309,17 +311,18 @@ static get_card_16 = async (req, res) => {
 
   static get_card_09 = async (req, res) => {
     try {
-      let response = await day_match_getID();
-      let sumArr = [];
-      if (response) {
-        let allData = await Promise.all(response.map(async (item) => {
-        //  console.log("match_id is == ", item);
-          let resp = await getCardGreaterThan_09(item);
-          sumArr.push(resp);
-        }));
-      }
+      let match_id=req.body.match_id;
+      // let response = await day_match_getID();
+      // let sumArr = [];
+      // if (response) {
+      //   let allData = await Promise.all(response.map(async (item) => {
+      //   //  console.log("match_id is == ", item);
+          let resp = await getCardGreaterThan_09(match_id);
+      //     sumArr.push(resp);
+      //   }));
+      // }
 
-      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -19  calling ', 'body': sumArr });
+      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -19  calling '});
     } catch (error) {
       console.log("cronjob api card -19 calling server error  == ", error);
       return res.status(200).send({ 'status': false, 'msg': 'servr error' });
@@ -330,17 +333,19 @@ static get_card_16 = async (req, res) => {
 
   static get_card_19 = async (req, res) => {
     try {
-      let response = await day_match_getID();
-      let sumArr = [];
-      if (response) {
-        let allData = await Promise.all(response.map(async (item) => {
-        //  console.log("match_id is == ", item);
-          let resp = await getCardGreaterThan_19(item);
-          sumArr.push(resp);
-        }));
-      }
+      let match_id=req.body.match_id;
+      //console.log({match_id})
+      // let response = await day_match_getID();
+      // let sumArr = [];
+      // if (response) {
+      //   let allData = await Promise.all(response.map(async (item) => {
+      //   //  console.log("match_id is == ", item);
+          let resp = await getCardGreaterThan_19(match_id);
+      //     sumArr.push(resp);
+      //   }));
+      // }
 
-      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -19  calling ', 'body': sumArr });
+      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -19  calling ' });
     } catch (error) {
       console.log("cronjob api card -19 calling server error  == ", error);
       return res.status(200).send({ 'status': false, 'msg': 'servr error' });
@@ -350,17 +355,18 @@ static get_card_16 = async (req, res) => {
   }
   static get_card_22 = async (req, res) => {
     try {
-      let response = await day_match_getID();
-      let sumArr = [];
-      if (response) {
-        let allData = await Promise.all(response.map(async (item) => {
-        //  console.log("match_id is == ", item);
-          let resp = await getCardGreaterThan_22(item);
-          sumArr.push(resp);
-        }));
-      }
+      let match_id=req.body.match_id;
+      // let response = await day_match_getID();
+      // let sumArr = [];
+      // if (response) {
+      //   let allData = await Promise.all(response.map(async (item) => {
+      //   //  console.log("match_id is == ", item);
+          let resp = await getCardGreaterThan_22(match_id);
+      //     sumArr.push(resp);
+      //   }));
+      // }
 
-      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -19  calling ', 'body': sumArr });
+      return res.status(200).send({ 'status': true, 'msg': 'cronjob api card -19  calling ' });
     } catch (error) {
       console.log("cronjob api card -19 calling server error  == ", error);
       return res.status(200).send({ 'status': false, 'msg': 'servr error' });
@@ -377,6 +383,7 @@ static get_card_16 = async (req, res) => {
     let match_id = req.body.match_id; // 2701198;
    // console.log("get_card-18 match_id is  === ", match_id);
     let data = await matchCardEventAllData(match_id);
+    //console.log(data)
     if (data) {
       let sum = data.events[0].shots_on_target.length==0?[]:data.events[0].shots_on_target[0].event;
 
@@ -400,12 +407,13 @@ static get_card_16 = async (req, res) => {
           } else if (team_b_original_name == sum[0].team) {
             right_ans = "opt_2";
           } else { right_ans = "opt_3"; }
-          console.log("first function call == ");
+          //console.log("first function call == ");
           // this function use for user card result set  on  
           let resss = await get_card_result_add_18({ right_ans, match_id });
+          
         }
 
-        return res.status(200).send({ 'status': true, 'msg': 'success33', 'body': shots_count });
+        return res.status(200).send({ 'status': true, 'msg': 'success33' });
 
       } else {
         let num_my = shots_count[0].shots_count;
@@ -423,18 +431,17 @@ static get_card_16 = async (req, res) => {
           let resss = await get_card_result_add_18({ right_ans, match_id });
 
           // match_event count update 
-          let match_eventUpdate = match_event_shot_tbl.findOneAndUpdate({ "match_id": match_id, "event_type": "shots_on_target" }, { $set: { "shots_count": sum.length } }, { new: true }, (err, updatedUser) => {
-            if (err) { console.log(err); return false } else { return true }
-          });
+          let match_eventUpdate = match_event_shot_tbl.findOneAndUpdate({ "match_id": match_id, "event_type": "shots_on_target" }, { $set: { "shots_count": sum.length } }, { new: true });
 
+          return res.status(200).send({ 'status': true, 'msg': 'success 11' });
 
 
         }
 
-        return res.status(200).send({ 'status': true, 'msg': 'success 11', 'body': all_arr });
+        return res.status(200).send({ 'status': true, 'msg': 'success 11' });
       }
     } else {
-      return res.status(200).send({ 'status': false, 'msg': 'No Data Found!..', 'body': '' });
+      return res.status(200).send({ 'status': false, 'msg': 'No Data Found!..' });
 
     }
 
@@ -447,9 +454,9 @@ static get_card_16 = async (req, res) => {
 static get_card_008 = async (req, res) => {
   try {
     let match_id = req.body.match_id;
-    let data = await team_matches_tbl.findOne({ match_id }, 'match_id date_utc ');
-
-    if (data) {
+    let data = await team_matches_tbl.findOne({ match_id });
+   // console.log(data)
+    if (data.status!="Fixture") {
       var date_cur = new Date();
       var date_old = new Date(data.date_utc);
       var seconds_cur = Math.floor(date_cur.getTime() / 1000);
@@ -466,12 +473,12 @@ static get_card_008 = async (req, res) => {
 
       if (seconds_cur >= match_time) {
         //console.log("this card active");
-        card_08_befor_call(match_id);
-        card_39_befor_call(match_id);
-        card_34_befor_call(match_id);
+        let d1= await card_08_befor_call(match_id);
+        let d2= await card_39_befor_call(match_id);
+        let d3= await card_34_befor_call(match_id);
       } else { console.log("this card Not active "); }
       // let sum    = data.events.fouls.event;     
-      return res.status(200).send({ 'status': true, 'msg': 'Success', 'body': data });
+      return res.status(200).send({ 'status': true, 'msg': 'Success' });
 
     } else {
 
@@ -1121,10 +1128,10 @@ static get_card_008 = async (req, res) => {
      if(date==undefined){
         date = getcurntDate();
       }
-      
+      console.log({date})
 
       let response = await day_match_add(date)
-      
+      console.log({response})
     if (response) {
         let dd=await Promise.all( response.map(async (item)=>{
           let detail= await match_data_ara(item.match_id)
@@ -1158,12 +1165,16 @@ static get_card_008 = async (req, res) => {
               "live": item.live[0]
           }
         let findOld=await team_matches_tbl.findOne({match_id:item.match_id});
+        console.log({findOld})
         if(!isEmpty(findOld)){
           let update=await team_matches_tbl.findOneAndUpdate({match_id:item.match_id},match_details);
+        console.log({update})
         }else{
           match_details={...match_details,"match_id": item.match_id,}
           let add=new team_matches_tbl(match_details);
           let data=await add.save();
+        console.log({data})
+
         }
           
       })
@@ -1223,6 +1234,7 @@ static get_card_008 = async (req, res) => {
           let findOld=await team_matches_tbl.findOne({match_id});
           if(!isEmpty(findOld)){
             let update=await team_matches_tbl.findOneAndUpdate({match_id:item.match_id},match_details);
+            //console.log(update)
             return res.status(200).send({ 'status': true, 'msg': 'success' });
           }else{
             return res.status(200).send({ 'status': false, 'msg': 'no data found'  });

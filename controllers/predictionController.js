@@ -352,7 +352,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             let data=[] 
            let path=await MyBasePath(req,res);   
              if(! isEmpty(records)){Promise.all( records.map((item)=> { 
-
+                              if(item.match_card_id!=null){
                               item.match_card_id.card_id.image = `${path}/image/assets/predictionCard_img/${item.match_card_id.card_id.image}`;
                               if(language != '' && language == 'ar'){ 
                                     
@@ -372,9 +372,9 @@ const { poll_percent} = require('../myModel/helper_fun');
                               let max_point=point.sort(function(a, b){return b-a})[0]
                               let min_point=point.sort(function(a, b){return a-b})[0]
                               data.push({...item._doc,max_point,min_point})
-                                
+                                }
                               }))
-                              console.log(data)
+                            //  console.log(data)
             ////////////////////////////////////                
             let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
             let played_cards_count = await playMatchCards_tbl.find({match_id,user_id}).countDocuments();
