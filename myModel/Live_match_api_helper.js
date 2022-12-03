@@ -1265,8 +1265,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
          // console.log(data) 
 if(data[0].status!="Fixture"){
         
-           let live_team_a = data[0].team_stats[0].stat[1].team_a==''?0:data[0].team_stats[0].stat[1].team_a ;
-           let live_team_b = data[0].team_stats[0].stat[1].team_b==''?0:data[0].team_stats[0].stat[1].team_b ;
+           let live_team_a = data[0].team_stats[0].stat[1].team_a==''?"0":data[0].team_stats[0].stat[1].team_a ;
+           let live_team_b = data[0].team_stats[0].stat[1].team_b==''?"0":data[0].team_stats[0].stat[1].team_b ;
          // console.log({live_team_a,live_team_b})
            let shots_count  = await match_event_shot_tbl.find({"match_id":match_id,"event_type":"fouls"} );
          // console.log("shots_count data == ",shots_count);
@@ -1332,8 +1332,8 @@ if(data[0].status!="Fixture"){
             if(data[0].status!="Fixture"){
             //  console.log(data)  
                 
-                  let Red = data[0].team_stats[0].stat[10]==''?"0":data[0].team_stats[0].stat[10]=='';
-                  let Yellow = data[0].team_stats[0].stat[12]==''?"0":data[0].team_stats[0].stat[10]=='';
+                  let Red = data[0].team_stats[0].stat[10];
+                  let Yellow = data[0].team_stats[0].stat[12];
                   //console.log({Red,Yellow})
                
                   let RedTotalPoint    = parseInt(Red.team_a)+parseInt(Red.team_b); 

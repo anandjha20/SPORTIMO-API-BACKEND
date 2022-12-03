@@ -867,6 +867,10 @@ const { poll_percent} = require('../myModel/helper_fun');
     try{        
           let  user_id = req.params.id;
           let  match_id = req.body.match_id;
+          let page  = req.body.page;
+          page = (isEmpty(page) || page == 0 )? 1 :page ; 
+          let offest = (page -1 ) * 10 ; 
+
             let pipeLine = [];
   
           // let newId = mongoose.ObjectId(user_id);  matchDatatbl
@@ -891,7 +895,8 @@ const { poll_percent} = require('../myModel/helper_fun');
         pipeLine.push( {$group: { _id: "$match_id",  total_cards : { $sum: 1 }  ,records: { $push: "$$ROOT" }  } });
       
         pipeLine.push({ $lookup: {from: 'team_matches', localField: '_id', foreignField: '_id', as: 'matchData'} });
-          let datas =  await playMatchCards_tbl.aggregate(pipeLine).exec();
+          let datas =  await playMatchCards_tbl.aggregate(pipeLine).skip(offest).limit(5);
+        //console.log(datas)
           let path=await MyBasePath(req,res);    
         let gameData=[];  
         let abc=await Promise.all( datas.map(async (item)=>{
