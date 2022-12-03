@@ -460,11 +460,13 @@ static topMostWinners = async(req,res) =>{
 
 	let user_id = req.body.user_id ; 
 	//let matchID = req.body.match_id ; 
+	let data=[]
 		
 		let matchTopWinners =  await AllMatchWinUsersRank(  ); 
 		let userReankData = await AllMatchWinUsersRank_one(user_id);
+		data.push({matchTopWinners,userReankData})
 		if(matchTopWinners){
-				return res.status(200).send({"status":true ,"msg":"success","body":{matchTopWinners,userReankData}});
+				return res.status(200).send({"status":true ,"msg":"success","body":data});
 		}else{
 			return res.status(200).send({"status":false,"msg":"server error"});
 		}	
