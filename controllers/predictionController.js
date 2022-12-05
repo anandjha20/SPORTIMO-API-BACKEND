@@ -647,7 +647,7 @@ const { poll_percent} = require('../myModel/helper_fun');
              let user_id = req.body.user_id;  
              let cardCat={};
              let my_obj={match_id,user_id};
-             if(!isEmpty(card_cat_id)){cardCat={...cardCat,card_cat_id},my_obj={...my_obj,card_cat_id}}
+             if(!isEmpty(card_cat_id)){cardCat={...cardCat,card_cat_id}}
              let condition_obj={};
             if(!isEmpty(req.body.match_id)){
               condition_obj = {...condition_obj,match_id:req.body.match_id}
@@ -659,16 +659,10 @@ const { poll_percent} = require('../myModel/helper_fun');
             transaction.map((item)=>{
                 score+=item.points;
             })
-            let all_card = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat);
-            let all_card_count=0;
-            all_card.map((item)=>{
-             
-              if(item.card_id!=null){
-                all_card_count+=1
-              }
-            })
+            
             let played_cards = await playMatchCards_tbl.distinct('card_id',my_obj)
             let played_cards_count = played_cards.length;
+            let all_card_count = await match_cards_tbl.find(condition_obj).countDocuments();                 
             if(!isEmpty(played_cards)){condition_obj = {...condition_obj,card_id:{$nin:played_cards}}};
             let usedPoweUps_count = await used_power_ups_tbl.find({user_id}).countDocuments();
             let userUsedpowerpus  = await user_allotted_powerups_tbl.find({match_id,user_id});
@@ -768,7 +762,6 @@ const { poll_percent} = require('../myModel/helper_fun');
                             }
                          
                  }));
-                 
                 
 
                   //  let sendData = { all_card_count,played_cards_count,"list":data };
@@ -869,7 +862,7 @@ const { poll_percent} = require('../myModel/helper_fun');
           let  match_id = req.body.match_id;
           let page  = req.body.page;
           page = (isEmpty(page) || page == 0 )? 1 :page ; 
-          let offest = (page -1 ) * 10 ; 
+          let offest = (page -1 ) * 7 ; 
 
             let pipeLine = [];
   
@@ -881,7 +874,7 @@ const { poll_percent} = require('../myModel/helper_fun');
           }else{
             pipeLine.push({$match:{"user_id":newId,"active":false}});
           }
-        
+          
           pipeLine.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'team_matches_tbl'} });
           pipeLine.push({$unwind : "$team_matches_tbl"});
   
@@ -895,7 +888,10 @@ const { poll_percent} = require('../myModel/helper_fun');
         pipeLine.push( {$group: { _id: "$match_id",  total_cards : { $sum: 1 }  ,records: { $push: "$$ROOT" }  } });
       
         pipeLine.push({ $lookup: {from: 'team_matches', localField: '_id', foreignField: '_id', as: 'matchData'} });
-          let datas =  await playMatchCards_tbl.aggregate(pipeLine).skip(offest).limit(5);
+        pipeLine.push({'$sort' :{
+          'matchData.date_utc':-1,"matchData.time_utc":-1
+        }})
+        let datas =  await playMatchCards_tbl.aggregate(pipeLine).skip(offest).limit(7);
         //console.log(datas)
           let path=await MyBasePath(req,res);    
         let gameData=[];  

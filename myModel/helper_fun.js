@@ -190,6 +190,7 @@ const sendNotificationAdd = (my_obj )=>{
   const matchWinUsersRank = async (match_id) => {
     try{
           let obj_match_id =  mongoose.Types.ObjectId(match_id);
+          console.log(obj_match_id)
            let pipeline  = [] ;
               pipeline.push({$match: {"points_by": "match" }});
                pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_info'} });
@@ -201,7 +202,7 @@ const sendNotificationAdd = (my_obj )=>{
             // pipeline.push({ $project: {"_id":false,"user_name":"$user_info.name","points":true,
                 //       "match_name":"$match_info.match_name",match_id: true,user_id:true } }); 
              
-            pipeline.push({ $group: {"_id": { user_id : "$user_id",image : "$user_info.image", user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id", date : "$match_info.date_utc" } , "points": { $sum: { "$toInt": "$points"} }, } });
+            pipeline.push({ $group: {"_id": { user_id : "$user_id",image : "$user_info.image", user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id", date : "$match_info.date_utc", time : "$match_info.time_utc", team_a_logo : "$match_info.team_a_logo", team_b_logo : "$match_info.team_b_logo", match_status : "$match_info.status" } , "points": { $sum: { "$toInt": "$points"} }, } });
             
             // pipeline.push({ $project: {"_id":false ,"user_name":"$_id.user_name","points": true,
            //    "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });
@@ -211,7 +212,11 @@ const sendNotificationAdd = (my_obj )=>{
  
     let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
    
-    if(allUsersData){ allUsersData.map((item)=>{ return  (item._id.image == '') ? item._id.image =  '': item._id.image =  "http://34.204.253.168:3000/image/assets/user_img/"+item._id.image ;}); }
+    if(allUsersData){ allUsersData.map((item)=>{
+      (item._id.image == '') ? item._id.image =  '': item._id.image =  "http://100.26.5.179:3000/image/assets/user_img/"+item._id.image ;
+      return  item;
+    }
+      ) }
     
        
             return  (allUsersData)? allUsersData : false ; 
@@ -248,7 +253,7 @@ const sendNotificationAdd = (my_obj )=>{
     let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
       let newobj = {}; 
     if(allUsersData){ allUsersData.map((item,index )=>{ 
-          (item._id.image == '') ? item._id.image =  '': item._id.image =  "http://34.204.253.168:3000/image/assets/user_img/"+item._id.image ;
+          (item._id.image == '') ? item._id.image =  '': item._id.image =  "http://100.26.5.179:3000/image/assets/user_img/"+item._id.image ;
         
           item.rank = index + 1 ;
           if(item._id.user_id == user_id ){  newobj =  item; }

@@ -405,24 +405,39 @@ static  all_matches_leaderboard = async (req,res)	=>{
 			let s_date = req.body.s_date;
 			let e_date = req.body.e_date;
 			let match_id = req.body.match_id;
-
+			let page=(req.body.page==''||req.body.page==undefined)?1:req.body.page;
+			let offset=(page-1)*5;
+			let pipeLine=[{
+				'$group': {
+					'_id': '$match_id', 
+					'date': {
+						'$last': '$date'
+					}
+				}
+			}, {
+				'$sort': {
+					'date': -1
+				}
+			}]
 			if(!isEmpty(match_id)){
 				var response=[];
 				let matchId=mongoose.Types.ObjectId(match_id);
 				response.push(matchId)
 			
 			}else if(!isEmpty(s_date) && !isEmpty(e_date)){
-				var response = await transaction_tbls.distinct('match_id',{date:{$gte:s_date,$lte:e_date}});   
+				var response = await transaction_tbls.distinct('match_id',{date:{$gte:s_date,$lte:e_date}}).skip(offset).limit(5);   
+			
 			}else{
-				var response = await transaction_tbls.distinct('match_id');   
+				var response = await transaction_tbls.aggregate(pipeLine).skip(offset).limit(5) ;  
+			
 			}
 			
 		 if(response){	
 				let sumdata = [];     
 
 			let forGat = await Promise.all(response.map( async(item)=>{
-				  let matchTopWinners =  await matchWinUsersRank( item.toString() ); 
-					let userReankData = await matchWinUsersRank_one( item.toString(),user_id);
+				  let matchTopWinners =  await matchWinUsersRank( item._id.toString() ); 
+					let userReankData = await matchWinUsersRank_one( item._id.toString(),user_id);
 
 										if(! isEmpty(matchTopWinners)) { sumdata.push({ matchTopWinners,userReankData}) } } ));
       		
