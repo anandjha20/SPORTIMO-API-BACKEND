@@ -267,7 +267,7 @@ const { poll_percent} = require('../myModel/helper_fun');
               let user_option      = req.body.user_option;
               let time_range_start = req.body.time_range_start;    
               let time_range_end   = req.body.time_range_end;
-
+              let league_id=(req.body.league_id==undefined||req.body.league_id=='')?"61217":req.body.league_id;
               let match_id         = req.body.match_id;
               let card_id          = req.body.card_id;
               let card_cat_id      = req.body.card_cat_id;  
@@ -310,7 +310,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             }else{
               /////////////////////////////////////////////////////////////
               let add = new playMatchCards_tbl({ match_card_id,user_id,user_option,time_range_start,
-                time_range_end,match_id,card_id,card_cat_id,point,powerUpPoints });
+                time_range_end,match_id,league_id,card_id,card_cat_id,point,powerUpPoints });
                 
                 add.save((err, data) => {
                   if (err) {  console.log(err);
@@ -673,7 +673,7 @@ const { poll_percent} = require('../myModel/helper_fun');
                                                     // { path: 'match_card_id', populate: { path: 'card_id'}}
         
        let records = await match_cards_tbl.find(condition_obj).populate('card_id',null,cardCat)
-                        .populate('match_id',' match_name team_a_name team_a_name_ara team_b_name team_b_name_ara').sort({_id:-1});
+                        .populate('match_id',' match_name team_a_name team_a_name_ara team_b_name team_b_name_ara league_id').sort({_id:-1});
           let data=[];
           let path=await MyBasePath(req,res);
                 if(records){  Promise.all(records.map(async(item,index)=> { 

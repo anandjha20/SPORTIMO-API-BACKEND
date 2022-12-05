@@ -193,7 +193,7 @@ const add_win_point = async(req,res)=>{
                 let powerUpPoints = req.powerUpPoints;
                 let match_id = req.match_id.toString();
                 let card_id  = req.card_id.toString();
-              
+                let league_id=(req.league_id==undefined||req.league_id=='')?"61217":req.league_id;
                 let user_play_card_id   = req.user_play_card_id;
               
                 if( isEmpty(user_id) || isEmpty(winPoints) || isEmpty(match_id) || isEmpty(card_id)){
@@ -205,7 +205,7 @@ const add_win_point = async(req,res)=>{
                      winPoints  =  winPoints * powerUpPoints ;
                     }    
                    //console.log(winPoints)
-               let add = new transactions_tbl({user_id,"points":winPoints,match_id,card_id,type:"credit",points_by:"match",description :"game win"}); 
+               let add = new transactions_tbl({user_id,"points":winPoints,match_id,card_id,type:"credit",points_by:"match",description :"game win",league_id}); 
                  let datas = await add.save();
                let updata  =  user_tbl.findOneAndUpdate({_id: user_id},{$inc : {points :  winPoints } },{new: true}, (err, updatedUser) => {
                                if(err) { console.log(err);}  });
