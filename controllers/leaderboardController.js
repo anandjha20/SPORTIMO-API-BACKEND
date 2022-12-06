@@ -557,6 +557,7 @@ static topMostWinners = async(req,res) =>{
 		let userReankData = await AllMatchWinUsersRank_one(user_id);
 		if(Object.keys( userReankData).length!=0){
 			let achievements=await user_achievements.findOne({user_id:user_id,league_id:"61217"});
+			
 			if( isEmpty(achievements) ){
 				let rank=(userReankData.rank==undefined || userReankData.rank==null)?0:userReankData.rank;
 				let obj=new user_achievements({user_id:user_id,league_id:"61217",rank})
@@ -564,7 +565,7 @@ static topMostWinners = async(req,res) =>{
 				
 			}else{
 				let rank=achievements.rank<((userReankData.rank==undefined || userReankData.rank==null)?0:userReankData.rank)?achievements.rank:userReankData.rank;
-				let dd=await user_achievements.findOneAndUpdate({user_id:user_id,league_id:leagueData[0].league_id},{$set:{rank}})
+				let dd=await user_achievements.findOneAndUpdate({user_id:user_id,league_id:"61217"},{$set:{rank}})
 				
 			
 			}}
