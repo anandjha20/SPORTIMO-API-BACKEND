@@ -13,5 +13,3 @@ const user_achievements = new Schema({
 module.exports = mongoose.model('user_achievements', user_achievements);
 
 
-
-

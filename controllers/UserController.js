@@ -27,11 +27,13 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds,preferences_ar_convar
     const match_cards = require('../models/match_cards');
     const transaction_tbls = require("../models/transactions")         
     const play_match_cards_tbl = require("../models/playMatchCards");     
-const team_matches = require('../models/team_matches');
-const userArchive = require('../models/userArchive');     
-const request_tbl = require('../models/request');     
-const notification_tbl = require('../models/notification_tbl');
-const request = require('../models/request');
+    const team_matches = require('../models/team_matches');
+    const userArchive = require('../models/userArchive');     
+    const request_tbl = require('../models/request');     
+    const notification_tbl = require('../models/notification_tbl');
+    const request = require('../models/request');
+    const user_reportings = require('../models/user_reportings');
+    const poll_results = require('../models/poll_result');
 
 
 
@@ -1216,6 +1218,12 @@ static verify_nickName = async(req,res)=>{
                   
                         }
                         if(!isEmpty(response)){
+                            let d1=await block_user_tbl.deleteMany({$or:[{from_user:_id},{to_user:_id}]});
+                            let d2=await follower_tbls.deleteMany({$or:[{follower_id:_id},{following_id:_id}]});
+                            let d3=await play_match_cards_tbl.deleteMany({user_id:_id});
+                            let d4=await user_reportings.deleteMany({$or:[{reported_user_id:_id},{reporting_user_id:_id}]});
+                            let d5=await poll_results.deleteMany({user_id:_id});
+                            let d6=await transaction_tbls.deleteMany({user_id:_id});
                             let obj=new userArchive(archiveData);
                             let archive=await obj.save()
                             return res.status(200).send({"status":true,"msg":"this user account deleted","body":''});        
