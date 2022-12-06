@@ -1,7 +1,7 @@
 let  express_2 = require('express');
 const mongoose = require('mongoose');
-const {my_utc_time, userPowerUpsData,getcurntDate,getTime,saveData, isEmpty,rows_count,ArrChunks } = require('../myModel/common_modal');
-const {matchWinUsersRank_one, sendNotificationAdd } = require('../myModel/helper_fun');
+const {my_utc_time, userPowerUpsData,getcurntDate,getTime,saveData, isEmpty,rows_count,ArrChunks, } = require('../myModel/common_modal');
+const {matchWinUsersRank_one, sendNotificationAdd,leagueWinUsersRank } = require('../myModel/helper_fun');
 const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
 const  {MyBasePath} = require("../myModel/image_helper");
 const { poll_percent} = require('../myModel/helper_fun');
@@ -17,7 +17,7 @@ const { poll_percent} = require('../myModel/helper_fun');
     const used_power_ups_tbl   = require ("../models/used_power_ups");
     const power_ups_tbl   = require ("../models/power_ups");
     const transactions = require ("../models/transactions");
-
+    const user_achievements = require('../models/user_achievements');
     const user_allotted_powerups_tbl   = require ("../models/user_allotted_powerUps");
     const team_matches_tbl = require("../models/team_matches");
 
@@ -916,6 +916,151 @@ const { poll_percent} = require('../myModel/helper_fun');
         }       
     
       }
+  
+  static my_played_leagues = async(req,res)=>{
+    try{        
+          let  user_id = req.params.id;
+          let  league_id = req.body.league_id;
+          let page  = req.body.page;
+          page = (isEmpty(page) || page == 0 )? 1 :page ; 
+          let offest = (page -1 ) * 7 ; 
+          let newId =  mongoose.Types.ObjectId(user_id);
+
+            let pipeLine = [];
+  
+          // let newId = mongoose.ObjectId(user_id);  matchDatatbl
+          if(!isEmpty(league_id)){
+            
+            pipeLine.push({$match:{"user_id":newId,"league_id":league_id,"active":false}});
+          }else{
+            pipeLine.push({$match:{"user_id":newId,"active":false}});
+          }
+        pipeLine.push( {
+          '$group': {
+            '_id': '$card_id', 
+            'total': {
+              '$sum': 1
+            }, 
+            'win': {
+              '$sum': {
+                '$cond': {
+                  'if': {
+                    '$eq': [
+                      '$result', 'win'
+                    ]
+                  }, 
+                  'then': 1, 
+                  'else': 0
+                }
+              }
+            }, 
+            'points': {
+              '$sum': {
+                '$cond': {
+                  'if': {
+                    '$eq': [
+                      '$result', 'win'
+                    ]
+                  }, 
+                  'then': '$point', 
+                  'else': 0
+                }
+              }
+            }, 
+            'league_id': {
+              '$first': '$league_id'
+            }
+          }
+        }, {
+          '$lookup': {
+            'from': 'prediction_cards', 
+            'localField': '_id', 
+            'foreignField': '_id', 
+            'as': 'cardData'
+          }
+        }, {
+          '$unwind': {
+            'path': '$cardData'
+          }
+        }, {
+          '$project': {
+            'card_id': '$cardData._id', 
+            'card_name': '$cardData.name', 
+            'card_type': '$cardData.card_type', 
+            'card_icon': '$cardData.image', 
+            'card_color': '$cardData.card_color', 
+            'fond_color': '$cardData.font_color', 
+            'played_total': '$total', 
+            'total_win': '$win', 
+            'total_points': '$points', 
+            'league_id': '$league_id'
+          }
+        }, {
+          '$sort': {
+            'total_points': -1
+          }
+        }, {
+          '$group': {
+            '_id': '$league_id', 
+            'records': {
+              '$addToSet': '$$ROOT'
+            }
+          }
+        })  
+          
+        let datas =  await playMatchCards_tbl.aggregate(pipeLine).skip(offest).limit(7);
+        //console.log(datas)
+          let path=await MyBasePath(req,res);    
+        let leagueData=[];  
+        let abc=await Promise.all( datas.map(async (item)=>{
+            item.records.map((i)=>{
+            //console.log(i)
+            i.card_icon=`${path}/image/assets/predictionCard_img/${i.card_icon}`
+          })
+            let league_data=await transactions.aggregate([
+                                                        {
+                                                          '$match': {
+                                                            'points_by': 'match', 
+                                                            'league_id': item._id, 
+                                                            'user_id': newId
+                                                          }
+                                                        }, {
+                                                          '$group': {
+                                                            '_id': '$user_id', 
+                                                            'points': {
+                                                              '$sum': {
+                                                                '$toInt': '$points'
+                                                              }
+                                                            }
+                                                          }
+                                                        }
+                                                      ]);
+
+            let league_points = league_data[0].points;                                          
+            let matches = await playMatchCards_tbl.distinct('match_id',{user_id:user_id,league_id:item._id} );
+            let played_matches = matches.length;
+            let total_matches = await team_matches_tbl.find({league_id:item._id,status:"Played"}).countDocuments()
+            let rank = await leagueWinUsersRank(item._id,user_id)
+            let user_rank=rank.newobj.rank;
+            let achievements=await user_achievements.findOne({user_id,league_id:item._id});
+            let user_top_rank=Object.keys( achievements).length==0?"0":achievements.rank;
+            let league_Data = await team_matches_tbl.find({league_id:item._id,status:"Played"},'league_name league_logo league_id date_utc').sort({_id:-1}).limit(1);
+		
+            leagueData.push({...item,league_points,played_matches,total_matches,user_rank,user_top_rank,league_Data})
+          }));
+
+              if(!isEmpty(leagueData)){
+                    res.status(200).send({'status':true,'msg':"success",  'body':leagueData });
+                  }else{
+                    res.status(200).send({'status':true,'msg':"No data found!..",'body':leagueData  });
+                  }  
+  
+          } catch (error) { console.log(error);
+            res.status(200).send({'status':false,'msg':"Server error"});
+        }       
+    
+      }
+      
   }
 
 

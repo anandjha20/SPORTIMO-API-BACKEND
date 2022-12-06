@@ -1,4 +1,4 @@
-  const {isEmpty,getcurntDate,rows_count }  = require("./common_modal");   
+  const {isEmpty,getcurntDate,rows_count,getLocalDateTime }  = require("./common_modal");   
   const { userSentNotification }  = require("./Notification_helper");   
 
     const user_tbl = require('../models/user');    
@@ -190,7 +190,7 @@ const sendNotificationAdd = (my_obj )=>{
   const matchWinUsersRank = async (match_id) => {
     try{
           let obj_match_id =  mongoose.Types.ObjectId(match_id);
-          console.log(obj_match_id)
+          //console.log(obj_match_id)
            let pipeline  = [] ;
               pipeline.push({$match: {"points_by": "match" }});
                pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_info'} });
@@ -212,11 +212,16 @@ const sendNotificationAdd = (my_obj )=>{
  
     let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
    
-    if(allUsersData){ allUsersData.map((item)=>{
+    if(allUsersData){
+      let d1=await Promise.all( allUsersData.map(async (item)=>{
+        let local=await getLocalDateTime({date_utc:item._id.date,time_utc:item._id.time});
+        item._id.date=local.local_date; 
+        item._id.time=local.local_time; 
       (item._id.image == '') ? item._id.image =  '': item._id.image =  "http://100.26.5.179:3000/image/assets/user_img/"+item._id.image ;
+      
       return  item;
     }
-      ) }
+      ) )}
     
        
             return  (allUsersData)? allUsersData : false ; 
@@ -269,6 +274,91 @@ const sendNotificationAdd = (my_obj )=>{
          }    
 
   } 
+
+     // top Most game based Winners list make functions 
+     const leagueWinUsersRank = async (league_id,user_id) => {
+      try{
+             let pipeline  = [
+              {
+                '$match': {
+                  'points_by': 'match', 
+                  'league_id': league_id
+                }
+              }, {
+                '$group': {
+                  '_id': '$user_id', 
+                  'points': {
+                    '$sum': {
+                      '$toInt': '$points'
+                    }
+                  }
+                }
+              }, {
+                '$sort': {
+                  'points': -1
+                }
+              }, {
+                '$limit': 10
+              }, {
+                '$lookup': {
+                  'from': 'user_tbls', 
+                  'localField': '_id', 
+                  'foreignField': '_id', 
+                  'as': 'userData'
+                }
+              }, {
+                '$unwind': {
+                  'path': '$userData'
+                }
+              }, {
+                '$project': {
+                  'user_id': '$userData._id', 
+                  'user_name': '$userData.name', 
+                  'user_image': '$userData.image', 
+                  'points': '$points'
+                }
+              }
+            ] ;
+                // pipeline.push({$match: {"points_by": "match" }});
+                //  pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user_info'} });
+                //  pipeline.push({ $unwind: "$user_info" });
+                // pipeline.push({ $lookup: {from: 'team_matches', localField: 'match_id', foreignField: '_id', as: 'match_info'} });
+                // pipeline.push({ $unwind: "$match_info" });
+                // pipeline.push({$match: {"match_id": obj_match_id }});
+                 
+              // pipeline.push({ $project: {"_id":false,"user_name":"$user_info.name","points":true,
+                  //       "match_name":"$match_info.match_name",match_id: true,user_id:true } }); 
+               
+              //pipeline.push({ $group: {"_id": { user_id : "$user_id",image : "$user_info.image", user_name : "$user_info.name",match_name : "$match_info.match_name",match_id : "$match_id", date : "$match_info.date_utc", time : "$match_info.time_utc", team_a_logo : "$match_info.team_a_logo", team_b_logo : "$match_info.team_b_logo", match_status : "$match_info.status" } , "points": { $sum: { "$toInt": "$points"} }, } });
+              
+              // pipeline.push({ $project: {"_id":false ,"user_name":"$_id.user_name","points": true,
+             //    "match_name":"$_id.match_name",match_id: "$_id.match_id" ,user_id:"$_id.user_id" } });
+  
+                //  pipeline.push({ $sort : { "points": -1}});  
+                //   pipeline.push({ $limit :10});  
+   
+      let allUsersData = await transaction_tbls.aggregate(pipeline).exec();
+     let newobj={};
+      if(allUsersData){
+        let d1=await Promise.all( allUsersData.map(async (item,index)=>{
+        (item.user_image == '') ? item.user_image =  '': item.user_image =  "http://100.26.5.179:3000/image/assets/user_img/"+item.user_image ;
+        item.rank = index + 1 ;
+            if(item.user_id == user_id ){  newobj =  item; }
+           
+        return  item;
+      }
+        ) )}
+      
+         
+              return  (allUsersData)? {allUsersData,newobj} : false ; 
+  
+        } catch (error) { console.log(error);
+          return false ; 
+           }    
+  
+    } 
+   
+  
 
   // top Most overAll  Winners list make functions 
   const AllMatchWinUsersRank = async () => {
@@ -403,4 +493,4 @@ const preferences_ar_convart = async(tbl,preferences) =>{
   
 
 module.exports = {geqWin,geqLose, poll_percent,all_list_come,autoincremental,sendNotificationAdd,userBlocked_fun,team_match_addOne,
-            myBlockUserIds,matchWinUsersRank,matchWinUsersRank_one,AllMatchWinUsersRank,AllMatchWinUsersRank_one,preferences_ar_convart }
+            myBlockUserIds,matchWinUsersRank,matchWinUsersRank_one,AllMatchWinUsersRank,AllMatchWinUsersRank_one,leagueWinUsersRank,preferences_ar_convart }

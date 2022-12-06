@@ -233,6 +233,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
     router.post('/leaderboard',leaderboardController.leaderboard);
     router.post('/user_point_details',leaderboardController.user_point_details);
     router.post('/all_matches_leaderboard',leaderboardController.all_matches_leaderboard);
+    router.post('/all_league_leaderboard',leaderboardController.all_league_leaderboard);
     router.post('/topMostWinners',leaderboardController.topMostWinners);
    
     //geq api
@@ -250,6 +251,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
      
    /// testing routs  
       router.get('/my_played_matches/:id?',predictionController.my_played_matches); 
+      router.get('/my_played_leagues/:id?',predictionController.my_played_leagues); 
 
       router.post('/sms_api_test/:mobile?',UserController.sms_api_test)
 

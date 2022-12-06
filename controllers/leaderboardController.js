@@ -6,7 +6,7 @@ let mongoose = require('mongoose');
 
 const { rows_count,isEmpty,sentEmail,gen_str,getcurntDate,getTime,send_mobile_otp,user_logs_add,FulldateTime,before_after_Date } = require('../myModel/common_modal');
 const { autoincremental,sendNotificationAdd,myBlockUserIds,matchWinUsersRank,matchWinUsersRank_one,
-			AllMatchWinUsersRank,AllMatchWinUsersRank_one } = require('../myModel/helper_fun');
+			AllMatchWinUsersRank,AllMatchWinUsersRank_one,leagueWinUsersRank,leagueWinUsersRank_one } = require('../myModel/helper_fun');
 
 const  {MyBasePath} = require("../myModel/image_helper");
  
@@ -27,6 +27,7 @@ const transaction_tbls = require("../models/transactions")
 const prediction_card_tbl = require("../models/prediction_cards");      
 const team_matches = require('../models/team_matches');
 const admin_settings = require('../models/admin_settings');
+const user_achievements = require('../models/user_achievements');
 
 
 
@@ -455,6 +456,81 @@ static  all_matches_leaderboard = async (req,res)	=>{
 
 }
 
+static  all_league_leaderboard = async (req,res)	=>{		
+	try{
+		let user_id = req.body.user_id ; 
+		let s_date = req.body.s_date;
+		let e_date = req.body.e_date;
+		let league_id = req.body.league_id;
+		let page=(req.body.page==''||req.body.page==undefined)?1:req.body.page;
+		let offset=(page-1)*5;
+		let pipeLine=[{
+			'$group': {
+				'_id': '$league_id', 
+				'date': {
+					'$last': '$date'
+				}
+			}
+		}, {
+			'$sort': {
+				'date': -1
+			}
+		}]
+		if(!isEmpty(league_id)){
+			var response=[league_id];
+			
+		}else if(!isEmpty(s_date) && !isEmpty(e_date)){
+			var response = await transaction_tbls.distinct('league_id',{date:{$gte:s_date,$lte:e_date}}).skip(offset).limit(5);   
+		
+		}else{
+			var response = await transaction_tbls.aggregate(pipeLine).skip(offset).limit(5) ;  
+		
+		}
+		
+		let sumdata = [];     
+	 if(response){	
+
+		let forGat = await Promise.all(response.map( async(item)=>{
+		
+		let data =  await leagueWinUsersRank( item._id.toString(),user_id ); 
+    let leagueData = await team_matches.find({league_id:item._id,status:"Played"},'league_name league_logo league_id date_utc').sort({_id:-1}).limit(1);
+		let leagueTopWinners=data.allUsersData;
+		let userReankData=data.newobj;
+		
+		if(Object.keys( leagueTopWinners).length!=0 ) { 
+			if(Object.keys( userReankData).length!=0){
+			let achievements=await user_achievements.findOne({user_id:user_id,league_id:leagueData[0].league_id});
+			if( isEmpty(achievements) ){
+				let rank=(userReankData.rank==undefined || userReankData.rank==null)?0:userReankData.rank;
+				let obj=new user_achievements({user_id:user_id,league_id:leagueData[0].league_id,rank})
+				let d1=await obj.save()
+				
+			}else{
+				let rank=achievements.rank<((userReankData.rank==undefined || userReankData.rank==null)?0:userReankData.rank)?achievements.rank:userReankData.rank;
+				let dd=await user_achievements.findOneAndUpdate({user_id:user_id,league_id:leagueData[0].league_id},{$set:{rank}})
+				
+			
+			}}
+			sumdata.push({ leagueTopWinners,userReankData,leagueData:leagueData[0]}) } 
+		
+		} ));
+				
+									///let response2 = await matchWinUsersRank(response[0]._id.toString());
+
+		return res.status(200).send({"status":true ,"msg":"success","body":sumdata});
+	}else{
+		return res.status(200).send({"status":false,"msg":"no data found"});
+	}				 	   
+											 
+	}catch (error){
+		console.log(error)
+		return res.status(200).send({"status":false,"msg":"server error"});
+	}
+
+}
+
+
+
 static jks_lod = async(req,res) =>{
 
 	let user_id = req.body.user_id ; 
@@ -479,6 +555,19 @@ static topMostWinners = async(req,res) =>{
 		
 		let matchTopWinners =  await AllMatchWinUsersRank(  ); 
 		let userReankData = await AllMatchWinUsersRank_one(user_id);
+		if(Object.keys( userReankData).length!=0){
+			let achievements=await user_achievements.findOne({user_id:user_id,league_id:"61217"});
+			if( isEmpty(achievements) ){
+				let rank=(userReankData.rank==undefined || userReankData.rank==null)?0:userReankData.rank;
+				let obj=new user_achievements({user_id:user_id,league_id:"61217",rank})
+				let d1=await obj.save()
+				
+			}else{
+				let rank=achievements.rank<((userReankData.rank==undefined || userReankData.rank==null)?0:userReankData.rank)?achievements.rank:userReankData.rank;
+				let dd=await user_achievements.findOneAndUpdate({user_id:user_id,league_id:leagueData[0].league_id},{$set:{rank}})
+				
+			
+			}}
 		data.push({matchTopWinners,userReankData})
 		if(matchTopWinners){
 				return res.status(200).send({"status":true ,"msg":"success","body":data});
