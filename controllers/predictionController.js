@@ -1006,6 +1006,18 @@ const { poll_percent} = require('../myModel/helper_fun');
               '$addToSet': '$$ROOT'
             }
           }
+        }, {
+          '$project': {
+            '_id': 1, 
+            'records': {
+              '$sortArray': {
+                'input': '$records', 
+                'sortBy': {
+                  'total_points': -1
+                }
+              }
+            }
+          }
         })  
           
         let datas =  await playMatchCards_tbl.aggregate(pipeLine).skip(offest).limit(7);
