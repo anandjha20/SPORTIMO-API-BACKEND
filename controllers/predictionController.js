@@ -1046,7 +1046,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             let user_top_rank=Object.keys( achievements).length==0?"0":achievements.rank;
             let league_Data = await team_matches_tbl.find({league_id:item._id,status:"Played"},'league_name league_logo league_id date_utc').sort({_id:-1}).limit(1);
 		
-            leagueData.push({...item,league_points,played_matches,total_matches,user_rank,user_top_rank,league_Data})
+            leagueData.push({...item,league_points,played_matches,total_matches,user_rank,user_top_rank,league_Data:league_Data[0]})
           }));
 
               if(!isEmpty(leagueData)){
