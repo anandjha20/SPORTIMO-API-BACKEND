@@ -974,6 +974,20 @@ const { poll_percent} = require('../myModel/helper_fun');
             }
           }
         }, {
+          '$set': {
+            'win': {
+              '$round': {
+                '$divide': [
+                  {
+                    '$multiply': [
+                      '$win', 100
+                    ]
+                  }, '$total'
+                ]
+              }
+            }
+          }
+        }, {
           '$lookup': {
             'from': 'prediction_cards', 
             'localField': '_id', 
@@ -991,6 +1005,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             'card_type': '$cardData.card_type', 
             'card_icon': '$cardData.image', 
             'card_color': '$cardData.card_color', 
+            'fond_color': '$cardData.font_color', 
             'fond_color': '$cardData.font_color', 
             'played_total': '$total', 
             'total_win': '$win', 
@@ -1029,7 +1044,8 @@ const { poll_percent} = require('../myModel/helper_fun');
         let abc=await Promise.all( datas.map(async (item)=>{
             item.records.map((i)=>{
             //console.log(i)
-            i.card_icon=`${path}/image/assets/predictionCard_img/${i.card_icon}`
+            i.card_icon=`${path}/image/assets/predictionCard_img/${i.card_icon}`;
+            i.total_win=i.total_win+"%";
           })
             let league_data=await transactions.aggregate([
                                                         {
@@ -1054,13 +1070,15 @@ const { poll_percent} = require('../myModel/helper_fun');
             let matches = await playMatchCards_tbl.distinct('match_id',{user_id:user_id,league_id:item._id} );
             let played_matches = matches.length;
             let total_matches = await team_matches_tbl.find({league_id:item._id,status:"Played"}).countDocuments()
+            let total_played_card = await playMatchCards_tbl.find({league_id:item._id,user_id:user_id}).countDocuments()
+            let total_card_win = await playMatchCards_tbl.find({league_id:item._id,user_id:user_id,result:"win"}).countDocuments()
             let rank = await leagueWinUsersRank(item._id,user_id)
             let user_rank=rank.newobj.rank;
             let achievements=await user_achievements.findOne({user_id,league_id:item._id});
             let user_top_rank=Object.keys( achievements).length==0?"0":achievements.rank;
             let league_Data = await team_matches_tbl.find({league_id:item._id,status:"Played"},'league_name league_logo league_id date_utc').sort({_id:-1}).limit(1);
 		
-            leagueData.push({...item,league_points,played_matches,total_matches,user_rank,user_top_rank,league_Data:league_Data[0]})
+            leagueData.push({...item,league_points,played_matches,total_matches,total_played_card,total_card_win,user_rank,user_top_rank,league_Data:league_Data[0]})
           }));
 
               if(!isEmpty(leagueData)){
