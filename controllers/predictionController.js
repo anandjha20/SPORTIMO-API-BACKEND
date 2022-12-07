@@ -886,7 +886,7 @@ if(err) {  console.log(err);
             //console.log(i)
             i.card_icon=`${path}/image/assets/predictionCard_img/${i.card_icon}`
           })
-            let total_win=await transactions.find({"user_id":user_id,"match_id":item._id}).countDocuments()
+            let total_win=await transactions.find({"user_id":user_id,"match_id":item._id,points_by:'match'}).countDocuments()
             let userReankData = await matchWinUsersRank_one( item._id.toString(),user_id);
             gameData.push({...item,total_win,rank:userReankData.rank,points:userReankData.points})
           }));
