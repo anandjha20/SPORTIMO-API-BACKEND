@@ -5,28 +5,23 @@ const {matchWinUsersRank_one, sendNotificationAdd,leagueWinUsersRank } = require
 const {send_noti,get_preferenceUserToken,send_poll_notification,userSentNotification,pollDisclosed_noti_fun} = require('../myModel/Notification_helper');
 const  {MyBasePath} = require("../myModel/image_helper");
 const { poll_percent} = require('../myModel/helper_fun');
-   
-  
   
   // const state_tbl = require('../models/state_tbl');
-    const user_tbl = require('../models/user');    
-    const prediction_cards_tbl = require('../models/prediction_cards');    
-    const match_cards_tbl      = require('../models/match_cards');   
-    const playMatchCards_tbl   = require('../models/playMatchCards');   
-    const play_match_cards     = require ("../models/playMatchCards");
-    const used_power_ups_tbl   = require ("../models/used_power_ups");
-    const power_ups_tbl   = require ("../models/power_ups");
-    const transactions = require ("../models/transactions");
-    const user_achievements = require('../models/user_achievements');
-    const user_allotted_powerups_tbl   = require ("../models/user_allotted_powerUps");
-    const team_matches_tbl = require("../models/team_matches");
+    const user_tbl                    = require('../models/user');    
+    const prediction_cards_tbl        = require('../models/prediction_cards');    
+    const match_cards_tbl             = require('../models/match_cards');   
+    const playMatchCards_tbl          = require('../models/playMatchCards');   
+    const play_match_cards            = require ("../models/playMatchCards");
+    const used_power_ups_tbl          = require ("../models/used_power_ups");
+    const power_ups_tbl               = require ("../models/power_ups");
+    const transactions                = require ("../models/transactions");
+    const user_achievements           = require('../models/user_achievements');
+    const user_allotted_powerups_tbl  = require ("../models/user_allotted_powerUps");
+    const team_matches_tbl            = require("../models/team_matches");
+    const prediction_card_categories  = require("../models/prediction_card_categories");     
 
-   const prediction_card_categories = require("../models/prediction_card_categories");     
-
-   class predictionController {   
-     
-   
-
+  class predictionController {   
+  
     static getprediction_card_Cat_list = async (req,res)=>{
         try {
             let language = req.body.language;
@@ -46,7 +41,7 @@ const { poll_percent} = require('../myModel/helper_fun');
             res.status(200).send({'status':false,'msg':"Server error",'body':''});
         }
                 
-            }    
+    }    
     
     static prediction_card_add = async(req,res)=>{
             try {   
@@ -95,151 +90,145 @@ const { poll_percent} = require('../myModel/helper_fun');
                }
              
        
-           }
+    }
 
-
-       static prediction_card_update = async(req,res)=>{
-            try {
-                    let id = req.params.id;
-                    //console.log(req.body)
-                  let user_data = req.body;
-                    if(isEmpty(id)){
-                      updateData.image = image 
-                      return res.status(200).send({"status":false,"msg":'prediction card id required' , "body":''}) ; 
-                    }   
-                  
-                 
-                    let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-                  
-                             
-                    
-                if(!isEmpty(image)){updateData.image = image }            
-
-
-                 prediction_cards_tbl.findOneAndUpdate({_id: id},{$set : user_data },{new: true}, (err, updatedUser) => {
-            if(err) {  console.log(err);
-                return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
-            }else if(!isEmpty(updatedUser)){
-                        return res.status(200).send({"status":true,"msg":'prediction card Updated Successfully' , "body":updatedUser  }) ;   
-                }else{  return res.status(200).send({"status":false,"msg":'Invalid prediction card Id ' , "body": ''}) ;   
-                        }
-
-                
-            });
-
-            } catch (error) { console.log(error); 
-                    return res.status(200).send({"status":false,"msg":'Server error' , "body":''}) ;          
-        
-                }
+    static prediction_card_update = async(req,res)=>{
+      try {
+              let id = req.params.id;
+              //console.log(req.body)
+            let user_data = req.body;
+              if(isEmpty(id)){
+                updateData.image = image 
+                return res.status(200).send({"status":false,"msg":'prediction card id required' , "body":''}) ; 
+              }   
             
-        
-            }     
+            
+              let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
+            
+                        
+              
+          if(!isEmpty(image)){updateData.image = image }            
 
 
+            prediction_cards_tbl.findOneAndUpdate({_id: id},{$set : user_data },{new: true}, (err, updatedUser) => {
+      if(err) {  console.log(err);
+          return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+      }else if(!isEmpty(updatedUser)){
+                  return res.status(200).send({"status":true,"msg":'prediction card Updated Successfully' , "body":updatedUser  }) ;   
+          }else{  return res.status(200).send({"status":false,"msg":'Invalid prediction card Id ' , "body": ''}) ;   
+                  }
+
+          
+      });
+
+      } catch (error) { console.log(error); 
+              return res.status(200).send({"status":false,"msg":'Server error' , "body":''}) ;          
+  
+          }
+      
+  
+      }     
 
     static prediction_card_list = async (req,res)=>{
-            try {
-                 let language = req.body.language;
-                // console.log('prediction_card_list is call ==',  language );
-                let records = await prediction_cards_tbl.find().sort({_id:-1});
-                let paths =MyBasePath(req,res);    
-                   
-                    if(records){ records.map((item)=> {  item.image = (! isEmpty(item.image))?  `${paths}/image/assets/predictionCard_img/${item.image}` : '' ;
-                                if(language != '' && language == 'ar'){ 
-                                     item.name = item.name_ara;  
-                                     item.qus = item.qus_ara;  
-                                       item.ops_1 = item.ops_1_ara;  
-                                       item.ops_2 = item.ops_2_ara;  
-                                       item.ops_3 = item.ops_3_ara;  
-                                       item.ops_4 = item.ops_4_ara;  
-                                }
-                               return item; })}
-            
-            
-                    res.status(200).send({'status':true,'msg':"success",  'body':records });
-        
-            } catch (error) { console.log(error);
-                res.status(200).send({'status':false,'msg':"Server error",'body':''});
-            }
-                    
-                }    
+          try {
+                let language = req.body.language;
+              // console.log('prediction_card_list is call ==',  language );
+              let records = await prediction_cards_tbl.find().sort({_id:-1});
+              let paths =MyBasePath(req,res);    
+                  
+                  if(records){ records.map((item)=> {  item.image = (! isEmpty(item.image))?  `${paths}/image/assets/predictionCard_img/${item.image}` : '' ;
+                              if(language != '' && language == 'ar'){ 
+                                    item.name = item.name_ara;  
+                                    item.qus = item.qus_ara;  
+                                      item.ops_1 = item.ops_1_ara;  
+                                      item.ops_2 = item.ops_2_ara;  
+                                      item.ops_3 = item.ops_3_ara;  
+                                      item.ops_4 = item.ops_4_ara;  
+                              }
+                              return item; })}
+          
+          
+                  res.status(200).send({'status':true,'msg':"success",  'body':records });
+      
+          } catch (error) { console.log(error);
+              res.status(200).send({'status':false,'msg':"Server error",'body':''});
+          }
+                  
+    }    
 
-      static match_card_add = async(req,res)=>{
-                  try {   
-                    console.log(req.body)
-                    let match_name    = req.body.match_name;
-                    let match_id      = req.body.match_id;
-                    let card_id        = req.body.card_id;
-                    let apperance_times = req.body.apperance_times;    
-                    let time_duration  = req.body.time_duration;
+    static match_card_add = async(req,res)=>{
+              try {   
+                console.log(req.body)
+                let match_name    = req.body.match_name;
+                let match_id      = req.body.match_id;
+                let card_id        = req.body.card_id;
+                let apperance_times = req.body.apperance_times;    
+                let time_duration  = req.body.time_duration;
 
-                 if( isEmpty(match_name) || isEmpty(match_id)  || 
-                      isEmpty(card_id)  || isEmpty(apperance_times)  ||
-                       isEmpty(time_duration) ){
-                       return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
-                          }   
-                       let  checkRows = await rows_count(match_cards_tbl , {match_id,card_id});
-                    
-                   if(checkRows > 0 ){
-                           return res.status(200).send({"status":false,"msg":' this card add arleady',"body":''}) ; 
-                        }
-
-                         let add = new match_cards_tbl({ match_name,match_id,card_id,apperance_times,
-                                                      time_duration });
-                         
-                               add.save((err, data) => {
-                                     if (err) {     console.log(err);
-                                       return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
-                                   }else{ return res.status(200).send({"status":true,"msg":'Match Card Created Successfully' , "body":data  }) ;            
-                                  } } ) ;
-                     
-              }catch (error) {  console.log(error); 
-                         return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
-             
-                     }
-                   
-             
-                 }
-
-    
-                   
-
-        static match_card_update = async(req,res)=>{
-                  try {   let id = req.params.id;
-                    let match_name      = req.body.match_name;
-                    let match_id        = req.body.match_id;
-                    let card_id         = req.body.card_id;
-                    let apperance_times = req.body.apperance_times;    
-                    let time_duration   = req.body.time_duration;
-
-                 if( isEmpty(match_name) || isEmpty(match_id)  || 
-                      isEmpty(card_id)  || isEmpty(apperance_times)  ||
-                       isEmpty(time_duration) ){
-                       return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
-                          }   
+              if( isEmpty(match_name) || isEmpty(match_id)  || 
+                  isEmpty(card_id)  || isEmpty(apperance_times)  ||
+                    isEmpty(time_duration) ){
+                    return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+                      }   
+                    let  checkRows = await rows_count(match_cards_tbl , {match_id,card_id});
                 
-            // let checkName = await rows_count({"name":""})             
-            let updateData = { match_name,match_id,card_id,apperance_times,time_duration };                
-                            
-              match_cards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
-                if(err) {  console.log(err);
-                    return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
-                }else if(!isEmpty(updatedUser)){
-                            return res.status(200).send({"status":true,"msg":'Match Card Updated Successfully' , "body":updatedUser  }) ;   
-                    }else{  return res.status(200).send({"status":false,"msg":'Invalid Match Card Id ' , "body": ''}) ;   
-                            } 
-                  });
+                if(checkRows > 0 ){
+                        return res.status(200).send({"status":false,"msg":' this card add arleady',"body":''}) ; 
+                    }
+
+                      let add = new match_cards_tbl({ match_name,match_id,card_id,apperance_times,
+                                                  time_duration });
+                      
+                            add.save((err, data) => {
+                                  if (err) {     console.log(err);
+                                    return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                                }else{ return res.status(200).send({"status":true,"msg":'Match Card Created Successfully' , "body":data  }) ;            
+                              } } ) ;
+                  
+          }catch (error) {  console.log(error); 
+                      return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
+          
+                  }
+                
+          
+    }
+
+    static match_card_update = async(req,res)=>{
+            try {   let id = req.params.id;
+              let match_name      = req.body.match_name;
+              let match_id        = req.body.match_id;
+              let card_id         = req.body.card_id;
+              let apperance_times = req.body.apperance_times;    
+              let time_duration   = req.body.time_duration;
+
+            if( isEmpty(match_name) || isEmpty(match_id)  || 
+                isEmpty(card_id)  || isEmpty(apperance_times)  ||
+                  isEmpty(time_duration) ){
+                  return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+                    }   
+          
+      // let checkName = await rows_count({"name":""})             
+      let updateData = { match_name,match_id,card_id,apperance_times,time_duration };                
+                      
+        match_cards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
+          if(err) {  console.log(err);
+              return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+          }else if(!isEmpty(updatedUser)){
+                      return res.status(200).send({"status":true,"msg":'Match Card Updated Successfully' , "body":updatedUser  }) ;   
+              }else{  return res.status(200).send({"status":false,"msg":'Invalid Match Card Id ' , "body": ''}) ;   
+                      } 
+            });
 
 
 
-                     
-              }catch (error) {  console.log(error); 
-                         return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
-             
-                     }
-                   
-             
-                 }
+                
+        }catch (error) {  console.log(error); 
+                    return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
+        
+                }
+              
+        
+      }
 
     static match_card_delete = async(req,res)=>{
               try {
@@ -258,7 +247,7 @@ const { poll_percent} = require('../myModel/helper_fun');
     
               } catch (error) { return res.status(200).send({"status":true,"msg":'server error' , "body":''}) ; }
     
-          }   
+    }   
     
     static playMatchCard_add  = async(req,res)=>{
         try {   
@@ -334,102 +323,104 @@ const { poll_percent} = require('../myModel/helper_fun');
               }
               
               
-            }   
-            static my_playMatchCard_list = async (req,res)=>{
-              try {
-              let language = req.body.language;    
-              let user_id = req.body.user_id;    
-              let match_id = req.body.match_id;    
-              let result=req.body.status;
-                 
+    }   
+  
+    static my_playMatchCard_list = async (req,res)=>{
+      try {
+      let language = req.body.language;    
+      let user_id = req.body.user_id;    
+      let match_id = req.body.match_id;    
+      let result=req.body.status;
+          
 
-             /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
-             
-              if(isEmpty(user_id)){
-                return res.status(200).send({'status':false,'msg':  (language == 'ar')? "مطلوب حقل معرف المستخدم" :  "User Id Field Required"});
-                    }
-               let whr = (isEmpty(match_id))?   {user_id} : {user_id,match_id}   ;
-                    if(!isEmpty(result)){whr={...whr,result}};
-           let records = await playMatchCards_tbl.find(whr).populate({ path: 'match_card_id', populate: { path: 'card_id'}}).sort({_id:-1});
-            let data=[] 
-           let path=await MyBasePath(req,res);   
-             if(! isEmpty(records)){Promise.all( records.map((item)=> { 
-                              if(item.match_card_id!=null){
-                              item.match_card_id.card_id.image = `${path}/image/assets/predictionCard_img/${item.match_card_id.card_id.image}`;
-                              if(language != '' && language == 'ar'){ 
-                                    
-                                if(typeof item.match_card_id.card_id === 'object' && item.match_card_id.card_id !== null){
-                                  item.match_card_id.card_id.name = item.match_card_id.card_id.name_ara;
-                                  item.match_card_id.card_id.qus = item.match_card_id.card_id.qus_ara;
-                                  item.match_card_id.card_id.ops_1 = item.match_card_id.card_id.ops_1_ara;
-                                  item.match_card_id.card_id.ops_2 = item.match_card_id.card_id.ops_2_ara;
-                                  item.match_card_id.card_id.ops_3 = item.match_card_id.card_id.ops_3_ara;
-                                  item.match_card_id.card_id.ops_4 = item.match_card_id.card_id.ops__ara;
-                                }else{  item.match_card_id = {};}
-                                
-                                // item.card_id.name = item.card_id.name_ara;  
-                           
-                              }
-                              let point=[item.match_card_id.card_id.point_1,item.match_card_id.card_id.point_2,item.match_card_id.card_id.point_3,item.match_card_id.card_id.point_4]
-                              let max_point=point.sort(function(a, b){return b-a})[0]
-                              let min_point=point.sort(function(a, b){return a-b})[0]
-                              data.push({...item._doc,max_point,min_point})
-                                }
-                              }))
-                            //  console.log(data)
-            ////////////////////////////////////                
-            let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
-            let played_cards_count = await playMatchCards_tbl.find({match_id,user_id}).countDocuments();
-           
-            let p_counts = await userPowerUpsData(user_id);
-           
-                 return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,
-                 all_card_count,played_cards_count, "userpowers":p_counts.userpowers ,"usedPoweUps_count":p_counts.usedPoweUps_count, 'body':data });
-                      }else{
-                            return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
-                            }
-          
-          
+      /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
       
-                } catch (error) { console.log(error);
-                      return res.status(200).send({'status':false,'msg': "server error"});
-                  }
+      if(isEmpty(user_id)){
+        return res.status(200).send({'status':false,'msg':  (language == 'ar')? "مطلوب حقل معرف المستخدم" :  "User Id Field Required"});
+            }
+        let whr = (isEmpty(match_id))?   {user_id} : {user_id,match_id}   ;
+            if(!isEmpty(result)){whr={...whr,result}};
+    let records = await playMatchCards_tbl.find(whr).populate({ path: 'match_card_id', populate: { path: 'card_id'}}).sort({_id:-1});
+    let data=[] 
+    let path=await MyBasePath(req,res);   
+      if(! isEmpty(records)){Promise.all( records.map((item)=> { 
+                      if(item.match_card_id!=null){
+                      item.match_card_id.card_id.image = `${path}/image/assets/predictionCard_img/${item.match_card_id.card_id.image}`;
+                      if(language != '' && language == 'ar'){ 
                             
-          }       
-      static playMatchCard_list = async (req,res)=>{
-        try {
-            let language = req.body.language;    
-            let match_card_id = req.body.match_card_id;    
-           
-           /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
-           
-           playMatchCards_tbl.aggregate([ {
-            $lookup: {
-                from: "match_cards_tbl", // collection to join
-                localField: "_id",//field from the input documents
-                foreignField: "match_card_id",//field from the documents of the "from" collection
-                as: "comments" // output array field
-            }
-        }, {
-            $lookup: {
-                from: "Post", // from collection name
-                localField: "_id",
-                foreignField: "user_id",
-                as: "posts"
-            }
-        }],function (error, data) {
-         return res.json(data);
-     //handle error case also
-});
-        
+                        if(typeof item.match_card_id.card_id === 'object' && item.match_card_id.card_id !== null){
+                          item.match_card_id.card_id.name = item.match_card_id.card_id.name_ara;
+                          item.match_card_id.card_id.qus = item.match_card_id.card_id.qus_ara;
+                          item.match_card_id.card_id.ops_1 = item.match_card_id.card_id.ops_1_ara;
+                          item.match_card_id.card_id.ops_2 = item.match_card_id.card_id.ops_2_ara;
+                          item.match_card_id.card_id.ops_3 = item.match_card_id.card_id.ops_3_ara;
+                          item.match_card_id.card_id.ops_4 = item.match_card_id.card_id.ops__ara;
+                        }else{  item.match_card_id = {};}
+                        
+                        // item.card_id.name = item.card_id.name_ara;  
+                    
+                      }
+                      let point=[item.match_card_id.card_id.point_1,item.match_card_id.card_id.point_2,item.match_card_id.card_id.point_3,item.match_card_id.card_id.point_4]
+                      let max_point=point.sort(function(a, b){return b-a})[0]
+                      let min_point=point.sort(function(a, b){return a-b})[0]
+                      data.push({...item._doc,max_point,min_point})
+                        }
+                      }))
+                    //  console.log(data)
+    ////////////////////////////////////                
+    let all_card_count     = await match_cards_tbl.find({match_id}).countDocuments();
+    let played_cards_count = await playMatchCards_tbl.find({match_id,user_id}).countDocuments();
     
-              } catch (error) { console.log(error);
-                    return res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"});
-                }
-                
-        }  
+    let p_counts = await userPowerUpsData(user_id);
+    
+          return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,
+          all_card_count,played_cards_count, "userpowers":p_counts.userpowers ,"usedPoweUps_count":p_counts.usedPoweUps_count, 'body':data });
+              }else{
+                    return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
+                    }
+  
+  
+
+        } catch (error) { console.log(error);
+              return res.status(200).send({'status':false,'msg': "server error"});
+          }
+                    
+    }       
+  
+    static playMatchCard_list = async (req,res)=>{
+      try {
+          let language = req.body.language;    
+          let match_card_id = req.body.match_card_id;    
+          
+          /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
+          
+          playMatchCards_tbl.aggregate([ {
+          $lookup: {
+              from: "match_cards_tbl", // collection to join
+              localField: "_id",//field from the input documents
+              foreignField: "match_card_id",//field from the documents of the "from" collection
+              as: "comments" // output array field
+          }
+      }, {
+          $lookup: {
+              from: "Post", // from collection name
+              localField: "_id",
+              foreignField: "user_id",
+              as: "posts"
+          }
+      }],function (error, data) {
+        return res.json(data);
+    //handle error case also
+});
+      
+  
+            } catch (error) { console.log(error);
+                  return res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"});
+              }
+              
+    }  
 //power up 
-  static playMatchCard_update_old = async(req,res)=>{
+    static playMatchCard_update_old = async(req,res)=>{
         try {   let id = req.params.id;
                 let match_card_id        = req.body.match_card_id;
                     let user_id          = req.body.user_id;
@@ -515,59 +506,57 @@ const { poll_percent} = require('../myModel/helper_fun');
    
        }
 
-       static playMatchCard_update = async(req,res)=>{
-        try {   let id = req.params.id;
-                let match_card_id        = req.body.match_card_id;
-                    let user_id          = req.body.user_id;
-                    let user_option      = req.body.user_option;
-                    let time_range_start = req.body.time_range_start;    
-                    let time_range_end   = req.body.time_range_end;
-                    let match_id         = req.body.match_id;
-                    let card_id          = req.body.card_id;
-                    let card_cat_id      = req.body.card_cat_id;
-                    let point            = req.body.point;
+    static playMatchCard_update = async(req,res)=>{
+  try {   let id = req.params.id;
+          let match_card_id        = req.body.match_card_id;
+              let user_id          = req.body.user_id;
+              let user_option      = req.body.user_option;
+              let time_range_start = req.body.time_range_start;    
+              let time_range_end   = req.body.time_range_end;
+              let match_id         = req.body.match_id;
+              let card_id          = req.body.card_id;
+              let card_cat_id      = req.body.card_cat_id;
+              let point            = req.body.point;
 
-            if( isEmpty(match_card_id) || isEmpty(user_id)  || 
-                  isEmpty(user_option) || isEmpty(match_id) || isEmpty(card_id) || 
-                  isEmpty(card_cat_id)  ){
-                  return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
-                      }   
+      if( isEmpty(match_card_id) || isEmpty(user_id)  || 
+            isEmpty(user_option) || isEmpty(match_id) || isEmpty(card_id) || 
+            isEmpty(card_cat_id)  ){
+            return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
+                }   
 
-            let matchDetails=await team_matches_tbl.findOne({_id:match_id});
-            //console.log({played_card_details,matchDetails})
-            if(matchDetails.status=="Played"){
-              return res.status(200).send({"status":false,"msg":'Cannot change answer because match is ended!!' }) ; 
-            }else if(matchDetails.status!="Fixture"){
-              return res.status(200).send({"status":false,"msg":'Cannot change answer because match is started!!' }) ; 
-            }else{
+      let matchDetails=await team_matches_tbl.findOne({_id:match_id});
+      //console.log({played_card_details,matchDetails})
+      if(matchDetails.status=="Played"){
+        return res.status(200).send({"status":false,"msg":'Cannot change answer because match is ended!!' }) ; 
+      }else if(matchDetails.status!="Fixture"){
+        return res.status(200).send({"status":false,"msg":'Cannot change answer because match is started!!' }) ; 
+      }else{
+
+  // let checkName = await rows_count({"name":""})             
+    let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end ,match_id,
+                          card_id, card_cat_id,point };                
+            
+  playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
+if(err) {  console.log(err);
+    return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+}else if(!isEmpty(updatedUser)){
+            return res.status(200).send({"status":true,"msg":'Play Match Card Updated Successfully' , "body":updatedUser  }) ;   
+    }else{  return res.status(200).send({"status":false,"msg":'Invalid Play Match Card Id ' , "body": ''}) ;   
+            } 
+  });
+
+
+}
       
-        // let checkName = await rows_count({"name":""})             
-          let updateData = { match_card_id,user_id,user_option,time_range_start,time_range_end ,match_id,
-                               card_id, card_cat_id,point };                
-                  
-       playMatchCards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
-      if(err) {  console.log(err);
-          return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
-      }else if(!isEmpty(updatedUser)){
-                  return res.status(200).send({"status":true,"msg":'Play Match Card Updated Successfully' , "body":updatedUser  }) ;   
-          }else{  return res.status(200).send({"status":false,"msg":'Invalid Play Match Card Id ' , "body": ''}) ;   
-                  } 
-        });
-
+}catch (error) {  console.log(error); 
+          return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
 
       }
-           
-    }catch (error) {  console.log(error); 
-               return res.status(200).send({"status":false,"msg":'No data add' , "body":''}) ;          
-   
-           }
-         
-   
-       }
+    
 
-     
+    }
 
-       static playMatchCard_delete = async(req,res)=>{
+    static playMatchCard_delete = async(req,res)=>{
         try {
                 let id = req.params.id;
                 let cardData=await playMatchCards_tbl.findById(id);
@@ -591,7 +580,6 @@ const { poll_percent} = require('../myModel/helper_fun');
         } catch (error) { return res.status(200).send({"status":true,"msg":'Some error' , "body":''}) ; }
 
     }
-      
    
     static match_card_list_old = async (req,res)=>{
       try {
@@ -639,9 +627,9 @@ const { poll_percent} = require('../myModel/helper_fun');
                   return res.status(200).send({'status':false,'msg': (language == 'ar')? "خطأ في الخادم" : "server error"});
               }
               
-      }      
+    }      
 
- static match_card_list = async (req,res)=>{
+    static match_card_list = async (req,res)=>{
         try {
              let language = req.body.language;    // 'name card_type'
              let card_cat_id = req.body.category_id;    // 'name card_type'
@@ -783,33 +771,29 @@ const { poll_percent} = require('../myModel/helper_fun');
                 }
                 
         }      
-  
 
-
-
-
-      static user_prediction_old = async (req,res)=>{
-        try {
-            let match_id = req.body.match_id;
-            if(!isEmpty(match_id)){
-            let records = await play_match_cards.find({match_id}).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
-            records.map( (item)=>{
-              //console.log(item)
-              if(item.user_option=="ops_1"){item.user_option=item.card_id.ops_1};
-              if(item.user_option=="ops_2"){item.user_option=item.card_id.ops_2};
-              if(item.user_option=="ops_3"){item.user_option=item.card_id.ops_3};
-              if(item.user_option=="ops_4"){item.user_option=item.card_id.ops_4};
+    static user_prediction_old = async (req,res)=>{
+    try {
+        let match_id = req.body.match_id;
+        if(!isEmpty(match_id)){
+        let records = await play_match_cards.find({match_id}).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
+        records.map( (item)=>{
+          //console.log(item)
+          if(item.user_option=="ops_1"){item.user_option=item.card_id.ops_1};
+          if(item.user_option=="ops_2"){item.user_option=item.card_id.ops_2};
+          if(item.user_option=="ops_3"){item.user_option=item.card_id.ops_3};
+          if(item.user_option=="ops_4"){item.user_option=item.card_id.ops_4};
+        
+        })
+            res.status(200).send({'status':true,'msg':"success",  'body':records });
+      }else{
+        res.status(200).send({'status':true,'msg':"all field required" });
+      }
+    } catch (error) { console.log(error);
+        res.status(200).send({'status':false,'msg':"Server error",'body':''});
+    }
             
-            })
-                res.status(200).send({'status':true,'msg':"success",  'body':records });
-          }else{
-            res.status(200).send({'status':true,'msg':"all field required" });
-          }
-        } catch (error) { console.log(error);
-            res.status(200).send({'status':false,'msg':"Server error",'body':''});
-        }
-                
-            }    
+    }    
 
     static all_user_prediction = async (req,res)=>{
           try {
@@ -832,33 +816,33 @@ const { poll_percent} = require('../myModel/helper_fun');
               res.status(200).send({'status':false,'msg':"Server error",'body':''});
           }
                   
-              }    
+    }    
       
-       static user_prediction = async (req,res)=>{
-            try {
-                let user_id = req.params.id;
-                let match_id = req.body.match_id;
-                let s_date  = req.body.s_date;
-                let e_date  = req.body.e_date;
-                let whr={user_id};
-                if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.dateTime = { $gte: s_date, $lte: e_date } ;} 
-                if(!isEmpty(s_date)){ whr.dateTime = { $gte: s_date } ;} 
-                if(!isEmpty(e_date)){ whr.dateTime = { $lte: e_date } ;} 
-                if(!isEmpty(match_id)){ whr.match_id = match_id ;} 
-                 
-                if(!isEmpty(user_id)){
-                let records = await play_match_cards.find(whr).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
-                res.status(200).send({'status':true,'msg':"success",  'body':records });
-              }else{
-                res.status(200).send({'status':true,'msg':"all field required" });
-              }
-            } catch (error) { console.log(error);
-                res.status(200).send({'status':false,'msg':"Server error"});
-            }
-                    
-                }   
+    static user_prediction = async (req,res)=>{
+      try {
+          let user_id = req.params.id;
+          let match_id = req.body.match_id;
+          let s_date  = req.body.s_date;
+          let e_date  = req.body.e_date;
+          let whr={user_id};
+          if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.dateTime = { $gte: s_date, $lte: e_date } ;} 
+          if(!isEmpty(s_date)){ whr.dateTime = { $gte: s_date } ;} 
+          if(!isEmpty(e_date)){ whr.dateTime = { $lte: e_date } ;} 
+          if(!isEmpty(match_id)){ whr.match_id = match_id ;} 
+            
+          if(!isEmpty(user_id)){
+          let records = await play_match_cards.find(whr).populate('card_id user_id','name card_type qus ops_1 ops_2 ops_3 ops_4').sort({_id:-1});
+          res.status(200).send({'status':true,'msg':"success",  'body':records });
+        }else{
+          res.status(200).send({'status':true,'msg':"all field required" });
+        }
+      } catch (error) { console.log(error);
+          res.status(200).send({'status':false,'msg':"Server error"});
+      }
+              
+    }   
 
-  static my_played_matches = async(req,res)=>{
+    static my_played_matches = async(req,res)=>{
     try{        
           let  user_id = req.params.id;
           let  match_id = req.body.match_id;
@@ -919,7 +903,7 @@ const { poll_percent} = require('../myModel/helper_fun');
     
       }
   
-  static my_played_leagues = async(req,res)=>{
+    static my_played_leagues = async(req,res)=>{
     try{        
           let  user_id = req.params.id;
           let  league_id = req.body.league_id;
@@ -1095,5 +1079,4 @@ const { poll_percent} = require('../myModel/helper_fun');
       
   }
 
-
-    module.exports = predictionController ;   
+module.exports = predictionController ;   

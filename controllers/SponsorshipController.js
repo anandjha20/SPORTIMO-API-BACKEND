@@ -435,7 +435,7 @@ static my_polls = async (req,res)=>{
           
           return res.status(200).send({"status":true,"msg":'success' , "body":allData}) ;   
         }else{
-          return res.status(200).send({"status":false,"msg":'No data found' , "body":''}) ;   
+          return res.status(200).send({"status":false,"msg":'No data found' , "body":[]}) ;   
         }
                  
 
