@@ -22,8 +22,8 @@ const sentEmail = async (req,res) => {
       port: 465,
       secure: true,
       auth: {
-        user: 'saportimoapk@gmail.com',
-        pass: 'ycduazenkmilnddv'
+        user: 'sportimoapk@gmail.com',
+        pass: 'aeostmjgocsmztis'
         //pass: 'iivyzgskpuskcrgc',
         // user: 'donotreply@d49.co.in',
         //   pass: '&4e=XSQB'

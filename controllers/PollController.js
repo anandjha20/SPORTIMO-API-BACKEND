@@ -251,8 +251,8 @@ class PollController {
                                     
                                 if(user_data.noti_status == 1 || user_data.noti_in_App_status == 1 ){
                                   let type_status =  1 ; 
-                                      let title = `New Poll has been publihed for match: ${ user_data.match} ` ;  
-                                  let msg = `New Poll has been publihed for match: ${ user_data.match} Click here to participate.`; 
+                                      let title = `New Poll has been published for match: ${ user_data.match} ` ;  
+                                  let msg = `New Poll has been published for match: ${ user_data.match} Click here to participate.`; 
                                   let module_id = data._id;
                                   let module_type = 'polls';
                                   let category_type = 'results';
@@ -260,8 +260,8 @@ class PollController {
                                   let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,category_type} );
                       }
                       if(user_data.noti_status == 1){
-                        let title2 = `New Poll has been publihed for match: ${ user_data.match} ` ;  
-                        let msg2 = `New Poll has been publihed for match: ${ user_data.match} Click here to participate.`; 
+                        let title2 = `New Poll has been published for match: ${ user_data.match} ` ;  
+                        let msg2 = `New Poll has been published for match: ${ user_data.match} Click here to participate.`; 
                        
                         let poll_noti_parms = { "sports":user_data.sports,"leagues":user_data.leagues,"teams":user_data.teams,
                                     "players":user_data.players,"title":title2, details: msg2 };
