@@ -403,12 +403,15 @@ static user_point_details = async (req,res)=>{
 static  all_matches_leaderboard = async (req,res)	=>{		
 		try{
 			let user_id = req.body.user_id ; 
+			let newUserId=mongoose.Types.ObjectId(user_id);
 			let s_date = req.body.s_date;
 			let e_date = req.body.e_date;
 			let match_id = req.body.match_id;
 			let page=(req.body.page==''||req.body.page==undefined)?1:req.body.page;
 			let offset=(page-1)*5;
 			let pipeLine=[{
+				$match:{"user_id":newUserId}
+			},{
 				'$group': {
 					'_id': '$match_id', 
 					'date': {
@@ -426,8 +429,15 @@ static  all_matches_leaderboard = async (req,res)	=>{
 				response.push(matchId)
 			
 			}else if(!isEmpty(s_date) && !isEmpty(e_date)){
-				var response = await transaction_tbls.distinct('match_id',{date:{$gte:s_date,$lte:e_date}}).skip(offset).limit(5);   
-			
+				var response=[] 
+				let matchID= await transaction_tbls.distinct('match_id',{user_id:user_id,date:{$gte:s_date,$lte:e_date}});   
+				
+				let b=matchID.length>offset+5?offset+5:matchID.length-offset+5;
+				
+				for(let i=offset;i<b;i++){
+					response.push(matchID[i])
+				}
+				
 			}else{
 				var response = await transaction_tbls.aggregate(pipeLine).skip(offset).limit(5) ;  
 			
@@ -569,7 +579,10 @@ static topMostWinners = async(req,res) =>{
 				
 			
 			}}
-		data.push({matchTopWinners,userReankData})
+		if(matchTopWinners.length!=0 && Object.keys( userReankData).length!=0){
+
+			data.push({matchTopWinners,userReankData})
+		}	
 		if(matchTopWinners){
 				return res.status(200).send({"status":true ,"msg":"success","body":data});
 		}else{
