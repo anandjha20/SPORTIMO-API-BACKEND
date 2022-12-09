@@ -291,33 +291,36 @@ class UserController {
          
           var apiGenOtp = 10000;  // otp ;
          
-          if(check_type == 1){  
+          if(user_type == 1){  
               //send_mobile_otp({mobile,otp});   
               apiGenOtp =  await send_mobile_otp_new({mobile}); 
-              console.log("apiGenOtp",apiGenOtp)
+          //    console.log("apiGenOtp",apiGenOtp)
               msgtodiv = 'OTP sent to your mobile !!';
-          }else  if(check_type == 2 || check_type == 3 || check_type == 4 ){
+          }else  {
                  sentEmail({email,otp}); 
               msgtodiv = 'OTP sent to your email !!';
           } 
   
              
-      let newOtp = (check_type == 1)? apiGenOtp : otp;
+      let newOtp = (user_type == 1)? apiGenOtp : otp;
       
-           console.log("new oootp == ", newOtp); 
+          // console.log("new oootp == ", newOtp); 
   
           const doc = await user_tbl.findOneAndUpdate({ _id: check_user_id},{ otp: newOtp },
                                        { upsert: true, useFindAndModify: false });
            
                return res.status(200).send({"status":true,"msg":msgtodiv, "body":checkuser[0]._id }) ;     
-           }
+           }else{
            let msgtodiv2 = ''; let apiGenOtp_2 = 1000;
            if(user_type == 1){
               // send_mobile_otp({mobile,otp}); 
               apiGenOtp_2 = await send_mobile_otp_new({mobile}); 
                  msgtodiv2 = 'OTP sent to your mobile !!';
-           }
-           console.log("apiGenOtp == ",apiGenOtp_2);
+           }else{
+            sentEmail({email,otp}); 
+            msgtodiv2 = 'OTP sent to your email !!';
+        }
+         //  console.log("apiGenOtp == ",apiGenOtp_2);
               let add =new user_tbl({
                   name: sportimo_id,
                   email: email,
@@ -336,16 +339,14 @@ class UserController {
              
                       let allsaveData =  await add.save();
               if(allsaveData){
-                  if(user_type == 2 || user_type == 3 || user_type == 4 ){
-                      sentEmail({email,otp}); 
-                      msgtodiv2 = 'OTP sent to your email !!';
-                  }  
-                      console.log('add == ', add);    
+           
+       //               console.log('add == ', add);    
                    return res.status(200).send({"status":true,"msg": msgtodiv2 , "body":allsaveData._id }) ;      
                   }else{
                       return res.status(200).send({"status":false,"msg":'no data add ' }) ;           
                   } 
               } 
+            }
             }  
           // } catch (error) { console.log("user register api == ",error);
           //     return res.status(200).send({"status":false,"msg":'Server errror' }) ;          
