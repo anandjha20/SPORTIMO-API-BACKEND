@@ -1114,8 +1114,8 @@ let allData = await Promise.all( allUsersData.map( async (item)=>{
                   
                        let  startSeconds = seconds-600  ;  
                   
-                  //  150 mint ( match end time  ) lat on  9000 seconds
-                   let  endSeconds =  seconds + 9000;
+                  //  200 mint ( match end time  ) lat on  9000 seconds
+                   let  endSeconds =  seconds + 12000;
                     
                    //  if(time_u >= endSeconds ){
                     // if( item.status!="Fixture" ){   

@@ -19,6 +19,7 @@ const { poll_percent} = require('../myModel/helper_fun');
     const user_allotted_powerups_tbl  = require ("../models/user_allotted_powerUps");
     const team_matches_tbl            = require("../models/team_matches");
     const prediction_card_categories  = require("../models/prediction_card_categories");     
+const team_matches = require('../models/team_matches');
 
   class predictionController {   
   
@@ -331,7 +332,12 @@ const { poll_percent} = require('../myModel/helper_fun');
       let user_id = req.body.user_id;    
       let match_id = req.body.match_id;    
       let result=req.body.status;
-          
+      let matchData=await team_matches.findById(match_id);
+      // let team_a_name=matchData.team_a_name;
+      // let team_a_name_ara=matchData.team_a_name_ara;
+      // let team_b_name=matchData.team_b_name;
+      // let team_b_name_ara=matchData.team_b_name_ara;
+      // console.log(matchData)         
 
       /// let records = await match_cards_tbl.find().populate('card_id','name name_ara card_type').sort({_id:-1});
       
@@ -344,25 +350,86 @@ const { poll_percent} = require('../myModel/helper_fun');
     let data=[] 
     let path=await MyBasePath(req,res);   
       if(! isEmpty(records)){Promise.all( records.map((item)=> { 
-                      if(item.match_card_id!=null){
+        if(item.match_card_id!=null){
+                        console.log(item.match_card_id.card_id)
                       item.match_card_id.card_id.image = `${path}/image/assets/predictionCard_img/${item.match_card_id.card_id.image}`;
                       if(language != '' && language == 'ar'){ 
                             
                         if(typeof item.match_card_id.card_id === 'object' && item.match_card_id.card_id !== null){
                           item.match_card_id.card_id.name = item.match_card_id.card_id.name_ara;
                           item.match_card_id.card_id.qus = item.match_card_id.card_id.qus_ara;
-                          item.match_card_id.card_id.ops_1 = item.match_card_id.card_id.ops_1_ara;
-                          item.match_card_id.card_id.ops_2 = item.match_card_id.card_id.ops_2_ara;
-                          item.match_card_id.card_id.ops_3 = item.match_card_id.card_id.ops_3_ara;
-                          item.match_card_id.card_id.ops_4 = item.match_card_id.card_id.ops__ara;
-                        }else{  item.match_card_id = {};}
+                        // option 1 tame name 
+                        //console.log("=============")
+                        if((item.match_card_id.card_id.ops_1 == 'Team A')){
+                          item.match_card_id.card_id.ops_1 =  matchData.team_a_name_ara ;
+                         }else  if((item.match_card_id.card_id.ops_1 == 'Team B')){
+                            item.match_card_id.card_id.ops_1 =  matchData.team_b_name_ara ;
+                          }else{
+                            item.match_card_id.card_id.ops_1 = item.match_card_id.card_id.ops_1_ara;
+                          }
+
+                        // option 2 tame name    
+                              if((item.match_card_id.card_id.ops_2 == 'Team A')){
+                                item.match_card_id.card_id.ops_2 =  matchData.team_a_name_ara ;
+                              }else  if((item.match_card_id.card_id.ops_2 == 'Team B')){
+                                item.match_card_id.card_id.ops_2 = matchData.team_b_name_ara ;
+                              }else{
+                                item.match_card_id.card_id.ops_2 = item.match_card_id.card_id.ops_2_ara;
+                              }
+                          // option 3 tame name 
+                          if((item.match_card_id.card_id.ops_3 == 'Team A')){
+                            item.match_card_id.card_id.ops_3 =  matchData.team_a_name_ara ;
+                          }else  if((item.match_card_id.card_id.ops_3 == 'Team B')){
+                            item.match_card_id.card_id.ops_3 =  matchData.team_b_name_ara ; 
+                          }else{
+                            item.match_card_id.card_id.ops_3 = item.match_card_id.card_id.ops_3_ara;
+                          }
+                        // option 4 tame name    
+                          if((item.match_card_id.card_id.ops_4 == 'Team A')){
+                            item.match_card_id.card_id.ops_4 =  matchData.team_a_name_ara ;
+                          }else  if((item.match_card_id.card_id.ops_4 == 'Team B')){
+                            item.match_card_id.card_id.ops_4 =  matchData.team_b_name_ara ;
+                          }else{
+                            item.match_card_id.card_id.ops_4 = item.match_card_id.card_id.ops_4_ara;
+                          }
+                          
+                  }
                         
-                        // item.card_id.name = item.card_id.name_ara;  
+                        // item.match_card_id.card_id.name = item.match_card_id.card_id.name_ara;  
                     
-                      }
+                      }else{ 
+                        if(typeof item.match_card_id.card_id === 'object' && item.match_card_id.card_id !== null){
+                        // option 1 tame name 
+                console.log("============")
+                  if((item.match_card_id.card_id.ops_1 == 'Team A')){
+                    item.match_card_id.card_id.ops_1 = matchData.team_a_name;
+                  }else  if((item.match_card_id.card_id.ops_1 == 'Team B')){
+                    item.match_card_id.card_id.ops_1 = matchData.team_b_name;  
+                  }
+               // option 2 tame name    
+                  if((item.match_card_id.card_id.ops_2 == 'Team A')){
+                    item.match_card_id.card_id.ops_2 = matchData.team_a_name;
+                  }else  if((item.match_card_id.card_id.ops_2 == 'Team B')){
+                    item.match_card_id.card_id.ops_2 = matchData.team_b_name;  
+                  }
+              // option 3 tame name 
+              if((item.match_card_id.card_id.ops_3 == 'Team A')){
+                item.match_card_id.card_id.ops_3 = matchData.team_a_name;
+              }else  if((item.match_card_id.card_id.ops_3 == 'Team B')){
+                item.match_card_id.card_id.ops_3 = matchData.team_b_name;  
+              }
+            // option 4 tame name    
+              if((item.match_card_id.card_id.ops_4 == 'Team A')){
+                item.match_card_id.card_id.ops_4 = matchData.team_a_name;
+              }else  if((item.match_card_id.card_id.ops_4 == 'Team B')){
+                item.match_card_id.card_id.ops_4 = matchData.team_b_name;  
+              }
+          }
+        } 
                       let point=[item.match_card_id.card_id.point_1,item.match_card_id.card_id.point_2,item.match_card_id.card_id.point_3,item.match_card_id.card_id.point_4]
-                      let max_point=point.sort(function(a, b){return b-a})[0]
-                      let min_point=point.sort(function(a, b){return a-b})[0]
+                      let max_point=point.sort(function(a, b){return b-a})[0];
+                      let min_point=point.sort(function(a, b){return a-b})[0];
+                      console.log(item._doc)
                       data.push({...item._doc,max_point,min_point})
                         }
                       }))
