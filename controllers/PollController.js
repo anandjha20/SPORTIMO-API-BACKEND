@@ -171,7 +171,8 @@ class PollController {
           let data=[];  
           let dd=await Promise.all( records.map(async(item)=> { 
                             let total_player=await poll_result_tbl.find({poll_id:item._id}).countDocuments()
-                            
+                            let poll_parcents = await poll_percent(item._id);
+                            //console.log(poll_parcents)
                             if(language != '' && language == 'ar'){
                                     item.qus = item.qus_ara ;
                                     item.ops_1 = item.ops_1_ara ;
@@ -180,7 +181,7 @@ class PollController {
                                     item.ops_4 = item.ops_4_ara ;
                                 
                                 }
-                          data.push({...item._doc,total_player})  
+                          data.push({...item._doc,total_player,poll_parcents})  
                            return item;
                  }));      
 
