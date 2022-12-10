@@ -528,15 +528,22 @@ class PollController {
 
   static my_polls = async (req,res)=>{
             try{
+              let s_date  = req.body.s_date;
+              let e_date  = req.body.e_date;
               let pipeline = [];
               
-                  pipeline.push({$match:{user_id:  mongoose.Types.ObjectId(req.params.id)}});
-              
-          //    pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user'} });
-            pipeline.push({ $lookup: {from: 'poll_tbls', localField: 'poll_id', foreignField: '_id', as: 'pollData'} });
+              pipeline.push({$match:{user_id:  mongoose.Types.ObjectId(req.params.id)}});
           
-            //   pipeline.push({ $unwind: "$user" });
+              
+              //    pipeline.push({ $lookup: {from: 'user_tbls', localField: 'user_id', foreignField: '_id', as: 'user'} });
+              pipeline.push({ $lookup: {from: 'poll_tbls', localField: 'poll_id', foreignField: '_id', as: 'pollData'} });
+              
+              //   pipeline.push({ $unwind: "$user" });
               pipeline.push({ $unwind: "$pollData" });
+              if(!isEmpty(s_date) && !isEmpty(e_date) ){ 
+               // console.log(new Date(s_date))
+                pipeline.push({$match:{"pollData.date":{$gte:new Date(s_date),$lte:new Date(e_date)}}}) 
+              } 
           
             // pipeline.push({ $project: {"_id":1,"user_ans":1,"poll_id":1,"match":"$pollData.match","poll_qs":"$pollData.qus","ops_1":"$pollData.ops_1",
             //   "ops_2":"$pollData.ops_2","ops_3":"$pollData.ops_3","ops_4":"$pollData.ops_4"} });
@@ -544,31 +551,29 @@ class PollController {
   let someData = await poll_result_tbl.aggregate(pipeline).exec();
 
     if(someData.length >0){
-
       let allData = await Promise.all( someData.map( async (item)=>{
         item.poll_parcents = await poll_percent(item.poll_id);
         item.total_player=await poll_result_tbl.find({poll_id:item.poll_id}).countDocuments()
-
-          return item;
+        return item;
       })) ; 
       
       
-      return res.status(200).send({"status":true,"msg":'success' , "body":allData}) ;   
-    }else{
-      return res.status(200).send({"status":false,"msg":'No data found' , "body":[]}) ;   
-    }
+        return res.status(200).send({"status":true,"msg":'success' , "body":allData}) ;   
+      }else{
+        return res.status(200).send({"status":false,"msg":'No data found' , "body":[]}) ;   
+      }
               
 
-          }
-          catch(err) {  console.log("some error == ",err);
-              return res.status(200).json({
-                  title: "Something went wrong. Please try again.",
-                  error: true,
-                  details: err
-              });
-          }
-              
-        }
+      }
+      catch(err) {  console.log("some error == ",err);
+          return res.status(200).json({
+              title: "Something went wrong. Please try again.",
+              error: true,
+              details: err
+          });
+      }
+          
+  }
              
   static poll_result_disclosed = async(req,res)=>{
         try {
