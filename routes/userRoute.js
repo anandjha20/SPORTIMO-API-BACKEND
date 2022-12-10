@@ -77,6 +77,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
           router.post('/poll_participant',user_token_check,PollController.poll_participant);      
           router.post('/poll_result_show/:poll_id ?',user_token_check,PollController.poll_result_show);      
           router.get('/my_polls/:id ?',user_token_check,PollController.my_polls);      
+          router.post('/my_polls_postApi/:id ?',user_token_check,PollController.my_polls);      
           router.post('/my_polls_history/',user_token_check,PollController.my_polls_history);  
 
         //  block_user_add
