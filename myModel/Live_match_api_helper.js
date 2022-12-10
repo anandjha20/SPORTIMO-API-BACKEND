@@ -222,8 +222,17 @@ const add_win_point = async(req,res)=>{
     /// user card 
   const  playMatchCard_remove = async(req,res)=>{
             try {
+              let user_id  = req.user_id.toString();
+              let match_id = req.match_id.toString();
+              let card_id  = req.card_id.toString();
+              let league_id=(req.league_id==undefined||req.league_id=='')?"61217":req.league_id;
                let user_play_card_id   = req.user_play_card_id;
-              let playcardUpdate  =  playMatchCards_tbl.findOneAndUpdate({_id: user_play_card_id},{$set : { active : 0, result: "lose" } },{new: true}, (err, updatedUser) => {
+               let transactions=await transactions_tbl.find({user_id,match_id,points_by:"match"});
+               if(transactions.length==0){
+                 let add = new transactions_tbl({user_id,"points":0,match_id,card_id,type:"credit",points_by:"match",description :"game lose",league_id}); 
+                 let datas = await add.save();
+               }
+               let playcardUpdate  =  playMatchCards_tbl.findOneAndUpdate({_id: user_play_card_id},{$set : { active : 0, result: "lose" } },{new: true}, (err, updatedUser) => {
                 if(err) { console.log(err); return false}else{ //console.log("remove fun call == ",updatedUser );
                      return true }  }); 
               } catch (error) { console.log(err); return false }
