@@ -252,6 +252,8 @@ const userReportImg =  img_upload('./assets/user_img','image');
    /// testing routs  
       router.get('/my_played_matches/:id?',predictionController.my_played_matches); 
       router.get('/my_played_leagues/:id?',predictionController.my_played_leagues); 
+      router.post('/my_played_matches_postApi/:id?',predictionController.my_played_matches); 
+      router.post('/my_played_leagues_postApi/:id?',predictionController.my_played_leagues); 
 
       router.post('/sms_api_test/:mobile?',UserController.sms_api_test)
 

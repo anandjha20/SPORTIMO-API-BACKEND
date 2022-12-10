@@ -470,6 +470,8 @@ static verify_otp = async(req,res)=>{
         }
         
 ////////////////////////////////////
+let path=await MyBasePath(req);
+//console.log(path)
 var query = user_tbl.findOne({ '_id': user_id});
 
 query.exec(function (err, person) {
@@ -478,7 +480,8 @@ query.exec(function (err, person) {
   } 
   // Prints "Space Ghost is a talk show host."
 
-  console.log(" db user  otp is == ", person.otp); 
+ // console.log(" db user  otp is == ", person);
+  person.image=`${path}/image/assets/user_img/${person.image}`
   let ddsq = user_logs_add(person._id,'login');  
   if(person.otp == otp){
     return res.status(200).send({"status":true,"msg":'Success' , "body": person }) ;     
