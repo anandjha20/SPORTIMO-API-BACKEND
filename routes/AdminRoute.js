@@ -21,6 +21,7 @@ const sponsorImgUpload = sponsorImg.fields([{ name: 'image', maxCount: 1 }]);
 
 const IntroSliderImgUpload =  img_upload('./assets/introSlider_img','image');
 const avatarImgUpload =  img_upload('./assets/avatar_img','image');
+const loginSponsorshipImgUpload =  img_upload('./assets/login_sponsorship_img','image');
 const emojiImgUpload =  img_upload('./assets/emoji','image');
 const MasterImgUpload =  img_upload('./assets/master','image');
 const predictionCardImgUpload = img_upload('./assets/predictionCard_img','image');
@@ -46,6 +47,7 @@ const token_check =  require('../middleware/token_check');
   let dashboardController= require("../controllers/dashboardController");
   let geqController= require("../controllers/geqController");
   let avatarController= require("../controllers/avatarController");
+  let LoginSponsorship= require("../controllers/LoginSponsorshipController");
   let emojiController= require("../controllers/emojiController");
   let analyticsController= require("../controllers/analyticsController");
 
@@ -242,12 +244,17 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.post('/bonus_points',leaderboardController.bonus_points);
 
 
+   //loginSponsorship api 
+   router.post('/login_sponsorship_add',loginSponsorshipImgUpload,LoginSponsorship.login_sponsorship_add); 
+   router.get('/login_sponsorship_get',LoginSponsorship.login_sponsorship_get); 
+   router.delete('/login_sponsorship_delete/:id',LoginSponsorship.login_sponsorship_delete);       
+ 
    //avatar api 
    router.post('/avatar_add',avatarImgUpload,avatarController.avatar_add); 
    router.get('/avatar_get',avatarController.avatar_get); 
    router.delete('/avatar_delete/:id',avatarController.avatar_delete);       
- 
-  //emoji api 
+
+   //emoji api 
   router.post('/emoji_add',emojiImgUpload,emojiController.emoji_add); 
   router.put('/emoji_update',emojiImgUpload,emojiController.emoji_update); 
   router.post('/emoji_get',emojiController.emoji_get); 
