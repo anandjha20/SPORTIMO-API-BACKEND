@@ -82,7 +82,7 @@ export default function LoginSponsorship() {
             if(rowData.status==true){
                 return (
                 <>
-                <Button onClick={() => { sponsorActiveDeactive(rowData._id, rowData.status="0");}} className="mr-3 btn-pd deactive">Deactive</Button> 
+                <Button onClick={() => { sponsorActiveDeactive(rowData._id, rowData.status="0");}} className="mr-3 btn-pd deactive text-white">Deactive</Button> 
                 </>
                 )
             }else{
