@@ -91,13 +91,13 @@ static login_sponsorship_get_user = async (req,res)=>{
      item.image = (item.image)?  `${paths}/image/assets/login_sponsorship_img/${item.image}`:''; 
     
      return item;} );
-     if(data.length>0){
+    // if(data.length>0){
          res.status(200).send({'status':true,'msg':"login sponsorship found", 'body':data });
   
-     }else{
-      res.status(200).send({'status':false,'msg':"no login sponsorship found"  });
+    //  }else{
+    //   res.status(200).send({'status':false,'msg':"no login sponsorship found"  });
   
-     }
+    //  }
   
   
   } catch (error) { console.log(error);
