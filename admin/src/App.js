@@ -34,6 +34,7 @@ import PlayersPreference from "./PreferenceMaster/PlayersPreference";
 import IntroSliderImg from "./SponsorshipManagement/IntroSliderImg";
 import IntroSliderTable from "./SponsorshipManagement/IntroSliderTable";
 import IntroSliderDetails from "./SponsorshipManagement/IntroSliderDetails";
+import LoginSponsorship from "./SponsorshipManagement/LoginSponsorship";
 import AllListNotification from "./NotificationManagement/AllListNotification";
 import AddNotification from "./NotificationManagement/AddNotification";
 import ReportReason from "./ReportReasonMangement/ReportReason";
@@ -102,6 +103,8 @@ function App() {
         <Route path="/intro-slider/detail/:_id" element={ <IntroSliderDetails /> } />
         <Route path="/sponsorship/detail/:id" element={ <SponsorshipDetails /> } />
         <Route path="/sponsorship/update/:id" element={ <UpdateSponsorship /> } />
+        <Route path="/loginSponsorship" element={ <LoginSponsorship /> } />
+        
 
         {/* Faq */}
         <Route path="/add-category" element={ <AddFaqCategory /> } />

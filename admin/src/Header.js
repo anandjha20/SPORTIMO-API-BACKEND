@@ -128,6 +128,9 @@ return (
 									<NavLink  to="/sponsorship" className="nav-sub-link" >Home Sponsorship</NavLink>
 								</li>
 								<li className="nav-sub-item">
+									<NavLink  to="/loginSponsorship" className="nav-sub-link" >Login Sponsorship</NavLink>
+								</li>
+								<li className="nav-sub-item">
 									<NavLink  to="/intro-slider" className="nav-sub-link " >Add Introduction Slider</NavLink>
 								</li>
 							</ul>
