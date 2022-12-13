@@ -248,6 +248,7 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.post('/login_sponsorship_add',loginSponsorshipImgUpload,LoginSponsorship.login_sponsorship_add); 
    router.get('/login_sponsorship_get',LoginSponsorship.login_sponsorship_get); 
    router.delete('/login_sponsorship_delete/:id',LoginSponsorship.login_sponsorship_delete);       
+   router.put('/login_sponsorship_status_update/:id',LoginSponsorship.login_sponsorship_status_update);       
  
    //avatar api 
    router.post('/avatar_add',avatarImgUpload,avatarController.avatar_add); 

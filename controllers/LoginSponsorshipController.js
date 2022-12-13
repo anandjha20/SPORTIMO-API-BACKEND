@@ -122,6 +122,28 @@ static login_sponsorship_delete = async(req,res)=>{
 
 }
 
+static login_sponsorship_status_update = async(req,res)=>{
+  try {
+          let _id = req.params.id;
+          let status=req.body.status;
+          console.log(status)
+          if(status==0||status==1){
+            let result = await login_sponsorship_tbls.findOneAndUpdate({_id},{status},{new:true});
+          if(result){
+             return res.status(200).send({"status":true,"msg":'login sponsorship updated' , "body":result}) ;
+          }else{
+             return res.status(200).send({"status":false,"msg":'invalid login sponsorship id' }) ;
+          }}else{
+            return res.status(200).send({"status":false,"msg":'invalid status code' }) ;
+          }
+          
+    
+  } catch (error) { console.log(error); 
+     return res.status(200).send({"status":false,"msg":'Some error' , "body":''}) ; }
+
+}
+
+
 }
    
 
