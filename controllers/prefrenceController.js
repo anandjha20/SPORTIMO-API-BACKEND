@@ -231,8 +231,8 @@ class prefrenceController{
         }
         if(!isEmpty(user_id)){
           let select=await user_preference.find({competition_id:item.competition_id,user_id}).countDocuments()
-          let status=select==0?false:true;
-          leagues.push({...item._doc,total_select,status})
+          let select_status=select==0?false:true;
+          leagues.push({...item._doc,total_select,select_status})
         }else{
           leagues.push({...item._doc,total_select})
         }
@@ -281,8 +281,8 @@ class prefrenceController{
         }
         if(!isEmpty(user_id)){
           let select=await user_preference.find({team_id:item.team_id,user_id}).countDocuments()
-          let status=select==0?false:true;
-          teams.push({...item._doc,total_select,status})
+          let select_status=select==0?false:true;
+          teams.push({...item._doc,total_select,select_status})
         }else{
           teams.push({...item._doc,total_select})
         }return item;
