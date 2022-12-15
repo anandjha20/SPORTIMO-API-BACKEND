@@ -45,6 +45,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
       let emojiController = require('../controllers/emojiController');
       let geqController = require('../controllers/geqController');
       let LoginSponsorship = require('../controllers/LoginSponsorshipController');
+      let prefrenceController = require('../controllers/prefrenceController');
   
   
           router.get('/JK/',UserController.dashboardAllCount);
@@ -263,6 +264,12 @@ const userReportImg =  img_upload('./assets/user_img','image');
       router.post('/sms_api_test/:mobile?',UserController.sms_api_test)
 
       router.get('/sms_api_test/:mobile?',UserController.sms_api_test)
+
+
+//prefrence api
+  router.post('/user_preference_add_update',prefrenceController.user_preference_add_update);
+  router.post('/league_list_new',prefrenceController.league_list_new);
+  router.post('/team_list_new',prefrenceController.team_list_new);
 
    
 

@@ -264,7 +264,29 @@ class Sponsorship {
       
           }
 
-            
+  static delete_sponsor = async(req,res)=>{
+
+    try {
+  
+                    let id = req.params.id; 
+                  
+                Sponsorship_tbl.findOneAndDelete({_id: id}, (err, updatedUser) => {
+                  if(err) {  console.log(err);
+                    return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
+                  }else if(!isEmpty(updatedUser)){
+                            return res.status(200).send({"status":true,"msg":'Sponsorship Deleted ' , "body":updatedUser  }) ;   
+                          }else{
+                            return res.status(200).send({"status":false,"msg":'Invalid Sponsorship Id ' , "body": ''}) ;   
+                            }
+              });     
+      } catch (error) { console.log(error);
+                    return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;          
+        
+                }
+              
+        
+        }
+                     
      static poll_participant = async(req,res)=>{
 
                 try {

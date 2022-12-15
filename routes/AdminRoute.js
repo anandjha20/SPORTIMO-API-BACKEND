@@ -25,6 +25,8 @@ const loginSponsorshipImgUpload =  img_upload('./assets/login_sponsorship_img','
 const emojiImgUpload =  img_upload('./assets/emoji','image');
 const MasterImgUpload =  img_upload('./assets/master','image');
 const predictionCardImgUpload = img_upload('./assets/predictionCard_img','image');
+const leagueLogoImgUpload = img_upload('./assets/league_logo','image');
+const teamLogoImgUpload = img_upload('./assets/league_logo','image');
  /// import user token middleware  
 const token_check =  require('../middleware/token_check');                                                                                                 
  
@@ -50,6 +52,7 @@ const token_check =  require('../middleware/token_check');
   let LoginSponsorship= require("../controllers/LoginSponsorshipController");
   let emojiController= require("../controllers/emojiController");
   let analyticsController= require("../controllers/analyticsController");
+  let prefrenceController= require("../controllers/prefrenceController");
 
   // admin login Routes  
   router.post('/admin_login/',AdminController.admin_login);
@@ -78,6 +81,7 @@ const token_check =  require('../middleware/token_check');
     router.post('/sponsor_list',SponsorshipController.sponsor_list);
     router.get('/sponsor_detail/:id?',SponsorshipController.sponsor_detail);
     router.put('/update_sponsor/:id?',sponsorImgUpload,SponsorshipController.update_sponsor);
+    router.delete('/delete_sponsor/:id?',SponsorshipController.delete_sponsor);
 
        
  // FAQ section Routes 
@@ -298,7 +302,17 @@ router.post('/reported_user_list',analyticsController.reported_user_list);
 router.get('/user_report_detail/:id?',analyticsController.user_report_detail); 
 
 
-
+//perefrence api
+router.post('/add_league_by_competition_id',prefrenceController.add_league_by_competition_id); 
+router.post('/add_team_by_season_id',prefrenceController.add_team_by_season_id); 
+router.post('/league_list_new',prefrenceController.league_list_new);
+router.post('/team_list_new',prefrenceController.team_list_new);
+router.post('/league_status_update',prefrenceController.league_status_update);
+router.post('/add_custom_league',leagueLogoImgUpload,prefrenceController.add_custom_league);
+router.post('/add_custom_team',teamLogoImgUpload,prefrenceController.add_custom_team);
+router.put('/update_league/:id?',leagueLogoImgUpload,prefrenceController.update_league);
+router.put('/update_team/:id?',teamLogoImgUpload,prefrenceController.update_team);
+router.delete('/delete_custom_league/:id?',prefrenceController.delete_custom_league);
 
 
 
