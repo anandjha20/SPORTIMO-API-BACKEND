@@ -183,10 +183,10 @@ return (
 								<li className="nav-sub-item">
 									<NavLink  to="/preference/teams" className="nav-sub-link">Teams Preference</NavLink>
 								</li>
-								<li className="nav-sub-item">
+								{/* <li className="nav-sub-item">
 									<NavLink  to="/preference/players" className="nav-sub-link">Players Preference</NavLink>
 								</li>
-								
+								 */}
 							</ul>
 						</li>
 

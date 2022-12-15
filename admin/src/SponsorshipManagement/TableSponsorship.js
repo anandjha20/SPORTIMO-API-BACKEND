@@ -2,6 +2,10 @@ import React from "react";
 import MaterialTable from 'material-table';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import SponsorshipList from './SponsorshipList'
 
 
 
@@ -10,6 +14,44 @@ function TableSponsorship(props) {
     const sponsor_list = props.myData;
 
     const navigate = useNavigate();
+
+      /////////////////delete api call /////////////////
+   const deleteCategory = (_id) => {
+    Swal.fire({
+        // title: 'Are you sure?',
+        title: "Are you sure you want to delete Sponsorship ?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+      }).then((result) => {
+        if (result.isConfirmed) {         
+            axios.delete(`/web_api/delete_sponsor/${_id}`)
+            .then(res => {
+                if (res.status) {
+                    let data = res.data;
+                    if (data.status) { 
+                        Swal.fire(
+                            'Deleted!',
+                             "Sponsorship deleted successfully",
+                            'success'
+                          )
+                          window.location.reload(false);
+                          return SponsorshipList()
+                    } else {
+                        toast.error(data.msg);
+                    }
+                }
+                else {
+                    toast.error(data.msg);
+                }
+            })
+        }
+      })
+}
+
+
 
     const viewFun = (id)=>{ 
      navigate(`/sponsorship/detail/${id}`);
@@ -59,6 +101,12 @@ function TableSponsorship(props) {
                                 iconProps: { style: { color: "#6259ca" } },
                                 tooltip: 'Update Sponsorship',
                                 onClick: (event, setData) => { UpdateFun(setData.id);}
+                            },
+                            {
+                                icon: 'delete',
+                                iconProps: { style: { color: "#6259ca" } },
+                                tooltip: 'delete Sponsorship',
+                                onClick: (event, setData) => { deleteCategory(setData.id);}
                             },
                         ]}
                         options={{

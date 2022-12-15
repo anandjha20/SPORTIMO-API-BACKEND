@@ -42,7 +42,7 @@ const sportOptions = [
                                 classNamePrefix="select" />
 
                         </div>
-                        <div className="col-lg-3" style={{ maxWidth: "19.5%" }}>
+                        <div className="col-lg-3" style={{ maxWidth: "17.5%" }}>
                             <TextField id="sdate" name = 'Fdate'  className="filter-input" label="Start Date" fullWidth type="date"
                                 InputLabelProps={{
                                     shrink: true,
@@ -51,7 +51,7 @@ const sportOptions = [
 
                         </div>
 
-                        <div className="col-lg-3" style={{ maxWidth: "19.5%" }}>
+                        <div className="col-lg-3" style={{ maxWidth: "17.5%" }}>
                             <TextField id="edate"  name = 'Ldate' className="filter-input" label="End Date" fullWidth type="date"
                                 InputLabelProps={{ shrink: true, }} />
 

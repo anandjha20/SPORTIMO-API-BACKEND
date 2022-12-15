@@ -52,9 +52,9 @@ export default function SelectTageting() {
     
       useEffect(() => {
         get_data('/web_api/sport_list',setSport_lists);
-        get_data('/web_api/league_list',setLeague_lists);
-        get_data('/web_api/team_list',setTeam_lists);
-        get_data('/web_api/player_list',setPlayer_lists);
+        get_data('/web_api/league_list_new',setLeague_lists);
+        get_data('/web_api/teams_for_sponsor',setTeam_lists);
+        //get_data('/web_api/player_list',setPlayer_lists);
         get_data('/web_api/country_list',setCountry_lists);
 
 
@@ -71,12 +71,12 @@ export default function SelectTageting() {
     
 
     const leagueOptions = (league_lists.length >0) ? league_lists.map((item)=>{
-        return  { value: item._id, label: item.name };
+        return  { value: item._id, label: item.original_name };
     }) :[];
     
     
     const teamOptions = (team_lists.length >0) ? team_lists.map((item)=>{
-        return  { value: item._id, label: item.name };
+        return  { value: item._id, label: item.team_name };
     }) :[];
     
     
@@ -133,7 +133,7 @@ export default function SelectTageting() {
                     classNamePrefix="select" />
             </div>
 
-            <div className="col-lg-6 reletive mb-4">
+            {/* <div className="col-lg-6 reletive mb-4">
                 <span className='react-select-title'>Select Players</span>
                 <Select isMulti
                     closeMenuOnSelect={false}
@@ -141,7 +141,7 @@ export default function SelectTageting() {
                     options={playersOptions}
                     className="basic-multi-select"
                     classNamePrefix="select" />
-            </div>
+            </div> */}
 
             <div className="col-lg-12  mb-4">
                 <label className="title-col mb-2">Targeted Country</label>

@@ -58,14 +58,11 @@ export default function TeamsPreference() {
     let options1 = ({ headers: header });
 
     /////////////////view complaint detail/////////////////
-    const onOpenModal = (_id) => {
-        axios.post(`/web_api/teams_get/${_id}`)
-            .then(res => {
-                const catView = res.data.body[0];
-                setCat(catView);
+    const onOpenModal = (item) => {
+                setCat(item);
                 setOpen(true);
                 console.log(catView);
-            })
+        
     }
 
     /////////////////delete api call /////////////////
@@ -105,13 +102,13 @@ export default function TeamsPreference() {
 
     /////////////////complaint list/////////////////
     const onCloseModal = () => setOpen(false);
-    const limit = 10;
+    const limit = 5;
     
     const formsave = (e, page)=>{
         e.preventDefault();
         const data = new FormData(e.target);
         const Formvlaues = Object.fromEntries(data.entries());
-      axios.post(`/web_api/teams_get`, Formvlaues, options1)
+      axios.post(`/web_api/team_list_new`, Formvlaues, options1)
             .then(res => {
                 const userData = res.data.body;
                 const total = res.data.rows;
@@ -123,11 +120,12 @@ export default function TeamsPreference() {
 
     const PreferenceList = async (page) => {
         const sanData = { page: page }
-        await axios.post(`/web_api/teams_get`,)
+        await axios.post(`/web_api/team_list_new`,)
             .then(res => {
                 const userData = res.data.body;
                 const total = res.data.rows;
                 const totalPage = (Math.ceil(total / limit));
+                console.log({totalPage})
                 setpageCount(totalPage);
                 setData(userData);
             })
@@ -147,11 +145,13 @@ export default function TeamsPreference() {
             const Formvlaues = Object.fromEntries(data.entries());
     
             let dataToSend2 = new FormData();
-            dataToSend2.append('name', Formvlaues.name);
-            dataToSend2.append('name_ara', Formvlaues.name_ara);
+            dataToSend2.append('team_name', Formvlaues.team_name);
+            dataToSend2.append('team_name_ara', Formvlaues.team_name_ara);
+            dataToSend2.append('short_name', Formvlaues.short_name);
+            dataToSend2.append('short_name_ara', Formvlaues.short_name_ara);
             dataToSend2.append('image', Formvlaues.image);
     
-                axios.put(`/web_api/teams/${id}`, dataToSend2, options1)
+                axios.put(`/web_api/update_team/${id}`, dataToSend2, options1)
                     .then(res => {
                         if (res.status) {
     
@@ -209,7 +209,8 @@ export default function TeamsPreference() {
     ///////////////pagenestion///////////////
     const fetchComments = async (page) => {
         const sanData = { page: page }
-        axios.post(`/web_api/teams_get`, sanData)
+        console.log({page})
+        axios.post(`/web_api/team_list_new`, sanData)
             .then(res => {
                 const userData = res.data.body;
                 setData(userData);
@@ -251,7 +252,7 @@ export default function TeamsPreference() {
                                 <div className="card custom-card">
                                     <div className="card-body">
                                         <div className="row d-flex">
-                                            <div className="col-lg-5">
+                                            {/* <div className="col-lg-5">
 
 
                                                 <form className="mt-3" onSubmit={(e) => AddFormData(e)}>
@@ -282,9 +283,9 @@ export default function TeamsPreference() {
                                                         <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
                                                     </div>
                                                 </form>
-                                            </div>
+                                            </div> */}
                                             {/* <div className="col-lg-1"></div> */}
-                                            <div className="col-lg-7">
+                                            <div className="col-lg-12">
                                                 <div className="row">
                                                     <div className="col-lg-12">
 
@@ -309,8 +310,10 @@ export default function TeamsPreference() {
                                                                 <thead>
                                                                     <tr>
                                                                         <th scope="col">Image</th>
-                                                                        <th scope="col">Teams Preference (English)</th>
-                                                                        <th scope="col">Teams Preference (Arabic)</th>
+                                                                        <th scope="col">Teams (English)</th>
+                                                                        <th scope="col">Teams (Arabic)</th>
+                                                                        <th scope="col">Short Name (English)</th>
+                                                                        <th scope="col">Short Name (Arabic)</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                       
                                                                     </tr>
@@ -326,17 +329,15 @@ export default function TeamsPreference() {
                                                                         if (item.team_name !== '') {
                                                                             return (
                                                                                 <tr key={item._id}>
-                                                                                    <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
-                                                                                    <td>{item.name}</td>
-                                                                                    <td>{item.name_ara}</td>
+                                                                                    <td><div className="imageSliderSmall">{item.team_logo !== '' ? <> <img src={item.team_logo} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
+                                                                                    <td>{item.team_name}</td>
+                                                                                    <td>{item.team_name_ara}</td>
+                                                                                    <td>{item.short_name}</td>
+                                                                                    <td>{item.short_name_ara}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
-                                                                                            <IconButton onClick={(e) => { onOpenModal(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">
+                                                                                            <IconButton onClick={(e) => { onOpenModal(item); }} aria-label="delete"> <span className="material-symbols-outlined">
                                                                                                 edit </span>
-                                                                                            </IconButton>
-                                                                                            <IconButton onClick={(e) => { deleteCategory(item._id); }} aria-label="delete">
-                                                                                                <span className="material-symbols-outlined">
-                                                                                                    delete </span>
                                                                                             </IconButton>
                                                                                         </div>
                                                                                     </td>
@@ -385,13 +386,21 @@ export default function TeamsPreference() {
                                                         <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
                                                             <div className="form-group mb-4"> 
                                                               
-                                                             <label className="title-col"> Team Preference <span className="text-blue">(English)</span></label>
+                                                             <label className="title-col"> Team Name <span className="text-blue">(English)</span></label>
                                                                 <input type="hidden" className="form-control" name='_id' value={catView._id} />
-                                                                <input type="text" className="form-control" name='name'
-                                                                    defaultValue={catView.name} /> </div>
+                                                                <input type="text" className="form-control" name='team_name'
+                                                                    defaultValue={catView.team_name} /> </div>
 
-                                                                <label className="title-col"> Team Preference <span className="text-blue">(Arabic)</span></label>
-                                                                <input  id="categor" className="form-control mb-4" name="name_ara" defaultValue={catView.name_ara}
+                                                                <label className="title-col"> Team Name <span className="text-blue">(Arabic)</span></label>
+                                                                <input  id="categor" className="form-control mb-4" name="team_name_ara" defaultValue={catView.team_name_ara}
+                                                                type="text"
+                                                                />  
+                                                                <label className="title-col"> Short Name <span className="text-blue">(English)</span></label>
+                                                                <input  id="categor" className="form-control mb-4" name="short_name" defaultValue={catView.short_name}
+                                                                type="text"
+                                                                />  
+                                                                <label className="title-col"> Short Name <span className="text-blue">(Arabic)</span></label>
+                                                                <input  id="categor" className="form-control mb-4" name="short_name_ara" defaultValue={catView.short_name_ara}
                                                                 type="text"
                                                                 />  
 

@@ -246,7 +246,9 @@ class prefrenceController{
       if(!isEmpty(user_id)){
         
         let user_leagues=await user_preference.distinct('season_id',{user_id})
-        var response = await team_list.find({season_id:{$in:user_leagues}});
+        let conditio={}
+        if(!isEmpty(user_leagues)){conditio={...conditio,season_id:{$in:user_leagues}}}
+        var response = await team_list.find(conditio);
         
       }else{
         let offset=(page-1)*5;
@@ -261,6 +263,25 @@ class prefrenceController{
       })
       let total_team=await team_list.find(whr).countDocuments();
       return res.status(200).send({status:true,msg:"data found",rows:total_team,body:response});
+      
+    }catch (error){
+      console.log(error);
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
+
+  static teams_for_sponsor = async (req,res)=>{
+    try{
+        let response = await team_list.find();
+      
+      let path=MyBasePath(req);
+      response.map((item)=>{
+        let match=item.team_logo.match('http');
+        if(item.team_logo.length!=0 && match==null){
+          item.team_logo=`${path}/image/assets/team_logo/${item.team_logo}`
+        }
+      })
+      return res.status(200).send({status:true,msg:"data found",body:response});
       
     }catch (error){
       console.log(error);

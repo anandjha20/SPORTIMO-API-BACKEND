@@ -302,11 +302,13 @@ router.post('/reported_user_list',analyticsController.reported_user_list);
 router.get('/user_report_detail/:id?',analyticsController.user_report_detail); 
 
 
-//perefrence api
+//perefrence api 
 router.post('/add_league_by_competition_id',prefrenceController.add_league_by_competition_id); 
 router.post('/add_team_by_season_id',prefrenceController.add_team_by_season_id); 
 router.post('/league_list_new',prefrenceController.league_list_new);
+router.get('/league_list_new',prefrenceController.league_list_new);
 router.post('/team_list_new',prefrenceController.team_list_new);
+router.get('/teams_for_sponsor',prefrenceController.teams_for_sponsor);
 router.post('/league_status_update',prefrenceController.league_status_update);
 router.post('/add_custom_league',leagueLogoImgUpload,prefrenceController.add_custom_league);
 router.post('/add_custom_team',teamLogoImgUpload,prefrenceController.add_custom_team);

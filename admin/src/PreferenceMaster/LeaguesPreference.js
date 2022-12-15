@@ -16,6 +16,7 @@ import { useState, useEffect } from "react";
 import useForm from "../useForm";
 import IconButton from '@mui/material/IconButton';
 import Swal from 'sweetalert2'
+import { ListItemAvatar } from "@material-ui/core";
 
 export default function LeaguesPreference() {
 
@@ -59,14 +60,11 @@ export default function LeaguesPreference() {
 
     /////////////////view complaint detail/////////////////
 
-    const onOpenModal = (_id) => {
-        axios.post(`/web_api/leagues_get/${_id}`)
-            .then(res => {
-                const catView = res.data.body[0];
-                setCat(catView);
+    const onOpenModal = (sunil) => {
+                setCat(sunil);
                 setOpen(true);
-                console.log(catView);
-            })
+                console.log(sunil);
+        
     }
 
 
@@ -83,7 +81,7 @@ export default function LeaguesPreference() {
         confirmButtonText: 'Yes, delete it!'
       }).then((result) => {
         if (result.isConfirmed) {         
-            axios.delete(`/web_api/leagues/${_id}`)
+            axios.delete(`/web_api/delete_custom_league/${_id}`)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
@@ -106,6 +104,28 @@ export default function LeaguesPreference() {
       })
 }
 
+ /////////////////status update/////////////////////
+ const LeagueActiveDeactive = (_id, status) =>
+{ 
+           const setDataForm = {_id, status } 
+            axios.post(`/web_api/league_status_update`, setDataForm , options1)
+             .then(res => {
+                if (res.status) {
+                    let data = res.data;
+                    if (data.status) { 
+                        toast.success(data.msg);
+                        return PreferenceList();
+                    } else {
+                        toast.error('something went wrong please try again');
+                    }
+                }
+                else {
+                    toast.error('something went wrong please try again..');
+                }
+
+            })
+             
+} 
 
 
 
@@ -119,7 +139,7 @@ export default function LeaguesPreference() {
         e.preventDefault();
         const data = new FormData(e.target);
         const Formvlaues = Object.fromEntries(data.entries());
-      axios.post(`/web_api/leagues_get`, Formvlaues, options1)
+      axios.post(`/web_api/league_list_new`, Formvlaues, options1)
             .then(res => {
                 const userData = res.data.body;
                 const total = res.data.rows;
@@ -130,7 +150,7 @@ export default function LeaguesPreference() {
     }
     const PreferenceList = async (page) => {
         const sanData = { page: page }
-        await axios.post(`/web_api/leagues_get`,)
+        await axios.post(`/web_api/league_list_new`,)
             .then(res => {
                 const userData = res.data.body;
                 const total = res.data.rows;
@@ -184,11 +204,11 @@ export default function LeaguesPreference() {
         const data = new FormData(e.target);
         const Formvlaues = Object.fromEntries(data.entries());
         let dataToSend2 = new FormData();
-        dataToSend2.append('name', Formvlaues.name);
-        dataToSend2.append('name_ara', Formvlaues.name_ara);
+        dataToSend2.append('original_name', Formvlaues.original_name);
+        dataToSend2.append('original_name_ara', Formvlaues.original_name_ara);
         dataToSend2.append('image', Formvlaues.image);
 
-        axios.post(`/web_api/leagues`, dataToSend2, options1)
+        axios.post(`/web_api/add_custom_league`, dataToSend2, options1)
                 .then(response => {
                     if (response.status) {
                         let data = response.data;
@@ -264,7 +284,7 @@ export default function LeaguesPreference() {
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add League Preference</h6>
 
                                                     <label className="title-col">League Preference <span className="text-blue">(English)</span></label>
-                                                      <input  onChange={handleOnChange} id="categor" className="form-control mb-4" name="name"
+                                                      <input  onChange={handleOnChange} id="categor" className="form-control mb-4" name="original_name"
                                                          type="text"
                                                         />
 
@@ -273,7 +293,7 @@ export default function LeaguesPreference() {
                                                      )}
     
                                                       <label className="title-col">League Preference <span className="text-blue">(Arabic)</span></label>
-                                                      <input  id="categor" className="form-control mb-4" name="name_ara"
+                                                      <input  id="categor" className="form-control mb-4" name="original_name_ara"
                                                          type="text"
                                                         />
 
@@ -283,7 +303,7 @@ export default function LeaguesPreference() {
                                                     </div>
 
                                                     <div className="mt-3 mb-3">
-                                                        <Button type='submit' className="mr-3 btn-pd btnBg" disabled={disable}>Add</Button>
+                                                        <Button type='submit' className="mr-3 btn-pd btnBg" >Add</Button>
                                                         <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
                                                     </div>
                                                 </form>
@@ -314,8 +334,9 @@ export default function LeaguesPreference() {
                                                                 <thead>
                                                                     <tr>
                                                                         <th scope="col">Image</th>
-                                                                        <th scope="col">Leagues Preference (English)</th>
-                                                                        <th scope="col">Leagues Preference (Arabic)</th>
+                                                                        <th scope="col">Leagues (English)</th>
+                                                                        <th scope="col">Leagues (Arabic)</th>
+                                                                        <th scope="col">Status</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
                                                                 </thead>
@@ -327,21 +348,32 @@ export default function LeaguesPreference() {
                                                                     </tr>
                                                                     </> : null}
                                                                     {data.map((item) => {
-                                                                        if (item.league_name !== '') {
+                                                                        if (item.original_name !== '') {
+                                                                            
                                                                             return (
                                                                                 <tr key={item._id}>
-                                                                                    <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
-                                                                                    <td>{item.name}</td>
-                                                                                    <td>{item.name_ara}</td>
+                                                                                    <td><div className="imageSliderSmall">{item.league_logo !== '' ? <> <img src={item.league_logo} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
+                                                                                    <td>{item.original_name}</td>
+                                                                                    <td>{item.original_name_ara}</td>
+                                                                                    <td>{item.status == true ? <><Button onClick={() => { LeagueActiveDeactive(item._id, item.status="0");}} className="mr-3 btn-pd deactive text-white">Deactive</Button> </> :<> <Button onClick={() => { LeagueActiveDeactive(item._id, item.status="1");}} className="mr-3 btn-pd btnBg">Active</Button></>}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
-                                                                                            <IconButton onClick={(e) => { onOpenModal(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">
+                                                                                        {item.type=="custom"?<>
+                                                                                            <IconButton onClick={(e) => { onOpenModal(item); }} aria-label="delete"> <span className="material-symbols-outlined">
                                                                                                 edit </span>
                                                                                             </IconButton>
-                                                                                            <IconButton onClick={(e) => { deleteCategory(item._id); }} aria-label="delete">
+                                                                                            <IconButton  onClick={(e) => { deleteCategory(item._id); }} aria-label="delete">
                                                                                                 <span className="material-symbols-outlined">
                                                                                                     delete </span>
                                                                                             </IconButton>
+                                                                                            </>:<><IconButton onClick={(e) => { onOpenModal(item); }} aria-label="delete"> <span className="material-symbols-outlined">
+                                                                                                edit </span>
+                                                                                            </IconButton>
+                                                                                            <IconButton disabled onClick={(e) => { deleteCategory(item._id); }} aria-label="delete">
+                                                                                                <span className="material-symbols-outlined">
+                                                                                                    delete </span>
+                                                                                            </IconButton>
+                                                                                            </>}
                                                                                         </div>
                                                                                     </td>
                                                                                 </tr>
@@ -391,10 +423,10 @@ export default function LeaguesPreference() {
                                                                <label className="title-col">League Preference <span className="text-blue">(English)</span></label>
                                                                 <input type="hidden" className="form-control" name='_id' value={catView._id} />
                                                                 <input type="text" className="form-control" name='name'
-                                                                    defaultValue={catView.name} /> </div>
+                                                                    defaultValue={catView.original_name} /> </div>
 
                                                                 <label className="title-col">League Preference <span className="text-blue">(Arabic)</span></label>
-                                                                <input  id="categor" className="form-control mb-4" name="name_ara" defaultValue={catView.name_ara}
+                                                                <input  id="categor" className="form-control mb-4" name="name_ara" defaultValue={catView.original_name_ara}
                                                                 type="text"/>  
       
                                                                <div className="col-lg-12 mt-4 mb-3  p-0">

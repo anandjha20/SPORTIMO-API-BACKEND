@@ -62,7 +62,7 @@ export default function CreateTipsTricks() {
       if (rowData.active_status == false) {
         return (
             <>
-            <Button onClick={() => { TipsActiveDeactive(rowData._id, rowData.statusTips="1");}} className="mr-3 btn-pd deactive">Deactive</Button>
+            <Button onClick={() => { TipsActiveDeactive(rowData._id, rowData.statusTips="1");}} className="mr-3 btn-pd deactive text-white">Deactive</Button>
             </>
         );
       }
