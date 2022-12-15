@@ -213,13 +213,18 @@ class prefrenceController{
     try{
       let user_id = req.body.user_id;
       let type = req.body.type;
-      let whr={};
+      let name = req.body.name;
+      let page = req.body.page;
+      let whr = {};
+      if(!isEmpty(name)){whr.team_name = { $regex: '.*' + name + '.*', $options: 'i' } ;}
        if(!isEmpty(type)){whr.type=type}
       if(!isEmpty(user_id)){
         var response = await league_list.find({status:1,type:"default"});
       //  return res.status(200).send({status:true,msg:"data found",body:response});
       }else{
-        var response = await league_list.find(whr);
+        page = (isEmpty(page) || page == 0 )? 1 :page ; 
+        let offset=(page-1)*5;
+        var response = await league_list.find(whr).skip(offset).limit(5);
       }
       let leagues=[];
       let path=MyBasePath(req);
@@ -234,6 +239,7 @@ class prefrenceController{
           let select_status=select==0?false:true;
           leagues.push({...item._doc,total_select,select_status})
         }else{
+          
           leagues.push({...item._doc,total_select})
         }
         return item;
@@ -245,7 +251,8 @@ class prefrenceController{
         return -1;
       }
       return 0;});
-      return res.status(200).send({status:true,msg:"data found",body:leagues});
+      let total_league=await league_list.find(whr).countDocuments();
+      return res.status(200).send({status:true,msg:"data found",rows:total_league,body:leagues});
     }catch (error){
       console.log(error);
       return res.status(200).send({status:false,msg:"server error"});

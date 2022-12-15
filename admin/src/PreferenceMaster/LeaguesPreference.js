@@ -144,6 +144,7 @@ export default function LeaguesPreference() {
                 const userData = res.data.body;
                 const total = res.data.rows;
                 const totalPage = (Math.ceil(total / limit));
+                console.log(totalPage)
                 setpageCount(totalPage);
                 setData(userData);
             })
@@ -172,11 +173,11 @@ export default function LeaguesPreference() {
             const Formvlaues = Object.fromEntries(data.entries());
     
             let dataToSend2 = new FormData();
-            dataToSend2.append('name', Formvlaues.name);
-            dataToSend2.append('name_ara', Formvlaues.name_ara);
+            dataToSend2.append('original_name', Formvlaues.original_name);
+            dataToSend2.append('original_name_ara', Formvlaues.original_name_ara);
             dataToSend2.append('image', Formvlaues.image);
     
-                axios.put(`/web_api/leagues/${id}`, dataToSend2, options1)
+                axios.put(`/web_api/update_league/${id}`, dataToSend2, options1)
                     .then(res => {
                         if (res.status) {
     
@@ -277,7 +278,7 @@ export default function LeaguesPreference() {
                                 <div className="card custom-card">
                                     <div className="card-body">
                                         <div className="row d-flex">
-                                            <div className="col-lg-5">
+                                            <div className="col-lg-4">
 
 
                                                 <form className="mt-3" onSubmit={(e) => AddFormData(e)}>
@@ -311,7 +312,7 @@ export default function LeaguesPreference() {
                                             {/* <div className="col-lg-1"></div> */}
                                             <div className="col-lg-7">
                                                 <div className="row">
-                                                    <div className="col-lg-12">
+                                                    <div className="col-lg-16">
 
                                                         <div className="table-card MuiPaper-root MuiPaper-elevation2 MuiPaper-rounded">
                                                             
@@ -330,12 +331,13 @@ export default function LeaguesPreference() {
 
                                                           </div>
                                                             </form>
-                                                            <table className="table ">
+                                                            <table className="table  ">
                                                                 <thead>
                                                                     <tr>
                                                                         <th scope="col">Image</th>
                                                                         <th scope="col">Leagues (English)</th>
                                                                         <th scope="col">Leagues (Arabic)</th>
+                                                                        <th scope="col">Follower</th>
                                                                         <th scope="col">Status</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
@@ -355,6 +357,7 @@ export default function LeaguesPreference() {
                                                                                     <td><div className="imageSliderSmall">{item.league_logo !== '' ? <> <img src={item.league_logo} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
                                                                                     <td>{item.original_name}</td>
                                                                                     <td>{item.original_name_ara}</td>
+                                                                                    <td>{item.total_select}</td>
                                                                                     <td>{item.status == true ? <><Button onClick={() => { LeagueActiveDeactive(item._id, item.status="0");}} className="mr-3 btn-pd deactive text-white">Deactive</Button> </> :<> <Button onClick={() => { LeagueActiveDeactive(item._id, item.status="1");}} className="mr-3 btn-pd btnBg">Active</Button></>}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
@@ -422,11 +425,11 @@ export default function LeaguesPreference() {
                                                             <div className="form-group mb-4">
                                                                <label className="title-col">League Preference <span className="text-blue">(English)</span></label>
                                                                 <input type="hidden" className="form-control" name='_id' value={catView._id} />
-                                                                <input type="text" className="form-control" name='name'
+                                                                <input type="text" className="form-control" name='original_name'
                                                                     defaultValue={catView.original_name} /> </div>
 
                                                                 <label className="title-col">League Preference <span className="text-blue">(Arabic)</span></label>
-                                                                <input  id="categor" className="form-control mb-4" name="name_ara" defaultValue={catView.original_name_ara}
+                                                                <input  id="categor" className="form-control mb-4" name="original_name_ara" defaultValue={catView.original_name_ara}
                                                                 type="text"/>  
       
                                                                <div className="col-lg-12 mt-4 mb-3  p-0">

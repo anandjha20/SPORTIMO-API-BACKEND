@@ -314,6 +314,7 @@ export default function TeamsPreference() {
                                                                         <th scope="col">Teams (Arabic)</th>
                                                                         <th scope="col">Short Name (English)</th>
                                                                         <th scope="col">Short Name (Arabic)</th>
+                                                                        <th scope="col">Follower</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                       
                                                                     </tr>
@@ -334,6 +335,7 @@ export default function TeamsPreference() {
                                                                                     <td>{item.team_name_ara}</td>
                                                                                     <td>{item.short_name}</td>
                                                                                     <td>{item.short_name_ara}</td>
+                                                                                    <td>{item.total_select}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
                                                                                             <IconButton onClick={(e) => { onOpenModal(item); }} aria-label="delete"> <span className="material-symbols-outlined">
