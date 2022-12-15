@@ -229,7 +229,13 @@ class prefrenceController{
         if(item.league_logo.length!=0 && match==null){
           item.league_logo=`${path}/image/assets/league_logo/${item.league_logo}`
         }
-        leagues.push({...item._doc,total_select})
+        if(!isEmpty(user_id)){
+          let select=await user_preference.find({competition_id:item.competition_id,user_id}).countDocuments()
+          let status=select==0?false:true;
+          leagues.push({...item._doc,total_select,status})
+        }else{
+          leagues.push({...item._doc,total_select})
+        }
         return item;
       }))
       leagues.sort(function(a, b){ if ( a.total_select < b.total_select ){
@@ -273,10 +279,15 @@ class prefrenceController{
         if(item.team_logo.length!=0 && match==null){
           item.team_logo=`${path}/image/assets/team_logo/${item.team_logo}`
         }
-        teams.push({...item._doc,total_select})
-        return item;
+        if(!isEmpty(user_id)){
+          let select=await user_preference.find({team_id:item.team_id,user_id}).countDocuments()
+          let status=select==0?false:true;
+          teams.push({...item._doc,total_select,status})
+        }else{
+          teams.push({...item._doc,total_select})
+        }return item;
       }))
-      leagues.sort(function(a, b){ if ( a.total_select < b.total_select ){
+      teams.sort(function(a, b){ if ( a.total_select < b.total_select ){
         return 1;
       }
       if ( a.total_select > b.total_select ){
