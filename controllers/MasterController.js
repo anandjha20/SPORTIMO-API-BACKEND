@@ -9,7 +9,8 @@ const  {MyBasePath} = require("../myModel/image_helper");
 
 
 const team_matches   = require("../models/team_matches") ; 
-const playMatchCards = require("../models/playMatchCards") ; 
+const playMatchCards = require("../models/playMatchCards") ;
+const user_preference = require("../models/user_preference"); 
 
 class MasterController { 
 
@@ -556,8 +557,9 @@ static all_team_match_list_mobile = async (req,res)=>{
         let user_id= req.body.user_id;
         if(!isEmpty(user_id)){
             let whr = {};
-            let matches=await playMatchCards.distinct('match_id',{"user_id":user_id})
-            if(!isEmpty(matches)){whr._id = matches ;} 
+            let league=await user_preference.distinct('season_id',{"user_id":user_id})
+            console.log(league)
+            if(!isEmpty(league)){whr.league_id = {$in:league} ;} 
             if(!isEmpty(name)){whr.match_name = { $regex: '.*' + name + '.*', $options: 'i' } ;} 
             if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
