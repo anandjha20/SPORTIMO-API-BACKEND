@@ -221,14 +221,25 @@ class prefrenceController{
       }else{
         var response = await league_list.find(whr);
       }
+      let leagues=[];
       let path=MyBasePath(req);
-      response.map((item)=>{
+      let d1=await Promise.all( response.map(async (item)=>{
+        let total_select=await user_preference.find({competition_id:item.competition_id}).countDocuments()
         let match=item.league_logo.match('http')
         if(item.league_logo.length!=0 && match==null){
           item.league_logo=`${path}/image/assets/league_logo/${item.league_logo}`
         }
-      })
-      return res.status(200).send({status:true,msg:"data found",body:response});
+        leagues.push({...item._doc,total_select})
+        return item;
+      }))
+      leagues.sort(function(a, b){ if ( a.total_select < b.total_select ){
+        return 1;
+      }
+      if ( a.total_select > b.total_select ){
+        return -1;
+      }
+      return 0;});
+      return res.status(200).send({status:true,msg:"data found",body:leagues});
     }catch (error){
       console.log(error);
       return res.status(200).send({status:false,msg:"server error"});
@@ -254,15 +265,52 @@ class prefrenceController{
         let offset=(page-1)*5;
         var response = await team_list.find(whr).skip(offset).limit(5);
       }
+      let teams=[]
       let path=MyBasePath(req);
-      response.map((item)=>{
+      let d1=await Promise.all( response.map(async (item)=>{
+        let total_select=await user_preference.find({team_id:item.team_id}).countDocuments();
         let match=item.team_logo.match('http');
         if(item.team_logo.length!=0 && match==null){
           item.team_logo=`${path}/image/assets/team_logo/${item.team_logo}`
         }
-      })
+        teams.push({...item._doc,total_select})
+        return item;
+      }))
+      leagues.sort(function(a, b){ if ( a.total_select < b.total_select ){
+        return 1;
+      }
+      if ( a.total_select > b.total_select ){
+        return -1;
+      }
+      return 0;});
       let total_team=await team_list.find(whr).countDocuments();
-      return res.status(200).send({status:true,msg:"data found",rows:total_team,body:response});
+      return res.status(200).send({status:true,msg:"data found",rows:total_team,body:teams});
+      
+    }catch (error){
+      console.log(error);
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
+
+
+
+  static my_fav_league = async (req,res)=>{
+    try{
+      let user_id = req.body.user_id;
+      let  response = await user_preference.find({user_id,league_id_mongo:{$ne:""}});
+      
+      return res.status(200).send({status:true,msg:"success",body:response});
+    }catch (error){
+      console.log(error);
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
+
+  static my_fav_team = async (req,res)=>{
+    try{
+      let user_id = req.body.user_id;
+      let user_leagues=await user_preference.find({user_id,team_id_mongo:{$ne:""}})
+      return res.status(200).send({status:true,msg:"success",body:user_leagues});
       
     }catch (error){
       console.log(error);
