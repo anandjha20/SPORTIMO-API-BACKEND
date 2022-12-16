@@ -271,8 +271,10 @@ const userReportImg =  img_upload('./assets/user_img','image');
   router.post('/user_preference_add_update',prefrenceController.user_preference_add_update);
   router.post('/league_list_new',prefrenceController.league_list_new);
   router.post('/team_list_new',prefrenceController.team_list_new);
+  router.post('/sport_list_new',prefrenceController.sport_list_new);
   router.post('/my_fav_league',prefrenceController.my_fav_league);
   router.post('/my_fav_team',prefrenceController.my_fav_team);
+  router.post('/my_fav_sport',prefrenceController.my_fav_sport);
 
    
 

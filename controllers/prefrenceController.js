@@ -6,6 +6,7 @@ const { Promise } = require("mongoose");
 
 const team_list = require("../models/team_list");
 const league_list = require("../models/league_list");
+const sport_list = require("../models/sport");
 const user_preference = require("../models/user_preference");
 
 const get_competition_id = async ()=>{
@@ -310,14 +311,48 @@ class prefrenceController{
     }
   }
 
+  static sport_list_new = async (req,res)=>{
+    try{
+    
+      let user_id = req.body.user_id;
+      let response= await sport_list.find({active_status:true});
+      let sport=[]
+      let path=MyBasePath(req);
+      let d1=await Promise.all( response.map(async (item)=>{
+        let total_select=await user_preference.find({sport_id_mongo:item._id}).countDocuments();
+        let match=item.image.match('http');
+        if(item.image.length!=0 && match==null){
+          item.image=`${path}/image/assets/team_logo/${item.image}`
+        }
+        
+          let select=await user_preference.find({sport_id_mongo:item._id,user_id}).countDocuments()
+          let select_status=select==0?false:true;
+          sport.push({...item._doc,total_select,select_status})
+        
+      }))
+      sport.sort(function(a, b){ if ( a.total_select < b.total_select ){
+        return 1;
+      }
+      if ( a.total_select > b.total_select ){
+        return -1;
+      }
+      return 0;});
+      
+      return res.status(200).send({status:true,msg:"data found",body:sport});
+      
+    }catch (error){
+      console.log(error);
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
 
 
   static my_fav_league = async (req,res)=>{
     try{
       let user_id = req.body.user_id;
-      let  response = await user_preference.find({user_id,league_id_mongo:{$ne:""}});
-      
-      return res.status(200).send({status:true,msg:"success",body:response});
+      let  response = await user_preference.distinct('league_id_mongo',{user_id,league_id_mongo:{$ne:""}});
+      let user_league=await league_list.find({_id:{$in:response}})
+      return res.status(200).send({status:true,msg:"success",body:user_league});
     }catch (error){
       console.log(error);
       return res.status(200).send({status:false,msg:"server error"});
@@ -327,14 +362,29 @@ class prefrenceController{
   static my_fav_team = async (req,res)=>{
     try{
       let user_id = req.body.user_id;
-      let user_leagues=await user_preference.find({user_id,team_id_mongo:{$ne:""}})
-      return res.status(200).send({status:true,msg:"success",body:user_leagues});
+      let team_id=await user_preference.distinct('team_id_mongo',{user_id,team_id_mongo:{$ne:""}})
+      let user_team=await team_list.find({_id:{$in:team_id}})
+      return res.status(200).send({status:true,msg:"success",body:user_team});
       
     }catch (error){
       console.log(error);
       return res.status(200).send({status:false,msg:"server error"});
     }
   }
+
+  static my_fav_sport = async (req,res)=>{
+    try{
+      let user_id = req.body.user_id;
+      let sport=await user_preference.distinct('sport_id_mongo',{user_id,sport_id_mongo:{$ne:""}})
+      let user_sport=await sport_list.find({_id:{$in:sport}})
+      return res.status(200).send({status:true,msg:"success",body:user_sport});
+      
+    }catch (error){
+      console.log(error);
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
+
 
   static teams_for_sponsor = async (req,res)=>{
     try{
