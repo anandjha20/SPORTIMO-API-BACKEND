@@ -56,14 +56,18 @@ class MasterController {
               
              let offest = (page -1 ) * 10 ; 
              const records = await query2.skip(offest).limit(10);
-        
-             if(records){ records.map((item)=> { 
+             let sport=[];   
+             if(records){ 
+             let d1=await Promise.all( records.map(async(item)=> { 
+                let total_select =await user_preference.find({sport_id_mongo:item._id}).countDocuments();
                 item.image = (item.image)? `${paths}/image/assets/master/${item.image}` : '' ;
-            return item;
-        })}
+                sport.push({...item._doc,total_select})
+                return item;
+                }))
+            }
         
         
-             res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+             res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':sport });
   
         } catch (error) { console.log(error);
           res.status(200).send({'status':false,'msg':error,'body':''});
