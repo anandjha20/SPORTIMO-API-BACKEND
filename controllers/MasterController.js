@@ -11,6 +11,8 @@ const  {MyBasePath} = require("../myModel/image_helper");
 const team_matches   = require("../models/team_matches") ; 
 const playMatchCards = require("../models/playMatchCards") ;
 const user_preference = require("../models/user_preference"); 
+const league_list = require("../models/league_list");
+
 
 class MasterController { 
 
@@ -632,6 +634,42 @@ static all_team_match_list_mobile = async (req,res)=>{
                     
 }    
 
+static all_league_list_mobile = async (req,res)=>{
+    try {
+        let  id = req.params.id;
+        let s_date  = req.body.s_date;
+        let e_date  = req.body.e_date;
+        let language= req.body.language;
+        let zone= req.body.zone;
+        let user_id= req.body.user_id;
+        
+            let whr = {status:{$ne:"Played"}};
+            
+            if(!isEmpty(s_date) && !isEmpty(e_date) ){ whr.date_utc = { $gte: s_date, $lte: e_date } ;}
+            if(!isEmpty(id)){whr = {_id: id} ;} 
+            let league = await team_matches.distinct('league_id',whr)        
+            let records=await league_list.find({season_id:{$in:league}})
+            let path =MyBasePath(req,res); 
+            records.map( (item)=>{
+                let match=item.league_logo.match('http')
+                if(item.league_logo.length!=0 && match==null){
+                  item.league_logo=`${path}/image/assets/league_logo/${item.league_logo}`
+                }
+                if(language=="ar"){
+                    item.original_name=item.original_name_ara
+                }
+            }) 
+                
+    
+        res.status(200).send({'status':true,'msg':"success",  'body':records });
+        
+        
+       
+    } catch (error) { console.log(error);
+    res.status(200).send({'status':false,'msg':"server error"});
+    }
+                    
+}    
 
 
     static deleteOne=async (req,res)=>{
