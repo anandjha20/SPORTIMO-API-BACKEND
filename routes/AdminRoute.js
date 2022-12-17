@@ -26,7 +26,7 @@ const emojiImgUpload =  img_upload('./assets/emoji','image');
 const MasterImgUpload =  img_upload('./assets/master','image');
 const predictionCardImgUpload = img_upload('./assets/predictionCard_img','image');
 const leagueLogoImgUpload = img_upload('./assets/league_logo','image');
-const teamLogoImgUpload = img_upload('./assets/league_logo','image');
+const teamLogoImgUpload = img_upload('./assets/team_logo','image');
  /// import user token middleware  
 const token_check =  require('../middleware/token_check');                                                                                                 
  

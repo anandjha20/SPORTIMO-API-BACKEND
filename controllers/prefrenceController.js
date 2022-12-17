@@ -36,6 +36,7 @@ const get_season_data = async (competition_id)=>{
     let encodedToken=`${Buffer.from('zimbori:8PFsL2Ce&!').toString("base64")}`
     let session_url=`https://dsg-api.com/clients/zimbori/soccer/get_seasons?comp_id=${competition_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json`;
     let session_url_ara=`https://dsg-api.com/clients/zimbori/soccer/get_seasons?comp_id=${competition_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json&lang=ar`;
+    let session_url_fr=`https://dsg-api.com/clients/zimbori/soccer/get_seasons?comp_id=${competition_id}&client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&ftype=json&lang=fr`;
     var config = {  
       method: 'get',
       url: session_url,
@@ -46,11 +47,18 @@ const get_season_data = async (competition_id)=>{
       url: session_url_ara,
       headers: { 'Authorization': 'Basic '+ encodedToken }
     };
+    var config_fr = {  
+      method: 'get',
+      url: session_url_fr,
+      headers: { 'Authorization': 'Basic '+ encodedToken }
+    };
   let response=await axios(config)
   let data=response.data.datasportsgroup.competition[0].season[0];
   let response_ara=await axios(config_ara)
   let original_name_ara=response_ara.data.datasportsgroup.competition[0].season[0].original_name;
-    return {...data,original_name_ara};
+  let response_fr=await axios(config_fr)
+  let original_name_fr=response_fr.data.datasportsgroup.competition[0].season[0].original_name;
+    return {...data,original_name_ara,original_name_fr};
   }catch (error) {
     console.log(error);
     return false;
@@ -62,6 +70,7 @@ const get_team_data = async (season_id)=>{
     let encodedToken=`${Buffer.from('zimbori:8PFsL2Ce&!').toString("base64")}`;
     let session_url=`https://dsg-api.com/clients/zimbori/soccer/get_contestants?client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&type=discipline&type_id=27&season=${season_id}&ftype=json`;
     let session_url_ara=`https://dsg-api.com/clients/zimbori/soccer/get_contestants?client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&type=discipline&type_id=27&season=${season_id}&ftype=json&lang=ar`;
+    let session_url_fr=`https://dsg-api.com/clients/zimbori/soccer/get_contestants?client=zimbori&authkey=oGV7DpLYPKukS5HcZlJQM0m94O8z3s1xe2b&type=discipline&type_id=27&season=${season_id}&ftype=json&lang=fr`;
     let config={
       method:'get',
       url:session_url,
@@ -72,14 +81,22 @@ const get_team_data = async (season_id)=>{
       url:session_url_ara,
       headers:{'Authorization':'Basic '+encodedToken}
     }
+    let config_fr={
+      method:'get',
+      url:session_url_fr,
+      headers:{'Authorization':'Basic '+encodedToken}
+    }
     let response=await axios(config);
     let data=response.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].team;
     let response_ara=await axios(config_ara);
     let data_ara=response_ara.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].team;
+    let response_fr=await axios(config_fr);
+    let data_fr=response_fr.data.datasportsgroup.tour[0].tour_season[0].competition[0].season[0].discipline[0].gender[0].team;
+    console.log(data_fr)
     let team_data=[];
     let d1=await data.map((item,index)=>{
-      if(item.team_id==data_ara[index].team_id){
-        team_data.push({...item,team_name_ara:data_ara[index].team_name,short_name_ara:data_ara[index].short_name})
+      if(item.team_id==data_ara[index].team_id && item.team_id==data_fr[index].team_id){
+        team_data.push({...item,team_name_ara:data_ara[index].team_name,short_name_ara:data_ara[index].short_name,team_name_fr:data_fr[index].team_name,short_name_fr:data_fr[index].short_name})
       }
     })
     return team_data;
@@ -108,34 +125,46 @@ class prefrenceController{
           competition_id:item,
           season_id:season_data.season_id,
           original_name:season_data.original_name,
+          original_name_sportimo:season_data.original_name,
           original_name_ara:season_data.original_name_ara,
+          original_name_ara_sportimo:season_data.original_name_ara,
+          original_name_fr:season_data.original_name_fr,
+          original_name_fr_sportimo:season_data.original_name_fr,
           league_logo:season_data.logo,
+          league_logo_sportimo:season_data.logo,
         }
         let update_league_detail={
           competition_id:item,
           season_id:season_data.season_id,
           original_name:season_data.original_name,
-          original_name_ara:season_data.original_name_ara
+          original_name_ara:season_data.original_name_ara,
+          original_name_fr:season_data.original_name_fr
         }
         let old_data=await league_list.find({competition_id:item});
         if(!isEmpty(old_data)){
-          let d1=await league_list.findOneAndUpdate({competition_id:item},update_league_detail);
+          let d2=await league_list.findOneAndUpdate({competition_id:item},update_league_detail);
           let config={
             method:'post',
             url:`${path}/web_api/add_team_by_season_id`,
             data:{"season_id":season_data.season_id}
-          }
-          let response=await axios(config)
-          return item;
+                }
+              let response=await axios(config)
+              return item;
         }else{
           let obj=new league_list(league_detail);
           let d2=await obj.save();
           //console.log({d2})
+          let config={
+            method:'post',
+            url:`${path}/web_api/add_team_by_season_id`,
+            data:{"season_id":season_data.season_id}
+                }
+            let response=await axios(config)
           return item;
         } 
         
+            
       }));
-      
       return res.status(200).send({status:true,msg:"success"})
     }catch (error){
       console.log(error);
@@ -153,15 +182,26 @@ class prefrenceController{
         let d1=Promise.all(league_data.map(async (item)=>{
         let team_data=await get_team_data(item.season_id);
         let d2=await team_data.map(async(i)=>{
+          console.log(i)
+        let code=i.short_name.slice(0,3);
+        
         let team_detail={
             competition_id:item.competition_id,
             season_id:item.season_id,
+            league_name:item.original_name_sportimo,
             team_id:i.team_id,
+            team_code:code,
             team_name:i.team_name,
             team_name_ara:i.team_name_ara,
+            team_name_fr:i.team_name_fr,
             short_name:i.short_name,
+            short_name_sportimo:i.short_name,
             short_name_ara:i.short_name_ara,
-            team_logo:i.team_logo
+            short_name_ara_sportimo:i.short_name_ara,
+            short_name_fr:i.short_name_fr,
+            short_name_fr_sportimo:i.short_name_fr,
+            team_logo:i.team_logo,
+            team_logo_sportimo:i.team_logo
           }
         let update_team_detail={
             competition_id:item.competition_id,
@@ -169,8 +209,10 @@ class prefrenceController{
             team_id:i.team_id,
             team_name:i.team_name,
             team_name_ara:i.team_name_ara,
+            team_name_fr:i.team_name_fr,
             short_name:i.short_name,
-            short_name_ara:i.short_name_ara
+            short_name_ara:i.short_name_ara,
+            short_name_fr:i.short_name_fr
           }
         let old_team=await team_list.find({competition_id:item.competition_id,team_id:i.team_id})
           if(!isEmpty(old_team)){
@@ -235,6 +277,10 @@ class prefrenceController{
         if(item.league_logo.length!=0 && match==null){
           item.league_logo=`${path}/image/assets/league_logo/${item.league_logo}`
         }
+        let match1=item.league_logo_sportimo.match('http')
+        if(item.league_logo_sportimo.length!=0 && match1==null){
+          item.league_logo_sportimo=`${path}/image/assets/league_logo/${item.league_logo_sportimo}`
+        }
         if(!isEmpty(user_id)){
           let select=await user_preference.find({competition_id:item.competition_id,user_id}).countDocuments()
           let select_status=select==0?false:true;
@@ -286,6 +332,10 @@ class prefrenceController{
         let match=item.team_logo.match('http');
         if(item.team_logo.length!=0 && match==null){
           item.team_logo=`${path}/image/assets/team_logo/${item.team_logo}`
+        }
+        let match1=item.team_logo_sportimo.match('http');
+        if(item.team_logo_sportimo.length!=0 && match1==null){
+          item.team_logo_sportimo=`${path}/image/assets/team_logo/${item.team_logo_sportimo}`
         }
         if(!isEmpty(user_id)){
           let select=await user_preference.find({team_id:item.team_id,user_id}).countDocuments()
@@ -426,8 +476,13 @@ class prefrenceController{
       let competition_id = Math.floor(Math.random() * 9000) + 1000;;
       let season_id = Math.floor(Math.random() * 90000000) + 10000000;;
       let original_name = req.body.original_name;
+      let original_name_sportimo = req.body.original_name;
       let original_name_ara = req.body.original_name_ara;
+      let original_name_ara_sportimo = req.body.original_name_ara;
+      let original_name_fr = req.body.original_name_fr;
+      let original_name_fr_sportimo = req.body.original_name_fr;
       let league_logo = req.files.image==''||req.files.image==undefined?'':req.files.image[0].filename;
+      let league_logo_sportimo = req.files.image==''||req.files.image==undefined?'':req.files.image[0].filename;
       let type = "custom";
       if(isEmpty(competition_id)||isEmpty(season_id)||isEmpty(original_name)||isEmpty(original_name_ara)||isEmpty(league_logo)){
         return res.status(200).send({status:false,msg:"all field required"});
@@ -436,7 +491,7 @@ class prefrenceController{
       if(isEmpty(competition_id_data)){
         let season_id_data = await league_list.findOne({season_id});
         if(isEmpty(season_id_data)){
-          let obj = new league_list({competition_id,season_id,original_name,original_name_ara,league_logo,type})
+          let obj = new league_list({competition_id,season_id,original_name,original_name_sportimo,original_name_ara,original_name_ara_sportimo,original_name_fr,original_name_fr_sportimo,league_logo,league_logo_sportimo,type})
           let response = await obj.save()
           return res.status(200).send({status:true,msg:"league added",body:response});
         }else{
@@ -482,13 +537,15 @@ class prefrenceController{
   static update_league = async (req,res)=>{
     try{
       let id=req.params.id;
-      let original_name = req.body.original_name;
-      let original_name_ara = req.body.original_name_ara;
-      let league_logo = req.files.image==''||req.files.image==undefined?'':req.files.image[0].filename;
+      let original_name_sportimo = req.body.original_name_sportimo;
+      let original_name_ara_sportimo = req.body.original_name_ara_sportimo;
+      let original_name_fr_sportimo = req.body.original_name_fr_sportimo;
+      let league_logo_sportimo = req.files.image==''||req.files.image==undefined?'':req.files.image[0].filename;
       let whr={};
-      if(!isEmpty(original_name)){whr={...whr,original_name}};
-      if(!isEmpty(original_name_ara)){whr={...whr,original_name_ara}};
-      if(!isEmpty(league_logo)){whr={...whr,league_logo}};
+      if(!isEmpty(original_name_sportimo)){whr={...whr,original_name_sportimo}};
+      if(!isEmpty(original_name_ara_sportimo)){whr={...whr,original_name_ara_sportimo}};
+      if(!isEmpty(original_name_fr_sportimo)){whr={...whr,original_name_fr_sportimo}};
+      if(!isEmpty(league_logo_sportimo)){whr={...whr,league_logo_sportimo}};
       let update=await league_list.findByIdAndUpdate(id,whr,{new:true});
       return res.status(200).send({status:true,msg:"league updated",body:update});
       
@@ -501,17 +558,17 @@ class prefrenceController{
   static update_team = async (req,res)=>{
     try{
       let id=req.params.id;
-      let team_name = req.body.team_name;
-      let team_name_ara = req.body.team_name_ara;
-      let short_name = req.body.short_name;
-      let short_name_ara = req.body.short_name_ara;
-      let team_logo = req.files.image==''||req.files.image==undefined?'':req.files.image[0].filename;
+      let short_name_sportimo = req.body.short_name_sportimo;
+      let short_name_ara_sportimo = req.body.short_name_ara_sportimo;
+      let short_name_fr_sportimo = req.body.short_name_fr_sportimo;
+      let team_code = req.body.team_code;
+      let team_logo_sportimo = req.files.image==''||req.files.image==undefined?'':req.files.image[0].filename;
       let whr={};
-      if(!isEmpty(team_name)){whr={...whr,team_name}};
-      if(!isEmpty(team_name_ara)){whr={...whr,team_name_ara}};
-      if(!isEmpty(short_name)){whr={...whr,short_name}};
-      if(!isEmpty(short_name_ara)){whr={...whr,short_name_ara}};
-      if(!isEmpty(team_logo)){whr={...whr,team_logo}};
+      if(!isEmpty(short_name_sportimo)){whr={...whr,short_name_sportimo}};
+      if(!isEmpty(short_name_ara_sportimo)){whr={...whr,short_name_ara_sportimo}};
+      if(!isEmpty(short_name_fr_sportimo)){whr={...whr,short_name_fr_sportimo}};
+      if(!isEmpty(team_code)){whr={...whr,team_code}};
+      if(!isEmpty(team_logo_sportimo)){whr={...whr,team_logo_sportimo}};
       let update=await team_list.findByIdAndUpdate(id,whr,{new:true});
       return res.status(200).send({status:true,msg:"team updated",body:update});
      

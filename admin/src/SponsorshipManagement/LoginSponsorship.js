@@ -58,7 +58,7 @@ export default function LoginSponsorship() {
                         toast.success(data.msg);
                         return LoginSponsorList();
                     } else {
-                        toast.error('something went wrong please try again');
+                        toast.error(data.msg);
                     }
                 }
                 else {
@@ -117,7 +117,7 @@ const deleteFaq = (_id) => {
                     if (data.status) { 
                         Swal.fire(
                             'Deleted!',
-                             "Avatar deleted successfully",
+                             "Sponsorship deleted successfully",
                             'success'
                           )
                          return LoginSponsorList();
@@ -200,7 +200,7 @@ const saveFormData = async (e) => {
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Login Sponsor</h6>
                                                     
                                                    <div className="col-lg-12 mt-4 mb-3  p-0">
-                                                        <label className="title-col">Upload Sponsor Image</label>
+                                                        <label className="title-col">Upload Sponsor Image (128X128px)</label>
                                                         <input type="file" name='image' className="form-control file-input" />
                                                     </div>
                                                     <div className="mt-3">

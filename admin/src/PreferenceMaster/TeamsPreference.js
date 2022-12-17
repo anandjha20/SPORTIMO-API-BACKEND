@@ -145,10 +145,10 @@ export default function TeamsPreference() {
             const Formvlaues = Object.fromEntries(data.entries());
     
             let dataToSend2 = new FormData();
-            dataToSend2.append('team_name', Formvlaues.team_name);
-            dataToSend2.append('team_name_ara', Formvlaues.team_name_ara);
-            dataToSend2.append('short_name', Formvlaues.short_name);
-            dataToSend2.append('short_name_ara', Formvlaues.short_name_ara);
+            dataToSend2.append('short_name_sportimo', Formvlaues.short_name_sportimo);
+            dataToSend2.append('short_name_ara_sportimo', Formvlaues.short_name_ara_sportimo);
+            dataToSend2.append('short_name_fr_sportimo', Formvlaues.short_name_fr_sportimo);
+            dataToSend2.append('team_code', Formvlaues.team_code);
             dataToSend2.append('image', Formvlaues.image);
     
                 axios.put(`/web_api/update_team/${id}`, dataToSend2, options1)
@@ -312,9 +312,12 @@ export default function TeamsPreference() {
                                                                         <th scope="col">Image</th>
                                                                         <th scope="col">Teams (English)</th>
                                                                         <th scope="col">Teams (Arabic)</th>
+                                                                        <th scope="col">Teams (French)</th>
+                                                                        <th scope="col">Teams Code</th>
                                                                         <th scope="col">Short Name (English)</th>
                                                                         <th scope="col">Short Name (Arabic)</th>
-                                                                        <th scope="col">Follower</th>
+                                                                        <th scope="col">Short Name (French)</th>
+                                                                        <th scope="col">Followers</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                       
                                                                     </tr>
@@ -330,11 +333,14 @@ export default function TeamsPreference() {
                                                                         if (item.team_name !== '') {
                                                                             return (
                                                                                 <tr key={item._id}>
-                                                                                    <td><div className="imageSliderSmall">{item.team_logo !== '' ? <> <img src={item.team_logo} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
+                                                                                    <td><div className="imageSliderSmall">{item.team_logo_sportimo !== '' ? <> <img src={item.team_logo_sportimo} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
                                                                                     <td>{item.team_name}</td>
                                                                                     <td>{item.team_name_ara}</td>
-                                                                                    <td>{item.short_name}</td>
-                                                                                    <td>{item.short_name_ara}</td>
+                                                                                    <td>{item.team_name_fr}</td>
+                                                                                    <td>{item.team_code}</td>
+                                                                                    <td>{item.short_name_sportimo}</td>
+                                                                                    <td>{item.short_name_ara_sportimo}</td>
+                                                                                    <td>{item.short_name_fr_sportimo}</td>
                                                                                     <td>{item.total_select}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
@@ -384,25 +390,33 @@ export default function TeamsPreference() {
                                                 </div>
                                                 <Modal open={open} onClose={onCloseModal} center>
                                                     <h2 className="mb-4 text-white">Update Team Preference</h2>
+                                                    <div className="imageSlider carousel-item " >
+                                                    <img src={catView.team_logo}></img>
+                                                    </div>
+                                                    <span>
+                                                    <h5 className="mb-2 text-white">&nbsp;&nbsp;{catView.team_name}</h5>
+                                                    <h5 className="mb-2 text-white">&nbsp;&nbsp;{catView.team_name_ara}</h5>
+                                                    <h5 className="mb-4 text-white">&nbsp;&nbsp;{catView.team_name_fr}</h5>
+                                                    </span>
                                                     <div className="mx-500">
                                                         <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
                                                             <div className="form-group mb-4"> 
                                                               
-                                                             <label className="title-col"> Team Name <span className="text-blue">(English)</span></label>
+                                                             <label className="title-col"> Short Name <span className="text-blue">(English)</span></label>
                                                                 <input type="hidden" className="form-control" name='_id' value={catView._id} />
-                                                                <input type="text" className="form-control" name='team_name'
-                                                                    defaultValue={catView.team_name} /> </div>
+                                                                <input type="text" className="form-control" name='short_name_sportimo'
+                                                                    defaultValue={catView.short_name_sportimo} /> </div>
 
-                                                                <label className="title-col"> Team Name <span className="text-blue">(Arabic)</span></label>
-                                                                <input  id="categor" className="form-control mb-4" name="team_name_ara" defaultValue={catView.team_name_ara}
-                                                                type="text"
-                                                                />  
-                                                                <label className="title-col"> Short Name <span className="text-blue">(English)</span></label>
-                                                                <input  id="categor" className="form-control mb-4" name="short_name" defaultValue={catView.short_name}
-                                                                type="text"
-                                                                />  
                                                                 <label className="title-col"> Short Name <span className="text-blue">(Arabic)</span></label>
-                                                                <input  id="categor" className="form-control mb-4" name="short_name_ara" defaultValue={catView.short_name_ara}
+                                                                <input  id="categor" className="form-control mb-4" name="short_name_ara_sportimo" defaultValue={catView.short_name_ara_sportimo}
+                                                                type="text"
+                                                                />  
+                                                                <label className="title-col"> Short Name <span className="text-blue">(French)</span></label>
+                                                                <input  id="categor" className="form-control mb-4" name="short_name_fr_sportimo" defaultValue={catView.short_name_fr_sportimo}
+                                                                type="text"
+                                                                />  
+                                                                <label className="title-col"> Team Code </label>
+                                                                <input  id="categor" className="form-control mb-4" name="team_code" defaultValue={catView.team_code}
                                                                 type="text"
                                                                 />  
 

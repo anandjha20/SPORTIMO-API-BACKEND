@@ -19,12 +19,12 @@ class MasterController {
     /// Sports function section 
     static  sports_add =  async(req,res) =>{
         let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-      let name = req.body.name;     let name_ara = req.body.name_ara;
+      let name = req.body.name;     let name_ara = req.body.name_ara;  let name_fr = req.body.name_fr;
                 
           if(isEmpty(name) || isEmpty(name_ara)  ){
                     return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
                 } 
-             let add = new sport_tbl({name,name_ara,image}); 
+             let add = new sport_tbl({name,name_ara,name_fr,image}); 
                     add.save((err,data)=>{
                         if(err){ console.log("sport err ==  ", err);  return res.status(200).send({"status":false,"msg":"something went wrong please try again","body":''});
                                 }else{
@@ -65,6 +65,13 @@ class MasterController {
                 return item;
                 }))
             }
+            sport.sort((a,b)=>{
+                if(a.total_select>b.total_select){
+                    return -1
+                }else{
+                    return 1
+                }
+            })
         
         
              res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':sport });
@@ -80,12 +87,12 @@ class MasterController {
                            let id = req.params.id;
                            let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
        
-                           let name = req.body.name;  let name_ara = req.body.name_ara;
+                           let name = req.body.name;  let name_ara = req.body.name_ara;  let name_fr = req.body.name_fr;
                 
                            if(isEmpty(name) || isEmpty(name_ara)  ){
                                      return res.status(200).send({"status":false,"msg":"All Field Required","body":''});
                                  } 
-                     let updateData = isEmpty(image)? {name,name_ara} : {name,name_ara,image};       
+                     let updateData = isEmpty(image)? {name,name_ara,name_fr} : {name,name_ara,image,name_fr};       
 
                 sport_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
                 if(err) {  console.log(err);

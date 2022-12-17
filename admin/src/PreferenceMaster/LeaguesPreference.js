@@ -173,8 +173,9 @@ export default function LeaguesPreference() {
             const Formvlaues = Object.fromEntries(data.entries());
     
             let dataToSend2 = new FormData();
-            dataToSend2.append('original_name', Formvlaues.original_name);
-            dataToSend2.append('original_name_ara', Formvlaues.original_name_ara);
+            dataToSend2.append('original_name_sportimo', Formvlaues.original_name_sportimo);
+            dataToSend2.append('original_name_ara_sportimo', Formvlaues.original_name_ara_sportimo);
+            dataToSend2.append('original_name_fr_sportimo', Formvlaues.original_name_fr_sportimo);
             dataToSend2.append('image', Formvlaues.image);
     
                 axios.put(`/web_api/update_league/${id}`, dataToSend2, options1)
@@ -207,6 +208,7 @@ export default function LeaguesPreference() {
         let dataToSend2 = new FormData();
         dataToSend2.append('original_name', Formvlaues.original_name);
         dataToSend2.append('original_name_ara', Formvlaues.original_name_ara);
+        dataToSend2.append('original_name_fr', Formvlaues.original_name_fr);
         dataToSend2.append('image', Formvlaues.image);
 
         axios.post(`/web_api/add_custom_league`, dataToSend2, options1)
@@ -278,13 +280,13 @@ export default function LeaguesPreference() {
                                 <div className="card custom-card">
                                     <div className="card-body">
                                         <div className="row d-flex">
-                                            <div className="col-lg-4">
+                                            <div className="col-lg-3">
 
 
                                                 <form className="mt-3" onSubmit={(e) => AddFormData(e)}>
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add League Preference</h6>
 
-                                                    <label className="title-col">League Preference <span className="text-blue">(English)</span></label>
+                                                    <label className="title-col">League Name <span className="text-blue">(English)</span></label>
                                                       <input  onChange={handleOnChange} id="categor" className="form-control mb-4" name="original_name"
                                                          type="text"
                                                         />
@@ -293,13 +295,18 @@ export default function LeaguesPreference() {
                                                     <p className="error">{errors.name}</p>
                                                      )}
     
-                                                      <label className="title-col">League Preference <span className="text-blue">(Arabic)</span></label>
+                                                      <label className="title-col">League Name <span className="text-blue">(Arabic)</span></label>
                                                       <input  id="categor" className="form-control mb-4" name="original_name_ara"
                                                          type="text"
                                                         />
 
+                                                    <label className="title-col">League Name <span className="text-blue">(French)</span></label>
+                                                      <input  id="categor" className="form-control mb-4" name="original_name_fr"
+                                                         type="text"
+                                                        />
+
                                                    <div className="col-lg-12 mt-4 mb-4 p-0">
-                                                        <label className="title-col">File Upload</label>
+                                                        <label className="title-col">League Logo</label>
                                                         <input type="file" name='image' className="form-control file-input" />
                                                     </div>
 
@@ -334,10 +341,11 @@ export default function LeaguesPreference() {
                                                             <table className="table  ">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th scope="col">Image</th>
+                                                                        <th scope="col">Logo</th>
                                                                         <th scope="col">Leagues (English)</th>
                                                                         <th scope="col">Leagues (Arabic)</th>
-                                                                        <th scope="col">Follower</th>
+                                                                        <th scope="col">Leagues (French)</th>
+                                                                        <th scope="col">Followers</th>
                                                                         <th scope="col">Status</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
@@ -354,9 +362,10 @@ export default function LeaguesPreference() {
                                                                             
                                                                             return (
                                                                                 <tr key={item._id}>
-                                                                                    <td><div className="imageSliderSmall">{item.league_logo !== '' ? <> <img src={item.league_logo} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
-                                                                                    <td>{item.original_name}</td>
-                                                                                    <td>{item.original_name_ara}</td>
+                                                                                    <td><div className="imageSliderSmall">{item.league_logo_sportimo !== '' ? <> <img src={item.league_logo_sportimo} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
+                                                                                    <td>{item.original_name_sportimo}</td>
+                                                                                    <td>{item.original_name_ara_sportimo}</td>
+                                                                                    <td>{item.original_name_fr_sportimo}</td>
                                                                                     <td>{item.total_select}</td>
                                                                                     <td>{item.status == true ? <><Button onClick={() => { LeagueActiveDeactive(item._id, item.status="0");}} className="mr-3 btn-pd deactive text-white">Deactive</Button> </> :<> <Button onClick={() => { LeagueActiveDeactive(item._id, item.status="1");}} className="mr-3 btn-pd btnBg">Active</Button></>}</td>
                                                                                     <td className="text-end">
@@ -420,16 +429,28 @@ export default function LeaguesPreference() {
                                                 </div>
                                                 <Modal open={open} onClose={onCloseModal} center>
                                                     <h2 className="mb-4 text-white">Update League</h2>
+                                                    <div className="imageSlider carousel-item " >
+                                                    <img src={catView.league_logo}></img>
+                                                    </div>
+                                                    <span>
+                                                    <h5 className="mb-2 text-white">&nbsp;&nbsp;{catView.original_name}</h5>
+                                                    <h5 className="mb-2 text-white">&nbsp;&nbsp;{catView.original_name_ara}</h5>
+                                                    <h5 className="mb-4 text-white">&nbsp;&nbsp;{catView.original_name_fr}</h5>
+                                                    </span>
                                                     <div className="mx-500">
                                                         <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
                                                             <div className="form-group mb-4">
-                                                               <label className="title-col">League Preference <span className="text-blue">(English)</span></label>
+                                                               <label className="title-col">League Name <span className="text-blue">(English)</span></label>
                                                                 <input type="hidden" className="form-control" name='_id' value={catView._id} />
-                                                                <input type="text" className="form-control" name='original_name'
-                                                                    defaultValue={catView.original_name} /> </div>
+                                                                <input type="text" className="form-control" name='original_name_sportimo'
+                                                                    defaultValue={catView.original_name_sportimo} /> </div>
 
-                                                                <label className="title-col">League Preference <span className="text-blue">(Arabic)</span></label>
-                                                                <input  id="categor" className="form-control mb-4" name="original_name_ara" defaultValue={catView.original_name_ara}
+                                                                <label className="title-col">League Name <span className="text-blue">(Arabic)</span></label>
+                                                                <input  id="categor" className="form-control mb-4" name="original_name_ara_sportimo" defaultValue={catView.original_name_ara_sportimo}
+                                                                type="text"/>  
+
+                                                                <label className="title-col">League Name <span className="text-blue">(French)</span></label>
+                                                                <input  id="categor" className="form-control mb-4" name="original_name_fr_sportimo" defaultValue={catView.original_name_fr_sportimo}
                                                                 type="text"/>  
       
                                                                <div className="col-lg-12 mt-4 mb-3  p-0">

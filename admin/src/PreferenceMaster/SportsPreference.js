@@ -129,6 +129,7 @@ export default function SportsPreference() {
             let dataToSend2 = new FormData();
             dataToSend2.append('name', Formvlaues.name);
             dataToSend2.append('name_ara', Formvlaues.name_ara);
+            dataToSend2.append('name_fr', Formvlaues.name_fr);
             dataToSend2.append('image', Formvlaues.image);
     
                 axios.put(`/web_api/sports/${id}`, dataToSend2, options1)
@@ -201,6 +202,7 @@ export default function SportsPreference() {
         let dataToSend2 = new FormData();
         dataToSend2.append('name', Formvlaues.name);
         dataToSend2.append('name_ara', Formvlaues.name_ara);
+        dataToSend2.append('name_fr', Formvlaues.name_fr);
         dataToSend2.append('image', Formvlaues.image);
 
         axios.post(`/web_api/sports`, dataToSend2, options1)
@@ -281,7 +283,7 @@ export default function SportsPreference() {
                                                 <form className="mt-3" onSubmit={(e) => AddFormData(e)}>
                                                     <h6 className="MuiTypography-root MuiTypography-h6 text-white mb-4">Add Sport Preference</h6>
 
-                                                     <label className="title-col">Sport Preference <span className="text-blue">(English)</span></label>
+                                                     <label className="title-col">Sport Name <span className="text-blue">(English)</span></label>
                                                       <input  onChange={handleOnChange} id="categor" className="form-control mb-4" name="name"
                                                          type="text"
                                                         />
@@ -290,13 +292,18 @@ export default function SportsPreference() {
                                                     <p className="error">{errors.name}</p>
                                                      )}
     
-                                                      <label className="title-col">Sport Preference <span className="text-blue">(Arabic)</span></label>
+                                                      <label className="title-col">Sport Name <span className="text-blue">(Arabic)</span></label>
                                                       <input  id="categor" className="form-control mb-4" name="name_ara"
+                                                         type="text"
+                                                        />
+                                                    
+                                                    <label className="title-col">Sport Name <span className="text-blue">(French)</span></label>
+                                                      <input  id="categor" className="form-control mb-4" name="name_fr"
                                                          type="text"
                                                         />
 
                                                    <div className="col-lg-12 mt-4 mb-3  p-0">
-                                                        <label className="title-col">File Upload</label>
+                                                        <label className="title-col">Logo</label>
                                                         <input type="file" name='image' className="form-control file-input" />
                                                     </div>
 
@@ -309,7 +316,7 @@ export default function SportsPreference() {
                                             {/* <div className="col-lg-1"></div> */}
                                             <div className="col-lg-7">
                                                 <div className="row">
-                                                    <div className="col-lg-12">
+                                                    <div className="col-lg-14">
 
                                                         <div className="table-card MuiPaper-root MuiPaper-elevation2 MuiPaper-rounded">
                                                            
@@ -333,9 +340,11 @@ export default function SportsPreference() {
                                                             <table className="table ">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th scope="col">Image</th>
-                                                                        <th scope="col">Sports Preference (English)</th>
-                                                                        <th scope="col">Sports Preference (Arabic)</th>
+                                                                        <th scope="col">Logo</th>
+                                                                        <th scope="col">Sports Name (English)</th>
+                                                                        <th scope="col">Sports Name (Arabic)</th>
+                                                                        <th scope="col">Sports Name (French)</th>
+                                                                        <th scope="col">Followers</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
                                                                 </thead>
@@ -353,6 +362,8 @@ export default function SportsPreference() {
                                                                                     <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
                                                                                     <td>{item.name}</td>
                                                                                     <td>{item.name_ara}</td>
+                                                                                    <td>{item.name_fr}</td>
+                                                                                    <td>{item.total_select}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
                                                                                             <IconButton onClick={(e) => { onOpenModal(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">
@@ -408,18 +419,23 @@ export default function SportsPreference() {
                                                     <div className="mx-500">
                                                         <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
                                                             <div className="form-group mb-4">
-                                                            <label className="title-col"> Sports Preference <span className="text-blue">(English)</span></label>
+                                                            <label className="title-col"> Sport Name <span className="text-blue">(English)</span></label>
                                                                 <input type="hidden" className="form-control" name='_id' value={catView._id} />
                                                                 <input type="text" className="form-control" name='name'
                                                                     defaultValue={catView.name} /> </div>
 
-                                                                <label className="title-col"> Sports Preference <span className="text-blue">(Arabic)</span></label>
+                                                                <label className="title-col"> Sport Name <span className="text-blue">(Arabic)</span></label>
                                                                 <input  id="categor" className="form-control mb-4" name="name_ara"
                                                                 type="text" defaultValue={catView.name_ara}
                                                                 />  
 
+                                                                <label className="title-col"> Sport Name <span className="text-blue">(French)</span></label>
+                                                                <input  id="categor" className="form-control mb-4" name="name_fr"
+                                                                type="text" defaultValue={catView.name_fr}
+                                                                />  
+
                                                             <div className="col-lg-12 mt-4 mb-3  p-0">
-                                                                <label className="title-col">File Upload</label>
+                                                                <label className="title-col">Logo</label>
                                                                 <input type="file" name='image' className="form-control file-input" />
                                                             </div>
                                                             <div className="mt-3 mb-3">

@@ -22,8 +22,12 @@ class Sponsorship {
 let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
 if(isEmpty(image)){ 
     return res.status(200).send({"status":false,"msg":'All Field Reqired'}) ;     
-    }  
+    } 
+let total=await login_sponsorship_tbls.find({status:true}).countDocuments()
+if(total>=3){
+  return res.status(200).send({"status":false,"msg":'Already 3 active sponsorship'}) ;     
 
+}
 let add = new login_sponsorship_tbls({image});
          
 let response  = await add.save();  
@@ -126,7 +130,12 @@ static login_sponsorship_status_update = async(req,res)=>{
   try {
           let _id = req.params.id;
           let status=req.body.status;
-          console.log(status)
+          let total=await login_sponsorship_tbls.find({status:true}).countDocuments()
+          if(total>=3){
+            return res.status(200).send({"status":false,"msg":'Already 3 active sponsorship , please deactivate first!'}) ;     
+
+          }
+
           if(status==0||status==1){
             let result = await login_sponsorship_tbls.findOneAndUpdate({_id},{status},{new:true});
           if(result){
