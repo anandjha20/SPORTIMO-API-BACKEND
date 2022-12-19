@@ -258,11 +258,13 @@ class prefrenceController{
       let type = req.body.type;
       let name = req.body.name;
       let page = req.body.page;
+      let sort_by = req.body.sort_by;
+      let language = req.body.language;
       let whr = {};
       if(!isEmpty(name)){whr.team_name = { $regex: '.*' + name + '.*', $options: 'i' } ;}
        if(!isEmpty(type)){whr.type=type}
       if(!isEmpty(user_id)){
-        var response = await league_list.find({status:1,type:"default"});
+        var response = await league_list.find({status:1,type:"default"}).sort({"original_name_sportimo":1});
       //  return res.status(200).send({status:true,msg:"data found",body:response});
       }else{
         page = (isEmpty(page) || page == 0 )? 1 :page ; 
@@ -272,11 +274,13 @@ class prefrenceController{
       let leagues=[];
       let path=MyBasePath(req);
       let d1=await Promise.all( response.map(async (item)=>{
+        if(language=="ar"){
+          item.original_name_sportimo=item.original_name_ara_sportimo;
+        }else if(language=="fr"){
+          item.original_name_sportimo=item.original_name_fr_sportimo;
+        } 
+        
         let total_select=await user_preference.find({competition_id:item.competition_id}).countDocuments()
-        let match=item.league_logo.match('http')
-        if(item.league_logo.length!=0 && match==null){
-          item.league_logo=`${path}/image/assets/league_logo/${item.league_logo}`
-        }
         let match1=item.league_logo_sportimo.match('http')
         if(item.league_logo_sportimo.length!=0 && match1==null){
           item.league_logo_sportimo=`${path}/image/assets/league_logo/${item.league_logo_sportimo}`
@@ -291,6 +295,7 @@ class prefrenceController{
         }
         return item;
       }))
+      if(sort_by=="Follower"){
       leagues.sort(function(a, b){ if ( a.total_select < b.total_select ){
         return 1;
       }
@@ -298,6 +303,7 @@ class prefrenceController{
         return -1;
       }
       return 0;});
+    }
       let total_league=await league_list.find(whr).countDocuments();
       return res.status(200).send({status:true,msg:"data found",rows:total_league,body:leagues});
     }catch (error){
@@ -310,6 +316,8 @@ class prefrenceController{
     try{
       let page = req.body.page;
       let name = req.body.name;
+      let sort_by=req.body.sort_by;
+      let language=req.body.language;
       let whr = {};
       if(!isEmpty(name)){whr.team_name = { $regex: '.*' + name + '.*', $options: 'i' } ;}
       page = (isEmpty(page) || page == 0 )? 1 :page ; 
@@ -319,7 +327,7 @@ class prefrenceController{
         let user_leagues=await user_preference.distinct('season_id',{user_id})
         let conditio={}
         if(!isEmpty(user_leagues)){conditio={...conditio,season_id:{$in:user_leagues}}}
-        var response = await team_list.find(conditio);
+        var response = await team_list.find(conditio).sort({short_name_sportimo:1});
         
       }else{
         let offset=(page-1)*5;
@@ -328,11 +336,12 @@ class prefrenceController{
       let teams=[]
       let path=MyBasePath(req);
       let d1=await Promise.all( response.map(async (item)=>{
+        if(language=="ar"){
+          item.short_name_sportimo=item.short_name_ara_sportimo
+        }else if(language=="fr"){
+          item.short_name_sportimo=item.short_name_fr_sportimo
+        } 
         let total_select=await user_preference.find({team_id:item.team_id}).countDocuments();
-        let match=item.team_logo.match('http');
-        if(item.team_logo.length!=0 && match==null){
-          item.team_logo=`${path}/image/assets/team_logo/${item.team_logo}`
-        }
         let match1=item.team_logo_sportimo.match('http');
         if(item.team_logo_sportimo.length!=0 && match1==null){
           item.team_logo_sportimo=`${path}/image/assets/team_logo/${item.team_logo_sportimo}`
@@ -345,13 +354,15 @@ class prefrenceController{
           teams.push({...item._doc,total_select})
         }return item;
       }))
-      teams.sort(function(a, b){ if ( a.total_select < b.total_select ){
-        return 1;
+      if(sort_by=="Follower"){
+        teams.sort(function(a, b){ if ( a.total_select < b.total_select ){
+          return 1;
+        }
+        if ( a.total_select > b.total_select ){
+          return -1;
+        }
+        return 0;});
       }
-      if ( a.total_select > b.total_select ){
-        return -1;
-      }
-      return 0;});
       let total_team=await team_list.find(whr).countDocuments();
       return res.status(200).send({status:true,msg:"data found",rows:total_team,body:teams});
       
@@ -365,10 +376,19 @@ class prefrenceController{
     try{
     
       let user_id = req.body.user_id;
-      let response= await sport_list.find({active_status:true});
+      let sort_by=req.body.sort_by;
+      let language=req.body.language;
+    
+      let response= await sport_list.find({active_status:true}).sort({"name":1});
       let sport=[]
       let path=MyBasePath(req);
       let d1=await Promise.all( response.map(async (item)=>{
+        if(language=="ar"){
+          item.name=item.name_ara
+        }else if(language=="fr"){
+          item.name=item.name_fr
+        } 
+      
         let total_select=await user_preference.find({sport_id_mongo:item._id}).countDocuments();
         let match=item.image.match('http');
         if(item.image.length!=0 && match==null){
@@ -380,13 +400,16 @@ class prefrenceController{
           sport.push({...item._doc,total_select,select_status})
         
       }))
-      sport.sort(function(a, b){ if ( a.total_select < b.total_select ){
-        return 1;
+      if(sort_by=="Follower"){
+
+        sport.sort(function(a, b){ if ( a.total_select < b.total_select ){
+          return 1;
+        }
+        if ( a.total_select > b.total_select ){
+          return -1;
+        }
+        return 0;});
       }
-      if ( a.total_select > b.total_select ){
-        return -1;
-      }
-      return 0;});
       
       return res.status(200).send({status:true,msg:"data found",body:sport});
       
@@ -400,8 +423,17 @@ class prefrenceController{
   static my_fav_league = async (req,res)=>{
     try{
       let user_id = req.body.user_id;
+      let language=req.body.language;
       let  response = await user_preference.distinct('league_id_mongo',{user_id,league_id_mongo:{$ne:""}});
       let user_league=await league_list.find({_id:{$in:response}})
+      user_league.map((item)=>{
+        if(language=="ar"){
+          item.original_name_sportimo=item.original_name_ara_sportimo;
+        }else if(language=="fr"){
+          item.original_name_sportimo=item.original_name_fr_sportimo;
+        } 
+        
+      })
       return res.status(200).send({status:true,msg:"success",body:user_league});
     }catch (error){
       console.log(error);
@@ -412,8 +444,16 @@ class prefrenceController{
   static my_fav_team = async (req,res)=>{
     try{
       let user_id = req.body.user_id;
+      let language=req.body.language;
       let team_id=await user_preference.distinct('team_id_mongo',{user_id,team_id_mongo:{$ne:""}})
-      let user_team=await team_list.find({_id:{$in:team_id}})
+      let user_team=await team_list.find({_id:{$in:team_id}});
+      user_team.map((item)=>{
+        if(language=="ar"){
+          item.short_name_sportimo=item.short_name_ara_sportimo
+        }else if(language=="fr"){
+          item.short_name_sportimo=item.short_name_fr_sportimo
+        }  
+      })
       return res.status(200).send({status:true,msg:"success",body:user_team});
       
     }catch (error){
@@ -425,8 +465,17 @@ class prefrenceController{
   static my_fav_sport = async (req,res)=>{
     try{
       let user_id = req.body.user_id;
+      let language=req.body.language;
       let sport=await user_preference.distinct('sport_id_mongo',{user_id,sport_id_mongo:{$ne:""}})
-      let user_sport=await sport_list.find({_id:{$in:sport}})
+      let user_sport=await sport_list.find({_id:{$in:sport}});
+      user_sport.map(async (item)=>{
+        if(language=="ar"){
+          item.name=item.name_ara
+        }else if(language=="fr"){
+          item.name=item.name_fr
+        } 
+      
+    })
       return res.status(200).send({status:true,msg:"success",body:user_sport});
       
     }catch (error){

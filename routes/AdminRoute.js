@@ -22,6 +22,7 @@ const sponsorImgUpload = sponsorImg.fields([{ name: 'image', maxCount: 1 }]);
 const IntroSliderImgUpload =  img_upload('./assets/introSlider_img','image');
 const avatarImgUpload =  img_upload('./assets/avatar_img','image');
 const loginSponsorshipImgUpload =  img_upload('./assets/login_sponsorship_img','image');
+const takeoverScreenImgUpload =  img_upload('./assets/takeover_screen_img','image');
 const emojiImgUpload =  img_upload('./assets/emoji','image');
 const MasterImgUpload =  img_upload('./assets/master','image');
 const predictionCardImgUpload = img_upload('./assets/predictionCard_img','image');
@@ -50,6 +51,7 @@ const token_check =  require('../middleware/token_check');
   let geqController= require("../controllers/geqController");
   let avatarController= require("../controllers/avatarController");
   let LoginSponsorship= require("../controllers/LoginSponsorshipController");
+  let TakeoverScreen= require("../controllers/takeoverScreenController");
   let emojiController= require("../controllers/emojiController");
   let analyticsController= require("../controllers/analyticsController");
   let prefrenceController= require("../controllers/prefrenceController");
@@ -254,6 +256,11 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.delete('/login_sponsorship_delete/:id',LoginSponsorship.login_sponsorship_delete);       
    router.put('/login_sponsorship_status_update/:id',LoginSponsorship.login_sponsorship_status_update);       
  
+   //takeoverScreen api 
+   router.post('/takeover_screen_add_update',takeoverScreenImgUpload,TakeoverScreen.takeover_screen_add_update); 
+   router.get('/takeover_screen_get',TakeoverScreen.takeover_screen_get); 
+   router.put('/takeover_screen_status_update/:id',TakeoverScreen.takeover_screen_status_update);       
+
    //avatar api 
    router.post('/avatar_add',avatarImgUpload,avatarController.avatar_add); 
    router.get('/avatar_get',avatarController.avatar_get); 

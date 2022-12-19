@@ -45,6 +45,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
       let emojiController = require('../controllers/emojiController');
       let geqController = require('../controllers/geqController');
       let LoginSponsorship = require('../controllers/LoginSponsorshipController');
+      let TakeoverScreen = require('../controllers/takeoverScreenController');
       let prefrenceController = require('../controllers/prefrenceController');
   
   
@@ -252,9 +253,11 @@ const userReportImg =  img_upload('./assets/user_img','image');
    // make by mhn
       router.put('/update_google_id/',UserController.update_google_id); 
      
-//login sponsorship
+    //login sponsorship
      router.get('/login_sponsorship_get/',LoginSponsorship.login_sponsorship_get_user); 
             
+    //TakeoverScreen
+    router.get('/takeover_screen_get/',TakeoverScreen.takeover_screen_get_user); 
      
    /// testing routs  
       router.get('/my_played_matches/:id?',predictionController.my_played_matches); 

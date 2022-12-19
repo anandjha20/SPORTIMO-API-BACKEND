@@ -34,6 +34,7 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds,preferences_ar_convar
     const request = require('../models/request');
     const user_reportings = require('../models/user_reportings');
     const poll_results = require('../models/poll_result');
+    const user_preference = require('../models/user_preference');
 
 
 
@@ -1228,6 +1229,7 @@ static verify_nickName = async(req,res)=>{
                             let d4=await user_reportings.deleteMany({$or:[{reported_user_id:_id},{reporting_user_id:_id}]});
                             let d5=await poll_results.deleteMany({user_id:_id});
                             let d6=await transaction_tbls.deleteMany({user_id:_id});
+                            let d7=await user_preference.deleteMany({user_id:_id});
                             let obj=new userArchive(archiveData);
                             let archive=await obj.save()
                             return res.status(200).send({"status":true,"msg":"this user account deleted","body":''});        

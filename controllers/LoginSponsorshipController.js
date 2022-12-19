@@ -131,7 +131,7 @@ static login_sponsorship_status_update = async(req,res)=>{
           let _id = req.params.id;
           let status=req.body.status;
           let total=await login_sponsorship_tbls.find({status:true}).countDocuments()
-          if(total>=3){
+          if(total>=3 && status==1){
             return res.status(200).send({"status":false,"msg":'Already 3 active sponsorship , please deactivate first!'}) ;     
 
           }
