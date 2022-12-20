@@ -45,13 +45,17 @@ class geqController {
              let response=await obj.save()
              if(!isEmpty(response)){
                     let type_status =  1 ; 
-                        let title = `New GEQ has been published !! ` ;  
+                    let title = `New GEQ has been published !! ` ;  
                     let msg = `New GEQ has been published , Click here to participate.`; 
+                    let title_ara = `تم نشر سؤال اشتراك لعبة جديد !!` ;  
+                    let msg_ara = `تم نشر سؤال اشتراك جديد في اللعبة ، انقر هنا للمشاركة.`; 
+                    let title_fr = `Un nouveau GEQ a été publié !! ` ;  
+                    let msg_fr = `Une nouvelle question d'engagement de jeu a été publiée, cliquez ici pour participer.`; 
                     let module_id = response._id;
                     let module_type = 'GEQ';
                     let category_type = 'system';
 
-                    let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,category_type, "sports":targeted_sport,"leagues":targeted_league,"teams":targeted_team,"country":targeted_country} );
+                    let demo =  sendNotificationAdd({title,msg,title_ara,msg_ara,title_fr,msg_fr,type_status,module_type,module_id,category_type, "sports":targeted_sport,"leagues":targeted_league,"teams":targeted_team,"country":targeted_country} );
        
                  res.status(200).send({'status':true,'msg':'geq added successfully','body':response});
              }else{

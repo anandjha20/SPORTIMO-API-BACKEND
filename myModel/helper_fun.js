@@ -78,7 +78,11 @@ const sendNotificationAdd = (my_obj )=>{
          // return false;        
       let user_id=my_obj.user_id;
        let title = my_obj.title ;  
-       let msg = my_obj.msg ;  
+       let message = my_obj.msg ;  
+       let title_ara = my_obj.title_ara ;  
+       let message_ara = my_obj.msg_ara ;  
+       let title_fr = my_obj.title_fr ;  
+       let message_fr = my_obj.msg_fr ;  
        let type_status = my_obj.type_status ;  
        let category_type = my_obj.category_type ;  
        let module_id = my_obj.module_id ;  
@@ -93,7 +97,7 @@ const sendNotificationAdd = (my_obj )=>{
          let m_id =  String(module_id);
         // console.log("sendNotificationAdd == ", module_id);
       let date = getcurntDate(); 
-         let addData = {title:title,message:msg,type_status:type_status,user_id:user_id };
+         let addData = {title,message,title_ara,message_ara,title_fr,message_fr,type_status:type_status,user_id:user_id };
          
          if(! isEmpty(category_type)){addData.category_type = category_type ; }
          if(! isEmpty(m_id)){addData.module_id = m_id  }

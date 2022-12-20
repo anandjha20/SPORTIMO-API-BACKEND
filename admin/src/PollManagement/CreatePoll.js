@@ -150,6 +150,7 @@ const [answerFiveFr, setAnswerFiveFr] = useState('');
       
       Formvlaues.noti_in_App_status = innotis;
       Formvlaues.match = matchLegue;
+      Formvlaues.match_id = match_id;
       Formvlaues.time_duration = minute + ':' + second;
       Formvlaues.apperance_time = hminute + ':' + hsecond;
       
@@ -331,10 +332,13 @@ const [answerFiveFr, setAnswerFiveFr] = useState('');
 
 
 const [matchLegue, setMatchLegue] = React.useState('');
+const [match_id, setMatchId] = React.useState('');
 const handleMatchName = (event) => {
   const matchLegue = event.label
+  const match_id = event.value
   console.log(matchLegue);
   setMatchLegue(matchLegue);
+  setMatchId(match_id);
 }
 
 

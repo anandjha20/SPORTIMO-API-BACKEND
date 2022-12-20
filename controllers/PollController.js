@@ -14,9 +14,12 @@ const { poll_percent} = require('../myModel/helper_fun');
     const poll_tbl = require('../models/poll');    
     const poll_result_tbl = require('../models/poll_result');    
     const poll_skips_tbl = require('../models/poll_skips');  
+    const country_tbl = require('../models/country');  
     const prediction_cart_categories = require("../models/prediction_card_categories");     
-const team_matches = require('../models/team_matches');
+    const team_matches = require('../models/team_matches');
+
 class PollController {   
+  
       static jk_test = async(req,res)=>{
               
                 let name = req.body.name;
@@ -208,6 +211,7 @@ class PollController {
            
              
           let mydate = getcurntDate();
+          let country=await country_tbl.distinct('name')
 
                     let add = new poll_tbl({
                        
@@ -244,7 +248,44 @@ class PollController {
 
 
                     });
-                  
+                    let matchData=await team_matches.aggregate([
+                      {
+                        '$match': {
+                          'match_id': user_data.match_id
+                        }
+                      }, {
+                        '$lookup': {
+                          'from': 'team_lists', 
+                          'localField': 'team_a_id', 
+                          'foreignField': 'team_id', 
+                          'as': 'team_a_data'
+                        }
+                      }, {
+                        '$lookup': {
+                          'from': 'team_lists', 
+                          'localField': 'team_b_id', 
+                          'foreignField': 'team_id', 
+                          'as': 'team_b_data'
+                        }
+                      }, {
+                        '$unwind': {
+                          'path': '$team_a_data'
+                        }
+                      }, {
+                        '$unwind': {
+                          'path': '$team_b_data'
+                        }
+                      }, {
+                        '$project': {
+                          'team_a_name': '$team_a_data.short_name_sportimo', 
+                          'team_b_name': '$team_b_data.short_name_sportimo', 
+                          'team_a_name_ara': '$team_a_data.short_name_ara_sportimo', 
+                          'team_b_name_ara': '$team_b_data.short_name_ara_sportimo', 
+                          'team_a_name_fr': '$team_a_data.short_name_fr_sportimo', 
+                          'team_b_name_fr': '$team_b_data.short_name_fr_sportimo'
+                        }
+                      }
+                    ])
                           add.save((err, data) => {
                                 if (err) {     console.log(err);
                                   return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
@@ -252,13 +293,17 @@ class PollController {
                                     
                                 if(user_data.noti_status == 1 || user_data.noti_in_App_status == 1 ){
                                   let type_status =  1 ; 
-                                      let title = `New Poll has been published for match: ${ user_data.match} ` ;  
-                                  let msg = `New Poll has been published for match: ${ user_data.match} Click here to participate.`; 
+                                  let title = `New Poll has been published for match: ${ matchData[0].team_a_name} VS ${ matchData[0].team_b_name} ` ;  
+                                  let msg = `New Poll has been published for match: ${ matchData[0].team_a_name} VS ${ matchData[0].team_b_name} Click here to participate.`; 
+                                  let title_ara = `تم نشر استطلاع جديد للمباراة: ${ matchData[0].team_a_name_ara} VS ${ matchData[0].team_b_name_ara} ` ;  
+                                  let msg_ara = `تم نشر استطلاع جديد للمباراة: ${ matchData[0].team_a_name_ara} VS ${ matchData[0].team_b_name_ara} انقر هنا للمشاركة.`; 
+                                  let title_fr = `Un nouveau sondage a été publié pour le match: ${ matchData[0].team_a_name_fr} VS ${ matchData[0].team_b_name_fr} ` ;  
+                                  let msg_fr = `Un nouveau sondage a été publié pour le match: ${ matchData[0].team_a_name_fr} VS ${ matchData[0].team_b_name_fr} Cliquez ici pour participer.`; 
                                   let module_id = data._id;
                                   let module_type = 'polls';
                                   let category_type = 'results';
 
-                                  let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,category_type, "sports":user_data.sports,"leagues":user_data.leagues,"teams":user_data.teams,} );
+                                  let demo =  sendNotificationAdd({title,msg,title_ara,msg_ara,title_fr,msg_fr,type_status,module_type,module_id,category_type, "sports":user_data.sports,"leagues":user_data.leagues,"teams":user_data.teams,country} );
                       }
                       if(user_data.noti_status == 1){
                         let title2 = `New Poll has been published for match: ${ user_data.match} ` ;  

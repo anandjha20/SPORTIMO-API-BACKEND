@@ -3,6 +3,8 @@
    
    const notification_tbl = require("../models/notification_tbl");
    const notification_archive = require("../models/notification_archive");
+   const user_tbls = require("../models/user");
+   const user_preference = require("../models/user_preference");
     
 
 class notificationController {
@@ -39,34 +41,54 @@ class notificationController {
           return res.status(200).send({'status':false,'msg':'server error','body':''});
         }
              
-            } 
-            static notification_list = async (req,res)=>{
-              let language = req.body.language;
-              try {
-                      let  id = req.params.id;
-                      let page  = req.body.page;
-                    
-                      let whr = {};
-                  page = (isEmpty(page) || page == 0 )? 1 :page ; 
-                       if(!isEmpty(id)){whr = {...whr, user_id: [id, '']  }}; 
-                  let archive=await notification_archive.distinct('notification_id',{user_id:id})
-                  if(!isEmpty(archive)){
-                    whr={...whr,_id:{$nin:archive}  }
-                  }
-                  let query =  notification_tbl.find(whr).sort({_id:-1});
-                    const query2 =  query.clone();
-                    const counts = await query.countDocuments();
+            }
+
+  static notification_list = async (req,res)=>{
+    let language = req.body.language;
+    try {
+            let  id = req.params.id;
+            let page  = req.body.page;
+            let language = req.body.language;
+            let whr = {};
+        page = (isEmpty(page) || page == 0 )? 1 :page ; 
+              if(!isEmpty(id)){whr = {...whr, user_id: [id, '']  }}; 
+        let archive=await notification_archive.distinct('notification_id',{user_id:id})
+        if(!isEmpty(archive)){
+          whr={...whr,_id:{$nin:archive}  }
+        }
+        let country=await user_tbls.distinct('country',{_id:id,country:{$ne:''}})
+        if(!isEmpty(country)){
+          whr={...whr,country:{$in:country}  }
+        }
+        let leagues=await user_preference.distinct('season_id',{user_id:id,season_id:{$ne:''}})
+        if(!isEmpty(leagues)){
+          whr={...whr,leagues:{$in:leagues}  }
+        }
+        //console.log(whr)
+        let query =  notification_tbl.find(whr).sort({_id:-1});
+          const query2 =  query.clone();
+          const counts = await query.countDocuments();
+
+          let offest = (page -1 ) * 10 ; 
+          const records = await query2.skip(offest).limit(10);
+          records.map((item)=>{
+            if(language=="ar"){
+              item.title=item.title_ara;
+              item.message=item.message_ara;
+            }else if(language=="fr"){
+              item.title=item.title_fr;
+              item.message=item.message_fr;
+            }
+          })
+                  
+      return res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
+
+    } catch (error) { console.log(error);
+      return res.status(200).send({'status':false,'msg':  (language == 'ar')? "خطأ في الخادم" : "server error" });
+    }
           
-                   let offest = (page -1 ) * 10 ; 
-                   const records = await query2.skip(offest).limit(10);
-                           
-                return res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
-        
-              } catch (error) { console.log(error);
-                return res.status(200).send({'status':false,'msg':  (language == 'ar')? "خطأ في الخادم" : "server error" });
-              }
-                   
-                  }          
+        }
+
      static notification_delete_admin = async(req,res)=>{
          try {       let id = req.params.id;
                       notification_tbl.findByIdAndDelete(id, function (err, docs) {
