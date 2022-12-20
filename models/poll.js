@@ -16,23 +16,23 @@ const pollschema = new Schema({
          amount: { type: Number, default: 0 },
          apperance_time: { type: String, required: true },
          time_duration: { type: String ,required: true},
-          qus: { type: String , required: true }, qus_ara: { type: String , required: true },
+          qus: { type: String , required: true }, qus_ara: { type: String , required: true },qus_fr: { type: String , required: true },
 
-         ops_1: { type: String, required: false },  ops_1_ara: { type: String, required: false },
-         ops_2: { type: String, required: false },  ops_2_ara: { type: String, required: false },
-         ops_3: { type: String, required: false },  ops_3_ara: { type: String, required: false },
-         ops_4: { type: String, required: false },  ops_4_ara: { type: String, required: false },
-         ops_5: { type: String, required: false },  ops_5_ara: { type: String, required: false },
+         ops_1: { type: String, required: false },  ops_1_ara: { type: String, required: false },ops_1_fr: { type: String, required: false },
+         ops_2: { type: String, required: false },  ops_2_ara: { type: String, required: false },ops_2_fr: { type: String, required: false },
+         ops_3: { type: String, required: false },  ops_3_ara: { type: String, required: false },ops_3_fr: { type: String, required: false },
+         ops_4: { type: String, required: false },  ops_4_ara: { type: String, required: false },ops_4_fr: { type: String, required: false },
+         ops_5: { type: String, required: false },  ops_5_ara: { type: String, required: false },ops_5_fr: { type: String, required: false },
         
          noti_status: { type: Boolean , default : 0 },          
          noti_in_App_status: { type: Boolean , default : 0 },
          date :{ type: Date,  required: true},
         
-         sports: { type: String,  default :'' },
-         leagues: { type: String, default :'' },
-         teams :{ type: String,  default :'' },
+         sports: { type: Array,  default :[] },
+         leagues: { type: Array,  default :[] },
+         teams : { type: Array,  default :[] },
       
-         players:{ type: String,  default :'' }
+      
     });
 
 

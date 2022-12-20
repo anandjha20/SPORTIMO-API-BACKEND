@@ -372,6 +372,30 @@ class prefrenceController{
     }
   }
 
+  static league_list_dropDown = async (req,res)=>{
+    try{
+        var response = await league_list.find({}).sort({"original_name_sportimo":1});
+      return res.status(200).send({status:true,msg:"data found",body:response});
+    }catch (error){
+      console.log(error);
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
+
+  static team_list_dropDown = async (req,res)=>{
+    try{
+        var response = await team_list.find().sort({"short_name_sportimo":1});
+      return res.status(200).send({status:true,msg:"data found",body:response});
+      
+    }catch (error){
+      console.log(error);
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
+
+
+
+
   static sport_list_new = async (req,res)=>{
     try{
     

@@ -315,6 +315,8 @@ router.post('/add_team_by_season_id',prefrenceController.add_team_by_season_id);
 router.post('/league_list_new',prefrenceController.league_list_new);
 router.get('/league_list_new',prefrenceController.league_list_new);
 router.post('/team_list_new',prefrenceController.team_list_new);
+router.get('/league_list_dropDown',prefrenceController.league_list_dropDown);
+router.get('/team_list_dropDown',prefrenceController.team_list_dropDown);
 router.get('/teams_for_sponsor',prefrenceController.teams_for_sponsor);
 router.post('/league_status_update',prefrenceController.league_status_update);
 router.post('/add_custom_league',leagueLogoImgUpload,prefrenceController.add_custom_league);

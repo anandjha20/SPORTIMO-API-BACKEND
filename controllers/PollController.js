@@ -219,12 +219,12 @@ class PollController {
                         "apperance_time": user_data.apperance_time,
                         "time_duration": user_data.time_duration,             
 
-                        "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
-                        "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,
-                        "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,
-                        "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,
-                        "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,
-                        "ops_5":user_data.ops_5,     "ops_5_ara":user_data.ops_5_ara,
+                        "qus": user_data.qus,        "qus_ara": user_data.qus_ara,     "qus_fr": user_data.qus_fr,
+                        "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,  "ops_1_fr":user_data.ops_1_fr,
+                        "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,  "ops_2_fr":user_data.ops_2_fr,
+                        "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,  "ops_3_fr":user_data.ops_3_fr,
+                        "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,  "ops_4_fr":user_data.ops_4_fr,
+                        "ops_5":user_data.ops_5,     "ops_5_ara":user_data.ops_5_ara,  "ops_5_fr":user_data.ops_5_fr,
                       
                         "noti_status":user_data.noti_status,               
                        
@@ -234,7 +234,7 @@ class PollController {
                         "sports":user_data.sports,
                         "leagues":user_data.leagues,
                         "teams":user_data.teams,
-                        "players":user_data.players,
+                       
                         "reward_type":user_data.reward_type,
                         "reward_quantity":user_data.reward_quantity,
                         "date":mydate,
@@ -258,7 +258,7 @@ class PollController {
                                   let module_type = 'polls';
                                   let category_type = 'results';
 
-                                  let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,category_type} );
+                                  let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,category_type, "sports":user_data.sports,"leagues":user_data.leagues,"teams":user_data.teams,} );
                       }
                       if(user_data.noti_status == 1){
                         let title2 = `New Poll has been published for match: ${ user_data.match} ` ;  

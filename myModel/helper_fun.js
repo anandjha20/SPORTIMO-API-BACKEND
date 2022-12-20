@@ -83,7 +83,11 @@ const sendNotificationAdd = (my_obj )=>{
        let category_type = my_obj.category_type ;  
        let module_id = my_obj.module_id ;  
        let module_type = my_obj.module_type ;
-       
+       let sports=my_obj.sports;
+       let leagues=my_obj.leagues;
+       let teams=my_obj.teams;
+       let country=my_obj.country;
+      
        
 
          let m_id =  String(module_id);
@@ -94,6 +98,10 @@ const sendNotificationAdd = (my_obj )=>{
          if(! isEmpty(category_type)){addData.category_type = category_type ; }
          if(! isEmpty(m_id)){addData.module_id = m_id  }
          if(! isEmpty(module_type)){addData.module_type = module_type ; }
+         if(! isEmpty(sports)){addData.sports = sports ; }
+         if(! isEmpty(leagues)){addData.leagues = leagues ; }
+         if(! isEmpty(teams)){addData.teams = teams ; }
+         if(! isEmpty(country)){addData.country = country ; }
        
          if(addData.module_id == 'undefined' ){ addData.module_id = '' }
          if(addData.user_id == 'undefined' ){ addData.user_id = '' }
