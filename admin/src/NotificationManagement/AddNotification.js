@@ -67,14 +67,13 @@ export default function AddNotification(props) {
             Formvlaues.leagues = leaguesArray;
             Formvlaues.sports = sportsArray;
             Formvlaues.teams = teamArray;
-            Formvlaues.players = plrArray;
             
             
             let token = localStorage.getItem("token");
             let header = ({ 'token': `${token}` });
             let options1 = ({ headers: header });
             let response = await axios.post('/web_api/addNotification', Formvlaues, options1);
-            console.log('my fun call', response);
+            
             if (response.status) {
                 let data = response.data;
                 if (data.status) {
@@ -134,9 +133,8 @@ export default function AddNotification(props) {
     }
     useEffect(() => {
         get_data('/web_api/sport_list', setSport_lists);
-        get_data('/web_api/league_list', setLeague_lists);
-        get_data('/web_api/team_list', setTeam_lists);
-        get_data('/web_api/player_list', setPlayer_lists);
+        get_data('/web_api/league_list_dropDown', setLeague_lists);
+        get_data('/web_api/team_list_dropDown', setTeam_lists);
         get_data('/web_api/country_list', setCountry_lists);
         document.body.classList.add('bg-salmon');
     }, []);
@@ -146,11 +144,11 @@ export default function AddNotification(props) {
     }) : [];
 
     const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
-        return { value: item._id, label: item.name };
+        return { value: item.season_id, label: item.original_name_sportimo };
     }) : [];
 
     const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
-        return { value: item._id, label: item.name };
+        return { value: item.team_id, label: item.team_name };
     }) : [];
 
     const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
@@ -170,25 +168,26 @@ export default function AddNotification(props) {
         const plrArray = [];
         selectedOptions.map(item => plrArray.push(item.label)
         );
-        setselectedOptions(plrArray.join(','));
+        setselectedOptions(plrArray);
     }
 
     ///////select Teams ///////////
-    const [teamArray, setteamOptionsarry] = React.useState()
+    const [teamArray, setteamOptionsarry] = React.useState([])
     const handleChangeTeam = (teamOptionsarry) => {
         const teamArray = [];
-        teamOptionsarry.map(item => teamArray.push(item.label)
+        teamOptionsarry.map(item => teamArray.push(item.value)
         );
-        setteamOptionsarry(teamArray.join(','));
+        setteamOptionsarry(teamArray);
     }
 
     ///////select Leagues ///////////
-    const [leaguesArray, setleaguesOptionsarry] = React.useState()
+    const [leaguesArray, setleaguesOptionsarry] = React.useState([])
     const handleChangeLeagues = (leaguesOptionsarry) => {
+        console.log(leaguesOptionsarry)
         const leaguesArray = [];
-        leaguesOptionsarry.map(item => leaguesArray.push(item.label)
+        leaguesOptionsarry.map(item => leaguesArray.push(item.value)
         );
-        setleaguesOptionsarry(leaguesArray.join(','));
+        setleaguesOptionsarry(leaguesArray);
     }
 
     ///////select Sports ///////////
@@ -201,12 +200,12 @@ export default function AddNotification(props) {
     }
 
     ///////select countryArray ///////////
-    const [countryArray, setCountry] = React.useState()
+    const [countryArray, setCountry] = React.useState([])
     const handleChangeCountry = (CountryOptionsarry) => {
         const countryArray = [];
         CountryOptionsarry.map(item => countryArray.push(item.label)
         );
-        setCountry(countryArray.join(','));
+        setCountry(countryArray);
     }
 
 
@@ -271,6 +270,17 @@ export default function AddNotification(props) {
                                                             <TextField id="filled-multiline-static" name='message_ara' label="Enter Message" multiline rows={4} fullWidth defaultValue="" variant="filled" autoComplete="off" />
 
                                                         </div>
+                                                        {/* ////////add message french////////////// */}
+                                                        <div className="col-lg-12 mb-4">
+                                                            <label className="title-col">Title <span className="text-blue">(French)</span></label>
+                                                            <TextField id="filled-multiline-static" name='title_fr' label="Enter Title" multiline rows={1} fullWidth defaultValue="" variant="filled" autoComplete="off" />
+
+                                                        </div>
+                                                        <div className="col-lg-12 mb-4">
+                                                            <label className="title-col">Message <span className="text-blue">(French)</span></label>
+                                                            <TextField id="filled-multiline-static" name='message_fr' label="Enter Message" multiline rows={4} fullWidth defaultValue="" variant="filled" autoComplete="off" />
+
+                                                        </div>
                                                         <div className="col-lg-12 mb-3">
                                                             <label className="title-col mb-3">Send Notification</label>
                                                             <div className="row">
@@ -326,7 +336,7 @@ export default function AddNotification(props) {
                                                                     />
                                                                 </div>
 
-                                                                <div className="col-lg-6 reletive mb-4">
+                                                                {/* <div className="col-lg-6 reletive mb-4">
                                                                     <span className='react-select-title'>Select Players</span>
                                                                     <Select isMulti
                                                                         closeMenuOnSelect={false}
@@ -336,7 +346,7 @@ export default function AddNotification(props) {
                                                                         classNamePrefix="select"
                                                                         onChange={handleChangePlayer}
                                                                     />
-                                                                </div>
+                                                                </div> */}
                                                             </div>
                                                         </div>
                                                         <div className="col-lg-12  mb-3">

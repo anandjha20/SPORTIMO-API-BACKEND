@@ -36,6 +36,12 @@ export default function CreatePoll(props) {
   const [answerFourAra, setAnswerFourAra] = useState('');
   const [answerFiveAra, setAnswerFiveAra] = useState('');
 /////////////// emoji input value get
+const [answerOneFr, setAnswerOneFr] = useState('');
+const [answerTwoFr, setAnswerTwoFr] = useState('');
+const [answerThreeFr, setAnswerThreeFr] = useState('');
+const [answerFourFr, setAnswerFourFr] = useState('');
+const [answerFiveFr, setAnswerFiveFr] = useState('');
+/////////////// emoji input value get
 
   const navigate = useNavigate();
   const [showhide, setShowhide] = useState('Free');
@@ -135,18 +141,19 @@ export default function CreatePoll(props) {
 
       const data = new FormData(e.target);
       let Formvlaues = Object.fromEntries(data.entries());
-      console.log("form data is == ", Formvlaues);
       Formvlaues.fee_type = showhide;
       Formvlaues.poll_type = p_type;
       Formvlaues.noti_status = notis;
       Formvlaues.leagues = leaguesArray;
       Formvlaues.sports = sportsArray;
-
+      Formvlaues.teams = teamArray;
+      
       Formvlaues.noti_in_App_status = innotis;
       Formvlaues.match = matchLegue;
       Formvlaues.time_duration = minute + ':' + second;
       Formvlaues.apperance_time = hminute + ':' + hsecond;
-
+      
+      console.log("form data is == ", Formvlaues);
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
       let options1 = ({ headers: header });
@@ -208,8 +215,8 @@ export default function CreatePoll(props) {
   }
   useEffect(() => {
     get_data('/web_api/sport_list', setSport_lists);
-    get_data('/web_api/league_list', setLeague_lists);
-    get_data('/web_api/team_list', setTeam_lists);
+    get_data('/web_api/league_list_dropDown', setLeague_lists);
+    get_data('/web_api/team_list_dropDown', setTeam_lists);
     get_data('/web_api/player_list', setPlayer_lists);
     document.body.classList.add('bg-salmon');
   }, []);
@@ -219,12 +226,12 @@ export default function CreatePoll(props) {
   }) : [];
 
   const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
-    return { value: item._id, label: item.name };
+    return { value: item.season_id, label: item.original_name_sportimo };
   
   }) : [];
 
   const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
-    return { value: item._id, label: item.name };
+    return { value: item.team_id, label: item.team_name };
   }) : [];
 
   const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
@@ -237,41 +244,41 @@ export default function CreatePoll(props) {
   }
 
   ///////select Player ///////////
-  const [plrArray, setselectedOptions] = React.useState()
+  const [plrArray, setselectedOptions] = React.useState([])
   const handleChangePlayer = (selectedOptions) => {
     const plrArray = [];
     selectedOptions.map(item => plrArray.push(item.value)
     );
-    setselectedOptions(plrArray.join(','));
+    setselectedOptions(plrArray);
   }
 
   ///////select Teams ///////////
-  const [teamArray, setteamOptionsarry] = React.useState()
+  const [teamArray, setteamOptionsarry] = React.useState([])
   const handleChangeTeam = (teamOptionsarry) => {
     const teamArray = [];
     teamOptionsarry.map(item => teamArray.push(item.value)
     );
-    setteamOptionsarry(teamArray.join(','));
+    setteamOptionsarry(teamArray);
   }
 
   ///////select Leagues ///////////
-  const [leaguesArray, setleaguesOptionsarry] = React.useState()
+  const [leaguesArray, setleaguesOptionsarry] = React.useState([])
   const handleChangeLeagues = (leaguesOptionsarry) => {
     const leaguesArray = [];
     leaguesOptionsarry.map(item => leaguesArray.push(item.value)
     );
-    setleaguesOptionsarry(leaguesArray.join(','));
+    setleaguesOptionsarry(leaguesArray);
   }
 
   ///////select Sports ///////////
-  const [sportsArray, setsportsOptionsarry] = React.useState()
+  const [sportsArray, setsportsOptionsarry] = React.useState([])
   const handleChangeSports = (SportsOptionsarry) => {
     const sportsArray = [];
-    SportsOptionsarry.map(item => sportsArray.push(item.value, item.label)
+    SportsOptionsarry.map(item => sportsArray.push(item.label)
     );
    
-    console.log(SportsOptionsarry);
-    setsportsOptionsarry(sportsArray.join(','));
+    
+    setsportsOptionsarry(sportsArray);
   }
 
 
@@ -811,7 +818,7 @@ const handleMatchName = (event) => {
                                   />
                                 </div>
 
-                                <div className="col-lg-6 reletive mb-4">
+                                {/* <div className="col-lg-6 reletive mb-4">
                                   <span className='react-select-title'>Select Players</span>
                                   <Select isMulti
                                     closeMenuOnSelect={false}
@@ -821,7 +828,7 @@ const handleMatchName = (event) => {
                                     classNamePrefix="select"
                                     onChange={handleChangePlayer}
                                   />
-                                </div>
+                                </div> */}
                               </div>
                             </div>
 
@@ -840,31 +847,50 @@ const handleMatchName = (event) => {
                             </div>
 
 
-                            <div className="col-lg-6 mb-4">
+                             {/* ///////French////////// */}
+                             <div className="col-lg-12 mb-4">
+                              <label className="title-col">Question <span className="text-blue">(French)</span></label>
+                              <TextField id="filled-multiline-static" name='qus_fr' label="Enter Question" multiline rows={4} fullWidth defaultValue="" variant="filled" autoComplete="off" />
+                            </div>
+
+
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(English)</span></label>
                               <InputEmoji  onChange={setAnswerOne} cleanOnEnter placeholder="Enter Answer"/>
                               <input type='hidden' value={answerOne} name='ops_1' />
                             </div>
 
                              {/* ///////Arbic////////// */}
-                             <div className="col-lg-6 mb-4">
+                             <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(Arabic)</span></label>
                               <InputEmoji  onChange={setAnswerOneAra} cleanOnEnter placeholder="Enter Answer"/>
                               <input type='hidden' value={answerOneAra} name='ops_1_ara' />
                             </div>
+                              {/* ///////French////////// */}
+                              <div className="col-lg-4 mb-4">
+                              <label className="title-col mb-0">Answer 1 <span className="text-blue">(French)</span></label>
+                              <InputEmoji  onChange={setAnswerOneFr} cleanOnEnter placeholder="Enter Answer"/>
+                              <input type='hidden' value={answerOneFr} name='ops_1_fr' />
+                            </div>
 
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(English)</span></label>
                               <InputEmoji  onChange={setAnswerTwo} cleanOnEnter placeholder="Enter Answer"/>
                               <input type='hidden' value={answerTwo} name='ops_2' />
                             </div>
 
                             
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(Arabic)</span></label>
                               <InputEmoji  onChange={setAnswerTwoAra} cleanOnEnter placeholder="Enter Answer"/>
                               <input type='hidden' value={answerTwoAra} name='ops_2_ara' />
+                            </div>
+
+                            <div className="col-lg-4 mb-4">
+                              <label className="title-col mb-0">Answer 2 <span className="text-blue">(French)</span></label>
+                              <InputEmoji  onChange={setAnswerTwoFr} cleanOnEnter placeholder="Enter Answer"/>
+                              <input type='hidden' value={answerTwoFr} name='ops_2_fr' />
                             </div>
 
                             <div className="col-lg-12">
@@ -872,27 +898,34 @@ const handleMatchName = (event) => {
                               {
                                 show ? <div className="row">
 
-                               <div className="col-lg-6 mb-4">
+                               <div className="col-lg-4 mb-4">
                                 <label className="title-col mb-0">Answer 3 <span className="text-blue">(English)</span></label>
                                 <InputEmoji  onChange={setAnswerThree} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerThree} name='ops_3' />
                                </div>
 
                                 {/* ///////Arbic////////// */}
-                                <div className="col-lg-6 mb-4">
+                                <div className="col-lg-4 mb-4">
                                 <label className="title-col mb-0">Answer 3 <span className="text-blue">(Arabic)</span></label>
                                 <InputEmoji  onChange={setAnswerThreeAra} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerThreeAra} name='ops_3_ara' />
                                </div>
 
-                               <div className="col-lg-6 mb-4">
+                                {/* ///////French////////// */}
+                                <div className="col-lg-4 mb-4">
+                                <label className="title-col mb-0">Answer 3 <span className="text-blue">(French)</span></label>
+                                <InputEmoji  onChange={setAnswerThreeFr} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerThreeFr} name='ops_3_fr' />
+                               </div>
+
+                               <div className="col-lg-4 mb-4">
                                 <label className="title-col mb-0">Answer 4 <span className="text-blue">(English)</span></label>
                                 <InputEmoji  onChange={setAnswerFour} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerFour} name='ops_4' />
                                </div>
 
 
-                               <div className="col-lg-6 mb-4">
+                               <div className="col-lg-4 mb-4">
                                 <label className="title-col mb-0">Answer 4 <span className="text-blue">(Arabic)</span></label>
                                 <InputEmoji  onChange={setAnswerFourAra} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerFourAra} name='ops_4_ara' />
@@ -900,17 +933,31 @@ const handleMatchName = (event) => {
 
 
 
-                               <div className="col-lg-6 mb-4">
+                               <div className="col-lg-4 mb-4">
+                                <label className="title-col mb-0">Answer 4 <span className="text-blue">(French)</span></label>
+                                <InputEmoji  onChange={setAnswerFourFr} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerFourFr} name='ops_4_fr' />
+                               </div>
+
+
+
+                               <div className="col-lg-4 mb-4">
                                 <label className="title-col mb-0">Answer 5 <span className="text-blue">(English)</span> </label>
                                 <InputEmoji  onChange={setAnswerFive} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerFive} name='ops_5' />
                                </div>
                                
                               
-                               <div className="col-lg-6 mb-4">
+                               <div className="col-lg-4 mb-4">
                                 <label className="title-col mb-0">Answer 5 <span className="text-blue">(Arabic)</span></label>
                                 <InputEmoji  onChange={setAnswerFiveAra} cleanOnEnter placeholder="Enter Answer"/>
                                 <input type='hidden' value={answerFiveAra} name='ops_5_ara' />
+                               </div>
+
+                               <div className="col-lg-4 mb-4">
+                                <label className="title-col mb-0">Answer 5 <span className="text-blue">(French)</span></label>
+                                <InputEmoji  onChange={setAnswerFiveFr} cleanOnEnter placeholder="Enter Answer"/>
+                                <input type='hidden' value={answerFiveFr} name='ops_5_fr' />
                                </div>
 
                                 </div> : null

@@ -25,11 +25,11 @@ const geq = new Schema({
          reward_quantity: { type: Number , default :0 },
          reward_condition: { type: String , default :'' },
 
-         targeted_country: { type: String, default :'' },
-         targeted_sport: { type: String, default :'' },
-         targeted_player: { type: String, default :'' },
-         targeted_team: { type: String, default :'' },
-         targeted_league: { type: String, default :'' },
+         targeted_country: { type: Array, default :[] },
+         targeted_sport: { type: Array, default :[] },
+         //targeted_player: { type: Array, default :[] },
+         targeted_team: { type: Array, default :[] },
+         targeted_league: { type: Array, default :[] },
         
          date :{ type: Date, default: Date.now }
 });

@@ -133,6 +133,9 @@ return (
 								<li className="nav-sub-item">
 									<NavLink  to="/intro-slider" className="nav-sub-link " >Add Introduction Slider</NavLink>
 								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/takeover-screen" className="nav-sub-link " >Takeover Screen</NavLink>
+								</li>
 							</ul>
 						</li>
 						

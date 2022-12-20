@@ -35,6 +35,7 @@ import IntroSliderImg from "./SponsorshipManagement/IntroSliderImg";
 import IntroSliderTable from "./SponsorshipManagement/IntroSliderTable";
 import IntroSliderDetails from "./SponsorshipManagement/IntroSliderDetails";
 import LoginSponsorship from "./SponsorshipManagement/LoginSponsorship";
+import TakeoverScreen from "./SponsorshipManagement/TakeoverScreen";
 import AllListNotification from "./NotificationManagement/AllListNotification";
 import AddNotification from "./NotificationManagement/AddNotification";
 import ReportReason from "./ReportReasonMangement/ReportReason";
@@ -104,6 +105,7 @@ function App() {
         <Route path="/sponsorship/detail/:id" element={ <SponsorshipDetails /> } />
         <Route path="/sponsorship/update/:id" element={ <UpdateSponsorship /> } />
         <Route path="/loginSponsorship" element={ <LoginSponsorship /> } />
+        <Route path="/takeover-screen" element={ <TakeoverScreen /> } />
         
 
         {/* Faq */}

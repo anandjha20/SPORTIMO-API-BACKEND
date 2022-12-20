@@ -13,10 +13,138 @@ import Select from 'react-select';
 import SelectTageting from "./Components/SelectTageting";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 
 
 function GameEngagementQuestions() {
+  const navigate = useNavigate();
+  const [sport_lists, setSport_lists] = React.useState([]);
+  const [league_lists, setLeague_lists] = React.useState([]);
+  const [team_lists, setTeam_lists] = React.useState([]);
+  const [player_lists, setPlayer_lists] = React.useState([]);
+  const [country_lists, setCountry_lists] = React.useState([]);
+
+  const get_data = async(url,setval) =>{
+      try {
+        let sendData = {}; 
+        let token = localStorage.getItem("token");
+        let header = ({ 'token': `${token}` });
+        let options1 = ({ headers: header });
+      //   let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
+        let response = await axios.get( url, options1, sendData );
+  
+        if (response.status) {
+  
+          let data = response.data;
+  
+          if (data.status) {
+              setval(data.body);
+           // toast.success(data.msg);
+          } else {
+            navigate("/");
+            toast.error(data.msg);
+          }
+        }
+        else {
+          toast.error('something went wrong please try again..');
+        }
+  
+  
+      } catch (err) { console.error(err); toast.error('some errror'); return false; }
+  
+  }
+  
+  
+  
+  
+    useEffect(async () => {
+      let d1=await get_data('/web_api/sport_list',setSport_lists);
+      let d2=await get_data('/web_api/league_list_dropDown',setLeague_lists);
+      let d3=await get_data('/web_api/team_list_dropDown',setTeam_lists);
+      let d4=await get_data('/web_api/country_list',setCountry_lists);
+
+
+      // 👇 add class to body element
+      document.body.classList.add('bg-salmon');
+  
+    }, []);
+  
+    
+
+  const sportOptions = (sport_lists.length >0) ? sport_lists.map((item)=>{
+      return  { value: item._id, label: item.name };
+      
+  }) :[];
+  
+
+  const leagueOptions = (league_lists.length >0) ? league_lists.map((item)=>{
+      return  { value: item.season_id, label: item.original_name };
+  }) :[];
+  
+  
+  const teamOptions = (team_lists.length >0) ? team_lists.map((item)=>{
+      return  { value: item.team_id, label: item.team_name };
+  }) :[];
+  
+  
+  
+  const playersOptions = (player_lists.length >0) ? player_lists.map((item)=>{
+      return  { value: item._id, label: item.name };
+  }) :[];
+  
+  
+  const countryOptions = (country_lists.length >0) ? country_lists.map((item)=>{
+      return  { value: item._id, label: item.name };
+  }) :[];
+  
+  const selectChange = (e,type)=>{
+      console.log(e.currentTarget);
+      alert(" ==jk==  "+type);
+  }
+
+  ///////select country ///////////
+  const [countryArray, setselectedOptions] = React.useState([])
+  const handleChangeCountry = (selectedOptions) => {
+    const countryArray = [];
+    selectedOptions.map(item => countryArray.push(item.label)
+    );
+    setselectedOptions(countryArray);
+  }
+
+  ///////select Teams ///////////
+  const [teamArray, setteamOptionsarry] = React.useState([])
+  const handleChangeTeam = (teamOptionsarry) => {
+    const teamArray = [];
+    teamOptionsarry.map(item => teamArray.push(item.value)
+    );
+    setteamOptionsarry(teamArray);
+  }
+
+  ///////select Leagues ///////////
+  const [leaguesArray, setleaguesOptionsarry] = React.useState([])
+  const handleChangeLeagues = (leaguesOptionsarry) => {
+    const leaguesArray = [];
+    leaguesOptionsarry.map(item => leaguesArray.push(item.value)
+    );
+    setleaguesOptionsarry(leaguesArray);
+  }
+
+  ///////select Sports ///////////
+  const [sportsArray, setsportsOptionsarry] = React.useState([])
+  const handleChangeSports = (SportsOptionsarry) => {
+    const sportsArray = [];
+    SportsOptionsarry.map(item => sportsArray.push(item.label)
+    );
+   
+    
+    setsportsOptionsarry(sportsArray);
+  }
+
+
+
+
+
 
   useEffect(() => {
     // 👇 add class to body element
@@ -382,12 +510,16 @@ function GameEngagementQuestions() {
     try {
       const data = new FormData(e.target);
       let Formvlaues = Object.fromEntries(data.entries());
-      console.log("form data is == ", Formvlaues);
+      
 
       Formvlaues.match_name = matchLegue;
       Formvlaues.duration = minute + ':' + second;
       Formvlaues.appearance_time = hminute + ':' + hsecond;
-
+      Formvlaues.targeted_league = leaguesArray;
+      Formvlaues.targeted_sport = sportsArray;
+      Formvlaues.targeted_team = teamArray;
+      Formvlaues.targeted_country = countryArray;
+      console.log(Formvlaues)
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
       let options1 = ({ headers: header });
@@ -542,28 +674,43 @@ function GameEngagementQuestions() {
                             </div>
 
 
-                            <div className="col-lg-6 mb-4">
+                            {/* ///////French////////// */}
+                            <div className="col-lg-12 mb-4">
+                              <label className="title-col">Question <span className="text-blue">(French)</span></label>
+                              <TextField name='qus_fr' label="Enter Question" multiline rows={4} fullWidth defaultValue="" variant="filled" autoComplete="off" />
+                            </div>
+
+
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(English)</span></label>
                               <input type='text' autoComplete="off" name='opt_1' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
 
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(Arabic)</span></label>
                               <input type='text' autoComplete="off" name='opt_1_ara' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
 
+                            <div className="col-lg-4 mb-4">
+                              <label className="title-col mb-0">Answer 1 <span className="text-blue">(French)</span></label>
+                              <input type='text' autoComplete="off" name='opt_1_fr' placeholder="Enter Answer" className="card-control form-control" />
+                            </div>
                           
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(English)</span></label>
                               <input type='text' autoComplete="off" name='opt_2' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
 
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(Arabic)</span></label>
                               <input type='text' autoComplete="off" name='opt_2_ara' placeholder="Enter Answer" className="card-control form-control" />
+                            </div>
+                            <div className="col-lg-4 mb-4">
+                              <label className="title-col mb-0">Answer 2 <span className="text-blue">(French)</span></label>
+                              <input type='text' autoComplete="off" name='opt_2_fr' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
                            
                             <div className="col-lg-12">
@@ -572,43 +719,60 @@ function GameEngagementQuestions() {
                                 show ? <div className="row">
 
 
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 3 <span className="text-blue">(English)</span></label>
                                     <input type='text' autoComplete="off" name='opt_3' placeholder="Enter Answer" className="card-control form-control" />
 
                                   </div>
 
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 3 <span className="text-blue">(Arabic)</span></label>
                                     <input type='text' autoComplete="off" name='opt_3_ara' placeholder="Enter Answer" className="card-control form-control" />
 
                                   </div>
 
                                  
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
+                                    <label className="title-col mb-0">Answer 3 <span className="text-blue">(French)</span></label>
+                                    <input type='text' autoComplete="off" name='opt_3_fr' placeholder="Enter Answer" className="card-control form-control" />
+
+                                  </div>
+
+                                 
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 4 <span className="text-blue">(English)</span></label>
                                     <input type='text' autoComplete="off" name='opt_4' placeholder="Enter Answer" className="card-control form-control" />
                                   </div>
 
 
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 4 <span className="text-blue">(Arabic)</span></label>
                                     <input type='text' autoComplete="off" name='opt_4_ara' placeholder="Enter Answer" className="card-control form-control" />
 
                                   </div>
 
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
+                                    <label className="title-col mb-0">Answer 4 <span className="text-blue">(French)</span></label>
+                                    <input type='text' autoComplete="off" name='opt_4_fr' placeholder="Enter Answer" className="card-control form-control" />
+
+                                  </div>
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 5 <span className="text-blue">(English)</span></label>
                                     <input type='text' autoComplete="off" name='opt_5' placeholder="Enter Answer" className="card-control form-control" />
                                   </div>
 
 
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 5 <span className="text-blue">(Arabic)</span></label>
                                     <input type='text' autoComplete="off" name='opt_5_ara' placeholder="Enter Answer" className="card-control form-control" />
 
                                   </div>
 
+                                  <div className="col-lg-4 mb-4">
+                                    <label className="title-col mb-0">Answer 5 <span className="text-blue">(French)</span></label>
+                                    <input type='text' autoComplete="off" name='opt_5_fr' placeholder="Enter Answer" className="card-control form-control" />
+
+                                  </div>
                                 </div> : <><div>
                                   <input type="hidden" name="ops_3" />
                                   <input type="hidden" name="ops_4" />
@@ -616,6 +780,9 @@ function GameEngagementQuestions() {
                                   <input type="hidden" name="ops_3_ara" />
                                   <input type="hidden" name="ops_4_ara" />
                                   <input type="hidden" name="ops_5_ara" />
+                                  <input type="hidden" name="ops_3_fr" />
+                                  <input type="hidden" name="ops_4_fr" />
+                                  <input type="hidden" name="ops_5_fr" />
                                 </div></>
                               }
                             </div>
@@ -634,7 +801,71 @@ function GameEngagementQuestions() {
                               <label className="title-col mb-3">Sponsorship Targeting</label>
                               <div className="row">
 
-                                <SelectTageting />
+                              <div className="col-lg-6 reletive mb-4">
+                <span className='react-select-title'>Select Sports</span>
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="targeted_sport"
+                    //value={selected_soprt}
+                  ///  onChange = {(e)=>selectChange( e,'sport')}
+                
+
+                    options={sportOptions}
+                    onChange={handleChangeSports}
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+            </div>
+
+            <div className="col-lg-6 reletive mb-4">
+                <span className='react-select-title'>Select League</span>
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="targeted_league" 
+                    options={leagueOptions}
+                    onChange={handleChangeLeagues}
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+            </div>
+
+            <div className="col-lg-6 reletive mb-4">
+                <span className='react-select-title'>Select Team</span>
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="targeted_team"   
+                    options={teamOptions}
+                    onChange={handleChangeTeam}
+
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+            </div>
+
+            {/* <div className="col-lg-6 reletive mb-4">
+                <span className='react-select-title'>Select Players</span>
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="targeted_player"  
+                    options={playersOptions}
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+            </div> */}
+
+            <div className="col-lg-12  mb-4">
+                <label className="title-col mb-2">Targeted Country</label>
+             </div>
+              <div className='reletive col-lg-12'>
+                <span className='react-select-title'>Select Country</span>
+                
+                <Select isMulti
+                    closeMenuOnSelect={false}
+                    name="" 
+                    options={countryOptions}
+                    onChange={handleChangeCountry}
+                    className="basic-multi-select"
+                    classNamePrefix="select" />
+
+                    <input type="hidden" name="targeted_country" value="india" />
+            </div>
+
 
 
                               </div>

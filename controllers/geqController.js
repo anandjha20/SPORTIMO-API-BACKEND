@@ -1,7 +1,7 @@
 let  express_2 = require('express');
   
 const { rows_count,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = require('../myModel/common_modal');
-const { geqWin , geqLose } = require('../myModel/helper_fun');
+const { geqWin , geqLose,sendNotificationAdd } = require('../myModel/helper_fun');
    
   
  const geq_tbl= require('../models/geq_tbl');
@@ -34,16 +34,25 @@ class geqController {
 
          let targeted_country = req.body.targeted_country;
          let targeted_sport = req.body.targeted_sport;
-         let targeted_player = req.body.targeted_player;
+         
          let targeted_team = req.body.targeted_team;
          let targeted_league = req.body.targeted_league;
 
-         const details={match_id,match_name,event,appearance_time,duration,qus,qus_ara,opt_1,opt_1_ara,opt_2,opt_2_ara,opt_3,opt_3_ara,opt_4,opt_4_ara,opt_5,opt_5_ara,reward_type,reward_quantity,reward_condition,targeted_country,targeted_sport,targeted_player,targeted_team,targeted_league};
+         const details={match_id,match_name,event,appearance_time,duration,qus,qus_ara,opt_1,opt_1_ara,opt_2,opt_2_ara,opt_3,opt_3_ara,opt_4,opt_4_ara,opt_5,opt_5_ara,reward_type,reward_quantity,reward_condition,targeted_country,targeted_sport,targeted_team,targeted_league};
 
          if(!isEmpty(match_id) || !isEmpty(event) || !isEmpty(qus) || !isEmpty(qus_ara) || !isEmpty(opt_1) || !isEmpty(opt_1_ara) || !isEmpty(opt_2) || !isEmpty(opt_2_ara) ||!isEmpty(opt_3) || !isEmpty(opt_3_ara)){
              let obj=new geq_tbl(details);
              let response=await obj.save()
              if(!isEmpty(response)){
+                    let type_status =  1 ; 
+                        let title = `New GEQ has been published !! ` ;  
+                    let msg = `New GEQ has been published , Click here to participate.`; 
+                    let module_id = response._id;
+                    let module_type = 'GEQ';
+                    let category_type = 'system';
+
+                    let demo =  sendNotificationAdd({title,msg,type_status,module_type,module_id,category_type, "sports":targeted_sport,"leagues":targeted_league,"teams":targeted_team,"country":targeted_country} );
+       
                  res.status(200).send({'status':true,'msg':'geq added successfully','body':response});
              }else{
                  res.status(200).send({'status':false,'msg':'something went wrong','body':''});
