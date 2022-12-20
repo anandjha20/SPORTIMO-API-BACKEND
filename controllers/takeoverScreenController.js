@@ -26,7 +26,7 @@ if(isEmpty(image)){
 let screen=await takeover_screen_tbls.find();
 if(!isEmpty(screen)){
   let update  = await takeover_screen_tbls.findOneAndUpdate({image});  
-  return res.status(200).send({"status":true,"msg":' Takeover Screen added successfully', "body":response}) ;          
+  return res.status(200).send({"status":true,"msg":' Takeover Screen added successfully', "body":update}) ;          
 }else{
 
   let add = new takeover_screen_tbls({image});
