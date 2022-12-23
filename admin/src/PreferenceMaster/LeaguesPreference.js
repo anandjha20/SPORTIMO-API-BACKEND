@@ -17,6 +17,7 @@ import useForm from "../useForm";
 import IconButton from '@mui/material/IconButton';
 import Swal from 'sweetalert2'
 import { ListItemAvatar } from "@material-ui/core";
+import { BottomNavigation } from "@mui/material";
 
 export default function LeaguesPreference() {
 
@@ -51,6 +52,7 @@ export default function LeaguesPreference() {
     const { _id } = useParams();
     const [data, setData] = useState([])
     const [catView, setCat] = useState([])
+    const [catViewLogo, setCatLogo] = useState('')
     const [pageCount, setpageCount] = useState('');
     const [open, setOpen] = useState(false);
 
@@ -61,12 +63,44 @@ export default function LeaguesPreference() {
     /////////////////view complaint detail/////////////////
 
     const onOpenModal = (sunil) => {
+        let match=sunil.league_logo_sportimo.match("https://www.dsg-images.com")
+        if(match==null){
+            setCatLogo(  <>  <div className="imageSlider  carousel-item " >
+            <img src={sunil.league_logo_sportimo}></img><i onClick={(e)=>{logoReset(sunil._id)}} class="fal fa-times-circle " style={{color:"white",marginTop:"-57px",cursor:"pointer",     position: "absolute",
+    zIndex: "10",
+    right: "-11px",
+    marginTop: "-89px"}}></i>
+            </div><br/><br/><br/>
+            </>
+        )
+        }else{
+            setCatLogo(<></>)
+        }
+        console.log({catViewLogo})
                 setCat(sunil);
                 setOpen(true);
-                console.log(sunil);
+                //console.log(sunil);
         
     }
 
+  /////////////////logo reset call /////////////////
+  const logoReset = (_id) => {
+    axios.put(`/web_api/restore_league_logo/${_id}`)
+    .then(res => {
+        if (res.status) {
+            let data = res.data;
+            if (data.status) { 
+                 console.log(data.body)
+                 onOpenModal(data.body)
+            } else {
+                toast.error(data.msg);
+            }
+        }
+        else {
+            toast.error(data.msg);
+        }
+    })
+}
 
 
   /////////////////delete api call /////////////////
@@ -131,7 +165,11 @@ export default function LeaguesPreference() {
 
 
     /////////////////complaint list/////////////////
-    const onCloseModal = () => setOpen(false);
+    const onCloseModal = () =>{ 
+        setOpen(false);
+        return PreferenceList();
+
+    }
 
     const limit = 10;
 
@@ -252,7 +290,7 @@ export default function LeaguesPreference() {
         const commentsFormServer = await fetchComments(page);
         setData(commentsFormServer);
     };
-
+    
     return (
         <>
             <Header />
@@ -317,9 +355,9 @@ export default function LeaguesPreference() {
                                                 </form>
                                             </div>
                                             {/* <div className="col-lg-1"></div> */}
-                                            <div className="col-lg-7">
+                                            <div className="col-lg-9">
                                                 <div className="row">
-                                                    <div className="col-lg-16">
+                                                    <div className="col-lg-12">
 
                                                         <div className="table-card MuiPaper-root MuiPaper-elevation2 MuiPaper-rounded">
                                                             
@@ -346,7 +384,7 @@ export default function LeaguesPreference() {
                                                                         <th scope="col">Leagues (Arabic)</th>
                                                                         <th scope="col">Leagues (French)</th>
                                                                         <th scope="col">Followers</th>
-                                                                        <th scope="col">Status</th>
+                                                                        <th scope="col" className="text-center">Status</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
                                                                 </thead>
@@ -367,7 +405,7 @@ export default function LeaguesPreference() {
                                                                                     <td>{item.original_name_ara_sportimo}</td>
                                                                                     <td>{item.original_name_fr_sportimo}</td>
                                                                                     <td>{item.total_select}</td>
-                                                                                    <td>{item.status == true ? <><Button onClick={() => { LeagueActiveDeactive(item._id, item.status="0");}} className="mr-3 btn-pd deactive text-white">Deactive</Button> </> :<> <Button onClick={() => { LeagueActiveDeactive(item._id, item.status="1");}} className="mr-3 btn-pd btnBg">Active</Button></>}</td>
+                                                                                    <td>{item.status == true ? <><Button onClick={() => { LeagueActiveDeactive(item._id, item.status="0");}} className=" btn-pd deactive text-white">Deactive</Button> </> :<> <Button onClick={() => { LeagueActiveDeactive(item._id, item.status="1");}} className=" btn-pd btnBg">Active</Button></>}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
                                                                                         {item.type=="custom"?<>
@@ -437,6 +475,7 @@ export default function LeaguesPreference() {
                                                     <h5 className="mb-2 text-white">&nbsp;&nbsp;{catView.original_name_ara}</h5>
                                                     <h5 className="mb-4 text-white">&nbsp;&nbsp;{catView.original_name_fr}</h5>
                                                     </span>
+                                                    <h5 className="mb-2 text-white">Edit Here To Reflect...</h5>
                                                     <div className="mx-500">
                                                         <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
                                                             <div className="form-group mb-4">
@@ -451,11 +490,14 @@ export default function LeaguesPreference() {
 
                                                                 <label className="title-col">League Name <span className="text-blue">(French)</span></label>
                                                                 <input  id="categor" className="form-control mb-4" name="original_name_fr_sportimo" defaultValue={catView.original_name_fr_sportimo}
-                                                                type="text"/>  
-      
+                                                                type="text"/>
+
+
+                                                                {catViewLogo}
+                                                            
                                                                <div className="col-lg-12 mt-4 mb-3  p-0">
                                                                 <label className="title-col">File Upload</label>
-                                                                <input type="file" name='image' className="form-control file-input" />
+                                                                <input type="file" name='image' className="form-control file-input" oninput="pic.src=window.URL.createObjectURL(this.files[0])"/><img id="pic" />
                                                               </div>
                                                             <div className="mt-3">
                                                                 <Button type='submit' className="mr-3 btn-pd btnBg" >Update</Button>

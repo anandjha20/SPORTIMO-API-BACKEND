@@ -43,7 +43,7 @@ export default function TakeoverSvreen() {
     const { name, last_name, tags } = values;
 
     useEffect(() => {
-        document.body.className = "main-body leftmenu preference_list";
+        document.body.className = "main-body leftmenu sponer_list";
         return () => {
             document.body.className = "main-body leftmenu";
         }

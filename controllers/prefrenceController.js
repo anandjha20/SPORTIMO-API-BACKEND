@@ -322,16 +322,16 @@ class prefrenceController{
       if(!isEmpty(name)){whr.team_name = { $regex: '.*' + name + '.*', $options: 'i' } ;}
       page = (isEmpty(page) || page == 0 )? 1 :page ; 
       let user_id = req.body.user_id;
+      let team_id = req.body.team_id;
       if(!isEmpty(user_id)){
         
-        let user_leagues=await user_preference.distinct('season_id',{user_id})
         let conditio={}
-        if(!isEmpty(user_leagues)){conditio={...conditio,season_id:{$in:user_leagues}}}
+        if(!isEmpty(team_id)){conditio={...conditio,team_id}}
         var response = await team_list.find(conditio).sort({short_name_sportimo:1});
         
       }else{
         let offset=(page-1)*5;
-        var response = await team_list.find(whr).skip(offset).limit(5);
+        var response = await team_list.find(whr).sort({"team_name":1}).skip(offset).limit(5);
       }
       let teams=[]
       let path=MyBasePath(req);
@@ -393,9 +393,6 @@ class prefrenceController{
     }
   }
 
-
-
-
   static sport_list_new = async (req,res)=>{
     try{
     
@@ -442,7 +439,6 @@ class prefrenceController{
       return res.status(200).send({status:false,msg:"server error"});
     }
   }
-
 
   static my_fav_league = async (req,res)=>{
     try{
@@ -507,7 +503,6 @@ class prefrenceController{
       return res.status(200).send({status:false,msg:"server error"});
     }
   }
-
 
   static teams_for_sponsor = async (req,res)=>{
     try{
@@ -658,6 +653,42 @@ class prefrenceController{
       if(data.type=="custom"){
         let d1 = await league_list.findByIdAndDelete(id);
         return res.status(200).send({status:true,msg:"league deleted",body:d1});
+
+      }
+      return res.status(200).send({status:true,msg:"something went wrong"});
+     
+    }catch (error){
+      console.log(error);
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
+
+  static restore_league_logo = async (req,res)=>{
+    try{
+      let id=req.params.id;
+      let data=await league_list.findById(id);
+      console.log(data)
+      if(!isEmpty(data)){
+        let d1 = await league_list.findByIdAndUpdate(id,{league_logo_sportimo:data.league_logo},{new:true});
+        return res.status(200).send({status:true,msg:"league logo updated",body:d1});
+
+      }
+      return res.status(200).send({status:true,msg:"something went wrong"});
+     
+    }catch (error){
+      console.log(error);
+      return res.status(200).send({status:false,msg:"server error"});
+    }
+  }
+
+  static restore_team_logo = async (req,res)=>{
+    try{
+      let id=req.params.id;
+      let data=await team_list.findById(id);
+      console.log(data)
+      if(!isEmpty(data)){
+        let d1 = await team_list.findByIdAndUpdate(id,{team_logo_sportimo:data.team_logo},{new:true});
+        return res.status(200).send({status:true,msg:"team logo updated",body:d1});
 
       }
       return res.status(200).send({status:true,msg:"something went wrong"});

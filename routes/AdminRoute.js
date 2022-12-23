@@ -324,6 +324,8 @@ router.post('/add_custom_team',teamLogoImgUpload,prefrenceController.add_custom_
 router.put('/update_league/:id?',leagueLogoImgUpload,prefrenceController.update_league);
 router.put('/update_team/:id?',teamLogoImgUpload,prefrenceController.update_team);
 router.delete('/delete_custom_league/:id?',prefrenceController.delete_custom_league);
+router.put('/restore_league_logo/:id?',prefrenceController.restore_league_logo);
+router.put('/restore_team_logo/:id?',prefrenceController.restore_team_logo);
 
 
 

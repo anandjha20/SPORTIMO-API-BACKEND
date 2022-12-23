@@ -292,6 +292,8 @@ class PollController {
                               }else if(! isEmpty(data)) {
                                     
                                 if(user_data.noti_status == 1 || user_data.noti_in_App_status == 1 ){
+                                  if(user_data.match!="All"){
+                                  
                                   let type_status =  1 ; 
                                   let title = `New Poll has been published for match: ${ matchData[0].team_a_name} VS ${ matchData[0].team_b_name} ` ;  
                                   let msg = `New Poll has been published for match: ${ matchData[0].team_a_name} VS ${ matchData[0].team_b_name} Click here to participate.`; 
@@ -304,7 +306,25 @@ class PollController {
                                   let category_type = 'results';
 
                                   let demo =  sendNotificationAdd({title,msg,title_ara,msg_ara,title_fr,msg_fr,type_status,module_type,module_id,category_type, "sports":user_data.sports,"leagues":user_data.leagues,"teams":user_data.teams,country} );
-                      }
+                        
+                                }else{
+                                  let type_status =  1 ; 
+                                  let title = `New Poll has been published for match: All ` ;  
+                                  let msg = `New Poll has been published for match: All , Click here to participate.`; 
+                                  let title_ara = `تم نشر استطلاع جديد للمباراة: الكل` ;  
+                                  let msg_ara = `تم نشر استطلاع جديد للمباراة: الكل ، اضغط هنا للمشاركة.`; 
+                                  let title_fr = `Un nouveau sondage a été publié pour le match : Tous ` ;  
+                                  let msg_fr = `Un nouveau sondage a été publié pour le match : Tous , Cliquez ici pour participer.`; 
+                                  let module_id = data._id;
+                                  let module_type = 'polls';
+                                  let category_type = 'results';
+
+                                  let demo =  sendNotificationAdd({title,msg,title_ara,msg_ara,title_fr,msg_fr,type_status,module_type,module_id,category_type, "sports":user_data.sports,"leagues":user_data.leagues,"teams":user_data.teams,country} );
+                         
+                                }
+                      
+                      
+                                }
                       if(user_data.noti_status == 1){
                         let title2 = `New Poll has been published for match: ${ user_data.match} ` ;  
                         let msg2 = `New Poll has been published for match: ${ user_data.match} Click here to participate.`; 

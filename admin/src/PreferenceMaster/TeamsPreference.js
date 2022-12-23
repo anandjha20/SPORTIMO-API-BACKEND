@@ -50,6 +50,7 @@ export default function TeamsPreference() {
     const { _id } = useParams();
     const [data, setData] = useState([])
     const [catView, setCat] = useState([])
+    const [catViewLogo, setCatLogo] = useState('')
     const [pageCount, setpageCount] = useState('');
     const [open, setOpen] = useState(false);
     
@@ -59,11 +60,46 @@ export default function TeamsPreference() {
 
     /////////////////view complaint detail/////////////////
     const onOpenModal = (item) => {
+        let match=item.team_logo_sportimo.match("https://www.dsg-images.com")
+        if(match==null){
+            setCatLogo(  <>  <div className="imageSlider  carousel-item " >
+            <img src={item.team_logo_sportimo}></img><i onClick={(e)=>{logoReset(item._id)}} class="fal fa-times-circle " style={{color:"white",marginTop:"-57px",cursor:"pointer",     position: "absolute",
+    zIndex: "10",
+    right: "-11px",
+    marginTop: "-89px"}}></i>
+            </div><br/><br/><br/>
+            </>
+        )
+        }else{
+            setCatLogo(<></>)
+        }
+
                 setCat(item);
                 setOpen(true);
                 console.log(catView);
         
     }
+
+
+  /////////////////logo reset call /////////////////
+  const logoReset = (_id) => {
+    axios.put(`/web_api/restore_team_logo/${_id}`)
+    .then(res => {
+        if (res.status) {
+            let data = res.data;
+            if (data.status) { 
+                 console.log(data.body)
+                 onOpenModal(data.body)
+            } else {
+                toast.error(data.msg);
+            }
+        }
+        else {
+            toast.error(data.msg);
+        }
+    })
+}
+
 
     /////////////////delete api call /////////////////
    const deleteCategory = (_id) => {
@@ -101,7 +137,10 @@ export default function TeamsPreference() {
 }
 
     /////////////////complaint list/////////////////
-    const onCloseModal = () => setOpen(false);
+    const onCloseModal = () =>{
+         setOpen(false); 
+         return PreferenceList();
+        }
     const limit = 5;
     
     const formsave = (e, page)=>{
@@ -398,6 +437,7 @@ export default function TeamsPreference() {
                                                     <h5 className="mb-2 text-white">&nbsp;&nbsp;{catView.team_name_ara}</h5>
                                                     <h5 className="mb-4 text-white">&nbsp;&nbsp;{catView.team_name_fr}</h5>
                                                     </span>
+                                                    <h5 className="mb-2 text-white">Edit Here To Reflect...</h5>
                                                     <div className="mx-500">
                                                         <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
                                                             <div className="form-group mb-4"> 
@@ -419,6 +459,7 @@ export default function TeamsPreference() {
                                                                 <input  id="categor" className="form-control mb-4" name="team_code" defaultValue={catView.team_code}
                                                                 type="text"
                                                                 />  
+                                                                 {catViewLogo}
 
                                                                     <div className="col-lg-12 mt-4 mb-3  p-0">
                                                                 <label className="title-col">File Upload</label>

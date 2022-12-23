@@ -578,7 +578,7 @@ static all_team_match_list_mobile = async (req,res)=>{
             page = (isEmpty(page) || page == 0 )? 1 :page ; 
             if(!isEmpty(id)){whr = {_id: id} ;} 
             let query =  team_matches.find(whr).sort({date_utc:-1,time_utc:-1}) ;
-                const query2 =  query.clone();
+            const query2 =  query.clone();
             const counts = await query.countDocuments();
     
             
@@ -633,6 +633,206 @@ static all_team_match_list_mobile = async (req,res)=>{
             }
         }) 
         let paths =MyBasePath(req,res); 
+            
+
+    res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+     
+        }
+       
+    } catch (error) { console.log(error);
+    res.status(200).send({'status':false,'msg':"server error"});
+    }
+                    
+}    
+
+static all_team_match_list_mobile_new = async (req,res)=>{
+    try {
+        let  id = req.params.id;
+        let page  = req.body.page;
+        let s_date  = req.body.s_date;
+        let e_date  = req.body.e_date;
+        let name    = req.body.name;
+        let language= req.body.language;
+        let zone= req.body.zone;
+        let user_id= req.body.user_id;
+        if(!isEmpty(user_id)){
+            let whr = {};
+            let date = getcurntDate();
+            let pipeline=[
+                {
+                  '$lookup': {
+                    'from': 'team_lists', 
+                    'localField': 'team_a_id', 
+                    'foreignField': 'team_id', 
+                    'as': 'team_a_data'
+                  }
+                }, {
+                  '$lookup': {
+                    'from': 'team_lists', 
+                    'localField': 'team_b_id', 
+                    'foreignField': 'team_id', 
+                    'as': 'team_b_data'
+                  }
+                }, {
+                  '$lookup': {
+                    'from': 'league_lists', 
+                    'localField': 'league_id', 
+                    'foreignField': 'season_id', 
+                    'as': 'league_data'
+                  }
+                }, {
+                  '$unwind': {
+                    'path': '$team_a_data'
+                  }
+                }, {
+                  '$unwind': {
+                    'path': '$team_b_data'
+                  }
+                }, {
+                  '$unwind': {
+                    'path': '$league_data'
+                  }
+                }
+              ]
+             
+            if(!isEmpty(name)){pipeline.push( {$match:{match_name:{ $regex: '(?i)' + name , $options: 'i' }}}) ;} 
+            if(!isEmpty(s_date) && !isEmpty(e_date) ){ pipeline.push({$match:{date_utc:{ $gte:new Date(s_date), $lte:new Date(e_date)}}})}
+            let league=await user_preference.distinct('season_id',{"user_id":user_id,league_id_mongo:{$ne:""}})
+            console.log(league)
+            pipeline.push({$match:{league_id:{$in:league}}}) 
+            page = (isEmpty(page)
+            || page == 0 )? 1 :page ; 
+            if(!isEmpty(id)){whr = {_id: id} ;} 
+        
+            let query =  team_matches.find(whr).sort({date_utc:1,time_utc:1}) ;
+                const query2 =  query.clone();
+            const counts = await query.countDocuments();
+    
+            
+            let offest = (page -1 ) * 10 ; 
+    
+            const records = await team_matches.aggregate(pipeline).sort({date_utc:1,time_utc:1}).skip(offest).limit(10);
+            let path =MyBasePath(req,res);
+            records.map( (item)=>{
+                let local= getLocalDateTime({date_utc:item.date_utc,time_utc:item.time_utc,zone})
+                item.date_utc=local.local_date;
+                item.time_utc=local.local_time;
+                if(language=="ar"){
+                    item.team_a_data.short_name_sportimo=item.team_a_data.short_name_ara_sportimo;
+                    item.team_b_data.short_name_sportimo=item.team_b_data.short_name_ara_sportimo;
+                    item.league_data.original_name_sportimo=item.league_data.original_name_ara_sportimo;
+                   
+                }else if(language=="fr"){
+                    item.team_a_data.short_name_sportimo=item.team_a_data.short_name_fr_sportimo;
+                    item.team_b_data.short_name_sportimo=item.team_b_data.short_name_fr_sportimo;
+                    item.league_data.original_name_sportimo=item.league_data.original_name_fr_sportimo;
+                }
+    
+                let match1=item.team_a_data.team_logo_sportimo.match('http');
+                if(item.team_a_data.team_logo_sportimo!=0 && match1==null){
+                  item.team_a_data.team_logo_sportimo=`${path}/image/assets/team_logo/${item.team_a_data.team_logo_sportimo}`
+                }
+                let match2=item.team_b_data.team_logo_sportimo.match('http');
+                if(item.team_b_data.team_logo_sportimo!=0 && match2==null){
+                  item.team_b_data.team_logo_sportimo=`${path}/image/assets/team_logo/${item.team_b_data.team_logo_sportimo}`
+                }
+                
+                let match3=item.league_data.league_logo_sportimo.match('http');
+                if(item.league_data.league_logo_sportimo!=0 && match3==null){
+                    item.league_data.league_logo_sportimo=`${path}/image/assets/team_logo/${item.league_data.league_logo_sportimo}`
+                }
+    
+            }) 
+             
+                
+    
+        res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });
+         
+        }else{
+        let whr = {};
+        let date = getcurntDate();
+        let pipeline=[
+            {
+              '$lookup': {
+                'from': 'team_lists', 
+                'localField': 'team_a_id', 
+                'foreignField': 'team_id', 
+                'as': 'team_a_data'
+              }
+            }, {
+              '$lookup': {
+                'from': 'team_lists', 
+                'localField': 'team_b_id', 
+                'foreignField': 'team_id', 
+                'as': 'team_b_data'
+              }
+            }, {
+              '$lookup': {
+                'from': 'league_lists', 
+                'localField': 'league_id', 
+                'foreignField': 'season_id', 
+                'as': 'league_data'
+              }
+            }, {
+              '$unwind': {
+                'path': '$team_a_data'
+              }
+            }, {
+              '$unwind': {
+                'path': '$team_b_data'
+              }
+            }, {
+              '$unwind': {
+                'path': '$league_data'
+              }
+            }
+          ]
+         
+        if(!isEmpty(name)){pipeline.push( {$match:{match_name:{ $regex: '(?i)' + name , $options: 'i' }}}) ;} 
+        if(!isEmpty(s_date) && !isEmpty(e_date) ){ pipeline.push({$match:{date_utc:{ $gte:new Date(s_date), $lte:new Date(e_date)}}})}else{pipeline.push({$match:{date_utc:{ $gte:new Date(date)}}})} 
+        page = (isEmpty(page)
+        || page == 0 )? 1 :page ; 
+        if(!isEmpty(id)){whr = {_id: id} ;} 
+    
+        let query =  team_matches.find(whr).sort({date_utc:1,time_utc:1}) ;
+            const query2 =  query.clone();
+        const counts = await query.countDocuments();
+
+        
+        let offest = (page -1 ) * 10 ; 
+
+        const records = await team_matches.aggregate(pipeline).sort({date_utc:1,time_utc:1}).skip(offest).limit(10);
+        let path =MyBasePath(req,res); 
+        records.map( (item)=>{
+            let local= getLocalDateTime({date_utc:item.date_utc,time_utc:item.time_utc,zone})
+            item.date_utc=local.local_date;
+            item.time_utc=local.local_time;
+            if(language=="ar"){
+                item.team_a_data.short_name_sportimo=item.team_a_data.short_name_ara_sportimo;
+                item.team_b_data.short_name_sportimo=item.team_b_data.short_name_ara_sportimo;
+                item.league_data.original_name_sportimo=item.league_data.original_name_ara_sportimo;
+               
+            }else if(language=="fr"){
+                item.team_a_data.short_name_sportimo=item.team_a_data.short_name_fr_sportimo;
+                item.team_b_data.short_name_sportimo=item.team_b_data.short_name_fr_sportimo;
+                item.league_data.original_name_sportimo=item.league_data.original_name_fr_sportimo;
+            }
+
+            let match1=item.team_a_data.team_logo_sportimo.match('http');
+            if(item.team_a_data.team_logo_sportimo!=0 && match1==null){
+              item.team_a_data.team_logo_sportimo=`${path}/image/assets/team_logo/${item.team_a_data.team_logo_sportimo}`
+            }
+            let match2=item.team_b_data.team_logo_sportimo.match('http');
+            if(item.team_b_data.team_logo_sportimo!=0 && match2==null){
+              item.team_b_data.team_logo_sportimo=`${path}/image/assets/team_logo/${item.team_b_data.team_logo_sportimo}`
+            }
+            
+            let match3=item.league_data.league_logo_sportimo.match('http');
+            if(item.league_data.league_logo_sportimo!=0 && match3==null){
+                item.league_data.league_logo_sportimo=`${path}/image/assets/team_logo/${item.league_data.league_logo_sportimo}`
+            }
+
+        }) 
             
 
     res.status(200).send({'status':true,'msg':"success", "page":page, "rows":counts, 'body':records });

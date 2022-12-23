@@ -83,7 +83,7 @@ export default function AddNotification(props) {
 
             
                 } else {
-                    toast.error('something went wrong please try again');
+                    toast.error(data.msg);
                 }
             }
             else {

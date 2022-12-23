@@ -5,6 +5,7 @@
    const notification_archive = require("../models/notification_archive");
    const user_tbls = require("../models/user");
    const user_preference = require("../models/user_preference");
+const { default: mongoose, Mongoose } = require("mongoose");
     
 
 class notificationController {
@@ -56,14 +57,27 @@ class notificationController {
         if(!isEmpty(archive)){
           whr={...whr,_id:{$nin:archive}  }
         }
+        let newUser=mongoose.Types.ObjectId(id)
+        console.log(newUser)
+        let pipeline=[
+          {
+            '$match': {
+              'user_id': {
+                '$in': [
+                  '', newUser
+                ]
+              }
+            }
+          }
+        ]
         let country=await user_tbls.distinct('country',{_id:id,country:{$ne:''}})
         if(!isEmpty(country)){
-          whr={...whr,country:{$in:country}  }
+          pipeline.push( {$match:{$or:[{country:{$in:country}},{country:{$size:0}}]}})
         }
         let leagues=await user_preference.distinct('season_id',{user_id:id,season_id:{$ne:''}})
-        if(!isEmpty(leagues)){
-          whr={...whr,leagues:{$in:leagues}  }
-        }
+        let teams=await user_preference.distinct('team_id',{user_id:id,team_id:{$ne:''}})
+        pipeline.push( {$match:{$or:[{$or:[{leagues:{$in:leagues}},{leagues:{$size:0}}]},{$or:[{teams:{$in:teams}},{teams:{$size:0}}]}]}})
+
         //console.log(whr)
         let query =  notification_tbl.find(whr).sort({_id:-1});
           const query2 =  query.clone();
@@ -71,7 +85,10 @@ class notificationController {
 
           let offest = (page -1 ) * 10 ; 
           const records = await query2.skip(offest).limit(10);
-          records.map((item)=>{
+          //console.log(pipeline)
+          let notification=await notification_tbl.aggregate(pipeline).skip(offest).limit(10);
+          //console.log(notification)
+          notification.map((item)=>{
             if(language=="ar"){
               item.title=item.title_ara;
               item.message=item.message_ara;
@@ -81,7 +98,7 @@ class notificationController {
             }
           })
                   
-      return res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':records });
+      return res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" , "page":page, "rows":counts, 'body':notification });
 
     } catch (error) { console.log(error);
       return res.status(200).send({'status':false,'msg':  (language == 'ar')? "خطأ في الخادم" : "server error" });
