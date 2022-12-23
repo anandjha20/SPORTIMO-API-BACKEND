@@ -558,7 +558,7 @@ static all_team_match_list_mobile_old = async (req,res)=>{
                     
 }     
 
-static all_team_match_list_mobile = async (req,res)=>{
+static all_team_match_list_mobile_new = async (req,res)=>{
     try {
         let  id = req.params.id;
         let page  = req.body.page;
@@ -645,7 +645,7 @@ static all_team_match_list_mobile = async (req,res)=>{
                     
 }    
 
-static all_team_match_list_mobile_new = async (req,res)=>{
+static all_team_match_list_mobile = async (req,res)=>{
     try {
         let  id = req.params.id;
         let page  = req.body.page;
