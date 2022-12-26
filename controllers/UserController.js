@@ -1456,9 +1456,47 @@ static verify_nickName = async(req,res)=>{
             let zone=req.body.zone;
                
             let condition_obj={};
-            if(!isEmpty(_id)){condition_obj={...condition_obj,_id}}
-             let response=await team_matches.find(condition_obj)
-             console.log()
+            let pipeline=[{
+                $match:{_id:mongoose.Types.ObjectId(_id)}
+            },
+                {
+                  '$lookup': {
+                    'from': 'team_lists', 
+                    'localField': 'team_a_id', 
+                    'foreignField': 'team_id', 
+                    'as': 'team_a_data'
+                  }
+                }, {
+                  '$lookup': {
+                    'from': 'team_lists', 
+                    'localField': 'team_b_id', 
+                    'foreignField': 'team_id', 
+                    'as': 'team_b_data'
+                  }
+                }, {
+                  '$lookup': {
+                    'from': 'league_lists', 
+                    'localField': 'league_id', 
+                    'foreignField': 'season_id', 
+                    'as': 'league_data'
+                  }
+                }, {
+                  '$unwind': {
+                    'path': '$team_a_data'
+                  }
+                }, {
+                  '$unwind': {
+                    'path': '$team_b_data'
+                  }
+                }, {
+                  '$unwind': {
+                    'path': '$league_data'
+                  }
+                }
+              ]
+            
+             let response=await team_matches.aggregate(pipeline)
+             
              let local=await getLocalDateTime({date_utc:response[0].date_utc,time_utc:response[0].time_utc,zone})
              response.map((item)=>{
                 item.date_utc=local.local_date;

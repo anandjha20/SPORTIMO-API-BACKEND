@@ -106,7 +106,6 @@ const get_team_data = async (season_id)=>{
   }
 }
 
-
 class prefrenceController{
 
   static add_league_by_competition_id = async (req,res)=>{
@@ -264,7 +263,18 @@ class prefrenceController{
       if(!isEmpty(name)){whr.team_name = { $regex: '.*' + name + '.*', $options: 'i' } ;}
        if(!isEmpty(type)){whr.type=type}
       if(!isEmpty(user_id)){
-        var response = await league_list.find({status:1,type:"default"}).sort({"original_name_sportimo":1});
+        var response = await league_list.aggregate([
+          {
+            '$match': {
+              'status': true, 
+              'type': 'default'
+            }
+          }, {
+            '$sort': {
+              'original_name_sportimo': 1
+            }
+          }
+        ])
       //  return res.status(200).send({status:true,msg:"data found",body:response});
       }else{
         page = (isEmpty(page) || page == 0 )? 1 :page ; 
@@ -288,7 +298,7 @@ class prefrenceController{
         if(!isEmpty(user_id)){
           let select=await user_preference.find({competition_id:item.competition_id,user_id}).countDocuments()
           let select_status=select==0?false:true;
-          leagues.push({...item._doc,total_select,select_status})
+          leagues.push({...item,total_select,select_status})
         }else{
           
           leagues.push({...item._doc,total_select})
@@ -303,6 +313,8 @@ class prefrenceController{
         return -1;
       }
       return 0;});
+    }else{
+      leagues.sort((a, b) => a.original_name.toLowerCase().localeCompare(b.original_name.toLowerCase()))
     }
       let total_league=await league_list.find(whr).countDocuments();
       return res.status(200).send({status:true,msg:"data found",rows:total_league,body:leagues});
@@ -326,12 +338,21 @@ class prefrenceController{
       if(!isEmpty(user_id)){
         
         let conditio={}
-        if(!isEmpty(team_id)){conditio={...conditio,team_id}}
-        var response = await team_list.find(conditio).sort({short_name_sportimo:1});
+        let pipeline=[
+          {
+            '$sort': {
+              'short_name_sportimo': 1
+            }
+          }
+        ]
+        if(!isEmpty(team_id)){pipeline.push({$match:{team_id:team_id}})}
         
+        var response = await team_list.aggregate(pipeline)
+        // response.sort((a, b) => a.short_name_sportimo.toLowerCase().localeCompare(b.short_name_sportimo.toLowerCase()))
+        // console.log(response)
       }else{
         let offset=(page-1)*5;
-        var response = await team_list.find(whr).sort({"team_name":1}).skip(offset).limit(5);
+        var response = await team_list.find(whr).sort({team_name:1}).skip(offset).limit(5);
       }
       let teams=[]
       let path=MyBasePath(req);
@@ -349,7 +370,8 @@ class prefrenceController{
         if(!isEmpty(user_id)){
           let select=await user_preference.find({team_id:item.team_id,user_id}).countDocuments()
           let select_status=select==0?false:true;
-          teams.push({...item._doc,total_select,select_status})
+         
+          teams.push({...item,total_select,select_status})
         }else{
           teams.push({...item._doc,total_select})
         }return item;
@@ -362,6 +384,8 @@ class prefrenceController{
           return -1;
         }
         return 0;});
+      }else{
+        teams.sort((a, b) => a.team_name.toLowerCase().localeCompare(b.team_name.toLowerCase()))
       }
       let total_team=await team_list.find(whr).countDocuments();
       return res.status(200).send({status:true,msg:"data found",rows:total_team,body:teams});
