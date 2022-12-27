@@ -257,9 +257,11 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
    router.put('/login_sponsorship_status_update/:id',LoginSponsorship.login_sponsorship_status_update);       
  
    //takeoverScreen api 
-   router.post('/takeover_screen_add_update',takeoverScreenImgUpload,TakeoverScreen.takeover_screen_add_update); 
-   router.get('/takeover_screen_get',TakeoverScreen.takeover_screen_get); 
+   router.post('/takeover_screen_add',takeoverScreenImgUpload,TakeoverScreen.takeover_screen_add); 
+   router.put('/takeover_screen_update/:id',takeoverScreenImgUpload,TakeoverScreen.takeover_screen_update); 
+   router.post('/takeover_screen_get',TakeoverScreen.takeover_screen_get); 
    router.put('/takeover_screen_status_update/:id',TakeoverScreen.takeover_screen_status_update);       
+   router.delete('/takeover_screen_delete/:id',TakeoverScreen.takeover_screen_delete);       
 
    //avatar api 
    router.post('/avatar_add',avatarImgUpload,avatarController.avatar_add); 

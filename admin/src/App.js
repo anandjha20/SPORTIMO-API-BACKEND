@@ -66,6 +66,7 @@ import ProfileAnalyticsMangement from "./AnalyticsMangement/ProfileAnalyticsMang
 import UserAnalyticsMangement from "./AnalyticsMangement/UserAnalyticsMangement";
 import ReportMangement from "./ReportAnalyticsManagement/ReportManagement";
 import ReportDetail from "./ReportAnalyticsManagement/ReportDetail";
+import AddTakeoverScreen from "./SponsorshipManagement/AddTakeoverScreen";
 
 function App() {
 
@@ -106,6 +107,7 @@ function App() {
         <Route path="/sponsorship/update/:id" element={ <UpdateSponsorship /> } />
         <Route path="/loginSponsorship" element={ <LoginSponsorship /> } />
         <Route path="/takeover-screen" element={ <TakeoverScreen /> } />
+        <Route path="/takeover/add" element={ <AddTakeoverScreen /> } />
         
 
         {/* Faq */}

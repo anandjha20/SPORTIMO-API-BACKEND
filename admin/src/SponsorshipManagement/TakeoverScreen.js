@@ -17,6 +17,8 @@ import useForm from "../useForm";
 import IconButton from '@mui/material/IconButton';
 import Swal from 'sweetalert2'
 import { ListItemAvatar } from "@material-ui/core";
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import ToggleButton from '@mui/material/ToggleButton';
 
 export default function TakeoverSvreen() {
 
@@ -58,22 +60,14 @@ export default function TakeoverSvreen() {
     let header = ({ 'token': `${token}` });
     let options1 = ({ headers: header });
 
-    /////////////////view complaint detail/////////////////
-
-    const onOpenModal = (sunil) => {
-                setCat(sunil);
-                setOpen(true);
-                console.log(sunil);
-        
-    }
-
+ 
 
 
   /////////////////delete api call /////////////////
    const deleteCategory = (_id) => {
     Swal.fire({
         // title: 'Are you sure?',
-        title: "Are you sure you want to delete selected League Preference ?",
+        title: "Are you sure you want to delete selected Takeover Screen ?",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -81,14 +75,14 @@ export default function TakeoverSvreen() {
         confirmButtonText: 'Yes, delete it!'
       }).then((result) => {
         if (result.isConfirmed) {         
-            axios.delete(`/web_api/delete_custom_league/${_id}`)
+            axios.delete(`/web_api/takeover_screen_delete/${_id}`)
             .then(res => {
                 if (res.status) {
                     let data = res.data;
                     if (data.status) { 
                         Swal.fire(
                             'Deleted!',
-                             "League preference deleted successfully",
+                             "Takeover Screen deleted successfully",
                             'success'
                           )
                          return PreferenceList();
@@ -128,18 +122,45 @@ export default function TakeoverSvreen() {
 } 
 
 
+////////////////////skip
+const [alignment, setAlignment] = React.useState("banner");
+const [alignmentSkip, setAlignmentSkip] = React.useState("skip");
+const [skip_add, setSkip_add] = React.useState("1");
+const [view_type, setView_type] = React.useState("banner");
+
+const handleChangeToggle = (event) => {
+    setAlignment(event.target.value);
+  };
+
+const handleChangeToggleSkip = (event) => {
+    setAlignmentSkip(event.target.value);
+  };
+
+  const onOpenModal = (sunil) => {
+    setCat(sunil);
+    setAlignment(sunil.view_type)
+    if(sunil.skip==true){
+        setAlignmentSkip("skip")
+    }else{
+        setAlignmentSkip("Noskip")
+    }
+    setOpen(true);
+    console.log(sunil);
+
+}
+
 
 
     /////////////////complaint list/////////////////
     const onCloseModal = () => setOpen(false);
 
-    const limit = 10;
+    const limit = 5;
 
     const formsave = (e, page)=>{
         e.preventDefault();
         const data = new FormData(e.target);
         const Formvlaues = Object.fromEntries(data.entries());
-      axios.get(`/web_api/takeover_screen_get`, Formvlaues, options1)
+      axios.post(`/web_api/takeover_screen_get`, Formvlaues, options1)
             .then(res => {
                 const userData = res.data.body;
                 const total = res.data.rows;
@@ -151,7 +172,7 @@ export default function TakeoverSvreen() {
     }
     const PreferenceList = async (page) => {
         const sanData = { page: page }
-        await axios.get(`/web_api/takeover_screen_get`,)
+        await axios.post(`/web_api/takeover_screen_get`,)
             .then(res => {
                 const userData = res.data.body;
                 const total = res.data.rows;
@@ -174,8 +195,11 @@ export default function TakeoverSvreen() {
     
             let dataToSend2 = new FormData();
             dataToSend2.append('image', Formvlaues.image);
+            dataToSend2.append('skip', skip_add);
+            dataToSend2.append('skip_time', Formvlaues.skip_time);
+            dataToSend2.append('view_type', view_type);
     
-                axios.post(`/web_api/takeover_screen_add_update`, dataToSend2, options1)
+                axios.put(`/web_api/takeover_screen_update/${id}`, dataToSend2, options1)
                     .then(res => {
                         if (res.status) {
     
@@ -235,7 +259,7 @@ export default function TakeoverSvreen() {
     ///////////////pagenestion///////////////
     const fetchComments = async (page) => {
         const sanData = { page: page }
-        axios.post(`/web_api/leagues_get`, sanData)
+        axios.post(`/web_api/takeover_screen_get`, sanData)
             .then(res => {
                 const userData = res.data.body;
                 setData(userData);
@@ -247,7 +271,7 @@ export default function TakeoverSvreen() {
         // console.log(data.selected);
         let page = data.selected + 1;
         const commentsFormServer = await fetchComments(page);
-        setData(commentsFormServer);
+        
     };
 
     return (
@@ -270,7 +294,15 @@ export default function TakeoverSvreen() {
                             </div>
 
 
+                        <div className="d-flex">
+								<div className="justify-content-center">
+							       <Link  to="/takeover/add">
+                                    <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add Takeover Screen</Button>
+                                    </Link>
+                                </div>
+							</div>
                         </div>
+
                         <div className="row justify-content-center">
                             <div className="col-lg-12 table-responsive border border-bottom-0">
 
@@ -338,7 +370,9 @@ export default function TakeoverSvreen() {
                                                             <table className="table  ">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th scope="col" className="text-left">Image</th>
+                                                                        <th scope="col" className="text-left">Screen</th>
+                                                                        <th scope="col" className="text-center">Type</th>
+                                                                        <th scope="col" className="text-center">Skippable</th>
                                                                         <th scope="col" className="text-center">Status</th>
                                                                         <th scope="col" className="text-end">Action</th>
                                                                     </tr>
@@ -356,12 +390,18 @@ export default function TakeoverSvreen() {
                                                                             return (
                                                                                 <tr key={item._id}>
                                                                                     <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
+                                                                                    <td className="text-center">{item.view_type.charAt(0).toUpperCase() + item.view_type.slice(1)}</td>
+                                                                                    <td className="text-center">{item.skip == true ? <>Yes </> :<> No</>}</td>
                                                                                     <td className="text-center">{item.status == true ? <><Button onClick={() => { LeagueActiveDeactive(item._id, item.status="0");}} className="mr-3 btn-pd deactive text-white ">Deactive</Button> </> :<> <Button onClick={() => { LeagueActiveDeactive(item._id, item.status="1");}} className="mr-3 btn-pd btnBg">Active</Button></>}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
                                                                                         <IconButton onClick={(e) => { onOpenModal(item); }} aria-label="delete"> <span className="material-symbols-outlined">
                                                                                                 edit </span>
-                                                                                            </IconButton>
+                                                                                        </IconButton>
+                                                                                        <IconButton onClick={(e) => { deleteCategory(item._id); }} aria-label="delete">
+                                                                                            <span className="material-symbols-outlined">
+                                                                                                delete </span>
+                                                                                        </IconButton>
                                                                                         </div>
                                                                                     </td>
                                                                                 </tr>
@@ -378,7 +418,7 @@ export default function TakeoverSvreen() {
                                                                 </tbody>
                                                             </table>
                                                         </div>
-                                                        {/* <div className="col-lg-12 mt-2 text-end">
+                                                        <div className="col-lg-12 mt-2 text-end">
                                                             <ReactPaginate
                                                                 previousLabel={"previous"}
                                                                 nextLabel={"next"}
@@ -398,7 +438,7 @@ export default function TakeoverSvreen() {
                                                                 breakLinkClassName={"page-link"}
                                                                 activeClassName={"active"}
                                                             />
-                                                        </div> */}
+                                                        </div>
 
 
                                                     </div>
@@ -406,26 +446,35 @@ export default function TakeoverSvreen() {
                                                 <Modal open={open} onClose={onCloseModal} center>
                                                     <h2 className=" text-white">Update Takeover Screen</h2>
                                                     <div className="imageSlider carousel-item mt-4" >
-                                                    <img src={catView.image} ></img>
+                                                    <img className="mb-4" src={catView.image} ></img>
                                                     </div><br/><br/><br/><br/>
                                                    
                                                     <div className="mx-500">
                                                         <form className="mt-3 w-100 " onSubmit={(e) => saveFormData(e)}>
-                                                            {/* <div className="form-group mb-4">
-                                                               <label className="title-col">League Name <span className="text-blue">(English)</span></label>
-                                                                <input type="hidden" className="form-control" name='_id' value={catView._id} />
-                                                                <input type="text" className="form-control" name='original_name_sportimo'
-                                                                    defaultValue={catView.original_name_sportimo} /> </div>
+                                                        
+                                                        <div className="col-lg-12 mt-4 mb-3  p-0">
+                                                        <div className="title-col mt-4 mb-3 ">
+                                                        <label className="title-col mb-3">Skippable</label>
+                                                        <ToggleButtonGroup
+                                                            color="primary" name='Skippable' value={alignmentSkip} exclusive fullWidth onChange={handleChangeToggleSkip} >
+                                                            <ToggleButton onClick={(e) => setSkip_add(1)} value="skip">Yes</ToggleButton>
+                                                            <ToggleButton onClick={(e) => setSkip_add(0)} value="Noskip">No </ToggleButton>
+                                                        </ToggleButtonGroup>
+                                                        </div>
+                                                        <div className="title-col mt-4 mb-3  p-0">
+                                                        <label className="title-col  mb-3">Time Limit For Skip (in seconds)</label>
+                                                        <input type="text" name='skip_time' defaultValue={catView.skip_time} className="form-control file-input" />
+                                                        </div>
+                                                        <div className="title-col mb-3">
+                                                        <label className="title-col mb-3">Screen Type</label>
+                                                        <ToggleButtonGroup
+                                                            color="primary" name='spon_type' value={alignment} exclusive fullWidth onChange={handleChangeToggle} >
+                                                            <ToggleButton onClick={(e) => setView_type('banner')} value="banner">Banner </ToggleButton>
+                                                            <ToggleButton onClick={(e) => setView_type('video')} value="video">Video </ToggleButton>
+                                                        </ToggleButtonGroup>
+                                                        </div>
+                                                
 
-                                                                <label className="title-col">League Name <span className="text-blue">(Arabic)</span></label>
-                                                                <input  id="categor" className="form-control mb-4" name="original_name_ara_sportimo" defaultValue={catView.original_name_ara_sportimo}
-                                                                type="text"/>  
-
-                                                                <label className="title-col">League Name <span className="text-blue">(French)</span></label>
-                                                                <input  id="categor" className="form-control mb-4" name="original_name_fr_sportimo" defaultValue={catView.original_name_fr_sportimo}
-                                                                type="text"/>   */}
-      
-                                                               <div className="col-lg-12 mt-4 mb-3  p-0">
                                                                 <label className="title-col">File Upload</label>
                                                                 <input type="file" name='image' className="form-control file-input" />
                                                               </div>
