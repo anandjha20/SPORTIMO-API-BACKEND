@@ -389,7 +389,7 @@ const handleChangeToggleSkip = (event) => {
                                                                             
                                                                             return (
                                                                                 <tr key={item._id}>
-                                                                                    <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
+                                                                                    <td><div className="imageSliderSmall">{item.view_type=="video"?(item.image !== '' ? <> <video  controls></video> </> : <><img src='/assets/images/no-image.png' /></> ):(item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> )}</div></td>
                                                                                     <td className="text-center">{item.view_type.charAt(0).toUpperCase() + item.view_type.slice(1)}</td>
                                                                                     <td className="text-center">{item.skip == true ? <>Yes </> :<> No</>}</td>
                                                                                     <td className="text-center">{item.status == true ? <><Button onClick={() => { LeagueActiveDeactive(item._id, item.status="0");}} className="mr-3 btn-pd deactive text-white ">Deactive</Button> </> :<> <Button onClick={() => { LeagueActiveDeactive(item._id, item.status="1");}} className="mr-3 btn-pd btnBg">Active</Button></>}</td>
@@ -445,12 +445,14 @@ const handleChangeToggleSkip = (event) => {
                                                 </div>
                                                 <Modal open={open} onClose={onCloseModal} center>
                                                     <h2 className=" text-white">Update Takeover Screen</h2>
-                                                    <div className="imageSlider carousel-item mt-4" >
-                                                    <img className="mb-4" src={catView.image} ></img>
-                                                    </div><br/><br/><br/><br/>
+                                                    <div className=" mt-4" >{catView.view_type=="video"?<><video height="120px" width="200px" controls>
+                                                         <source src={catView.image} type="video/mp4"/>
+                                                        </video></>:<div className="imageSlider"><img   src={catView.image} ></img></div> 
+                                                        }
+                                                    </div>
                                                    
                                                     <div className="mx-500">
-                                                        <form className="mt-3 w-100 " onSubmit={(e) => saveFormData(e)}>
+                                                        <form className="mt-2 w-100 " onSubmit={(e) => saveFormData(e)}>
                                                         
                                                         <div className="col-lg-12 mt-4 mb-3  p-0">
                                                         <div className="title-col mt-4 mb-3 ">
@@ -470,7 +472,7 @@ const handleChangeToggleSkip = (event) => {
                                                         <ToggleButtonGroup
                                                             color="primary" name='spon_type' value={alignment} exclusive fullWidth onChange={handleChangeToggle} >
                                                             <ToggleButton onClick={(e) => setView_type('banner')} value="banner">Banner </ToggleButton>
-                                                            <ToggleButton onClick={(e) => setView_type('video')} value="video">Video </ToggleButton>
+                                                            <ToggleButton onClick={(e) => setView_type('video')} value="video">Video (30 sec)</ToggleButton>
                                                         </ToggleButtonGroup>
                                                         </div>
                                                 

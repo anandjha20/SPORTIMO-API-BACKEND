@@ -28,6 +28,14 @@ class geqController {
          let opt_4 = req.body.opt_4;  let opt_4_ara = req.body.opt_4_ara;
          let opt_5 = req.body.opt_5;  let opt_5_ara = req.body.opt_5_ara;
          
+         let qus_fr = req.body.qus_fr;
+         let opt_1_fr = req.body.opt_1_fr;
+         let opt_2_fr = req.body.opt_2_fr;
+         let opt_3_fr = req.body.opt_3_fr;
+         let opt_4_fr = req.body.opt_4_fr;
+         let opt_5_fr = req.body.opt_5_fr;
+
+
          let reward_type    = req.body.reward_type;
          let reward_quantity = req.body.reward_quantity;
          let reward_condition = req.body.reward_condition;
@@ -38,7 +46,7 @@ class geqController {
          let targeted_team = req.body.targeted_team;
          let targeted_league = req.body.targeted_league;
 
-         const details={match_id,match_name,event,appearance_time,duration,qus,qus_ara,opt_1,opt_1_ara,opt_2,opt_2_ara,opt_3,opt_3_ara,opt_4,opt_4_ara,opt_5,opt_5_ara,reward_type,reward_quantity,reward_condition,targeted_country,targeted_sport,targeted_team,targeted_league};
+         const details={match_id,match_name,event,appearance_time,duration,qus,qus_ara,qus_fr,opt_1,opt_1_ara,opt_1_fr,opt_2,opt_2_ara,opt_2_fr,opt_3_fr,opt_4_fr,opt_5_fr,opt_3,opt_3_ara,opt_4,opt_4_ara,opt_5,opt_5_ara,reward_type,reward_quantity,reward_condition,targeted_country,targeted_sport,targeted_team,targeted_league};
 
          if(!isEmpty(match_id) || !isEmpty(event) || !isEmpty(qus) || !isEmpty(qus_ara) || !isEmpty(opt_1) || !isEmpty(opt_1_ara) || !isEmpty(opt_2) || !isEmpty(opt_2_ara) ||!isEmpty(opt_3) || !isEmpty(opt_3_ara)){
              let obj=new geq_tbl(details);
@@ -81,12 +89,12 @@ static update_geq = async (req,res)=>{
             let appearance_time = req.body.appearance_time;
             let duration = req.body.duration;
             
-            let qus = req.body.qus;      let qus_ara = req.body.qus_ara;
-            let opt_1 = req.body.opt_1;  let opt_1_ara = req.body.opt_1_ara;
-            let opt_2 = req.body.opt_2;  let opt_2_ara = req.body.opt_2_ara;
-            let opt_3 = req.body.opt_3;  let opt_3_ara = req.body.opt_3_ara;
-            let opt_4 = req.body.opt_4;  let opt_4_ara = req.body.opt_4_ara;
-            let opt_5 = req.body.opt_5;  let opt_5_ara = req.body.opt_5_ara;
+            let qus = req.body.qus;      let qus_ara = req.body.qus_ara;      let qus_fr = req.body.qus_fr;
+            let opt_1 = req.body.opt_1;  let opt_1_ara = req.body.opt_1_ara;  let opt_1_fr = req.body.opt_1_fr;
+            let opt_2 = req.body.opt_2;  let opt_2_ara = req.body.opt_2_ara;  let opt_2_fr = req.body.opt_2_fr;
+            let opt_3 = req.body.opt_3;  let opt_3_ara = req.body.opt_3_ara;  let opt_3_fr = req.body.opt_3_fr;
+            let opt_4 = req.body.opt_4;  let opt_4_ara = req.body.opt_4_ara;  let opt_4_fr = req.body.opt_4_fr;
+            let opt_5 = req.body.opt_5;  let opt_5_ara = req.body.opt_5_ara;  let opt_5_fr = req.body.opt_5_fr;
             
             let reward_type    = req.body.reward_type;
             let reward_quantity = req.body.reward_quantity;
@@ -116,6 +124,11 @@ static update_geq = async (req,res)=>{
             if(!isEmpty(opt_3_ara)){details={...details,opt_3_ara}};
             if(!isEmpty(opt_4_ara)){details={...details,opt_4_ara}};
             if(!isEmpty(opt_5_ara)){details={...details,opt_5_ara}};
+            if(!isEmpty(opt_1_fr)){details={...details,opt_1_fr}};
+            if(!isEmpty(opt_2_fr)){details={...details,opt_2_fr}};
+            if(!isEmpty(opt_3_fr)){details={...details,opt_3_fr}};
+            if(!isEmpty(opt_4_fr)){details={...details,opt_4_fr}};
+            if(!isEmpty(opt_5_fr)){details={...details,opt_5_fr}};
             if(!isEmpty(reward_type)){details={...details,reward_type}};
             if(!isEmpty(reward_quantity)){details={...details,reward_quantity}};
             if(!isEmpty(reward_condition)){details={...details,reward_condition}};

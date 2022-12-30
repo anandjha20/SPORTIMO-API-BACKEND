@@ -151,8 +151,14 @@ const [answerFiveFr, setAnswerFiveFr] = useState('');
       Formvlaues.noti_in_App_status = innotis;
       Formvlaues.match = matchLegue;
       Formvlaues.match_id = match_id;
-      Formvlaues.time_duration = minute + ':' + second;
-      Formvlaues.apperance_time = hminute + ':' + hsecond;
+      Formvlaues.start_date_time = startDateTime;
+      Formvlaues.end_date_time = endDateTime;
+      let min=minute==''?"00":minute;
+      let sec=second==''?"00":second
+      let hmin=hminute==''?"00":hminute;
+      let hsec=hsecond==''?"00":hsecond
+      Formvlaues.time_duration = min + ':' + sec;
+      Formvlaues.apperance_time = hmin + ':' + hsec;
       
       console.log("form data is == ", Formvlaues);
       let token = localStorage.getItem("token");
@@ -163,8 +169,8 @@ const [answerFiveFr, setAnswerFiveFr] = useState('');
       if (response.status) {
         let data = response.data;
         if (data.status) {
-          // navigate(`/poll`);
           toast.success(data.msg);
+          navigate(`/poll`);
         } else {
           toast.error('Please fill all fields before Submit');
         }
@@ -218,7 +224,7 @@ const [answerFiveFr, setAnswerFiveFr] = useState('');
     get_data('/web_api/sport_list', setSport_lists);
     get_data('/web_api/league_list_dropDown', setLeague_lists);
     get_data('/web_api/team_list_dropDown', setTeam_lists);
-    get_data('/web_api/player_list', setPlayer_lists);
+    // get_data('/web_api/player_list', setPlayer_lists);
     document.body.classList.add('bg-salmon');
   }, []);
 
@@ -329,13 +335,88 @@ const [answerFiveFr, setAnswerFiveFr] = useState('');
   useEffect(() => {
     SelectMatch();
 }, [])
-
-
+const [startDateTime, setStartDateTime] = React.useState('');
+const handleChangeStartDateTime = (event) => {
+  const value = event.target.value;
+  setStartDateTime(value);
+};
+const [endDateTime, setEndDateTime] = React.useState('');
+const handleChangeEndDateTime = (event) => {
+  const value = event.target.value;
+  setEndDateTime(value);
+};
+const [dateTimeMenu, setDateTimeMenu] = React.useState(<></>);
 const [matchLegue, setMatchLegue] = React.useState('');
 const [match_id, setMatchId] = React.useState('');
 const handleMatchName = (event) => {
   const matchLegue = event.label
   const match_id = event.value
+  if(matchLegue=="All"){
+    setDateTimeMenu(<>
+                                <div className="col-lg-12 mb-4">
+                              <label className="title-col mb-3">Poll Date range</label>
+                              <div className="row  mb-0">
+                                <div className="col-lg-6">
+                                  <TextField id="sdate" onChange={handleChangeStartDateTime} name='Fdate' label="Start Date-Time" fullWidth type="datetime-local"
+                                    InputLabelProps={{
+                                      shrink: true,
+                                    }}
+                                  />
+
+                                </div>
+                                <div className="col-lg-6 ">
+                                  <TextField id="edate" onChange={handleChangeEndDateTime} name='Ldate' label="End Date-Time" fullWidth type="datetime-local"
+                                    InputLabelProps={{ shrink: true, }} />
+
+                                </div>
+                                
+                              </div>
+                            </div>
+
+    </>)
+  }else{
+    setStartDateTime('');
+    setEndDateTime('');
+    setDateTimeMenu(<>
+    <div className="col-lg-6 mb-4">
+    <label className="title-col mb-3">Appearance Time</label>
+    <div className="row">
+
+      <div className="col-lg-6 reletive mb-4">
+        <span className='react-select-title'>Minute</span>
+        <Select labelId="hminute" menuPortalTarget={document.body}
+          styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
+      </div>
+      <div className="col-lg-6 reletive mb-4">
+        <span className='react-select-title'>Second</span>
+        <Select labelId="hminute" menuPortalTarget={document.body}
+          styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond} options={hsecondOptions} />
+      </div>
+
+
+    </div>
+  </div>
+
+  <div className="col-lg-6 mb-4">
+    <label className="title-col mb-3">Duration</label>
+    <div className="row">
+
+      <div className="col-lg-6 reletive mb-4">
+        <span className='react-select-title'>Minute</span>
+        <Select menuPortalTarget={document.body}
+          styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
+      </div>
+      <div className="col-lg-6 reletive mb-4">
+        <span className='react-select-title'>Second</span>
+        <Select menuPortalTarget={document.body}
+          styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeSecond} options={secondOptions} />
+      </div>
+
+
+    </div>
+  </div>
+</>)
+  }
   console.log(matchLegue);
   setMatchLegue(matchLegue);
   setMatchId(match_id);
@@ -671,15 +752,15 @@ const handleMatchName = (event) => {
                               </FormControl>
                             </div>
 
-                            <div className="col-lg-12 reletive mb-4">
+                            <div className="col-lg-12 reletive mt-3 mb-4">
                               <span className='react-select-title'>Match/League</span>
                               <Select labelId="hminute" name="match_id" id="hminute" menuPortalTarget={document.body}
                               onChange={handleMatchName}
                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={matchOptions} />
                             </div>
 
-
-
+                            {dateTimeMenu}
+                          
                             <div className="col-lg-12 mb-2">
                               <label className="title-col">Poll Fee</label>
                               <FormControl className="w-100">
@@ -728,43 +809,7 @@ const handleMatchName = (event) => {
 
 
 
-                            <div className="col-lg-6 mb-4">
-                              <label className="title-col mb-3">Appearance Time</label>
-                              <div className="row">
 
-                                <div className="col-lg-6 reletive mb-4">
-                                  <span className='react-select-title'>Minute</span>
-                                  <Select labelId="hminute" menuPortalTarget={document.body}
-                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
-                                </div>
-                                <div className="col-lg-6 reletive mb-4">
-                                  <span className='react-select-title'>Second</span>
-                                  <Select labelId="hminute" menuPortalTarget={document.body}
-                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond} options={hsecondOptions} />
-                                </div>
-
-
-                              </div>
-                            </div>
-
-                            <div className="col-lg-6 mb-4">
-                              <label className="title-col mb-3">Duration</label>
-                              <div className="row">
-
-                                <div className="col-lg-6 reletive mb-4">
-                                  <span className='react-select-title'>Minute</span>
-                                  <Select menuPortalTarget={document.body}
-                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
-                                </div>
-                                <div className="col-lg-6 reletive mb-4">
-                                  <span className='react-select-title'>Second</span>
-                                  <Select menuPortalTarget={document.body}
-                                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeSecond} options={secondOptions} />
-                                </div>
-
-
-                              </div>
-                            </div>
 
 
                             <div className="col-lg-12 mb-3">

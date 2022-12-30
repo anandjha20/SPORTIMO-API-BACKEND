@@ -326,8 +326,8 @@ const pollfee = [
                                             <td>{item.apperance_time}</td>
                                             <td>{item.time_duration}</td>
                                             <td>
-                                            { item.result_type == "Undisclosed" && item.disclosed_status == "1" ? <> <span>Poll Result Disclosed</span></> : null}
-                                            {item.result_type == "Undisclosed" && item.disclosed_status == "0" ? <><Button onClick={() => { disclosedPoll(item._id);}}  type='submit' className="mr-3 btn-pd btnBg">Disclose</Button></> : null }
+                                            {/* {item.result_type == "Undisclosed" && item.disclosed_status == "1" ? <> <span>Poll Result Disclosed</span></> : null} */}
+                                            {item.result_type == "Undisclosed" && item.disclosed_status == "0" ? <><Button onClick={() => { disclosedPoll(item._id);}}  type='submit' className="mr-3 btn-pd btnBg">Disclose</Button></> : <><span>Result Disclosed</span></> }
                                             </td>
                                             <td>{Moment(item.date).format("DD/MM/YYYY")}</td>
                                             <td className="text-end">

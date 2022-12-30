@@ -7,10 +7,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Select from 'react-select';
 // import Map from "./Map";
-import SelectTageting from "./Components/SelectTageting";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {useLocation} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 
 function UpdateGameEnagenent() {
@@ -20,6 +20,83 @@ function UpdateGameEnagenent() {
     document.body.classList.add('bg-salmon');
 
   }, []);
+
+  /////////////////targeting///////////////////////
+
+const navigate = useNavigate();
+const [sport_lists, setSport_lists] = React.useState([]);
+const [league_lists, setLeague_lists] = React.useState([]);
+const [team_lists, setTeam_lists] = React.useState([]);
+const [player_lists, setPlayer_lists] = React.useState([]);
+const [country_lists, setCountry_lists] = React.useState([]);
+
+const get_data = async(url,setval) =>{
+    try {
+      let sendData = {}; 
+      let token = localStorage.getItem("token");
+      let header = ({ 'token': `${token}` });
+      let options1 = ({ headers: header });
+    //   let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
+      let response = await axios.get( url, options1, sendData );
+
+      if (response.status) {
+
+        let data = response.data;
+
+        if (data.status) {
+            setval(data.body);
+         // toast.success(data.msg);
+        } else {
+          navigate("/");
+          toast.error(data.msg);
+        }
+      }
+      else {
+        toast.error('something went wrong please try again..');
+      }
+
+
+    } catch (err) { console.error(err); toast.error('some errror'); return false; }
+
+}
+
+
+
+
+  useEffect(async () => {
+  await  get_data('/web_api/sport_list',setSport_lists);
+  await  get_data('/web_api/league_list_dropDown',setLeague_lists);
+  await  get_data('/web_api/team_list_dropDown',setTeam_lists);
+  await  get_data('/web_api/country_list',setCountry_lists);
+
+
+    // 👇 add class to body element
+  //  document.body.classList.add('bg-salmon');
+
+  }, []);
+
+  
+  const sportOptions = (sport_lists.length >0) ? sport_lists.map((item)=>{
+    return  { value: item._id, label: item.name };
+    
+}) :[];
+
+
+const leagueOptions = (league_lists.length >0) ? league_lists.map((item)=>{
+    return  { value: item.season_id, label: item.original_name };
+}) :[];
+
+
+const teamOptions = (team_lists.length >0) ? team_lists.map((item)=>{
+    return  { value: item.team_id, label: item.team_name };
+}) :[];
+
+
+
+
+const countryOptions = (country_lists.length >0) ? country_lists.map((item)=>{
+    return  { value: item._id, label: item.name };
+}) :[];
 
 
   const location = useLocation();
@@ -35,6 +112,79 @@ function UpdateGameEnagenent() {
 
 
 
+let data=location.state.item
+let targeted_league=location.state.item.targeted_league;
+const selectedleague = (targeted_league.length> 0) ? targeted_league.map((item) => {
+  let result=leagueOptions.find(i=>i.value==item);
+  
+  return (
+    result);
+}) : [];
+let targeted_team=location.state.item.targeted_team;
+const selectedteam= (targeted_team.length> 0) ? targeted_team.map((item) => {
+  let result=teamOptions.find(i=>i.value==item);
+  
+  return (
+    result);
+}) : [];
+let targeted_sport=location.state.item.targeted_sport;
+let selected_targeted_sport=[]
+const selectedsport= (targeted_sport.length> 0) ? targeted_sport.map((item) => {
+  let result=sportOptions.find(i=>i.label==item);
+  if(result!=undefined ){
+    //console.log(result)
+    selected_targeted_sport.push(result)
+  }
+  return ( result );
+  }) : [];
+let targeted_country=location.state.item.targeted_country;
+const selectedcountry= (targeted_country.length> 0) ? targeted_country.map((item) => {
+  let result=countryOptions.find(i=>i.label==item);
+  return ( result );
+  }) : [];
+console.log(selected_targeted_sport)
+
+  ///////select country ///////////
+  const [countryArray, setselectedOptions] = React.useState([])
+  const handleChangeCountry = (selectedOptions) => {
+    const countryArray = [];
+    selectedOptions.map(item => countryArray.push(item.label)
+    );
+    setselectedOptions(countryArray);
+  }
+
+  ///////select Teams ///////////
+  const [teamArray, setteamOptionsarry] = React.useState([])
+  const handleChangeTeam = (teamOptionsarry) => {
+    const teamArray = [];
+    teamOptionsarry.map(item => teamArray.push(item.value)
+    );
+    setteamOptionsarry(teamArray);
+  }
+
+  ///////select Leagues ///////////
+  const [leaguesArray, setleaguesOptionsarry] = React.useState([])
+  const handleChangeLeagues = (leaguesOptionsarry) => {
+    const leaguesArray = [];
+    leaguesOptionsarry.map(item => leaguesArray.push(item.value)
+    );
+    setleaguesOptionsarry(leaguesArray);
+  }
+
+  ///////select Sports ///////////
+  const [sportsArray, setsportsOptionsarry] = React.useState([])
+  const handleChangeSports = (SportsOptionsarry) => {
+    const sportsArray = [];
+    SportsOptionsarry.map(item => sportsArray.push(item.label)
+    );
+   
+    
+    setsportsOptionsarry(sportsArray);
+  }
+
+
+
+
   ///////////////vender list api call////////////
   const [matchname, setMatchs] = useState([]);
   const SelectMatch = async () => {
@@ -42,7 +192,7 @@ function UpdateGameEnagenent() {
       .then(res => {
         const match = res.data.body;
         setMatchs(match);
-        console.log(match);
+        //console.log(match);
       })
   }
 
@@ -65,7 +215,7 @@ function UpdateGameEnagenent() {
   const [matchLegue, setMatchLegue] = React.useState('');
   const handleMatchName = (event) => {
     const matchLegue = event.label
-    console.log(matchLegue);
+    //console.log(matchLegue);
     setMatchLegue(matchLegue);
   }
 
@@ -385,8 +535,17 @@ function UpdateGameEnagenent() {
       console.log("form data is == ", Formvlaues);
 
       Formvlaues.match_name = matchLegue;
-      Formvlaues.duration = minute + ':' + second;
-      Formvlaues.appearance_time = hminute + ':' + hsecond;
+      let min=minute==''?"00":minute;
+      let sec=second==''?"00":second
+      let hmin=hminute==''?"00":hminute;
+      let hsec=hsecond==''?"00":hsecond
+      Formvlaues.duration = min + ':' + sec;
+      Formvlaues.appearance_time = hmin + ':' + hsec;
+      Formvlaues.targeted_league = leaguesArray;
+      Formvlaues.targeted_sport = sportsArray;
+      Formvlaues.targeted_team = teamArray;
+      Formvlaues.targeted_country = countryArray;
+    
 
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
@@ -396,7 +555,7 @@ function UpdateGameEnagenent() {
       if (response.status) {
         let data = response.data;
         if (data.status) {
-          // navigate(`/poll`);
+           navigate(`/geq`);
           toast.success(data.msg);
         } else {
           toast.error('Please fill all fields before Submit');
@@ -567,77 +726,174 @@ function UpdateGameEnagenent() {
                               <TextField name='qus_ara' label="Enter Question" multiline rows={4} fullWidth defaultValue={location.state.item.qus_ara} variant="filled" autoComplete="off" />
                             </div>
 
+                            {/* ///////French////////// */}
+                            <div className="col-lg-12 mb-4">
+                              <label className="title-col">Question <span className="text-blue">(French)</span></label>
+                              <TextField name='qus_fr' label="Enter Question" multiline rows={4} fullWidth defaultValue={location.state.item.qus_fr} variant="filled" autoComplete="off" />
+                            </div>
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(English)</span></label>
                               <input type='text' defaultValue={location.state.item.opt_1} autoComplete="off" name='opt_1' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
 
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(Arabic)</span></label>
                               <input type='text' defaultValue={location.state.item.opt_1_ara} autoComplete="off" name='opt_1_ara' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
 
                           
+                            <div className="col-lg-4 mb-4">
+                              <label className="title-col mb-0">Answer 1 <span className="text-blue">(French)</span></label>
+                              <input type='text' defaultValue={location.state.item.opt_1_fr} autoComplete="off" name='opt_1_fr' placeholder="Enter Answer" className="card-control form-control" />
+                            </div>
 
-                            <div className="col-lg-6 mb-4">
+
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(English)</span></label>
                               <input type='text' defaultValue={location.state.item.opt_2} autoComplete="off" name='opt_2' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
 
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(Arabic)</span></label>
                               <input type='text' defaultValue={location.state.item.opt_2_ara} autoComplete="off" name='opt_2_ara' placeholder="Enter Answer" className="card-control form-control" />
                             </div>
                            
+                            <div className="col-lg-4 mb-4">
+                              <label className="title-col mb-0">Answer 2 <span className="text-blue">(French)</span></label>
+                              <input type='text' defaultValue={location.state.item.opt_2_fr} autoComplete="off" name='opt_2_fr' placeholder="Enter Answer" className="card-control form-control" />
+                            </div>
                           
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 3 <span className="text-blue">(English)</span></label>
                                     <input type='text' defaultValue={location.state.item.opt_3} autoComplete="off" name='opt_3' placeholder="Enter Answer" className="card-control form-control" />
 
                                   </div>
 
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 3 <span className="text-blue">(Arabic)</span></label>
                                     <input type='text' defaultValue={location.state.item.opt_3_ara} autoComplete="off" name='opt_3_ara' placeholder="Enter Answer" className="card-control form-control" />
 
                                   </div>
 
+                                  <div className="col-lg-4 mb-4">
+                                    <label className="title-col mb-0">Answer 3 <span className="text-blue">(French)</span></label>
+                                    <input type='text' defaultValue={location.state.item.opt_3_fr} autoComplete="off" name='opt_3_fr' placeholder="Enter Answer" className="card-control form-control" />
+
+                                  </div>
+
                                  
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 4 <span className="text-blue">(English)</span></label>
                                     <input type='text' defaultValue={location.state.item.opt_4} autoComplete="off" name='opt_4' placeholder="Enter Answer" className="card-control form-control" />
                                   </div>
 
 
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 4 <span className="text-blue">(Arabic)</span></label>
                                     <input type='text' defaultValue={location.state.item.opt_4_ara} autoComplete="off" name='opt_4_ara' placeholder="Enter Answer" className="card-control form-control" />
                                     
                                   </div>
 
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
+                                    <label className="title-col mb-0">Answer 4 <span className="text-blue">(French)</span></label>
+                                    <input type='text' defaultValue={location.state.item.opt_4_fr} autoComplete="off" name='opt_4_fr' placeholder="Enter Answer" className="card-control form-control" />
+                                    
+                                  </div>
+
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 5 <span className="text-blue">(English)</span></label>
                                     <input type='text' defaultValue={location.state.item.opt_5} autoComplete="off" name='opt_5' placeholder="Enter Answer" className="card-control form-control" />
                                   </div>
 
 
-                                  <div className="col-lg-6 mb-4">
+                                  <div className="col-lg-4 mb-4">
                                     <label className="title-col mb-0">Answer 5 <span className="text-blue">(Arabic)</span></label>
                                     <input type='text' defaultValue={location.state.item.opt_5_ara} autoComplete="off" name='opt_5_ara' placeholder="Enter Answer" className="card-control form-control" />
                                     
                                   </div>
 
-                                
-                       
+                                  <div className="col-lg-4 mb-4">
+                                    <label className="title-col mb-0">Answer 5 <span className="text-blue">(French)</span></label>
+                                    <input type='text' defaultValue={location.state.item.opt_5_fr} autoComplete="off" name='opt_5_fr' placeholder="Enter Answer" className="card-control form-control" />
+                                    
+                                  </div>
 
-                            <div className="col-lg-12 mb-4">
+                                  <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Sponsorship Targeting</label>
                               <div className="row">
 
-                                <SelectTageting />
+                              <div className="col-lg-6 reletive mb-4">
+                              <span className='react-select-title'>Select Sports</span>
+                              <Select isMulti
+                                  closeMenuOnSelect={false}
+                                  name="targeted_sport"
+                                
+
+                                  options={sportOptions}
+                                  onChange={handleChangeSports}
+                                  defaultValue={selected_targeted_sport}
+                                  className="basic-multi-select"
+                                  classNamePrefix="select" />
+                          </div>
+
+                          <div className="col-lg-6 reletive mb-4">
+                              <span className='react-select-title'>Select League</span>
+                              <Select isMulti
+                                  closeMenuOnSelect={false}
+                                  name="targeted_league" 
+                                  options={leagueOptions}
+                                  onChange={handleChangeLeagues}
+                                  defaultValue={selectedleague.length>0?selectedleague.map((item) => {
+                                    return item;
+                                  }):[]}
+                                  className="basic-multi-select"
+                                  classNamePrefix="select" />
+                          </div>
+
+                          <div className="col-lg-6 reletive mb-4">
+                              <span className='react-select-title'>Select Team</span>
+                              <Select isMulti
+                                  closeMenuOnSelect={false}
+                                  name="targeted_team"   
+                                  options={teamOptions}
+                                  onChange={handleChangeTeam}
+                                  defaultValue={selectedteam}
+                                  className="basic-multi-select"
+                                  classNamePrefix="select" />
+                          </div>
+
+                          {/* <div className="col-lg-6 reletive mb-4">
+                              <span className='react-select-title'>Select Players</span>
+                              <Select isMulti
+                                  closeMenuOnSelect={false}
+                                  name="targeted_player"  
+                                  options={playersOptions}
+                                  className="basic-multi-select"
+                                  classNamePrefix="select" />
+                          </div> */}
+
+                          <div className="col-lg-12  mb-4">
+                              <label className="title-col mb-2">Targeted Country</label>
+                          </div>
+                            <div className='reletive col-lg-12'>
+                              <span className='react-select-title'>Select Country</span>
+                              
+                              <Select isMulti
+                                  closeMenuOnSelect={false}
+                                  name="" 
+                                  options={countryOptions}
+                                  onChange={handleChangeCountry}
+                                  defaultValue={selectedcountry}
+                                  className="basic-multi-select"
+                                  classNamePrefix="select" />
+
+                                  <input type="hidden" name="targeted_country" value="india" />
+                          </div>
+
+
 
                                 
                               </div>

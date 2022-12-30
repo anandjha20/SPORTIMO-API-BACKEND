@@ -3,6 +3,8 @@
 
  const user_tbl = require('../models/user');    
  const poll_result_tbl = require('../models/poll_result');    
+const sport = require('../models/sport');
+const user_preference = require('../models/user_preference');
 
 
 const send_noti = (tokens,title,msg)=>{
@@ -31,12 +33,12 @@ var notification_body = {
                })
                     .then(function (response) {
                     //handle success
-                    console.log(response.data);
-                    console.log("user ids == ",response.data.results);
+                    // console.log(response.data);
+                    // console.log("user ids == ",response.data.results);
                     })
                     .catch(function (response) {
                     //handle error
-                    console.log(response);
+                    //console.log(response);
                     });        
 
 
@@ -67,27 +69,43 @@ const get_sportsUserToken = async(sports)=>{
 }
 
 
-const get_preferenceUserToken = async(preference,preference_name)=>{
-  if(isEmpty(preference)){  return []; }
-     let my_sports = preference.split(",");
-      console.log("my_sports == ", my_sports);
-     
-     let like_som =  await Promise.all( my_sports.map( async (item)=>  { 
-            let newData = await user_tbl.find({preference_name: { $regex: '.*' + item + '.*', $options: 'i' }}).select("firebase_token");
+const get_preferenceUserToken = async(list,preference)=>{
+  if(isEmpty(list)){  return []; }
+     let my_sports = list;
+     // console.log("my_sports == ", my_sports);
+     if(preference=="sport"){
+          let sports_id=await sport.distinct("_id",{name:{$in:my_sports}});
+          sports_id.map((item)=>{
+               item=item.toString()
+          })
+          var users=await user_preference.distinct("user_id",{sport_id_mongo:{$in:sports_id}})
+          
+     }else if(preference=="league"){
+          var users=await user_preference.distinct("user_id",{season_id:{$in:my_sports}})
+          
+     }else if(preference=="team"){
+          var users=await user_preference.distinct("user_id",{team_id:{$in:my_sports}})
+          
+     }
+     let fireBase_tokens=await user_tbl.distinct("firebase_token",{_id:{$in:users}});
+//      console.log({fireBase_tokens})
+//      let like_som =  await Promise.all( my_sports.map( async (item)=>  { 
+//             let newData = await user_tbl.find({preference_name: { $regex: '.*' + item + '.*', $options: 'i' }}).select("firebase_token");
            
-      let newss = (newData.length>0)? newData.filter((row,index)=> row.firebase_token != '' ):[]; 
-              return newss ; }));       
+//       let newss = (newData.length>0)? newData.filter((row,index)=> row.firebase_token != '' ):[]; 
+//               return newss ; }));       
   
-    let sendToken = []; 
-        if(like_som.length>0 ){ 
-             like_som.map( (row_2)=> {
-                                        if(row_2.length > 0){
-                                      row_2.map((sum)=>{ if(sum.firebase_token != null){sendToken.push (sum.firebase_token); }  //firebase_token
-                                      }); 
+//     let sendToken = []; 
+//         if(like_som.length>0 ){ 
+//              like_som.map( (row_2)=> {
+//                                         if(row_2.length > 0){
+//                                       row_2.map((sum)=>{ if(sum.firebase_token != null){sendToken.push (sum.firebase_token); }  //firebase_token
+//                                       }); 
                 
-                         } }) }  
+//                          } }) }  
 
-         return sendToken;                 
+     
+         return fireBase_tokens;                 
 
 }
 
@@ -103,24 +121,23 @@ const UniqueArrayFun = async(myArray)=>{
 const send_poll_notification = async (req,res)=>{
      try {
           
+          
                let sports = req.sports;  let leagues = req.leagues;
-               let teams = req.teams;    let players = req.players;
+               let teams = req.teams;    
                let title = req.title;    let details = req.details;
            /// get all user token get 
-               let sport_preferences = await get_preferenceUserToken(sports,'sport_preferences');
-               let league_preference = await get_preferenceUserToken(leagues,'league_preference');
-               let team_preference   = await get_preferenceUserToken(teams,'team_preference');
-               let player_preference = await get_preferenceUserToken(players,'player_preference');
+               let sport_preferences = await get_preferenceUserToken(sports,'sport');
+               let league_preference = await get_preferenceUserToken(leagues,'league');
+               let team_preference   = await get_preferenceUserToken(teams,'team');
                
-               let myobj = {sport_preferences,league_preference,team_preference,player_preference}
+               let myobj = {sport_preferences,league_preference,team_preference}
               
                let bigArr = [];
            /// preferences check empty token array
                if(! isEmpty(sport_preferences)){ bigArr = [ ...bigArr,...sport_preferences ] }
                if(! isEmpty(league_preference)){ bigArr = [...bigArr, ...league_preference ] }
                if(! isEmpty(team_preference)){ bigArr = [ ...bigArr,...team_preference ] }
-               if(! isEmpty(player_preference)){ bigArr = [...bigArr, ...player_preference ] }
-         
+              
            // check uniq array token      
                let new_arr = await  UniqueArrayFun(bigArr);
                    //console.log(" fun call  == ",new_arr);  
@@ -131,7 +148,7 @@ const send_poll_notification = async (req,res)=>{
          
             /// ArrChunks  loop run and send notification            
                if(arrPairs.length > 0){
-                    console.log("arrPairs == ",arrPairs);
+                    //console.log("arrPairs == ",arrPairs);
                        arrPairs.map((chunkarr,i)=>{
                                    console.log("notication loop run no == ",i);
                               send_noti(chunkarr,title,details);

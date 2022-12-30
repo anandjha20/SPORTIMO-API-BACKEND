@@ -21,8 +21,141 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from 'react-router-dom';
 import InputEmoji from 'react-input-emoji'
 import { fabClasses } from "@mui/material";
+import { useNavigate } from 'react-router-dom';
 
 export default function UpdatePoll() {
+
+  const { id } = useParams();
+  const [datadetail, setDataDetail] = useState('')
+  const [polltypeSet, setPollyupe] = useState('')
+  const [sportsOpt, setSportsOpt] = useState('')
+  const [LeaguesOpt, setLeaguesOpt] = useState('')
+  const [TeamOpt, setTeamOpt] = useState('')
+  const [dateTimeMenu, setDateTimeMenu] = React.useState(<></>);
+  
+
+
+  ///////////////emoji input value get
+  const [answerOne, setAnswerOne] = useState("answerOne");
+  const [answerTwo, setAnswerTwo] = useState('');
+  const [answerThree, setAnswerThree] = useState('');
+  const [answerFour, setAnswerFour] = useState('');
+  const [answerFive, setAnswerFive] = useState('');
+
+  /////////////// emoji input value get
+
+  const polldetail = async () => {
+    const sendatds = { data1: "data1" }
+    await axios.post(`/web_api/poll_list/${id}`, sendatds, options1)
+      .then(res => {
+        const datadetail = res.data.body[0];
+        const polltypeSet = res.data.body[0].poll_type;
+        const matchname = res.data.body[0].match;
+        const hminute = res.data.body[0].apperance_time.substring(0, 2);
+        const hsinute = res.data.body[0].apperance_time.slice(-2);
+
+        const minute = res.data.body[0].time_duration.substring(0, 2);
+        const second = res.data.body[0].time_duration.slice(-2);
+
+        const sportsArrayOp = datadetail.sports;
+        const LeaguesOpt = datadetail.leagues;
+        const TeamOpt = datadetail.teams;
+        const answerOne = datadetail.ops_1;
+        const sportsOpt = sportsArrayOp;
+
+
+        setMatchLegue(matchname)
+        // if(res.status)
+        // {
+        //   setAnswerOne(answerOne);
+        // console.log(answerOne)
+        // }
+
+        setLeaguesOpt(LeaguesOpt);
+        setTeamOpt(TeamOpt);
+        setSportsOpt(sportsOpt);
+        // console.log(sportsOpt);
+        console.log(LeaguesOpt);
+
+        setDataDetail(datadetail);
+        setPollyupe(polltypeSet);
+
+        setHminute(hminute);
+        setHSecond(hsinute);
+        setMinute(minute);
+        setSecond(second);
+
+        if(datadetail.match=="All"){
+          setDateTimeMenu(<>
+                                      <div className="col-lg-12 mb-4">
+                                    <label className="title-col mb-3">Poll Date range</label>
+                                    <div className="row  mb-0">
+                                      <div className="col-lg-6">
+                                        <TextField id="sdate" onChange={handleChangeStartDateTime} name='Fdate' label="Start Date-Time" fullWidth type="datetime-local"
+                                          InputLabelProps={{
+                                            shrink: true,
+                                          }}
+                                        />
+      
+                                      </div>
+                                      <div className="col-lg-6 ">
+                                        <TextField id="edate" onChange={handleChangeEndDateTime} name='Ldate' label="End Date-Time" fullWidth type="datetime-local"
+                                          InputLabelProps={{ shrink: true, }} />
+      
+                                      </div>
+                                      
+                                    </div>
+                                  </div>
+      
+          </>)
+        }else{
+          setStartDateTime('');
+          setEndDateTime('');
+          setDateTimeMenu(<>
+          <div className="col-lg-6 mb-2">
+          <label className="title-col mb-3">Appearance Time</label>
+          <div className="row">
+      
+            <div className="col-lg-6 reletive ">
+              <span className='react-select-title'>Minute</span>
+              <Select labelId="hminute" menuPortalTarget={document.body}
+                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
+            </div>
+            <div className="col-lg-6 reletive ">
+              <span className='react-select-title'>Second</span>
+              <Select labelId="hminute" menuPortalTarget={document.body}
+                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond} options={hsecondOptions} />
+            </div>
+      
+      
+          </div>
+        </div>
+      
+        <div className="col-lg-6 mb-4">
+          <label className="title-col mb-3">Duration</label>
+          <div className="row">
+      
+            <div className="col-lg-6 reletive ">
+              <span className='react-select-title'>Minute</span>
+              <Select menuPortalTarget={document.body}
+                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
+            </div>
+            <div className="col-lg-6 reletive ">
+              <span className='react-select-title'>Second</span>
+              <Select menuPortalTarget={document.body}
+                styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeSecond} options={secondOptions} />
+            </div>
+      
+      
+          </div>
+        </div>
+      </>)
+        }      })
+  }
+
+  useEffect(() => {
+    polldetail();
+  }, []);
 
 
 
@@ -30,6 +163,7 @@ export default function UpdatePoll() {
   const [showhide1, setShowhide1] = useState();
   const [npshow, setNpshow] = useState('');
   const [show, setShow] = useState('');
+  const navigate = useNavigate();
 
   const handleshowhide = (event) => {
     const getuser = event.target.value;
@@ -139,45 +273,6 @@ export default function UpdatePoll() {
   let header = ({ 'token': `${token}` });
   let options1 = ({ headers: header });
 
-  const myFormData = async (e) => {
-    e.preventDefault();
-
-    try {
-
-      const data = new FormData(e.target);
-      let Formvlaues = Object.fromEntries(data.entries());
-      console.log("form data is == ", Formvlaues);
-      // Formvlaues.fee_type = showhide;
-      // Formvlaues.poll_type = p_type;
-      Formvlaues.noti_status = notis;
-      Formvlaues.players = plrArray;
-      Formvlaues.match = matchLegue;
-      Formvlaues.teams = teamArray;
-      Formvlaues.leagues = leaguesArray;
-      Formvlaues.sports = sportsArray;
-      Formvlaues.noti_in_App_status = innotis;
-      Formvlaues.time_duration = minute + ':' + second;
-      Formvlaues.apperance_time = hminute + ':' + hsecond;
-
-      let response = await axios.put(`/web_api/update_poll/${id}`, Formvlaues, options1);
-      console.log('my fun call', response);
-      if (response.status) {
-        let data = response.data;
-        if (data.status) {
-          toast.success(data.msg);
-        } else {
-          toast.error('something went wrong please try again');
-        }
-      }
-      else {
-        toast.error('something went wrong please try again..');
-      }
-
-    } catch (err) { console.error(err); toast.error('some errror'); return false; }
-
-
-  }
-
 
   ////////////////////multiple dropdown //////////////////////////////
   const [sport_lists, setSport_lists] = React.useState([]);
@@ -214,9 +309,9 @@ export default function UpdatePoll() {
   }
   useEffect(() => {
     get_data('/web_api/sport_list', setSport_lists);
-    get_data('/web_api/league_list', setLeague_lists);
-    get_data('/web_api/team_list', setTeam_lists);
-    get_data('/web_api/player_list', setPlayer_lists);
+    get_data('/web_api/league_list_dropDown', setLeague_lists);
+    get_data('/web_api/team_list_dropDown', setTeam_lists);
+    // get_data('/web_api/player_list', setPlayer_lists);
     document.body.classList.add('bg-salmon');
   }, []);
 
@@ -226,11 +321,11 @@ export default function UpdatePoll() {
   }) : [];
 
   const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
-    return { value: item._id, label: item.name };
+    return { value: item.season_id, label: item.original_name_sportimo };
   }) : [];
 
   const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
-    return { value: item._id, label: item.name };
+    return { value: item.team_id, label: item.team_name };
   }) : [];
 
   const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
@@ -242,13 +337,36 @@ export default function UpdatePoll() {
     alert(" ==jk==  " + type);
   }
 
+  const selectedleague = (LeaguesOpt.length > 0) ? LeaguesOpt.map((item) => {
+    let result=leagueOptions.find(i=>i.value==item)
+
+    return (
+      result);
+  }) : [];
+
+  const selectedteam= (TeamOpt.length > 0) ? TeamOpt.map((item) => {
+    let result=teamOptions.find(i=>i.value==item)
+
+    return (
+      result);
+  }) : [];
+
+  const selectedsport= (sportsOpt.length > 0) ? sportsOpt.map((item) => {
+    let result=sportOptions.find(i=>i.label==item)
+
+    return (
+      result);
+  }) : [];
+
+
+
   ///////select Player ///////////
   const [plrArray, setselectedOptions] = React.useState()
   const handleChangePlayer = (selectedOptions) => {
     const plrArray = [];
     selectedOptions.map(item => plrArray.push(item.value)
     );
-    setselectedOptions(plrArray.join(','));
+    setselectedOptions(plrArray);
   }
 
   ///////select Teams ///////////
@@ -257,7 +375,7 @@ export default function UpdatePoll() {
     const teamArray = [];
     teamOptionsarry.map(item => teamArray.push(item.value)
     );
-    setteamOptionsarry(teamArray.join(','));
+    setteamOptionsarry(teamArray);
   }
 
   ///////select Leagues ///////////
@@ -266,16 +384,16 @@ export default function UpdatePoll() {
     const leaguesArray = [];
     leaguesOptionsarry.map(item => leaguesArray.push(item.value)
     );
-    setleaguesOptionsarry(leaguesArray.join(','));
+    setleaguesOptionsarry(leaguesArray);
   }
 
   ///////select Sports ///////////
   const [sportsArray, setsportsOptionsarry] = React.useState()
   const handleChangeSports = (SportsOptionsarry) => {
     const sportsArray = [];
-    SportsOptionsarry.map(item => sportsArray.push(item.value)
+    SportsOptionsarry.map(item => sportsArray.push(item.label)
     );
-    setsportsOptionsarry(sportsArray.join(','));
+    setsportsOptionsarry(sportsArray);
   }
 
 
@@ -324,22 +442,103 @@ export default function UpdatePoll() {
       })
   }
 
-  const matchOptions = (matchname.length > 0) ? matchname.map((item) => {
-    return { value: item.match_id, label: item.match_name };
+  let matchOptions=[{ value: 0, label: "All" }]
+  let data = (matchname.length > 0) ? matchname.map((item) => {
+    matchOptions.push({ value: item.match_id, label: item.match_name });
   }) : [];
   useEffect(() => {
     SelectMatch();
   }, [])
 
+  const [startDateTime, setStartDateTime] = React.useState('');
+  const handleChangeStartDateTime = (event) => {
+    const value = event.target.value;
+    setStartDateTime(value);
+  };
+  const [endDateTime, setEndDateTime] = React.useState('');
+  const handleChangeEndDateTime = (event) => {
+    const value = event.target.value;
+    setEndDateTime(value);
+  };
+  
 
-
+  
   const [matchLegue, setMatchLegue] = React.useState('');
-  const handleMatchName = (event) => {
+  const [match_id, setMatchId] = React.useState('');
+    const handleMatchName = (event) => {
     const matchLegue = event.label
-    console.log(matchLegue);
+    const match_id = event.value
+    if(matchLegue=="All"){
+      setDateTimeMenu(<>
+                                  <div className="col-lg-12 mb-4">
+                                <label className="title-col mb-3">Poll Date range</label>
+                                <div className="row  mb-0">
+                                  <div className="col-lg-6">
+                                    <TextField id="sdate" onChange={handleChangeStartDateTime} name='Fdate' label="Start Date-Time" fullWidth type="datetime-local"
+                                      InputLabelProps={{
+                                        shrink: true,
+                                      }}
+                                    />
+  
+                                  </div>
+                                  <div className="col-lg-6 ">
+                                    <TextField id="edate" onChange={handleChangeEndDateTime} name='Ldate' label="End Date-Time" fullWidth type="datetime-local"
+                                      InputLabelProps={{ shrink: true, }} />
+  
+                                  </div>
+                                  
+                                </div>
+                              </div>
+  
+      </>)
+    }else{
+      setStartDateTime('');
+      setEndDateTime('');
+      setDateTimeMenu(<>
+      <div className="col-lg-6 mb-2">
+      <label className="title-col mb-3">Appearance Time</label>
+      <div className="row">
+  
+        <div className="col-lg-6 reletive ">
+          <span className='react-select-title'>Minute</span>
+          <Select labelId="hminute" menuPortalTarget={document.body}
+            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
+        </div>
+        <div className="col-lg-6 reletive ">
+          <span className='react-select-title'>Second</span>
+          <Select labelId="hminute" menuPortalTarget={document.body}
+            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond} options={hsecondOptions} />
+        </div>
+  
+  
+      </div>
+    </div>
+  
+    <div className="col-lg-6 mb-4">
+      <label className="title-col mb-3">Duration</label>
+      <div className="row">
+  
+        <div className="col-lg-6 reletive ">
+          <span className='react-select-title'>Minute</span>
+          <Select menuPortalTarget={document.body}
+            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
+        </div>
+        <div className="col-lg-6 reletive ">
+          <span className='react-select-title'>Second</span>
+          <Select menuPortalTarget={document.body}
+            styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeSecond} options={secondOptions} />
+        </div>
+  
+  
+      </div>
+    </div>
+  </>)
+    }
+    
     setMatchLegue(matchLegue);
+    setMatchId(match_id);
   }
-
+  
   const hminuteOptions = [
     { value: '01', label: '01' },
     { value: '02', label: '02' },
@@ -590,75 +789,6 @@ export default function UpdatePoll() {
     { value: '00', label: '00' },
   ]
 
-  const { id } = useParams();
-  const [datadetail, setDataDetail] = useState('')
-  const [polltypeSet, setPollyupe] = useState('')
-  const [sportsOpt, setSportsOpt] = useState('')
-  const [LeaguesOpt, setLeaguesOpt] = useState('')
-
-
-
-  ///////////////emoji input value get
-  const [answerOne, setAnswerOne] = useState("answerOne");
-  const [answerTwo, setAnswerTwo] = useState('');
-  const [answerThree, setAnswerThree] = useState('');
-  const [answerFour, setAnswerFour] = useState('');
-  const [answerFive, setAnswerFive] = useState('');
-
-  /////////////// emoji input value get
-
-  const polldetail = async () => {
-    const sendatds = { data1: "data1" }
-    await axios.post(`/web_api/poll_list/${id}`, sendatds, options1)
-      .then(res => {
-        const datadetail = res.data.body[0];
-        const polltypeSet = res.data.body[0].poll_type;
-        const matchname = res.data.body[0].match;
-        const hminute = res.data.body[0].apperance_time.substring(0, 2);
-        const hsinute = res.data.body[0].apperance_time.slice(-2);
-
-        const minute = res.data.body[0].time_duration.substring(0, 2);
-        const second = res.data.body[0].time_duration.slice(-2);
-
-        const sportsArrayOp = datadetail.sports;
-        const LeaguesOpt = datadetail.leagues;
-        const answerOne = datadetail.ops_1;
-        const sportsOpt = sportsArrayOp.split(',');
-
-
-        setMatchLegue(matchname)
-        // if(res.status)
-        // {
-        //   setAnswerOne(answerOne);
-        // console.log(answerOne)
-        // }
-
-        setLeaguesOpt(LeaguesOpt.split('\n'));
-        setSportsOpt(sportsOpt);
-        // console.log(sportsOpt);
-        console.log(LeaguesOpt);
-
-        setDataDetail(datadetail);
-        setPollyupe(polltypeSet);
-
-        setHminute(hminute);
-        setHSecond(hsinute);
-        setMinute(minute);
-        setSecond(second);
-
-
-        //console.log(Object.JSON.parse(sportsArrayOp))
-        // console.log(mtime)
-        // console.log(stime)
-        // console.log(minute)
-        // console.log(second)
-        console.log(datadetail);
-      })
-  }
-
-  useEffect(() => {
-    polldetail();
-  }, []);
 
   const [agreement, setAgreement] = React.useState(false);
   const [isChecked, setIsChecked] = useState(0);
@@ -676,7 +806,53 @@ export default function UpdatePoll() {
   //  console.log(isChecked + "test") 
  };
 
-  /////////////////// Poll Detail Api Call ///////////////////////////////////////
+  /////////////////// Poll update Api Call ///////////////////////////////////////
+  const myFormData = async (e) => {
+    e.preventDefault();
+
+    try {
+
+      const data = new FormData(e.target);
+      let Formvlaues = Object.fromEntries(data.entries());
+      console.log("form data is == ", Formvlaues);
+      // Formvlaues.fee_type = showhide;
+      // Formvlaues.poll_type = p_type;
+      Formvlaues.noti_status = notis;
+      Formvlaues.match = matchLegue;
+      Formvlaues.teams = teamArray;
+      Formvlaues.leagues = leaguesArray;
+      Formvlaues.sports = sportsArray;
+      Formvlaues.noti_in_App_status = innotis;
+      Formvlaues.match_id = match_id;
+      Formvlaues.start_date_time = startDateTime;
+      Formvlaues.end_date_time = endDateTime;
+      let min=minute==''?"00":minute;
+      let sec=second==''?"00":second
+      let hmin=hminute==''?"00":hminute;
+      let hsec=hsecond==''?"00":hsecond
+      Formvlaues.time_duration = min + ':' + sec;
+      Formvlaues.apperance_time = hmin + ':' + hsec;
+      console.log({Formvlaues})
+      let response = await axios.put(`/web_api/update_poll/${id}`, Formvlaues, options1);
+      console.log('my fun call', response);
+      if (response.status) {
+        let data = response.data;
+        if (data.status) {
+          toast.success(data.msg);
+          navigate(`/poll`);
+        } else {
+          toast.error('something went wrong please try again');
+        }
+      }
+      else {
+        toast.error('something went wrong please try again..');
+      }
+
+    } catch (err) { console.error(err); toast.error('some errror'); return false; }
+
+
+  }
+
 
   return (
     <>
@@ -720,12 +896,12 @@ export default function UpdatePoll() {
                           {/* {datadetail.poll_type} */}
         {/* <label class="col-lg-10  form-check-label col-form-label  fw-semibold fs-6" for="flexSwitchCheckDefault">Add Customer</label> */}
                     
-                    <div class="col-lg-2 form-check form-switch">
+                    {/* <div class="col-lg-2 form-check form-switch">
                       <label htmlFor="ckheck">test</label>
                         <input class="" type="checkbox" checked={agreement} name="addCustomer" id="ckheck"  value="1" role="switch"  onChange={(event) => handleOnChangeCustomer()} />
-                      </div>
+                      </div> */}
 
-                      {datadetail.poll_type !== "" ? <>true</> : <>haa</>}
+                      {/* {datadetail.poll_type !== "" ? <>true</> : <>haa</>} */}
                     </div>
                       </div>
                      <form onSubmit={(e) => myFormData(e)}>
@@ -748,7 +924,7 @@ export default function UpdatePoll() {
                                 </FormControl>
                               </div>
 
-                              <div className="col-lg-12 reletive mb-4">
+                              <div className="col-lg-12 reletive mt-2 mb-4">
                                 <span className='react-select-title'>Match/League</span>
                                 <Select labelId="hminute" name="match_id" id="hminute"
                                   defaultValue={{ label: datadetail.match, value: datadetail.match_id }}
@@ -756,6 +932,8 @@ export default function UpdatePoll() {
                                   onChange={handleMatchName}
                                   styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} options={matchOptions} />
                               </div>
+
+                              {dateTimeMenu}
 
                               <div className="col-lg-12 mb-2">
                                 <label className="title-col">Poll Fee</label>
@@ -837,7 +1015,7 @@ export default function UpdatePoll() {
 
 
 
-                              <div className="col-lg-6 mb-4">
+                              {/* <div className="col-lg-6 mb-4">
                                 <label className="title-col mb-3">Appearance Time</label>
                                 <div className="row">
 
@@ -881,7 +1059,7 @@ export default function UpdatePoll() {
 
 
                                 </div>
-                              </div>
+                              </div> */}
 
 
                               <div className="col-lg-12 mb-3">
@@ -922,10 +1100,7 @@ export default function UpdatePoll() {
                                     <span className='react-select-title'>Select Sports</span>
                                     <Select isMulti
                                       closeMenuOnSelect={false}
-                                      defaultValue={sportsOpt.map((item, index) => {
-                                        return (
-                                          { value: item.toString(), label: item });
-                                      })}
+                                      defaultValue={selectedsport}
                                       // defaultValue={userTechsForSelect[0]}
                                       name="sports"
                                       options={sportOptions}
@@ -942,10 +1117,7 @@ export default function UpdatePoll() {
                                       name="leagues"
                                       options={leagueOptions}
                                       onChange={handleChangeLeagues}
-                                      defaultValue={LeaguesOpt.map((item, index) => {
-                                        return (
-                                          { value: item, label: item });
-                                      })}
+                                      defaultValue={selectedleague}
                                       className="basic-multi-select"
                                       classNamePrefix="select" />
                                   </div>
@@ -958,12 +1130,12 @@ export default function UpdatePoll() {
                                       options={teamOptions}
                                       className="basic-multi-select"
                                       classNamePrefix="select"
-                                      defaultValue={{ value: team_lists._id, label: team_lists.name }}
+                                      defaultValue={selectedteam}
                                       onChange={handleChangeTeam}
                                     />
                                   </div>
 
-                                  <div className="col-lg-6 reletive mb-4">
+                                  {/* <div className="col-lg-6 reletive mb-4">
                                     <span className='react-select-title'>Select Players</span>
                                     <Select isMulti
                                       closeMenuOnSelect={false}
@@ -974,7 +1146,7 @@ export default function UpdatePoll() {
                                       classNamePrefix="select"
                                       onChange={handleChangePlayer}
                                     />
-                                  </div>
+                                  </div> */}
                                 </div>
                               </div>
 
@@ -1040,6 +1212,37 @@ export default function UpdatePoll() {
                               <div className="col-lg-6 mb-4">
                                 <label className="title-col">Answer 5 <span className="text-blue">(Arabic)</span></label>
                                 <TextField id="filled-basic1" name='ops_5_ara' defaultValue={datadetail.ops_5_ara} fullWidth label="Answer 5" variant="filled" autoComplete="off" />
+                              </div>
+
+                              {/* ////////////French/////////// */}
+
+                              <div className="col-lg-12 mb-4">
+                                <label className="title-col">Question <span className="text-blue">(French)</span></label>
+                                <TextField id="filled-multiline-static" defaultValue={datadetail.qus_fr} name='qus_fr' label="Enter Question" multiline rows={4} fullWidth variant="filled" autoComplete="off" />
+                              </div>
+
+
+                              <div className="col-lg-6 mb-4">
+                                <label className="title-col">Answer 1 <span className="text-blue">(French)</span></label>
+                                <TextField id="filled-basic" name='ops_1_fr' defaultValue={datadetail.ops_1_fr} fullWidth label="Answer 1" variant="filled" autoComplete="off" />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <label className="title-col">Answer 2 <span className="text-blue">(French)</span></label>
+                                <TextField id="filled-basic1" name='ops_2_fr' defaultValue={datadetail.ops_2_fr} fullWidth label="Answer 2" variant="filled" autoComplete="off" />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <label className="title-col">Answer 3 <span className="text-blue">(French)</span></label>
+                                <TextField id="filled-basic1" name='ops_3_fr' defaultValue={datadetail.ops_3_fr} fullWidth label="Answer 3" variant="filled" autoComplete="off" />
+                              </div>
+                              <div className="col-lg-6 mb-4">
+                                <label className="title-col">Answer 4 <span className="text-blue">(French)</span></label>
+                                <TextField id="filled-basic1" name='ops_4_fr' defaultValue={datadetail.ops_4_fr} fullWidth label="Answer 4" variant="filled" autoComplete="off" />
+                              </div>
+                              <div className="col-lg-6 mb-4">
+                                <label className="title-col">Answer 5 <span className="text-blue">(French)</span></label>
+                                <TextField id="filled-basic1" name='ops_5_fr' defaultValue={datadetail.ops_5_fr} fullWidth label="Answer 5" variant="filled" autoComplete="off" />
                               </div>
 
 

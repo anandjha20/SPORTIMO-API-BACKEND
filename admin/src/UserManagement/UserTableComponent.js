@@ -219,7 +219,7 @@ function UserListTable(props) {
                                 <tr>
                                     <th scope="col">User Image</th>
                                     <th scope="col">Unique ID</th>
-                                    <th scope="col">Unique Name</th>
+                                    <th scope="col">Nick Name</th>
                                     <th scope="col">User Name</th>
                                     <th scope="col">Mobile No.</th>
                                     <th scope="col">Email Address</th>
@@ -242,8 +242,8 @@ function UserListTable(props) {
                                 {data.map((item) => {
                                     return (
                                         <tr key={item._id}>
-                                            <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image} alt="slider img" /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
-                                            <td>{item._id}</td>
+                                            <td><div className="imageSliderSmall">{item.image !== '' ? <> <img src={item.image}  /></> : <><img src='/assets/images/no-image.png' /></> }</div></td>
+                                            <td>{item.sportimo_id}</td>
                                             <td>{item.u_name}</td>
                                             <td>{item.name}</td>
                                             <td>{item.mobile}</td>
@@ -253,7 +253,7 @@ function UserListTable(props) {
                                             {/* <td>{item.user_language}</td> */}
                                             <td>{item.country}</td>
                                             <td>{item.gender}</td>
-                                            <td>{item.user_type == "5"  ? <><span>Guest User</span></> : null}</td>
+                                            <td>{item.user_type == "5"  ? <><span>Guest User</span></> : <><span>Registered User</span></>}</td>
                                             <td className="text-end">
                                                 <div className="d-flex justtify-content-end">
                                                     <IconButton onClick={(e) => { viewFun(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">

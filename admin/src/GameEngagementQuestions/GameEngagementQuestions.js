@@ -10,7 +10,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Select from 'react-select';
 // import Map from "./Map";
-import SelectTageting from "./Components/SelectTageting";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -513,8 +512,12 @@ function GameEngagementQuestions() {
       
 
       Formvlaues.match_name = matchLegue;
-      Formvlaues.duration = minute + ':' + second;
-      Formvlaues.appearance_time = hminute + ':' + hsecond;
+      let min=minute==''?"00":minute;
+      let sec=second==''?"00":second
+      let hmin=hminute==''?"00":hminute;
+      let hsec=hsecond==''?"00":hsecond
+      Formvlaues.duration = min + ':' + sec;
+      Formvlaues.appearance_time = hmin + ':' + hsec;
       Formvlaues.targeted_league = leaguesArray;
       Formvlaues.targeted_sport = sportsArray;
       Formvlaues.targeted_team = teamArray;
@@ -528,7 +531,7 @@ function GameEngagementQuestions() {
       if (response.status) {
         let data = response.data;
         if (data.status) {
-          // navigate(`/poll`);
+           navigate(`/geq`);
           toast.success(data.msg);
         } else {
           toast.error('Please fill all fields before Submit');

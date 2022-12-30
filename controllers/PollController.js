@@ -155,8 +155,8 @@ class PollController {
 || page == 0 )? 1 :page ; 
         
         
-          let whr ={match:"All"};
-          //if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*', $options: 'i' } ;} 
+          let whr ={};
+          if(!isEmpty(match)){whr.match = { $regex: '.*' + match + '.*', $options: 'i' } ;} 
           if(!isEmpty(poll_type)){whr.poll_type = poll_type;} 
           if(!isEmpty(disclosed_status)){whr.disclosed_status = disclosed_status;} 
           if(!isEmpty(fee_type)){whr.fee_type = fee_type;} 
@@ -164,13 +164,13 @@ class PollController {
          
           if(!isEmpty(leagues)){whr.leagues = { $regex: '.*' + leagues + '.*' } ;} 
           if(!isEmpty(id)){whr = {_id: id} ;} 
-          let query =  poll_tbl.find(whr).sort({_id:-1});
+          let query =  poll_tbl.find(whr)
             
            const query2 =  query.clone();
            const counts = await query.countDocuments();   
        
            let offest = (page -1 ) * 10 ; 
-           const records = await query2.skip(offest).limit(10);
+           const records = await query2.sort({"date":-1}).skip(offest).limit(10);
           let data=[];  
           let dd=await Promise.all( records.map(async(item)=> { 
                             let total_player=await poll_result_tbl.find({poll_id:item._id}).countDocuments()
@@ -184,7 +184,7 @@ class PollController {
                                     item.ops_4 = item.ops_4_ara ;
                                 
                                 }
-                          data.push({...item._doc,total_player,poll_parcents})  
+                          await data.push({...item._doc,total_player,poll_parcents})  
                            return item;
                  }));      
 
@@ -201,7 +201,7 @@ class PollController {
 
          try {   
                let user_data = req.body;
-                    console.log(  'server get value == ',user_data);
+                console.log(user_data)
                   
                   let match_len = (user_data.match || '').length;
            if(match_len == 0){
@@ -223,6 +223,9 @@ class PollController {
                         "apperance_time": user_data.apperance_time,
                         "time_duration": user_data.time_duration,             
 
+                        "start_date_time": user_data.start_date_time==""?Date.now():user_data.start_date_time,
+                        "end_date_time": user_data.end_date_time==""?Date.now():user_data.end_date_time,             
+
                         "qus": user_data.qus,        "qus_ara": user_data.qus_ara,     "qus_fr": user_data.qus_fr,
                         "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,  "ops_1_fr":user_data.ops_1_fr,
                         "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,  "ops_2_fr":user_data.ops_2_fr,
@@ -242,10 +245,6 @@ class PollController {
                         "reward_type":user_data.reward_type,
                         "reward_quantity":user_data.reward_quantity,
                         "date":mydate,
-  
-                        
-
-
 
                     });
                     let matchData=await team_matches.aggregate([
@@ -286,6 +285,7 @@ class PollController {
                         }
                       }
                     ])
+                    //console.log({add,date: user_data.end_date_time})
                           add.save((err, data) => {
                                 if (err) {     console.log(err);
                                   return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   
@@ -330,7 +330,7 @@ class PollController {
                         let msg2 = `New Poll has been published for match: ${ user_data.match} Click here to participate.`; 
                        
                         let poll_noti_parms = { "sports":user_data.sports,"leagues":user_data.leagues,"teams":user_data.teams,
-                                    "players":user_data.players,"title":title2, details: msg2 };
+                                    "title":title2, details: msg2 };
                         
                          let sendTokenSS =  send_poll_notification(poll_noti_parms);
                      
@@ -356,7 +356,6 @@ class PollController {
          try {
                     let id = req.params.id;
                     let  user_data = req.body;
-              console.log(  'server get value == ',user_data);
                 
                 let match_len = (user_data.match || '').length;
          if(match_len == 0){
@@ -371,43 +370,41 @@ class PollController {
         }
 
 
-
+        let mydate = getcurntDate();
                   let setDataMy = {
-                     
-                      "match":user_data.match,
-                      "match_id":user_data.match_id,
-                      "poll_type": user_data.poll_type,
-                      "fee_type": user_data.fee_type,
-                      "amount":user_data.amount,
-                      "apperance_time": user_data.apperance_time,
-                      "time_duration": user_data.time_duration,
-                      
-                      "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
-                      "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,
-                      "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,
-                      "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,
-                      "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,
-                      "ops_5":user_data.ops_5,     "ops_5_ara":user_data.ops_5_ara,
+                       
+                    "match":user_data.match,
+                    "poll_type": user_data.poll_type,
+                    "fee_type": user_data.fee_type,
+                    "amount":user_data.amount,
+                    "apperance_time": user_data.apperance_time,
+                    "time_duration": user_data.time_duration,             
 
+                  
+                    "qus": user_data.qus,        "qus_ara": user_data.qus_ara,     "qus_fr": user_data.qus_fr,
+                    "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,  "ops_1_fr":user_data.ops_1_fr,
+                    "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,  "ops_2_fr":user_data.ops_2_fr,
+                    "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,  "ops_3_fr":user_data.ops_3_fr,
+                    "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,  "ops_4_fr":user_data.ops_4_fr,
+                    "ops_5":user_data.ops_5,     "ops_5_ara":user_data.ops_5_ara,  "ops_5_fr":user_data.ops_5_fr,
+                  
+                    "noti_status":user_data.noti_status,               
+                   
+                    "noti_in_App_status":user_data.noti_in_App_status,
+                    "result_type":user_data.result_type,
+                   
+                   
+                    "reward_type":user_data.reward_type,
+                    "reward_quantity":user_data.reward_quantity,
+                    "date":mydate,
 
-                      "noti_status":user_data.noti_status,
-                     
-                      "noti_in_App_status":user_data.noti_in_App_status,
-                      "result_type":user_data.result_type,
-                     
-                      "sports":user_data.sports,
-                      "leagues":user_data.leagues,
-                      "teams":user_data.teams,
-                      "players":user_data.players,
-                      "reward_type":user_data.reward_type,
-                      "reward_quantity":user_data.reward_quantity,
-                      
-    
-
-
-
-                  };
-                
+                }
+                if(!isEmpty(user_data.match_id)){setDataMy={...setDataMy,"match_id":user_data.match_id}}
+                if(!isEmpty(user_data.start_date_time)){setDataMy={...setDataMy,"start_date_time":user_data.start_date_time}}
+                if(!isEmpty(user_data.end_date_time)){setDataMy={...setDataMy,"end_date_time":user_data.end_date_time}}
+                if(!isEmpty(user_data.sports)){setDataMy={...setDataMy,"sports":user_data.sports}}
+                if(!isEmpty(user_data.leagues)){setDataMy={...setDataMy,"leagues":user_data.leagues}}
+                if(!isEmpty(user_data.teams)){setDataMy={...setDataMy,"teams":user_data.teams}}
 
                   poll_tbl.findOneAndUpdate({_id: id},{$set : setDataMy},{new: true}, (err, updatedUser) => {
                     if(err) {  console.log(err);
@@ -424,6 +421,7 @@ class PollController {
                   });
 
           } catch (error) {
+            console.log(error)
                   return res.status(200).send({"status":false,"msg":'Server error' , "body":''}) ;          
       
               }

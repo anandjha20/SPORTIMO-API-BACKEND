@@ -16,6 +16,8 @@ const pollschema = new Schema({
          amount: { type: Number, default: 0 },
          apperance_time: { type: String, required: true },
          time_duration: { type: String ,required: true},
+         start_date_time: { type: Date, default:'' },
+         end_date_time: { type: Date ,default:''},
           qus: { type: String , required: true }, qus_ara: { type: String , required: true },qus_fr: { type: String , required: true },
 
          ops_1: { type: String, required: false },  ops_1_ara: { type: String, required: false },ops_1_fr: { type: String, required: false },

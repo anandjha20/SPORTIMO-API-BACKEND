@@ -17,6 +17,7 @@ const { rows_count,gen_str,getcurntDate,getTime,send_mobile_otp,isEmpty } = requ
    const power_ups_tbl= require('../models/power_ups');
    const user_allotted_powerUps_tbl = require('../models/user_allotted_powerUps');
    const used_power_ups_tbl = require('../models/used_power_ups');
+const { MyBasePath } = require('../myModel/image_helper');
 class AdminController { 
 
   static tips_status_update = async (req,res)=>{
@@ -81,7 +82,12 @@ class AdminController {
               
              let offest = (page -1 ) * 10 ; 
              const records = await query2.skip(offest).limit(10);
-
+            let path=MyBasePath(req)
+             records.map((item)=>{
+              if(item.image!=""){
+                item.image=`${path}/image/assets/user_img/${item.image}`
+              }
+            })
 
 
            //  let data2 = await user_tbl.find(whr).sort({ _id: -1 }) ;

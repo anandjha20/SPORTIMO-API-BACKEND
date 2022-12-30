@@ -12,13 +12,21 @@ const geq = new Schema({
          appearance_time: { type: String },
          duration: { type: String },
          
-         qus: { type: String , required: true }, qus_ara: { type: String , required: true },
+         qus: { type: String , required: true },   qus_ara: { type: String , required: true },
          opt_1: { type: String, required: true },  opt_1_ara: { type: String, required: true },
-         opt_2: { type: String, required: true},  opt_2_ara: { type: String, required: true },
-         opt_3: { type: String, default :'' },  opt_3_ara: { type: String, default :'' },
-         opt_4: { type: String, default :'' },  opt_4_ara: { type: String, default :'' },
-         opt_5: { type: String, default :'' },  opt_5_ara: { type: String, default :'' },
+         opt_2: { type: String, required: true},   opt_2_ara: { type: String, required: true },
+         opt_3: { type: String, default :'' },     opt_3_ara: { type: String, default :'' },
+         opt_4: { type: String, default :'' },     opt_4_ara: { type: String, default :'' },
+         opt_5: { type: String, default :'' },     opt_5_ara: { type: String, default :'' },
          
+          qus_fr: { type: String , required: true },
+          opt_1_fr: { type: String, required: true },
+          opt_2_fr: { type: String, required: true },
+          opt_3_fr: { type: String, default :'' },
+          opt_4_fr: { type: String, default :'' },
+          opt_5_fr: { type: String, default :'' },
+  
+
          correct_ans: { type: String,enum: ['opt_1', 'opt_2', 'opt_3', 'opt_4', 'opt_5',''], default :'' },
          result_disclosed: { type: Boolean , default :0 },
          reward_type    : { type: String,default :'' },
