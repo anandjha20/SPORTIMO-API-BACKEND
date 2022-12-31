@@ -218,7 +218,8 @@ router.delete('/report_reason_delete/:id',ReportReasonController.report_reason_d
   // router.post('/user_prediction',predictionController.user_prediction);
   
   // match card add    
-   router.post('/match_card_add',predictionController.match_card_add);
+  router.post('/card_list_by_match/:id?',predictionController.card_list_by_match);
+  router.post('/match_card_add',predictionController.match_card_add);
    router.post('/match_card_list',predictionController.match_card_list); 
    router.put('/match_card_update/:id?',predictionController.match_card_update);
    router.delete('/match_card_delete/:id?',predictionController.match_card_delete);  

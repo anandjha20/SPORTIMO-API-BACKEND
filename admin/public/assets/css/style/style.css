@@ -74672,6 +74672,10 @@ color : white !important;
 {
     width: 500px;
 }
+.mx-700
+{
+    width: 700px;
+}
 .react-responsive-modal-modal
 {
     background: #313941 !important;
@@ -74997,7 +75001,7 @@ padding: 8px 12px 8px;
   .MuiButtonBase-root.Mui-disabled {
     cursor: not-allowed !important;
     pointer-events: auto  !important;
-    opacity: 0.7 !important;
+    opacity: 0.3 !important;
 }
   
 .error
@@ -75149,13 +75153,16 @@ color : white !important;
     margin-top: 24px;
     padding: 0px 10px;
 }
+input[type="time"]::-webkit-calendar-picker-indicator{
+    filter: invert(1%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(0%) contrast(80%);
+  }
 
 .imageSlider {
     margin: 5px 0px;
     height: 70px;
     width: 70px;
     display: flex;
-    overflow: hidden;
+    /* overflow: hidden; */
     border-radius: 5px;
     align-items: center;
 }

@@ -157,28 +157,46 @@ const team_matches = require('../models/team_matches');
                   
     }    
 
+    static card_list_by_match = async (req,res)=>{
+      try {
+          let match_id = req.params.id;
+          let records = await prediction_cards_tbl.find().populate('card_cat_id').sort({"name":-1});
+          let data=[]    
+          let d1=await Promise.all(records.map(async (item)=>{
+            let match_card_data=await match_cards_tbl.findOne({card_id:item._id,match_id})
+            data.push({...item._doc,match_card_data})
+          }))
+          data.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
+              res.status(200).send({'status':true,'msg':"success",  'body':data });
+  
+      } catch (error) { console.log(error);
+          res.status(200).send({'status':false,'msg':"Server error",'body':''});
+      }
+              
+}    
+
+
     static match_card_add = async(req,res)=>{
               try {   
-                console.log(req.body)
+               
                 let match_name    = req.body.match_name;
                 let match_id      = req.body.match_id;
                 let card_id        = req.body.card_id;
                 let apperance_times = req.body.apperance_times;    
                 let time_duration  = req.body.time_duration;
+                let point_1  = req.body.point_1;
+                let point_2  = req.body.point_2;
+                let point_3  = req.body.point_3;
+                let point_4  = req.body.point_4;
 
               if( isEmpty(match_name) || isEmpty(match_id)  || 
                   isEmpty(card_id)  || isEmpty(apperance_times)  ||
                     isEmpty(time_duration) ){
                     return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
                       }   
-                    let  checkRows = await rows_count(match_cards_tbl , {match_id,card_id});
-                
-                if(checkRows > 0 ){
-                        return res.status(200).send({"status":false,"msg":' this card add arleady',"body":''}) ; 
-                    }
-
-                      let add = new match_cards_tbl({ match_name,match_id,card_id,apperance_times,
-                                                  time_duration });
+            let details={ match_name,match_id,card_id,apperance_times,point_1,point_2,point_3,point_4,
+              time_duration }
+                      let add = new match_cards_tbl(details);
                       
                             add.save((err, data) => {
                                   if (err) {     console.log(err);
@@ -196,20 +214,19 @@ const team_matches = require('../models/team_matches');
 
     static match_card_update = async(req,res)=>{
             try {   let id = req.params.id;
-              let match_name      = req.body.match_name;
-              let match_id        = req.body.match_id;
-              let card_id         = req.body.card_id;
               let apperance_times = req.body.apperance_times;    
               let time_duration   = req.body.time_duration;
-
-            if( isEmpty(match_name) || isEmpty(match_id)  || 
-                isEmpty(card_id)  || isEmpty(apperance_times)  ||
-                  isEmpty(time_duration) ){
-                  return res.status(200).send({"status":false,"msg":'All filed Required' , "body":''}) ; 
-                    }   
-          
-      // let checkName = await rows_count({"name":""})             
-      let updateData = { match_name,match_id,card_id,apperance_times,time_duration };                
+              let point_1  = req.body.point_1;
+              let point_2  = req.body.point_2;
+              let point_3  = req.body.point_3;
+              let point_4  = req.body.point_4;
+             let updateData = { };
+             if(!isEmpty(apperance_times)){updateData={...updateData,apperance_times}}                
+             if(!isEmpty(time_duration)){updateData={...updateData,time_duration}}                
+             if(!isEmpty(point_1)){updateData={...updateData,point_1}}                
+             if(!isEmpty(point_2)){updateData={...updateData,point_2}}                
+             if(!isEmpty(point_3)){updateData={...updateData,point_3}}                
+             if(!isEmpty(point_4)){updateData={...updateData,point_4}}                
                       
         match_cards_tbl.findOneAndUpdate({_id: id},{$set : updateData },{new : true}, (err, updatedUser) => {
           if(err) {  console.log(err);
