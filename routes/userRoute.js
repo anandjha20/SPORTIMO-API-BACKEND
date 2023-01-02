@@ -74,7 +74,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
           router.put('/user_preference_update/:id',UserController.user_preference_update);         
         
           /// PollCon troller route list      
-          router.post('/poll_list/:id?',user_token_check,PollController.poll_list);      
+          router.post('/poll_list/:id?',user_token_check,PollController.poll_list_user);      
           router.post('/upcomming_poll_list/:id?',PollController.upcomming_poll_list);      
         
           router.post('/poll_participant',user_token_check,PollController.poll_participant);      
