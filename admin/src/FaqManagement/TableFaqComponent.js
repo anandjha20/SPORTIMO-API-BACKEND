@@ -52,9 +52,6 @@ function TableFaqComponent() {
             // { title: 'Date', field: 'date' },
             { title: 'Questions(English)', render: rowData => <>{rowData.question.slice(0, 30)} </> },
             { title: 'Answer (English)',  render: rowData => <>{rowData.answer.slice(0, 30)} </> },
-            { title: 'Category (Arabic)',  render: rowData => <div>{rowData.faq_cat_id == null ? <><span className="text-red">Category Deleted</span></> : <>{rowData.faq_cat_id.cat_name_ara}</>}</div> },
-            { title: 'Questions (Arabic)', render: rowData => <>{rowData.question_ara.slice(0, 30)} </> },
-            { title: 'Answer (Arabic)', render: rowData => <> {rowData.answer_ara.slice(0, 30)} </>},
            
 
         ]

@@ -196,7 +196,7 @@ export default function AddNotification(props) {
         const sportsArray = [];
         SportsOptionsarry.map(item => sportsArray.push(item.label)
         );
-        setsportsOptionsarry(sportsArray.join(','));
+        setsportsOptionsarry(sportsArray);
     }
 
     ///////select countryArray ///////////

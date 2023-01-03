@@ -264,7 +264,7 @@ const formresult = async (e)=>{
                 <div className="col-lg-12">
                     <div className="table-card MuiPaper-root MuiPaper-elevation2 MuiPaper-rounded">
                         <h6 className="MuiTypography-root MuiTypography-h6 padd1rem">GEQ List</h6>
-                        <table className="table ">
+                        <table className="table">
                             <thead>
                                 <tr>
                                     <th scope="col">Match/league</th>
@@ -277,13 +277,13 @@ const formresult = async (e)=>{
                                     <th scope="col" className="text-end">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody style={{minHeight:"500px"}}>
                                   
 
                               {data == "" ? <>
                                <tr>
                                <td className="text-center" colSpan='9'> 
-                                 <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                                 <span>No GEQ available!</span> </td>
                                </tr>
                                </> : null}
                                 {data.map((item) => {

@@ -236,7 +236,7 @@ function UserListTable(props) {
                               {data == '' ? <>
                                <tr>
                                <td className="text-center" colSpan='11'> 
-                                 <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                               <span>No users available!</span></td>
                                </tr>
                                </> : null}
                                 {data.map((item) => {

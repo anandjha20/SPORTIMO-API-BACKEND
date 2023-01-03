@@ -228,7 +228,7 @@ const saveFormData = async (e) => {
                                                         },
                                                     ]}
                                                     options={{
-                                                        search: true,
+                                                        search: false,
                                                         actionsColumnIndex: -1,
                                                         showFirstLastPageButtons: true,
                                                         pageSize: 5,

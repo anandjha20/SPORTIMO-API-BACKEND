@@ -313,7 +313,7 @@ const pollfee = [
                               {data == '' ? <>
                                <tr>
                                <td className="text-center" colSpan='9'> 
-                                 <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                               <span>No polls available!</span> </td>
                                </tr>
                                </> : null}
                                 {data.map((item) => {

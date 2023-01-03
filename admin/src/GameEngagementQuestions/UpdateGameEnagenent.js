@@ -716,7 +716,7 @@ console.log(selected_targeted_sport)
 
                             <div className="col-lg-12 mb-4">
                               <label className="title-col">Question <span className="text-blue">(English)</span></label>
-                              <TextField name='qus' label="Enter Question" multiline rows={4} fullWidth defaultValue={location.state.item.qus_ara} variant="filled" autoComplete="off" />
+                              <TextField name='qus' label="Enter Question" multiline rows={4} fullWidth defaultValue={location.state.item.qus} variant="filled" autoComplete="off" />
 
                             </div>
 

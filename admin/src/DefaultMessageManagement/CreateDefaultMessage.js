@@ -57,6 +57,7 @@ export default function CreateDefaultMessage() {
     const columns = [
         { title: 'Default Status Message (English)', field: 'd_msg' },
         { title: 'Default Status Message (Arabic)'  , field: 'd_msg_ara' },
+        { title: 'Default Status Message (French)'  , field: 'd_msg_fr' },
     ]
 
     ///////////////////////////  Add Default Status Message Api Call  /////////////////////////////////////////
@@ -67,10 +68,12 @@ export default function CreateDefaultMessage() {
 
             let d_msg = (e.target.elements.d_msg !== 'undefined') ? e.target.elements.d_msg.value : '';
             let d_msg_ara = (e.target.elements.d_msg_ara !== 'undefined') ? e.target.elements.d_msg_ara.value : '';
+            let d_msg_fr = (e.target.elements.d_msg_fr !== 'undefined') ? e.target.elements.d_msg_fr.value : '';
 
             let dataToSend2 = {
                 "d_msg": d_msg,
                 "d_msg_ara": d_msg_ara,
+                "d_msg_fr": d_msg_fr,
             }
 
             console.log("new values == ", dataToSend2);
@@ -162,10 +165,12 @@ export default function CreateDefaultMessage() {
 
             let d_msg = (e.target.elements.d_msg !== 'undefined') ? e.target.elements.d_msg.value : '';
             let d_msg_ara = (e.target.elements.d_msg_ara !== 'undefined') ? e.target.elements.d_msg_ara.value : '';
+            let d_msg_fr = (e.target.elements.d_msg_fr !== 'undefined') ? e.target.elements.d_msg_fr.value : '';
 
             let dataToSend2 = {
                 "d_msg": d_msg,
                 "d_msg_ara": d_msg_ara,
+                "d_msg_fr": d_msg_fr,
             }
             const id = opnData._id
             console.log("new values == ", dataToSend2);
@@ -241,6 +246,11 @@ export default function CreateDefaultMessage() {
                                                          type="text"
                                                         />
 
+                                                        <label className="title-col">Default Status <span className="text-blue">(French)</span></label>
+                                                      <input  id="categor" className="form-control mb-4" name="d_msg_fr"
+                                                         type="text"
+                                                        />
+
                                                     <div className="mt-3">
                                                         <Button type='submit' className="mr-3 btn-pd btnBg">Add</Button>
                                                         <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
@@ -311,6 +321,18 @@ export default function CreateDefaultMessage() {
                                                         fullWidth
                                                         variant="standard"
                                                         defaultValue={opnData.d_msg_ara}
+                                                                
+                                                    />
+                                                    <TextField multiline rows={2}
+                                                        autoFocus
+                                                        margin="dense"
+                                                        id="name"
+                                                        name="d_msg_fr"
+                                                        label="French"
+                                                        type="text"
+                                                        fullWidth
+                                                        variant="standard"
+                                                        defaultValue={opnData.d_msg_fr}
                                                                 
                                                     />
                                                     </DialogContent>

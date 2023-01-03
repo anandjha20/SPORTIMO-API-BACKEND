@@ -55,6 +55,8 @@ function TableMatchCard() {
 
     const [pageCount, setpageCount] = useState('');
     const [cardData, setCardData] = useState([]);
+    const [teamA, setTeamA] = useState([]);
+    const [teamB, setTeamB] = useState([]);
     const formsave = async (e)=>{
         e.preventDefault();
           const data = new FormData(e.target);
@@ -64,6 +66,11 @@ function TableMatchCard() {
             await axios.post(`/web_api/card_list_by_match/${match_id}`)
            .then(res => {
                const data1 = res.data.body;
+               const team_a = res.data.team_data.team_a_name;
+               const team_b = res.data.team_data.team_b_name;
+               
+               setTeamA(team_a)
+               setTeamB(team_b)
                setCardData(data1);
            })
           
@@ -697,7 +704,7 @@ const saveFormData = async (e) => {
                               {cardData == '' ? <>
                                <tr>
                                <td className="text-center" colSpan='9'> 
-                                 <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                               <span>No Cards available!</span> </td>
                                </tr>
                                </> : null}
                                 {cardData.map((item) => {
@@ -761,26 +768,66 @@ const saveFormData = async (e) => {
 
                     <Modal open={open} onClose={onCloseModal} center>
                     <h2 className="mb-4 text-white">Match Card Update</h2>
-                                                <p className="mb-1 text-white">Updating "{catView.name}" In "{match_name}"</p>
-                                                <p className="mb-1 text-white">Question : {catView.qus}</p>
                                                 
                                                 <div className="mx-500">
                                                     <form className="mt-3 w-100" onSubmit={(e) => saveFormData(e)}>
                                                     <div className="row">
                                                         
-                                                    
+                                                        <div className="col-lg-12 mb-3">
+                                                        <label className="title-col mb-0">Question </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catView.qus}  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Option 1 </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catView.ops_1=="Team A"?teamA:catView.ops_1=="Team B"?teamB:catView.ops_1}  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Points For Option 1 </label>
+                                                        <input type='number' autoComplete="off" defaultValue={match_card_data.point_1} name="point_1"  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Option 2 </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catView.ops_2=="Team A"?teamA:catView.ops_2=="Team B"?teamB:catView.ops_2}  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Points For Option 2</label>
+                                                        <input type='number' autoComplete="off" defaultValue={match_card_data.point_2} name="point_2"  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+                                                        {catView.ops_3!=""?<>
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Option 3 </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catView.ops_3=="Team A"?teamA:catView.ops_3=="Team B"?teamB:catView.ops_3}  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Points For Option 3</label>
+                                                        <input type='number' autoComplete="off" defaultValue={match_card_data.point_3} name="point_3"  placeholder="Enter Point" className=" form-control" />
+                                                        </div></>:null}
+                                                        {catView.ops_4!=""?<>
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Option 4 </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catView.ops_4=="Team A"?teamA:catView.ops_4=="Team B"?teamB:catView.ops_4}   placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Points For Option 4</label>
+                                                        <input type='number' autoComplete="off" defaultValue={match_card_data.point_4} name="point_4"  placeholder="Enter Point" className=" form-control" />
+                                                        </div></>:null}
+
                                                     
                                                         <div className="col-lg-12 mb-0">
-                                                        <label className="title-col mb-3">Appearance Time</label>
+                                                        <label className="title-col mb-2">Appearance Time</label>
                                                         <div className="row">
 
-                                                            <div className="col-lg-6 reletive mb-4">
+                                                            <div className="col-lg-6 reletive mb-3">
                                                             <span className='title-col'>Minute</span>
                                                             <Select labelId="hminute" className="card-select" menuPortalTarget={document.body}
                                                               defaultValue={{ label : match_card_data.apperance_times==undefined?null:match_card_data.apperance_times.substring(0, 2), value: match_card_data.apperance_times==undefined?null:match_card_data.apperance_times.substring(0, 2) }}
                                                               styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
                                                             </div>
-                                                            <div className="col-lg-6 reletive mb-4">
+                                                            <div className="col-lg-6 reletive mb-3">
                                                             <span className='title-col'>Second</span>
                                                             <Select labelId="hminute" className="card-select" menuPortalTarget={document.body}
                                                               defaultValue={{ label : match_card_data.apperance_times==undefined?null:match_card_data.apperance_times.slice(-2), value: match_card_data.apperance_times==undefined?null:match_card_data.apperance_times.slice(-2) }}
@@ -790,17 +837,17 @@ const saveFormData = async (e) => {
                                                         </div>
                                                         </div>
 
-                                                        <div className="col-lg-12 mb-4">
-                                                        <label className="title-col mb-3"> Time-Duration</label>
+                                                        <div className="col-lg-12 mb-3">
+                                                        <label className="title-col mb-2"> Time-Duration</label>
                                                         <div className="row">
 
-                                                            <div className="col-lg-6 reletive mb-4">
+                                                            <div className="col-lg-6 reletive mb-3">
                                                             <span className='title-col'>Minute</span>
                                                             <Select menuPortalTarget={document.body} className="card-select"
                                                               defaultValue={{ label : match_card_data.time_duration==undefined?null:match_card_data.time_duration.substring(0, 2), value: match_card_data.time_duration==undefined?null:match_card_data.time_duration.substring(0, 2) }}
                                                               styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
                                                             </div>
-                                                            <div className="col-lg-6 reletive mb-4">
+                                                            <div className="col-lg-6 reletive mb-3">
                                                             <span className='title-col'>Second</span>
                                                             <Select menuPortalTarget={document.body} className="card-select"
                                                               defaultValue={{ label : match_card_data.time_duration==undefined?null:match_card_data.time_duration.slice(-2), value: match_card_data.time_duration==undefined?null:match_card_data.time_duration.slice(-2) }}
@@ -810,30 +857,16 @@ const saveFormData = async (e) => {
 
                                                         </div>
                                                         </div>
-                                                        <div className="col-lg-6 mb-4">
-                                                        <label className="title-col mb-0">Points For Option 1 </label>
-                                                        <input type='number' autoComplete="off" defaultValue={match_card_data.point_1} name="point_1"  placeholder="Enter Point" className="card-control form-control" />
-                                                        </div>
 
-                                                        <div className="col-lg-6 mb-4">
-                                                        <label className="title-col mb-0">Points For Option 2</label>
-                                                        <input type='number' autoComplete="off" defaultValue={match_card_data.point_2} name="point_2"  placeholder="Enter Point" className="card-control form-control" />
-                                                        </div>
-                                                        {catView.ops_3!=""?
-                                                        <div className="col-lg-6 mb-4">
-                                                        <label className="title-col mb-0">Points For Option 3</label>
-                                                        <input type='number' autoComplete="off" defaultValue={match_card_data.point_3} name="point_3"  placeholder="Enter Point" className="card-control form-control" />
-                                                        </div>:null}
-                                                        {catView.ops_4!=""?
-                                                        <div className="col-lg-6 mb-4">
-                                                        <label className="title-col mb-0">Points For Option 4</label>
-                                                        <input type='number' autoComplete="off" defaultValue={match_card_data.point_4} name="point_4"  placeholder="Enter Point" className="card-control form-control" />
-                                                        </div>:null}
-                                                        <div className="col-lg-6 mb-4">
+
+
+
+
+                                                        <div className="col-lg-6 ">
                                                         <input type='text' hidden autoComplete="off" defaultValue={match_id} name="match_id"  placeholder="Enter Point" className="card-control form-control" />
                                                         </div>
 
-                                                        <div className="col-lg-6 mb-4">
+                                                        <div className="col-lg-6 ">
                                                         <input type='text' hidden autoComplete="off" defaultValue={catViewAdd._id} name="card_id"  placeholder="Enter Point" className="card-control form-control" />
                                                         </div>
 
@@ -852,25 +885,66 @@ const saveFormData = async (e) => {
 
                             <Modal open={openAdd} onClose={onCloseModalAdd} center>
                                                 <h2 className="mb-4 text-white">Add Match Card</h2>
-                                                <p className="mb-1 text-white">Adding "{catViewAdd.name}" In "{match_name}"</p>
-                                                <p className="mb-1 text-white">Question : {catViewAdd.qus}</p>
                                                 
                                                 <div className="mx-500">
                                                     <form className="mt-3 w-100" onSubmit={(e) => saveFormDataAdd(e)}>
                                                     <div className="row">
                                                         
-                                                    
+                                                        
+                                                    <div className="col-lg-12 mb-3">
+                                                        <label className="title-col mb-0">Question </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catViewAdd.qus}  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Option 1 </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catViewAdd.ops_1=="Team A"?teamA:catViewAdd.ops_1=="Team B"?teamB:catViewAdd.ops_1}  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Points For Option 1 </label>
+                                                        <input type='number' autoComplete="off" defaultValue={catViewAdd.point_1} name="point_1"  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Option 2 </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catViewAdd.ops_2=="Team A"?teamA:catViewAdd.ops_2=="Team B"?teamB:catViewAdd.ops_2}  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Points For Option 2</label>
+                                                        <input type='number' autoComplete="off" defaultValue={catViewAdd.point_2} name="point_2"  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+                                                        {catViewAdd.ops_3!=""?<>
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Option 3 </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catViewAdd.ops_3=="Team A"?teamA:catViewAdd.ops_3=="Team B"?teamB:catViewAdd.ops_3}  placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Points For Option 3</label>
+                                                        <input type='number' autoComplete="off" defaultValue={catViewAdd.point_3} name="point_3"  placeholder="Enter Point" className=" form-control" />
+                                                        </div></>:null}
+                                                        {catViewAdd.ops_4!=""?<>
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Option 4 </label>
+                                                        <input disabled type='text' autoComplete="off" defaultValue={catViewAdd.ops_4=="Team A"?teamA:catViewAdd.ops_4=="Team B"?teamB:catViewAdd.ops_4}   placeholder="Enter Point" className=" form-control" />
+                                                        </div>
+                                                        <div className="col-lg-6 mb-3">
+                                                        <label className="title-col mb-0">Points For Option 4</label>
+                                                        <input type='number' autoComplete="off" defaultValue={catViewAdd.point_4} name="point_4"  placeholder="Enter Point" className=" form-control" />
+                                                        </div></>:null}
+
                                                     
                                                         <div className="col-lg-12 mb-0">
                                                         <label className="title-col mb-3">Appearance Time</label>
                                                         <div className="row">
 
-                                                            <div className="col-lg-6 reletive mb-4">
+                                                            <div className="col-lg-6 reletive mb-3">
                                                             <span className='title-col'>Minute</span>
                                                             <Select labelId="hminute" className="card-select" menuPortalTarget={document.body}
                                                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHminute} options={hminuteOptions} />
                                                             </div>
-                                                            <div className="col-lg-6 reletive mb-4">
+                                                            <div className="col-lg-6 reletive mb-3">
                                                             <span className='title-col'>Second</span>
                                                             <Select labelId="hminute" className="card-select" menuPortalTarget={document.body}
                                                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} id="hminute" onChange={handleChangeHSecond} options={hsecondOptions} />
@@ -879,16 +953,16 @@ const saveFormData = async (e) => {
                                                         </div>
                                                         </div>
 
-                                                        <div className="col-lg-12 mb-4">
+                                                        <div className="col-lg-12 mb-2">
                                                         <label className="title-col mb-3"> Time-Duration</label>
                                                         <div className="row">
 
-                                                            <div className="col-lg-6 reletive mb-4">
+                                                            <div className="col-lg-6 reletive mb-3">
                                                             <span className='title-col'>Minute</span>
                                                             <Select menuPortalTarget={document.body} className="card-select"
                                                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeMinute} options={minuteOptions} />
                                                             </div>
-                                                            <div className="col-lg-6 reletive mb-4">
+                                                            <div className="col-lg-6 reletive mb-3">
                                                             <span className='title-col'>Second</span>
                                                             <Select menuPortalTarget={document.body} className="card-select"
                                                                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} labelId="hminute" id="hminute" onChange={handleChangeSecond} options={secondOptions} />
@@ -897,30 +971,12 @@ const saveFormData = async (e) => {
 
                                                         </div>
                                                         </div>
-                                                        <div className="col-lg-6 mb-4">
-                                                        <label className="title-col mb-0">Points For Option 1 </label>
-                                                        <input type='number' autoComplete="off" defaultValue={catViewAdd.point_1} name="point_1"  placeholder="Enter Point" className="card-control form-control" />
-                                                        </div>
-
-                                                        <div className="col-lg-6 mb-4">
-                                                        <label className="title-col mb-0">Points For Option 2</label>
-                                                        <input type='number' autoComplete="off" defaultValue={catViewAdd.point_2} name="point_2"  placeholder="Enter Point" className="card-control form-control" />
-                                                        </div>
-                                                        {catViewAdd.ops_3!=""?
-                                                        <div className="col-lg-6 mb-4">
-                                                        <label className="title-col mb-0">Points For Option 3</label>
-                                                        <input type='number' autoComplete="off" defaultValue={catViewAdd.point_3} name="point_3"  placeholder="Enter Point" className="card-control form-control" />
-                                                        </div>:null}
-                                                        {catViewAdd.ops_4!=""?
-                                                        <div className="col-lg-6 mb-4">
-                                                        <label className="title-col mb-0">Points For Option 4</label>
-                                                        <input type='number' autoComplete="off" defaultValue={catViewAdd.point_4} name="point_4"  placeholder="Enter Point" className="card-control form-control" />
-                                                        </div>:null}
-                                                        <div className="col-lg-6 mb-4">
+                                                        
+                                                        <div className="col-lg-6 ">
                                                         <input type='text' hidden autoComplete="off" defaultValue={match_id} name="match_id"  placeholder="Enter Point" className="card-control form-control" />
                                                         </div>
 
-                                                        <div className="col-lg-6 mb-4">
+                                                        <div className="col-lg-6 ">
                                                         <input type='text' hidden autoComplete="off" defaultValue={catViewAdd._id} name="card_id"  placeholder="Enter Point" className="card-control form-control" />
                                                         </div>
 

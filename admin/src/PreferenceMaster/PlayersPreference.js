@@ -313,7 +313,7 @@ export default function TeamsPreference() {
                                                                 {data == '' ? <>
                                                                     <tr>
                                                                     <td className="text-center" colspan='4'> 
-                                                                        <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                                                                    <span>No players available!</span> </td>
                                                                     </tr>
                                                                     </> : null}
                                                                     {data.map((item) => {

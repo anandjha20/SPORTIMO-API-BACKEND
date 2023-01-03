@@ -58,9 +58,10 @@ const team_matches = require('../models/team_matches');
          let mydate = getcurntDate();
 
                    let add = new prediction_cards_tbl({
-                                "name":user_data.name,
+                        "name":user_data.name,
                         "name_ara": user_data.name_ara,
-                       "card_type": user_data.card_type,
+                        "name_fr": user_data.name_fr,
+                        "card_type": user_data.card_type,
                       
                        "card_cat_id":user_data.card_cat_id,
                        "time_range":user_data.time_range,
@@ -69,11 +70,11 @@ const team_matches = require('../models/team_matches');
                          "card_color": user_data.card_color,             
                          "font_color": user_data.font_color,             
 
-                       "qus": user_data.qus,        "qus_ara": user_data.qus_ara,
-                       "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,
-                       "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,
-                       "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,
-                       "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,
+                       "qus": user_data.qus,        "qus_ara": user_data.qus_ara,     "qus_fr": user_data.qus_fr,
+                       "ops_1":user_data.ops_1,     "ops_1_ara":user_data.ops_1_ara,  "ops_1_fr":user_data.ops_1_fr,
+                       "ops_2": user_data.ops_2,    "ops_2_ara":user_data.ops_2_ara,  "ops_2_fr":user_data.ops_2_fr,
+                       "ops_3":user_data.ops_3,     "ops_3_ara":user_data.ops_3_ara,  "ops_3_fr":user_data.ops_3_fr,
+                       "ops_4":user_data.ops_4,     "ops_4_ara":user_data.ops_4_ara,  "ops_4_fr":user_data.ops_4_fr,
                        "point_1": user_data.point_1, "point_2": user_data.point_2,
                        "point_3": user_data.point_3, "point_4": user_data.point_4,
                        "date": mydate
@@ -145,7 +146,14 @@ const team_matches = require('../models/team_matches');
                                       item.ops_2 = item.ops_2_ara;  
                                       item.ops_3 = item.ops_3_ara;  
                                       item.ops_4 = item.ops_4_ara;  
-                              }
+                              }else   if(language != '' && language == 'fr'){ 
+                                item.name = item.name_fr;  
+                                item.qus = item.qus_fr;  
+                                  item.ops_1 = item.ops_1_fr;  
+                                  item.ops_2 = item.ops_2_fr;  
+                                  item.ops_3 = item.ops_3_fr;  
+                                  item.ops_4 = item.ops_4_fr;  
+                          }
                               return item; })}
           
           
@@ -160,6 +168,8 @@ const team_matches = require('../models/team_matches');
     static card_list_by_match = async (req,res)=>{
       try {
           let match_id = req.params.id;
+          let team_data=await team_matches_tbl.findOne({_id:match_id}).select('team_a_name team_b_name');
+          console.log(team_data)
           let records = await prediction_cards_tbl.find().populate('card_cat_id').sort({"name":-1});
           let data=[]    
           let d1=await Promise.all(records.map(async (item)=>{
@@ -167,7 +177,7 @@ const team_matches = require('../models/team_matches');
             data.push({...item._doc,match_card_data})
           }))
           data.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
-              res.status(200).send({'status':true,'msg':"success",  'body':data });
+              res.status(200).send({'status':true,'msg':"success", team_data ,'body':data });
   
       } catch (error) { console.log(error);
           res.status(200).send({'status':false,'msg':"Server error",'body':''});
@@ -798,6 +808,53 @@ if(err) {  console.log(err);
                                     item.card_id.ops_4 = item.card_id.ops_4_ara;
                                   }
                           
+                      }else if(language != '' && language == 'fr'){ 
+
+                        item.card_id.name = item.card_id.name_fr;
+                        item.card_id.qus  = item.card_id.qus_fr;
+
+                     let matchData =JSON.parse(JSON.stringify(item.match_id)) ;
+                 
+                    
+                      //  item.card_id.ops_1 = item.card_id.ops_1_fr;
+                      ///  item.card_id.ops_2 = item.card_id.ops_2_fr;
+                      //  item.card_id.ops_3 = item.card_id.ops_3_fr;
+                      //  item.card_id.ops_4 = item.card_id.ops_4_fr;
+                    
+                      // option 1 tame name 
+                      if((item.card_id.ops_1 == 'Team A')){
+                          item.card_id.ops_1 =  matchData.team_a_name_fr ;
+                         }else  if((item.card_id.ops_1 == 'Team B')){
+                            item.card_id.ops_1 =  matchData.team_b_name_fr ;
+                          }else{
+                            item.card_id.ops_1 = item.card_id.ops_1_fr;
+                          }
+
+                        // option 2 tame name    
+                              if((item.card_id.ops_2 == 'Team A')){
+                                item.card_id.ops_2 =  matchData.team_a_name_fr ;
+                              }else  if((item.card_id.ops_2 == 'Team B')){
+                                item.card_id.ops_2 = matchData.team_b_name_fr ;
+                              }else{
+                                item.card_id.ops_2 = item.card_id.ops_2_fr;
+                              }
+                          // option 3 tame name 
+                          if((item.card_id.ops_3 == 'Team A')){
+                            item.card_id.ops_3 =  matchData.team_a_name_fr ;
+                          }else  if((item.card_id.ops_3 == 'Team B')){
+                            item.card_id.ops_3 =  matchData.team_b_name_fr ; 
+                          }else{
+                            item.card_id.ops_3 = item.card_id.ops_3_fr;
+                          }
+                        // option 4 tame name    
+                          if((item.card_id.ops_4 == 'Team A')){
+                            item.card_id.ops_4 =  matchData.team_a_name_fr ;
+                          }else  if((item.card_id.ops_4 == 'Team B')){
+                            item.card_id.ops_4 =  matchData.team_b_name_fr ;
+                          }else{
+                            item.card_id.ops_4 = item.card_id.ops_4_fr;
+                          }
+                  
                       }else{
                                  // option 1 tame name 
                                     if((item.card_id.ops_1 == 'Team A')){
@@ -825,8 +882,16 @@ if(err) {  console.log(err);
                                 }
 
                          }
-                        item.card_id.image=`${path}/image/assets/predictionCard_img/${item.card_id.image}`
-                        let point=[item.card_id.point_1,item.card_id.point_2,item.card_id.point_3,item.card_id.point_4]
+                        item.card_id.image=`${path}/image/assets/predictionCard_img/${item.card_id.image}`;
+                        item.card_id.point_1=item.point_1;
+                        item.card_id.point_2=item.point_2;
+                        item.card_id.point_3=item.point_3;
+                        item.card_id.point_4=item.point_4;
+                        let point=[];
+                        if(item.card_id.ops_1!=""){point.push(item.point_1)}
+                        if(item.card_id.ops_2!=""){point.push(item.point_2)}
+                        if(item.card_id.ops_3!=""){point.push(item.point_3)}
+                        if(item.card_id.ops_4!=""){point.push(item.point_4)}
                         let max_point=point.sort(function(a, b){return b-a})[0]
                         let min_point=point.sort(function(a, b){return a-b})[0]
                         data.push({...item._doc,max_point,min_point})

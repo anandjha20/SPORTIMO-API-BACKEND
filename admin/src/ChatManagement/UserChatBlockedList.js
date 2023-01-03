@@ -111,7 +111,7 @@ function UserChatBlockedList() {
                                     {statusTrue == false ? <>
                                                <tr>
                                                       <td className="text-center w-100">
-                                                     <img src="/assets/images/nodatafound.png" alt='no image' width="250px" /> </td>
+                                                     <span>No users available!</span> </td>
                                               </tr>
                                             </> : null }
                                         {statusTrue == true ? <>

@@ -30,6 +30,7 @@ function ViewCardCategory() {
         [
             { title: 'Category (English)', field: 'name' },
             { title: 'Category (Arabic)', field: 'name_ara' },
+            { title: 'Category (French)', field: 'name_fr' },
         ]
 
 

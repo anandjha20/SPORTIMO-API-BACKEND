@@ -49,7 +49,6 @@ export default function CreateTipsTricks() {
 
  const columns =[   
  { title: 'Tips & Tricks (English)', field: 'tips_trick' }, 
-  { title: 'Tips & Tricks (Arabic)', field: 'tips_trick_ara' }, 
   { title: 'Status', render: rowData => {
     if (rowData.active_status == true) {
         return (
@@ -102,9 +101,11 @@ export default function CreateTipsTricks() {
 
             let tips_trick = (e.target.elements.tips_trick !== 'undefined') ? e.target.elements.tips_trick.value : '';
                 let tips_trick_ara = (e.target.elements.tips_trick_ara !== 'undefined') ? e.target.elements.tips_trick_ara.value : '';
+                let tips_trick_fr = (e.target.elements.tips_trick_fr !== 'undefined') ? e.target.elements.tips_trick_fr.value : '';
                 let dataToSend2 = {
                     "tips_trick": tips_trick,
                     "tips_trick_ara": tips_trick_ara,
+                    "tips_trick_fr": tips_trick_fr,
                 }
 
 
@@ -124,11 +125,7 @@ export default function CreateTipsTricks() {
                             toast.success(data.msg);
 
                             e.target.reset();
-                            return axios.get("/web_api/get_tip_list", options1)
-                            .then(res => {
-                                const userData = res.data.body;
-                                setData(userData);
-                            })
+                            return TipsTricksList()
                             
                         } else {
                             toast.error('something went wrong please try again');
@@ -188,10 +185,12 @@ export default function CreateTipsTricks() {
 
         let tips_trick = (e.target.elements.tips_trick !== 'undefined') ? e.target.elements.tips_trick.value : '';
         let tips_trick_ara = (e.target.elements.tips_trick_ara !== 'undefined') ? e.target.elements.tips_trick_ara.value : '';
+        let tips_trick_fr = (e.target.elements.tips_trick_fr !== 'undefined') ? e.target.elements.tips_trick_fr.value : '';
         let id = (e.target.elements.id !== 'undefined') ? e.target.elements.id.value : '';
         let dataToSend2 = {
             "tips_trick": tips_trick,
             "tips_trick_ara": tips_trick_ara,
+            "tips_trick_fr": tips_trick_fr,
             "id": id,
         }
         console.log("new values == ", dataToSend2);
@@ -265,6 +264,11 @@ export default function CreateTipsTricks() {
                                                          type="text"
                                                         />
 
+                                                    <label className="title-col">Add Tips & Tricks <span className="text-blue">(French)</span></label>
+                                                      <input  id="categor" autoComplete="off" className="form-control mb-4" name="tips_trick_fr"
+                                                         type="text"
+                                                        />
+
                                                     <div className="mt-3">
                                                         <Button type='submit'  className="mr-3 btn-pd btnBg">Add</Button>
                                                         <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
@@ -319,6 +323,11 @@ export default function CreateTipsTricks() {
 
                                                           <label className="title-col"> Tips & Tricks <span className="text-blue">(Arabic)</span></label>
                                                           <input  id="categor" autoComplete="off" defaultValue={catView.tips_trick_ara} className="form-control mb-4" name="tips_trick_ara"
+                                                         type="text"
+                                                        />
+
+                                                        <label className="title-col"> Tips & Tricks <span className="text-blue">(French)</span></label>
+                                                          <input  id="categor" autoComplete="off" defaultValue={catView.tips_trick_fr} className="form-control mb-4" name="tips_trick_fr"
                                                          type="text"
                                                         />
 

@@ -54,11 +54,13 @@ function AddContent() {
           let type = (e.target.elements.type !== 'undefined') ? e.target.elements.type.value : '';
           let content_data = {value}
           let content_data_ara = {value_ara}
+          let content_data_fr = {value_fr}
 
           let dataToSend2 = {
            "type": type,
            "content_data": value,
            "content_data_ara": value_ara,
+           "content_data_fr": value_fr,
           }
 
           console.log("new values == ", dataToSend2);
@@ -108,6 +110,10 @@ function AddContent() {
   const [value_ara, setValue_ara] = useState("");
   const getValue_ara = (value_ara) => {
     setValue_ara(value_ara);
+  };
+  const [value_fr, setValue_fr] = useState("");
+  const getValue_fr = (value_fr) => {
+    setValue_fr(value_fr);
   };
   return (
     <>
@@ -178,6 +184,15 @@ function AddContent() {
                               {/* <ReactEditorJS  name='content_data' tools={EDITOR_JS_TOOLS}  setValu>
                               </ReactEditorJS> */}
                              <RichTextEditor initialValue="" getValue={getValue_ara} />
+                            
+                            </div>
+
+                            <div className="col-lg-12 mb-4">
+                              <label className="title-col">CONTENT (French)</label>
+                              {/* <TextField id="filled-multiline-static" label="Enter Question" multiline rows={4} fullWidth defaultValue="" variant="filled" /> */}
+                              {/* <ReactEditorJS  name='content_data' tools={EDITOR_JS_TOOLS}  setValu>
+                              </ReactEditorJS> */}
+                             <RichTextEditor initialValue="" getValue={getValue_fr} />
                             
                             </div>
 

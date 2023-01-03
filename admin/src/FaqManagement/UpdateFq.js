@@ -137,6 +137,8 @@ function ViewFaqDetail() {
       let answer = (e.target.elements.answer !== 'undefined') ? e.target.elements.answer.value : '';
       let question_ara = (e.target.elements.question_ara !== 'undefined') ? e.target.elements.question_ara.value : '';
       let answer_ara = (e.target.elements.answer_ara !== 'undefined') ? e.target.elements.answer_ara.value : '';
+      let question_fr = (e.target.elements.question_fr !== 'undefined') ? e.target.elements.question_fr.value : '';
+      let answer_fr = (e.target.elements.answer_fr !== 'undefined') ? e.target.elements.answer_fr.value : '';
 
       let id = (e.target.elements.id !== 'undefined') ? e.target.elements.id.value : '';
 
@@ -149,6 +151,8 @@ function ViewFaqDetail() {
         "answer": answer,
         "question_ara": question_ara,
         "answer_ara": answer_ara,
+        "question_fr": question_fr,
+        "answer_fr": answer_fr,
         "id": id,
       }
 
@@ -301,6 +305,17 @@ function ViewFaqDetail() {
                                 <div className="col-lg-12 mb-4">
                                <label className="title-col">Answer <span className="text-blue">(Arabic)</span> </label>
                                  <TextField id="filled-multiline-static" defaultValue={data.answer_ara || ''} className="update-input" multiline rows={3} fullWidth name='answer_ara' variant="filled" />
+                                </div>
+
+                              {/* ///////////French////////// */}
+                              <div className="col-lg-12 mb-4">
+                               <label className="title-col">Question <span className="text-blue">(French)</span> </label>
+                               <TextField id="filled-multiline-static" defaultValue={data.question_fr || ''} className="update-input" multiline rows={3} fullWidth name='question_fr' variant="filled" />
+                              </div>
+
+                                <div className="col-lg-12 mb-4">
+                               <label className="title-col">Answer <span className="text-blue">(French)</span> </label>
+                                 <TextField id="filled-multiline-static" defaultValue={data.answer_fr || ''} className="update-input" multiline rows={3} fullWidth name='answer_fr' variant="filled" />
                                 </div>
 
                             <div className="col-lg-12 text-end">

@@ -9,7 +9,9 @@ const pollschema = new Schema({
          question: { type: String, required: true }, 
          answer: { type: String, required: true }, 
          question_ara: { type: String, required: true },
-         answer_ara : { type: String, required: true }
+         answer_ara : { type: String, required: true },
+         question_fr: { type: String, required: true },
+         answer_fr : { type: String, required: true }
     });        
 
 

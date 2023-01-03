@@ -381,7 +381,7 @@ const handleChangeToggleSkip = (event) => {
                                                                 {data == '' ? <>
                                                                     <tr>
                                                                     <td className="text-center" colSpan='4'> 
-                                                                        <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                                                                    <span>No screens available!</span></td>
                                                                     </tr>
                                                                     </> : null}
                                                                     {data.map((item) => {

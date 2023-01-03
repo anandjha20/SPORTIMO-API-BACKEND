@@ -183,7 +183,7 @@ class AdminController {
                 let user_data = req.body;
                 // console.log(req);
                   let addtips = new tips_trick({
-                    tips_trick: user_data.tips_trick, tips_trick_ara: user_data.tips_trick_ara,
+                    tips_trick: user_data.tips_trick, tips_trick_ara: user_data.tips_trick_ara,tips_trick_fr: user_data.tips_trick_fr,
                     active_status: user_data.active_status,
                   });
                let dd  = addtips.save();
@@ -198,11 +198,12 @@ class AdminController {
                 let  id = req.body.id;                  
                 let tips = req.body.tips_trick;         
                 let tips_trick_ara = req.body.tips_trick_ara;
+                let tips_trick_fr = req.body.tips_trick_fr;
 
-                if( isEmpty(id) ||  isEmpty(tips_trick) ||  isEmpty(tips_trick_ara)  ){
+                if( isEmpty(id) ||  isEmpty(tips) ||  isEmpty(tips_trick_ara)||  isEmpty(tips_trick_fr)  ){
                 return   res.status(200).send({'status':false,'msg':"No Data Found!..",'body':''});
                 }    
-              tips_trick.findOneAndUpdate({_id: id},{$set : {tips_trick_ara,"content_add":tips}},{new: true}, (err, updatedUser) => {
+              tips_trick.findOneAndUpdate({_id: id},{$set : {tips_trick_ara,tips_trick_fr,"tips_trick":tips,"content_add":tips}},{new: true}, (err, updatedUser) => {
             if(err) {  console.log(err);
                 return res.status(200).send({"status":false,"msg":'some errors ' , "body":''}) ;   
             }
@@ -357,6 +358,8 @@ class AdminController {
            
             let question_ara  = req.body.question_ara; 
             let answer_ara    = req.body.answer_ara;  
+            let question_fr  = req.body.question_fr; 
+            let answer_fr    = req.body.answer_fr;  
 
             if(isEmpty(cat_id) || isEmpty(question) || isEmpty(answer) || 
                   isEmpty(question_ara) || isEmpty(answer_ara) ){
@@ -364,7 +367,7 @@ class AdminController {
             }
 
             
-            let add = new faq_tbl({question,answer,question_ara,answer_ara,faq_cat_id:cat_id});
+            let add = new faq_tbl({question,answer,question_ara,answer_ara,question_fr,answer_fr,faq_cat_id:cat_id});
           
           let response  =   await add.save();
           if(response){ 
@@ -456,7 +459,7 @@ class AdminController {
                   let  id = req.params.id;  let id_len = (id || '').length;
                   let whr = (id_len == 0) ? {} :{_id:id}; // active_status:true
             
-            let data = await faq_tbl.find(whr).populate({path: 'faq_cat_id' ,"select":'cat_name cat_name_ara cat_name_fr _id'}).select({'_id':1,'question':1,'answer':1,'question_ara':1,'answer_ara':1,'faq_cat_id': 1}).exec();
+            let data = await faq_tbl.find(whr).populate({path: 'faq_cat_id' ,"select":'cat_name cat_name_ara cat_name_fr _id'}).select({'_id':1,'question':1,'answer':1,'question_ara':1,'answer_ara':1,'question_fr':1,'answer_fr':1,'faq_cat_id': 1}).exec();
                   console.log("faq_list == ", data); 
                   if(!isEmpty(data)){
                   
@@ -492,18 +495,19 @@ class AdminController {
       try{    let type  = req.body.type;
               let content_data = req.body.content_data;
               let content_data_ara = req.body.content_data_ara;  
+              let content_data_fr = req.body.content_data_fr;  
    
-          if(isEmpty(type) || isEmpty(content_data) || isEmpty(content_data_ara) ){
+          if(isEmpty(type) || isEmpty(content_data) || isEmpty(content_data_ara)|| isEmpty(content_data_fr) ){
               return res.status(200).send({"status":false,"msg":'All Field Required '}) ;       
           }
             
-          content_tbls.findOneAndUpdate({type} ,{$set: {type,content_data,content_data_ara} },{new: true}, (err,updatedUser)=>{
+          content_tbls.findOneAndUpdate({type} ,{$set: {type,content_data,content_data_ara,content_data_fr} },{new: true}, (err,updatedUser)=>{
           if(err) {  console.log(err);
               return res.status(200).send({"status":false,"msg":'some errors '}) ;          
           }
         
           if(isEmpty(updatedUser)){
-                  let add =new content_tbls({type,content_data,content_data_ara});
+                  let add =new content_tbls({type,content_data,content_data_ara,content_data_fr});
                   add.save((err,datas)=>{
                     if(err){ console.log(err);   return res.status(200).send({"status":false,"msg":'some errors...'}) ;   
                          }else{ 

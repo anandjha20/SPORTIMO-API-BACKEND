@@ -203,6 +203,11 @@ const handleTypeSelect = e => {
                             </div>
 
                             <div className="col-lg-6 reletive mb-4">
+                            <label className="title-col">Card Name <span className="text-blue">(French)</span></label>
+                              <input readOnly type="text" defaultValue={location.state.rowData.name_fr} className="form-control card-input"  name='name_fr'  fullWidth  variant="filled" autoComplete="off" />
+                            </div>
+
+                            <div className="col-lg-6 reletive mb-4">
                             <label className="title-col">Card Type </label>
                             <input readOnly type="text" defaultValue={location.state.rowData.card_type} className="form-control card-input"  name='card_type'  fullWidth  variant="filled" autoComplete="off" />
                               {/* <Select  name="card_type" className="card-select" 
@@ -218,7 +223,7 @@ const handleTypeSelect = e => {
                             {dataSelectType !== "" ? <>
                             <div className="col-lg-6 reletive mb-4">
                             <label className="title-col">Time-Range</label>
-                              <input type="text" onChange={(e) => checkInput(e)} value={number}
+                              <input type="text" onChange={(e) => checkInput(e)} defaultValue={location.state.rowData.time_range}
                                maxLength="2" 
                                name="time_range" className="form-control card-input"  autoComplete="off" />
                             </div>
@@ -260,51 +265,79 @@ const handleTypeSelect = e => {
                               <TextField  name='qus_ara'  InputProps={{ readOnly: true }} defaultValue={location.state.rowData.qus_ara} label="Enter Question" multiline rows={4} fullWidth  variant="filled" autoComplete="off" />
                             </div>
 
+                             {/* ///////French////////// */}
+                             <div className="col-lg-12 mb-4">
+                              <label className="title-col">Question <span className="text-blue">(French)</span></label>
+                              <TextField  name='qus_fr'  InputProps={{ readOnly: true }} defaultValue={location.state.rowData.qus_fr} label="Enter Question" multiline rows={4} fullWidth  variant="filled" autoComplete="off" />
+                            </div>
 
-                            <div className="col-lg-6 mb-4">
+
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(English)</span></label>
                               <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_1}  name='ops_1' placeholder="Enter Answer" className="card-control form-control"/>
                             </div>
                             
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 1 <span className="text-blue">(Arabic)</span></label>
                               <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_1_ara}  name='ops_1_ara' placeholder="Enter Answer" className="card-control form-control"/>
                             </div>
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
+                              <label className="title-col mb-0">Answer 1 <span className="text-blue">(French)</span></label>
+                              <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_1_fr}  name='ops_1_fr' placeholder="Enter Answer" className="card-control form-control"/>
+                            </div>
+
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(English)</span></label>
                               <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_2}  name='ops_2' placeholder="Enter Answer" className="card-control form-control"/>
                             </div>
 
 
-                            <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
                               <label className="title-col mb-0">Answer 2 <span className="text-blue">(Arabic)</span></label>
                               <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_2_ara}  name='ops_2_ara' placeholder="Enter Answer" className="card-control form-control"/>
                             </div>
 
-                               <div className="col-lg-6 mb-4">
+                            <div className="col-lg-4 mb-4">
+                              <label className="title-col mb-0">Answer 2 <span className="text-blue">(French)</span></label>
+                              <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_2_fr}  name='ops_2_fr' placeholder="Enter Answer" className="card-control form-control"/>
+                            </div>
+
+                               <div className="col-lg-4 mb-4">
                                 <label className="title-col mb-0">Answer 3 <span className="text-blue">(English)</span></label>
                                 <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_3}  name='ops_3' placeholder="Enter Answer" className="card-control form-control"/>
                           
                                </div>
 
-                               <div className="col-lg-6 mb-4">
+                               <div className="col-lg-4 mb-4">
                                 <label className="title-col mb-0">Answer 3 <span className="text-blue">(Arabic)</span></label>
                                 <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_3_ara}  name='ops_3_ara' placeholder="Enter Answer" className="card-control form-control"/>
                           
                                </div>
 
-                               <div className="col-lg-6 mb-4">
+                               <div className="col-lg-4 mb-4">
+                                <label className="title-col mb-0">Answer 3 <span className="text-blue">(French)</span></label>
+                                <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_3_fr}  name='ops_3_fr' placeholder="Enter Answer" className="card-control form-control"/>
+                          
+                               </div>
+
+                               <div className="col-lg-4 mb-4">
                                 <label className="title-col mb-0">Answer 4 <span className="text-blue">(English)</span></label>
                                 <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_4}  name='ops_4' placeholder="Enter Answer" className="card-control form-control"/>
                           
                                </div>                       
                                
 
-                               <div className="col-lg-6 mb-4">
+                               <div className="col-lg-4 mb-4">
                                 <label  className="title-col mb-0">Answer 4 <span className="text-blue">(Arabic)</span></label>
                                 <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_4_ara}  name='ops_4_ara' placeholder="Enter Answer" className="card-control form-control"/>
+                          
+                               </div>
+
+                               <div className="col-lg-4 mb-4">
+                                <label  className="title-col mb-0">Answer 4 <span className="text-blue">(French)</span></label>
+                                <input readOnly type='text' autoComplete="off" defaultValue={location.state.rowData.ops_4_fr}  name='ops_4_fr' placeholder="Enter Answer" className="card-control form-control"/>
                           
                                </div>
 

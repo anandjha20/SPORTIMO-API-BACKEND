@@ -10,10 +10,10 @@ class defaultMsgController {
 
     static addDefaultMsg = async(req,res)=>{
         try {
-                let d_msg = req.body.d_msg; let d_msg_ara = req.body.d_msg_ara; 
-                if(isEmpty(d_msg) || isEmpty(d_msg_ara)){ return res.status(200).send({"status":false,"msg":'All Field Required'}) ; }
+                let d_msg = req.body.d_msg; let d_msg_ara = req.body.d_msg_ara;let d_msg_fr = req.body.d_msg_fr; 
+                if(isEmpty(d_msg) || isEmpty(d_msg_ara)|| isEmpty(d_msg_fr)){ return res.status(200).send({"status":false,"msg":'All Field Required'}) ; }
                 
-                let addData = {d_msg_ara,d_msg:d_msg } ;
+                let addData = {d_msg_ara,d_msg_fr,d_msg:d_msg } ;
                 
                 let add = new default_massages_tbl(addData) ;        
     
@@ -77,11 +77,12 @@ class defaultMsgController {
     static defaultMsg_update = async(req,res)=>{
         try {   
               let d_msg_id = req.params.id;
-              let d_msg = req.body.d_msg; let d_msg_ara = req.body.d_msg_ara; 
+              let d_msg = req.body.d_msg; let d_msg_ara = req.body.d_msg_ara;let d_msg_fr = req.body.d_msg_fr; 
             
              let whr = {};
                 if(!isEmpty(d_msg)){whr={...whr,"d_msg":d_msg}}
                 if(!isEmpty(d_msg_ara)){whr={...whr,"d_msg_ara":d_msg_ara}}
+                if(!isEmpty(d_msg_fr)){whr={...whr,"d_msg_fr":d_msg_fr}}
                 console.log(whr)
                 if(!isEmpty(d_msg_id)){
                 default_massages_tbl.findByIdAndUpdate(d_msg_id,whr, (err,data)=>{

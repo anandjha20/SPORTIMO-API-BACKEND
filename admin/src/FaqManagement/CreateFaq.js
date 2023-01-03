@@ -78,6 +78,8 @@ function CreateFaq() {
             let answer = (e.target.elements.answer !== 'undefined') ? e.target.elements.answer.value : '';
             let question_ara = (e.target.elements.question_ara !== 'undefined') ? e.target.elements.question_ara.value : '';
             let answer_ara = (e.target.elements.answer_ara !== 'undefined') ? e.target.elements.answer_ara.value : '';
+            let question_fr = (e.target.elements.question_fr !== 'undefined') ? e.target.elements.question_fr.value : '';
+            let answer_fr = (e.target.elements.answer_fr !== 'undefined') ? e.target.elements.answer_fr.value : '';
 
             let dataToSend2 = {
              "cat_id": cat_id,
@@ -85,6 +87,8 @@ function CreateFaq() {
              "answer": answer,
              "question_ara": question_ara,
              "answer_ara": answer_ara,
+             "question_fr": question_fr,
+             "answer_fr": answer_fr,
             }
             
             console.log("new values == ", dataToSend2);
@@ -214,6 +218,18 @@ function CreateFaq() {
                                                         <div className="col-lg-12 mb-4">
                                                             <label className="title-col">Answer <span className="text-blue">(Arabic)</span> </label>
                                                             <TextField id="filled-multiline-static" label="Enter Answer" multiline rows={4} fullWidth name='answer_ara' variant="filled" />
+                                                        </div>
+
+                                                        {/* ///////////French////////// */}
+                                                        <div className="col-lg-12 mb-4">
+                                                            <label className="title-col">Question <span className="text-blue">(French)</span> </label>
+                                                            <TextField id="filled-multiline-static" label="Enter Question" multiline rows={4} fullWidth name='question_fr' variant="filled" />
+                                                            
+                                                        </div>
+
+                                                        <div className="col-lg-12 mb-4">
+                                                            <label className="title-col">Answer <span className="text-blue">(French)</span> </label>
+                                                            <TextField id="filled-multiline-static" label="Enter Answer" multiline rows={4} fullWidth name='answer_fr' variant="filled" />
                                                         </div>
 
                                                         <div className="col-lg-12 text-end">

@@ -32,10 +32,9 @@ function TablePredictionCardList() {
         [
             { title: 'Card Icon', render: rowData => <><img src={rowData.image} alt="card icon" width="60px" /></> },
             { title: 'Card Name (English)', field: 'name' },
-            { title: 'Card Name (Arabic)', field: 'name_ara' },
             { title: 'Card Type ', field: 'card_type' },
-            { title: 'Time-Range ', field: 'time_range' },
             { title: 'Question (English)', field: 'qus' },
+            { title: 'Time-Range ', field: 'time_range' },
             // { title: 'Question (Arabic)', field: 'qus_ara' },
         ]
 

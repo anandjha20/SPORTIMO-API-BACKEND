@@ -200,6 +200,33 @@ function PollDetailComponent() {
                                 <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 5" value={pollData.ops_5_ara || ''} variant="filled" InputProps={{ readOnly: true, }} />
                               </div>
 
+                              <div className="col-lg-12 mb-4">
+                                <label className="title-col">Question <span className="text-blue">(French)</span></label>
+                                <TextField id="filled-multiline-static"
+                                  label="Enter Question" multiline rows={3} InputProps={{ readOnly: true, }} fullWidth value={pollData.qus_fr || ''} variant="filled" />
+
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 1" value={pollData.ops_1_fr || ''} variant="filled" InputProps={{ readOnly: true }} />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 2" value={pollData.ops_2_fr || ''} variant="filled" InputProps={{ readOnly: true }} />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 3" value={pollData.ops_3_fr || ''} variant="filled" InputProps={{ readOnly: true }} />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 4" value={pollData.ops_4_fr || ''} variant="filled" InputProps={{ readOnly: true }} />
+                              </div>
+
+                              <div className="col-lg-6 mb-4">
+                                <TextField id="filled-basic1" multiline rows={2} fullWidth label="Answer 5" value={pollData.ops_5_fr || ''} variant="filled" InputProps={{ readOnly: true, }} />
+                              </div>
+
 
                             </div>
 

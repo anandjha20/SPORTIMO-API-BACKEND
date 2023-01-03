@@ -131,10 +131,12 @@ export default function ReportReason() {
 
             let name = (e.target.elements.name !== 'undefined') ? e.target.elements.name.value : '';
             let name_ara = (e.target.elements.name_ara !== 'undefined') ? e.target.elements.name_ara.value : '';
+            let name_fr = (e.target.elements.name_fr !== 'undefined') ? e.target.elements.name_fr.value : '';
             let _id = (e.target.elements._id !== 'undefined') ? e.target.elements._id.value : '';
             let dataToSend2 = {
                 "name": name,
                 "name_ara": name_ara,
+                "name_fr": name_fr,
             }
             console.log("new values == ", dataToSend2);
 
@@ -169,10 +171,12 @@ export default function ReportReason() {
         try {
             let name = (e.target.elements.name !== 'undefined') ? e.target.elements.name.value : '';
             let name_ara = (e.target.elements.name_ara !== 'undefined') ? e.target.elements.name_ara.value : '';
+            let name_fr = (e.target.elements.name_fr !== 'undefined') ? e.target.elements.name_fr.value : '';
 
             let dataToSend2 = {
                 "name": name,
                 "name_ara": name_ara,
+                "name_fr": name_fr,
             }
             console.log("new values == ", dataToSend2);
             let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
@@ -268,6 +272,14 @@ export default function ReportReason() {
                                                         <p className="error">{errors.name_ara}</p>
                                                          )}
 
+                                                        <label className="title-col">Report Reason <span className="text-blue">(French)</span></label>
+                                                      <input  id="categor" autoComplete="off" className="form-control mb-4" name="name_fr"
+                                                         type="text"
+                                                        />
+                                                           {errors.name_fr && dirty.name_fr && (
+                                                        <p className="error">{errors.name_fr}</p>
+                                                         )}
+
                                                     <div className="mt-3">
                                                         <Button type='submit' className="mr-3 btn-pd btnBg" disabled={disable}>Add</Button>
                                                         <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
@@ -286,6 +298,7 @@ export default function ReportReason() {
                                                                     <tr>
                                                                         <th scope="col">Report Reason (English)</th>
                                                                         <th scope="col">Report Reason (Arabic)</th>
+                                                                        <th scope="col">Report Reason (French)</th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
                                                                 </thead>
@@ -293,7 +306,7 @@ export default function ReportReason() {
                                                                 {data == '' ? <>
                                                                     <tr>
                                                                     <td className="text-center" colSpan='3'> 
-                                                                        <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                                                                    <span>No reason available!</span> </td>
                                                                     </tr>
                                                                     </> : null}
                                                                     {data.map((item) => {
@@ -302,6 +315,7 @@ export default function ReportReason() {
                                                                                 <tr key={item._id}>
                                                                                     <td>{item.name}</td>
                                                                                     <td>{item.name_ara}</td>
+                                                                                    <td>{item.name_fr}</td>
                                                                                     <td className="text-end">
                                                                                         <div className="d-flex justtify-content-end">
                                                                                             <IconButton onClick={(e) => { onOpenModal(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">
@@ -362,6 +376,9 @@ export default function ReportReason() {
                                                             <label className="title-col">Report Reason <span className="text-blue">(Arabic)</span></label>
                                                             <input  id="categor" className="form-control mb-4" name="name_ara"
                                                                defaultValue={catView.name_ara}  type="text"  />   
+                                                            <label className="title-col">Report Reason <span className="text-blue">(French)</span></label>
+                                                            <input  id="categor" className="form-control mb-4" name="name_fr"
+                                                               defaultValue={catView.name_fr}  type="text"  />   
                                                               
 
                                                             <div className="mt-3">
