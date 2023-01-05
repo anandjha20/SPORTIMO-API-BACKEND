@@ -74,7 +74,7 @@ const token_check =  require('../middleware/token_check');
      
  ///  all list for add on Sponsorship form    
     router.post('/sport',SponsorshipController.sponsor_list);
-    router.get('/sport_list/:id?',token_check,FootballController.sport_list);
+    router.get('/sport_list/:id?',FootballController.sport_list);
     router.get('/league_list/:id?',token_check,FootballController.league_list);
     router.get('/team_list/:id?',token_check,FootballController.team_list);
     router.get('/player_list/:id?',token_check,FootballController.player_list);

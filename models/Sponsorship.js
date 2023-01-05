@@ -8,16 +8,14 @@ const sprtschema = new Schema({
       
          match: { type: String, required: true },
          image: { type: String, required: true, default :'' },
-         sports: { type: String, required: true, default :'' },
-    
+         
          reward_type    : { type: String,default :'' },
          reward_quantity: { type: String , default :'' },
-        
-         league: { type: String, required: true, default :'' },
-        
-         team :{ type: String, required: true, default :'' },
-         players:{ type: String, required: true, default :'' },
-         country:{ type: String, required: true, default :'' },
+         
+         sports: { type: Array,  default :[] },
+         league: { type: Array,  default :[] },
+         team :{ type: Array,  default :[] },
+         country:{ type: Array,  default :[] },
          skip_add: { type: Boolean,  default :0 },
          view_type:{ type: String,  enum: ['banner', 'video',], default :'banner' },
          Fdate: { type: Date,required: true },
