@@ -904,15 +904,9 @@ if(err) {  console.log(err);
                   //  let sendData = { all_card_count,played_cards_count,"list":data };
                     
                     let sendData = { all_card_count,played_cards_count, userpowers,usedPoweUps_count, "list":data };
-                    if(!isEmpty(data)){
 
-                      return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,
-                      score,all_card_count,played_cards_count,userpowers,usedPoweUps_count , 'body':data });
-                    }else{
-                      return  res.status(200).send({'status':false,'msg': (language == 'ar')? "النجاح"  : "success" ,
-                      score,all_card_count,played_cards_count,userpowers,usedPoweUps_count , 'body':data });
-                    
-                    }
+                           return  res.status(200).send({'status':true,'msg': (language == 'ar')? "النجاح"  : "success" ,
+                           score,all_card_count,played_cards_count,userpowers,usedPoweUps_count , 'body':data });
                     }else{
                          return res.status(200).send({'status':false,'msg':  (language == 'ar')? "لاتوجد بيانات!.." :  "No Data Found!.."});
                           }
