@@ -88,7 +88,7 @@ const userReportImg =  img_upload('./assets/user_img','image');
            
       ///  all Sponsorship Routes
         router.post('/sponsor_list',SponsorshipController.sponsor_list);
-        router.get('/sponsor_detail/:id ?',SponsorshipController.sponsor_detail);
+        router.get('/sponsor_detail/:id ?',SponsorshipController.sponsor_detail_user);
         router.put('/sponsorship_impressions_count_add',SponsorshipController.sponsorship_impressions_count_add);
         router.put('/sponsorship_clicks_count_add',SponsorshipController.sponsorship_clicks_count_add);
 

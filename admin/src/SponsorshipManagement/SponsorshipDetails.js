@@ -35,6 +35,7 @@ function SponsorshipDetails() {
           
     
          if(t_data.status){
+            
             setSponsorData(t_data.body);
          }
          
@@ -96,43 +97,46 @@ function SponsorshipDetails() {
 
                                                         <div className="col-lg-6 mb-3">
                                                             <label className="title-col mb-2">Match/league</label>
-                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input"   value = {sponsorData[0].allData.match || ''} 
+                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input"   value = {sponsorData[0].match || ''} 
                                                                variant="filled"  InputProps={{ readOnly: true, }} />
                                                         </div>
 
                                                         <div className="col-lg-3 mb-3">
                                                         <label className="title-col mb-2">Impressions</label>
-                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].allData.impressions_count } variant="filled"
+                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].impressions_count } variant="filled"
                                                               InputProps={{ readOnly: true, }} />
                                                         </div>
 
                                                         <div className="col-lg-3 mb-3">
                                                         <label className="title-col mb-2">Clicks</label>
-                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].allData.clicks_count } variant="filled"
+                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].clicks_count } variant="filled"
                                                                 InputProps={{ readOnly: true, }} />
                                                         </div>
 
                                                         <div className="col-lg-6 mb-3">
                                                         <label className="title-col mb-2">Skippable</label>
-                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {(sponsorData[0].allData.skip_ad)? 'Yes' : 'No' } 
+                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {(sponsorData[0].skip_ad)? 'Yes' : 'No' } 
                                                               variant="filled"   InputProps={{ readOnly: true, }} />
                                                         </div>
 
                                                         <div className="col-lg-6 mb-3">
                                                         <label className="title-col mb-2">SPONSORSHIP TYPE</label>
-                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].allData.view_type || ''} 
+                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].view_type || ''} 
                                                                 variant="filled" InputProps={{ readOnly: true, }} />
                                                         </div>
 
                                                         <div className="col-lg-12 mb-3">
-                                                        <label className="title-col mb-2">FILE UPLOAD</label>
+                                                        <label className="title-col mb-2">FILE UPLOADED</label>
                                                         <div className="row">
                                                             <div className="col-lg-12">
-                                                        <div className="banner-box">
-
-                                                            <img src=  {sponsorData[0].img || ''}  alt="banner image" />
-                                                        </div>
-                                                         
+                                                        {sponsorData[0].view_type=="banner"?
+                                                            <div className="banner-box">
+                                                                {sponsorData[0].image !== '' ? <img src={sponsorData[0].image || ''} alt="banner image" /> : <><img src='/assets/images/no-image.png' /></>}
+                                                            </div>
+                                                            :<div className="banner-box">
+                                                            {sponsorData[0].image !== '' ? <video height="200px" width="300px" controls><source src={sponsorData[0].image || ''}  type="video/mp4"></source></video> : <><img src='/assets/images/no-image.png' /></>}
+                                                            </div>
+                                                            }
                                                         </div>
                                                         </div>
                                                         </div>
@@ -142,18 +146,18 @@ function SponsorshipDetails() {
                                                         <div className="row">
                                                             <div className="col-lg-6">
                                                             
-                                                            <TextField id="filled-basic" fullWidth label="Start Date"  value = {sponsorData[0].allData.Fdate.slice(0, 10).split("-").reverse().join("-") || ''} 
+                                                            <TextField id="filled-basic" fullWidth label="Start Date"  value = {sponsorData[0].Fdate.slice(0, 10).split("-").reverse().join("-") || ''} 
                                                                 InputProps={{ readOnly: true, }} />
                                                                 </div>
                                                             <div className="col-lg-6">
-                                                            <TextField id="filled-basic" fullWidth label="End Date"  value = {sponsorData[0].allData.Ldate.slice(0, 10).split("-").reverse().join("-") || ''} 
+                                                            <TextField id="filled-basic" fullWidth label="End Date"  value = {sponsorData[0].Ldate.slice(0, 10).split("-").reverse().join("-") || ''} 
                                                                 InputProps={{ readOnly: true, }} />
                                                                 </div>
                                                         </div>
                                                         </div>
                                                       
 
-                                                        <div className="col-lg-12 mb-3">
+                                                        {/* <div className="col-lg-12 mb-3">
                                                         <label className="title-col mb-2">SPONSORSHIP TARGETING</label>
                                                         <div className="row">
                                                             <div className="col-lg-6 mb-3">
@@ -171,9 +175,9 @@ function SponsorshipDetails() {
                                                                 </div>
                                                             
                                                         </div>
-                                                        </div>
+                                                        </div> */}
 
-                                                        <div className="col-lg-12 mb-3">
+                                                        {/* <div className="col-lg-12 mb-3">
                                                         <label className="title-col mb-2">TARGETED COUNTRY</label>
                                                         <div className="row">
                                                             <div className="col-lg-12 mb-3">
@@ -183,7 +187,7 @@ function SponsorshipDetails() {
                                                                 </div>
                                                             
                                                         </div>
-                                                        </div>
+                                                        </div> */}
 
 
                                                     </div>

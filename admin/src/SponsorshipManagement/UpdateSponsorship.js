@@ -50,6 +50,7 @@ export default function UpdateSponsorship() {
   const [skip_add, setSkip_add] = React.useState("1");
   const [view_type, setView_type] = React.useState("banner");
   const [imgpath, setImgPath] = React.useState('');
+  const [selectedMatch, setSelectedMatch] = React.useState('');
 
 
   const handleChangeToggle = (event) => {
@@ -89,11 +90,11 @@ export default function UpdateSponsorship() {
   };
 
   ////////////////////multiple dropdown //////////////////////////////
-  const [sport_lists, setSport_lists] = React.useState([]);
+  //const [sport_lists, setSport_lists] = React.useState([]);
   const [league_lists, setLeague_lists] = React.useState([]);
-  const [team_lists, setTeam_lists] = React.useState([]);
-  const [country_lists, setCountry_lists] = React.useState([]);
-  const [player_lists, setPlayer_lists] = React.useState([]);
+  // const [team_lists, setTeam_lists] = React.useState([]);
+  // const [country_lists, setCountry_lists] = React.useState([]);
+  // const [player_lists, setPlayer_lists] = React.useState([]);
 
   const get_data = async (url, setval) => {
     try {
@@ -123,11 +124,11 @@ export default function UpdateSponsorship() {
 
   }
   useEffect(async() => {
-  await get_data('/web_api/sport_list', setSport_lists);
+  //await get_data('/web_api/sport_list', setSport_lists);
   await get_data('/web_api/league_list_dropDown', setLeague_lists);
-  await get_data('/web_api/team_list_dropDown', setTeam_lists);
+  //await get_data('/web_api/team_list_dropDown', setTeam_lists);
     // get_data('/web_api/player_list', setPlayer_lists);
-    await get_data('/web_api/country_list', setCountry_lists);
+  //  await get_data('/web_api/country_list', setCountry_lists);
     document.body.classList.add('bg-salmon');
   }, []);
 
@@ -135,12 +136,13 @@ export default function UpdateSponsorship() {
   const SponsorshipDetail = async () => {
     await axios.get(`/web_api/sponsor_detail/${id}`)
       .then(res => {
-        const dataImg = res.data.body[0];
-        const imgpath = dataImg.img;
+        const dataImg = res.data.body[0].image;
+        const imgpath = dataImg;
+        console.log(dataImg)
         setDataImg(dataImg);
         setImgPath(imgpath);
-        console.log(imgpath);
-        const datadetail = res.data.body[0].allData;
+        //console.log(imgpath);
+        const datadetail = res.data.body[0];
         setDatadetail(datadetail);
         const viewType = datadetail.view_type;
         const match = datadetail.match;
@@ -151,16 +153,19 @@ export default function UpdateSponsorship() {
         console.log(datadetail);
         const formDate = datadetail.Fdate.substring(0, 10);
         const toDate = datadetail.Ldate.substring(0, 10);
+        const league_id = datadetail.league_id;
+        const league_name = datadetail.league_name;
+        let selectedMatchLeague={value:league_id,label:league_name}
+        setSelectedMatch(selectedMatchLeague)
+        // const LeaguesOpt = datadetail.league;
+        // const TeamOpt = datadetail.team;
+        // const sportsOpt = datadetail.sports;
+        // const countryOpt = datadetail.country;
 
-        const LeaguesOpt = datadetail.league;
-        const TeamOpt = datadetail.team;
-        const sportsOpt = datadetail.sports;
-        const countryOpt = datadetail.country;
-
-        setLeaguesOpt(LeaguesOpt);
-        setTeamOpt(TeamOpt);
-        setSportsOpt(sportsOpt);
-        setCountryOpt(countryOpt);
+        // setLeaguesOpt(LeaguesOpt);
+        // setTeamOpt(TeamOpt);
+        // setSportsOpt(sportsOpt);
+        // setCountryOpt(countryOpt);
 
         if (datadetail.skip_add == true) {
           const togglevalue = "skip";
@@ -182,30 +187,34 @@ export default function UpdateSponsorship() {
 
 
 
-  const sportOptions = (sport_lists.length > 0) ? sport_lists.map((item) => {
-    return { value: item._id, label: item.name };
-  }) : [];
+  // const sportOptions = (sport_lists.length > 0) ? sport_lists.map((item) => {
+  //   return { value: item._id, label: item.name };
+  // }) : [];
 
-  const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+  // const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+  //   return { value: item.season_id, label: item.original_name_sportimo };
+
+  // }) : [];
+
+
+  let matchLeagueOptionsArr=[{ value: 0, label: "All" }]
+  const matchLeagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+    matchLeagueOptionsArr.push({ value: item.season_id, label: item.original_name_sportimo })
     return { value: item.season_id, label: item.original_name_sportimo };
 
   }) : [];
-  const matchLeagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
-    return { value: item.original_name_sportimo, label: item.original_name_sportimo };
 
-  }) : [];
+  // const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
+  //   return { value: item.team_id, label: item.team_name };
+  // }) : [];
 
-  const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
-    return { value: item.team_id, label: item.team_name };
-  }) : [];
+  // const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
+  //   return { value: item._id, label: item.name };
+  // }) : [];
 
-  const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
-    return { value: item._id, label: item.name };
-  }) : [];
-
-  const countryOptions = (country_lists.length > 0) ? country_lists.map((item) => {
-    return { value: item._id, label: item.name };
-  }) : [];
+  // const countryOptions = (country_lists.length > 0) ? country_lists.map((item) => {
+  //   return { value: item._id, label: item.name };
+  // }) : [];
 
 
   const selectChange = (e, type) => {
@@ -213,88 +222,97 @@ export default function UpdateSponsorship() {
     alert(" ==jk==  " + type);
   }
  
-  const selectedleague = (LeaguesOpt.length > 0) ? LeaguesOpt.map((item) => {
-    let result=leagueOptions.find(i=>i.value==item)
+  // const selectedleague = (LeaguesOpt.length > 0) ? LeaguesOpt.map((item) => {
+  //   let result=leagueOptions.find(i=>i.value==item)
 
-    return (
-      result);
-  }) : [];
+  //   return (
+  //     result);
+  // }) : [];
 
-  const selectedteam= (TeamOpt.length > 0) ? TeamOpt.map((item) => {
-    let result=teamOptions.find(i=>i.value==item)
+  // const selectedteam= (TeamOpt.length > 0) ? TeamOpt.map((item) => {
+  //   let result=teamOptions.find(i=>i.value==item)
 
-    return (
-      result);
-  }) : [];
+  //   return (
+  //     result);
+  // }) : [];
 
-  const selectedsport= (sportsOpt.length > 0) ? sportsOpt.map((item) => {
-    let result=sportOptions.find(i=>i.label==item)
+  // const selectedsport= (sportsOpt.length > 0) ? sportsOpt.map((item) => {
+  //   let result=sportOptions.find(i=>i.label==item)
 
-    return (
-      result);
-  }) : [];
-  const [selectedMatch, setSelectedMatch] = React.useState([]);
-  let selectedmatch=(matchOpt.length > 0)? matchOpt.map((item) => {
-    let result=leagueOptions.find(i=>i.label==item)
+  //   return (
+  //     result);
+  // }) : [];
+  //const [selectedMatch, setSelectedMatch] = React.useState([]);
+  // let selectedmatch=(matchOpt.length > 0)? matchOpt.map((item) => {
+  //   let result=leagueOptions.find(i=>i.label==item)
 
-    return (
-      result);
-  }) : [];
-  const selectedcountry= (countryOpt.length > 0) ? countryOpt.map((item) => {
-    let result=countryOptions.find(i=>i.label==item)
+  //   return (
+  //     result);
+  // }) : [];
+  // const selectedcountry= (countryOpt.length > 0) ? countryOpt.map((item) => {
+  //   let result=countryOptions.find(i=>i.label==item)
 
-    return (
-      result);
-  }) : [];
+  //   return (
+  //     result);
+  // }) : [];
 
 
   
   ///////select Player ///////////
-  const [plrArray, setselectedOptions] = React.useState([])
-  const handleChangePlayer = (selectedOptions) => {
-    const plrArray = [];
-    selectedOptions.map(item => plrArray.push(item.value)
-    );
-    setselectedOptions(plrArray);
-  }
+  // const [plrArray, setselectedOptions] = React.useState([])
+  // const handleChangePlayer = (selectedOptions) => {
+  //   const plrArray = [];
+  //   selectedOptions.map(item => plrArray.push(item.value)
+  //   );
+  //   setselectedOptions(plrArray);
+  // }
 
   ///////select Teams ///////////
-  const [teamArray, setteamOptionsarry] = React.useState([])
-  const handleChangeTeam = (teamOptionsarry) => {
-    const teamArray = [];
-    teamOptionsarry.map(item => teamArray.push(item.value)
-    );
-    setteamOptionsarry(teamArray);
-  }
+  // const [teamArray, setteamOptionsarry] = React.useState([])
+  // const handleChangeTeam = (teamOptionsarry) => {
+  //   const teamArray = [];
+  //   teamOptionsarry.map(item => teamArray.push(item.value)
+  //   );
+  //   setteamOptionsarry(teamArray);
+  // }
   ///////select country ///////////
-  const [countryArray, setcountryOptionsarry] = React.useState([])
-  const handleChangeCountry = (countryOptionsarry) => {
-    const countryArray = [];
-    countryOptionsarry.map(item => countryArray.push(item.label)
-    );
-    setcountryOptionsarry(countryArray);
-  }
+  // const [countryArray, setcountryOptionsarry] = React.useState([])
+  // const handleChangeCountry = (countryOptionsarry) => {
+  //   const countryArray = [];
+  //   countryOptionsarry.map(item => countryArray.push(item.label)
+  //   );
+  //   setcountryOptionsarry(countryArray);
+  // }
 
   ///////select Leagues ///////////
-  const [leaguesArray, setleaguesOptionsarry] = React.useState([])
-  const handleChangeLeagues = (leaguesOptionsarry) => {
-    const leaguesArray = [];
-    leaguesOptionsarry.map(item => leaguesArray.push(item.value)
-    );
-    setleaguesOptionsarry(leaguesArray);
-  }
+  // const [leaguesArray, setleaguesOptionsarry] = React.useState([])
+  // const handleChangeLeagues = (leaguesOptionsarry) => {
+  //   const leaguesArray = [];
+  //   leaguesOptionsarry.map(item => leaguesArray.push(item.value)
+  //   );
+  //   setleaguesOptionsarry(leaguesArray);
+  // }
 
   ///////select Sports ///////////
-  const [sportsArray, setsportsOptionsarry] = React.useState([])
-  const handleChangeSports = (SportsOptionsarry) => {
-    const sportsArray = [];
-    SportsOptionsarry.map(item => sportsArray.push(item.label)
-    );
+  // const [sportsArray, setsportsOptionsarry] = React.useState([])
+  // const handleChangeSports = (SportsOptionsarry) => {
+  //   const sportsArray = [];
+  //   SportsOptionsarry.map(item => sportsArray.push(item.label)
+  //   );
 
 
-    setsportsOptionsarry(sportsArray);
+  //   setsportsOptionsarry(sportsArray);
+  // }
+
+  const [leagueId, setMatchleagueId] = React.useState()
+  const [leagueName, setMatchleagueName] = React.useState()
+  const handleChangeMatchLeagues = (leaguesOptionsarry) => {
+    let league_id=leaguesOptionsarry.value;
+    let league_name=leaguesOptionsarry.label;
+    console.log({league_id,league_name})
+    setMatchleagueId(league_id);
+    setMatchleagueName(league_name);
   }
-
 
 
   ////////////////////////////////////////////////////////////////////
@@ -314,13 +332,15 @@ export default function UpdateSponsorship() {
       dataToSend2.append('Fdate', Formvlaues.Fdate);
       dataToSend2.append('Ldate', Formvlaues.Ldate);
       dataToSend2.append('image', Formvlaues.image);
-      dataToSend2.append('match', Formvlaues.match);
+      dataToSend2.append('match', leagueName);
       dataToSend2.append('view_type', Formvlaues.view_type);
       dataToSend2.append('skip_add', Formvlaues.skip_add);
-      dataToSend2.append('league', JSON.stringify(leaguesArray));
-      dataToSend2.append('country', JSON.stringify(countryArray));
-      dataToSend2.append('sports', JSON.stringify(sportsArray));
-      dataToSend2.append('team', JSON.stringify(teamArray));
+      dataToSend2.append('league_name', leagueName);
+      dataToSend2.append('league_id', leagueId);
+      // dataToSend2.append('league', JSON.stringify(leaguesArray));
+      // dataToSend2.append('country', JSON.stringify(countryArray));
+      // dataToSend2.append('sports', JSON.stringify(sportsArray));
+      // dataToSend2.append('team', JSON.stringify(teamArray));
 
       console.log("new values == ", dataToSend2);
       let token = localStorage.getItem("token");
@@ -394,8 +414,9 @@ export default function UpdateSponsorship() {
                                     closeMenuOnSelect={true}
                                     name="match"
                                     isClearable
-                                    options={matchLeagueOptions}
-                                    defaultInputValue={selectedmatch}
+                                    options={matchLeagueOptionsArr}
+                                    defaultInputValue={selectedMatch}
+                                    onChange={handleChangeMatchLeagues}
                                     className="basic-multi-select"
                                     classNamePrefix="select" />
                             </div>
@@ -437,11 +458,14 @@ export default function UpdateSponsorship() {
                             </div> */}
 
                             <div className="col-lg-12 mb-4">
-
+                            {datadetail.view_type=="banner"?
                               <div className="imagebox">
-                                {dataImg.img !== '' ? <img src={dataImg.img || ''} alt="banner image" /> : <><img src='/assets/images/no-image.png' /></>}
+                                {dataImg !== '' ? <img src={dataImg || ''} alt="banner image" /> : <><img src='/assets/images/no-image.png' /></>}
                               </div>
-
+                              :<div className="imagebox">
+                              {dataImg !== '' ? <video height="120px" width="200px" controls><source src={dataImg || ''}  type="video/mp4"></source></video> : <><img src='/assets/images/no-image.png' /></>}
+                              </div>
+                            }  
                               <label className="title-col">File Upload</label>
                               <input type="file" name="image" className="form-control file-input" />
                             </div>
@@ -466,7 +490,7 @@ export default function UpdateSponsorship() {
                               </div>
                             </div>
 
-                            <div className="col-lg-12 mb-4">
+                            {/* <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Sponsorship Targeting</label>
                               <div className="row">
 
@@ -530,7 +554,7 @@ export default function UpdateSponsorship() {
 
 
                               </div>
-                            </div>
+                            </div> */}
 
 
                             <div className="col-lg-12 text-end">

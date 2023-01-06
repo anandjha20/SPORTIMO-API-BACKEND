@@ -44,11 +44,12 @@ class Sponsorship {
   }
 
 
-  static sponsor_detail = async (req, res) => {
+  static sponsor_detail_user = async (req, res) => {
     try {
       let id = req.params.id;
       let data = await Sponsorship_tbl.find({ "_id": mongoose.Types.ObjectId(id) });
 
+      let paths = MyBasePath(req, res);
       if (data.length > 0) {
         let allData = await Promise.all(data.map(async (sendData) => {
           let sport_name = await all_list_come(sendData.sports, 1);
@@ -57,7 +58,6 @@ class Sponsorship {
           let players_name = await all_list_come(sendData.players, 4);
           let country_name = await all_list_come(sendData.country, 5);
 
-          let paths = MyBasePath(req, res);
 
           let img = `${paths}/image/assets/sponsorship_image/${sendData.image}`;
           //console.log ("call my data == " , dd );
@@ -77,6 +77,33 @@ class Sponsorship {
 
   }
 
+  static sponsor_detail = async (req, res) => {
+    try {
+      let id = req.params.id;
+      let data = await Sponsorship_tbl.find({ "_id": mongoose.Types.ObjectId(id) });
+
+      let paths = MyBasePath(req, res);
+      if (data.length > 0) {
+        data.map( (sendData) => {
+        
+
+          sendData.image = `${paths}/image/assets/sponsorship_image/${sendData.image}`;
+          //console.log ("call my data == " , dd );
+          return  sendData ;
+        });
+
+        return res.status(200).send({ 'status': true, 'msg': "success", 'body': data });
+
+      } else {
+        return res.status(200).send({ 'status': false, 'msg': "No data Found !..", 'body': '' });
+      }
+
+    } catch (error) {
+      console.log(error);
+      return res.status(200).send({ 'status': false, 'msg': error, 'body': '' });
+    }
+
+  }
 
 
 
@@ -140,7 +167,7 @@ class Sponsorship {
   static add_sponsor = async (req, res) => {
     try {
       let user_data = req.body;
-      console.log('server get value == ', user_data);
+      //console.log('server get value == ', user_data);
       let match_len = (user_data.match || '').length;
       if (match_len == 0) {
         return res.status(200).send({ "status": false, "msg": 'All filed Required', "body": '' });
@@ -151,11 +178,13 @@ class Sponsorship {
       var sponseor = {
 
         "match": user_data.match,
+        "league_name": user_data.league_name,
+        "league_id": user_data.league_id,
         "image": img,
-        "sports": JSON.parse(user_data.sports),
-        "league": JSON.parse(user_data.league),
-        "team": JSON.parse(user_data.team),
-        "country": JSON.parse(user_data.country),
+        // "sports": JSON.parse(user_data.sports),
+        // "league": JSON.parse(user_data.league),
+        // "team": JSON.parse(user_data.team),
+        // "country": JSON.parse(user_data.country),
 
         "skip_add": user_data.skip_add,
         "view_type": user_data.view_type,
@@ -219,26 +248,29 @@ class Sponsorship {
 
       let match = user_data.match;
       let image = img;
-      let sports =  JSON.parse(user_data.sports);
-      let league =  JSON.parse(user_data.league);
-      let team =  JSON.parse(user_data.team);
-      let country =  JSON.parse(user_data.country);
+      // let sports =  JSON.parse(user_data.sports);
+      // let league =  JSON.parse(user_data.league);
+      // let team =  JSON.parse(user_data.team);
+      // let country =  JSON.parse(user_data.country);
       let skip_add = user_data.skip_add;
       let view_type = user_data.view_type;
       let Fdate = user_data.Fdate;
       let Ldate = user_data.Ldate;
+      let league_id = user_data.league_id;
+      let league_name = user_data.league_name;
     
       if (!isEmpty(match)) { setDataMy = { ...setDataMy, match} }
       if (!isEmpty(image)) { setDataMy = { ...setDataMy, image} }
-      if (!isEmpty(sports)) { setDataMy = { ...setDataMy, sports} }
-      if (!isEmpty(league)) { setDataMy = { ...setDataMy, league} }
-      if (!isEmpty(sports)) { setDataMy = { ...setDataMy, sports} }
-      if (!isEmpty(team)) { setDataMy = { ...setDataMy, team} }
-      if (!isEmpty(country)) { setDataMy = { ...setDataMy,country} }
+      // if (!isEmpty(league)) { setDataMy = { ...setDataMy, league} }
+      // if (!isEmpty(sports)) { setDataMy = { ...setDataMy, sports} }
+      // if (!isEmpty(team)) { setDataMy = { ...setDataMy, team} }
+      // if (!isEmpty(country)) { setDataMy = { ...setDataMy,country} }
       if (!isEmpty(skip_add)) { setDataMy = { ...setDataMy, skip_add} }
       if (!isEmpty(view_type)) { setDataMy = { ...setDataMy, view_type} }
       if (!isEmpty(Fdate)) { setDataMy = { ...setDataMy, Fdate} }
       if (!isEmpty(Ldate)) { setDataMy = { ...setDataMy, Ldate} }
+      if (!isEmpty(league_id)) { setDataMy = { ...setDataMy, league_id} }
+      if (!isEmpty(league_name)) { setDataMy = { ...setDataMy, league_name} }
       if (user_data.cta == 1) {
         setDataMy = {
           ...setDataMy,

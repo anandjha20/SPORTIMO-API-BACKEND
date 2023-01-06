@@ -71,11 +71,11 @@ export default function AddSponsorship() {
 
 
   ////////////////////multiple dropdown //////////////////////////////
-  const [sport_lists, setSport_lists] = React.useState([]);
+//  const [sport_lists, setSport_lists] = React.useState([]);
   const [league_lists, setLeague_lists] = React.useState([]);
-  const [team_lists, setTeam_lists] = React.useState([]);
-  const [country_lists, setCountry_lists] = React.useState([]);
-  const [player_lists, setPlayer_lists] = React.useState([]);
+  // const [team_lists, setTeam_lists] = React.useState([]);
+  // const [country_lists, setCountry_lists] = React.useState([]);
+  // const [player_lists, setPlayer_lists] = React.useState([]);
 
   const get_data = async (url, setval) => {
     try {
@@ -105,90 +105,105 @@ export default function AddSponsorship() {
 
   }
   useEffect(() => {
-    get_data('/web_api/sport_list', setSport_lists);
+  //  get_data('/web_api/sport_list', setSport_lists);
     get_data('/web_api/league_list_dropDown', setLeague_lists);
-    get_data('/web_api/team_list_dropDown', setTeam_lists);
-    // get_data('/web_api/player_list', setPlayer_lists);
-    get_data('/web_api/country_list', setCountry_lists);
+  //  get_data('/web_api/team_list_dropDown', setTeam_lists);
+  //  get_data('/web_api/player_list', setPlayer_lists);
+  //  get_data('/web_api/country_list', setCountry_lists);
     document.body.classList.add('bg-salmon');
   }, []);
 
-  const sportOptions = (sport_lists.length > 0) ? sport_lists.map((item) => {
-    return { value: item._id, label: item.name };
-  }) : [];
+  // const sportOptions = (sport_lists.length > 0) ? sport_lists.map((item) => {
+  //   return { value: item._id, label: item.name };
+  // }) : [];
 
-  const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+  // const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+  //   return { value: item.season_id, label: item.original_name_sportimo };
+
+  // }) : [];
+
+  let matchLeagueOptionsArr=[{ value: 0, label: "All" }]
+  const matchLeagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+    matchLeagueOptionsArr.push({ value: item.season_id, label: item.original_name_sportimo })
     return { value: item.season_id, label: item.original_name_sportimo };
 
   }) : [];
-  const matchLeagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
-    return { value: item.original_name_sportimo, label: item.original_name_sportimo };
 
-  }) : [];
+  // const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
+  //   return { value: item.team_id, label: item.team_name };
+  // }) : [];
 
-  const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
-    return { value: item.team_id, label: item.team_name };
-  }) : [];
+  // const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
+  //   return { value: item._id, label: item.name };
+  // }) : [];
 
-  const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
-    return { value: item._id, label: item.name };
-  }) : [];
-
-  const countryOptions = (country_lists.length > 0) ? country_lists.map((item) => {
-    return { value: item._id, label: item.name };
-  }) : [];
+  // const countryOptions = (country_lists.length > 0) ? country_lists.map((item) => {
+  //   return { value: item._id, label: item.name };
+  // }) : [];
 
 
-  const selectChange = (e, type) => {
-    console.log(e.currentTarget);
-    alert(" ==jk==  " + type);
-  }
+  // const selectChange = (e, type) => {
+  //   console.log(e.currentTarget);
+  //   alert(" ==jk==  " + type);
+  // }
 
   ///////select Player ///////////
-  const [plrArray, setselectedOptions] = React.useState([])
-  const handleChangePlayer = (selectedOptions) => {
-    const plrArray = [];
-    selectedOptions.map(item => plrArray.push(item.value)
-    );
-    setselectedOptions(plrArray);
-  }
+  // const [plrArray, setselectedOptions] = React.useState([])
+  // const handleChangePlayer = (selectedOptions) => {
+  //   const plrArray = [];
+  //   selectedOptions.map(item => plrArray.push(item.value)
+  //   );
+  //   setselectedOptions(plrArray);
+  // }
 
   ///////select Teams ///////////
-  const [teamArray, setteamOptionsarry] = React.useState([])
-  const handleChangeTeam = (teamOptionsarry) => {
-    const teamArray = [];
-    teamOptionsarry.map(item => teamArray.push(item.value)
-    );
-    setteamOptionsarry(teamArray);
-  }
+  // const [teamArray, setteamOptionsarry] = React.useState([])
+  // const handleChangeTeam = (teamOptionsarry) => {
+  //   const teamArray = [];
+  //   teamOptionsarry.map(item => teamArray.push(item.value)
+  //   );
+  //   setteamOptionsarry(teamArray);
+  // }
   ///////select country ///////////
-  const [countryArray, setcountryOptionsarry] = React.useState([])
-  const handleChangeCountry = (countryOptionsarry) => {
-    const countryArray = [];
-    countryOptionsarry.map(item => countryArray.push(item.label)
-    );
-    setcountryOptionsarry(countryArray);
-  }
+  // const [countryArray, setcountryOptionsarry] = React.useState([])
+  // const handleChangeCountry = (countryOptionsarry) => {
+  //   const countryArray = [];
+  //   countryOptionsarry.map(item => countryArray.push(item.label)
+  //   );
+  //   setcountryOptionsarry(countryArray);
+  // }
 
   ///////select Leagues ///////////
-  const [leaguesArray, setleaguesOptionsarry] = React.useState([])
-  const handleChangeLeagues = (leaguesOptionsarry) => {
-    const leaguesArray = [];
-    leaguesOptionsarry.map(item => leaguesArray.push(item.value)
-    );
-    setleaguesOptionsarry(leaguesArray);
+  // const [leaguesArray, setleaguesOptionsarry] = React.useState([])
+  // const handleChangeLeagues = (leaguesOptionsarry) => {
+  //   const leaguesArray = [];
+  //   leaguesOptionsarry.map(item => leaguesArray.push(item.value)
+  //   );
+  //   setleaguesOptionsarry(leaguesArray);
+  // }
+
+  ///////select Leagues ///////////
+  const [leagueId, setMatchleagueId] = React.useState()
+  const [leagueName, setMatchleagueName] = React.useState()
+  const handleChangeMatchLeagues = (leaguesOptionsarry) => {
+    let league_id=leaguesOptionsarry.value;
+    let league_name=leaguesOptionsarry.label;
+    console.log({league_id,league_name})
+    setMatchleagueId(league_id);
+    setMatchleagueName(league_name);
   }
+
 
   ///////select Sports ///////////
-  const [sportsArray, setsportsOptionsarry] = React.useState([])
-  const handleChangeSports = (SportsOptionsarry) => {
-    const sportsArray = [];
-    SportsOptionsarry.map(item => sportsArray.push(item.label)
-    );
+  // const [sportsArray, setsportsOptionsarry] = React.useState([])
+  // const handleChangeSports = (SportsOptionsarry) => {
+  //   const sportsArray = [];
+  //   SportsOptionsarry.map(item => sportsArray.push(item.label)
+  //   );
 
 
-    setsportsOptionsarry(sportsArray);
-  }
+  //   setsportsOptionsarry(sportsArray);
+  // }
 
 
 
@@ -217,16 +232,18 @@ export default function AddSponsorship() {
       dataToSend2.append('Fdate', Formvlaues.Fdate);
       dataToSend2.append('Ldate', Formvlaues.Ldate);
       dataToSend2.append('image', Formvlaues.image);
-      dataToSend2.append('match', Formvlaues.match);
+      dataToSend2.append('match', leagueName);
       dataToSend2.append('view_type', Formvlaues.view_type);
       dataToSend2.append('skip_add', Formvlaues.skip_add);
-      dataToSend2.append('league', JSON.stringify(leaguesArray));
-      dataToSend2.append('country', JSON.stringify(countryArray));
-      dataToSend2.append('sports', JSON.stringify(sportsArray));
-      dataToSend2.append('team', JSON.stringify(teamArray));
+      dataToSend2.append('league_name', leagueName);
+      dataToSend2.append('league_id', leagueId);
+      // dataToSend2.append('league', JSON.stringify(leaguesArray));
+      // dataToSend2.append('country', JSON.stringify(countryArray));
+      // dataToSend2.append('sports', JSON.stringify(sportsArray));
+      // dataToSend2.append('team', JSON.stringify(teamArray));
 
    
-   
+   console.log(dataToSend2)
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
      // let options1 = ({ headers: header });
@@ -297,7 +314,8 @@ export default function AddSponsorship() {
                               <Select 
                                     closeMenuOnSelect={true}
                                     name="match"
-                                    options={matchLeagueOptions}
+                                    options={matchLeagueOptionsArr}
+                                    onChange={handleChangeMatchLeagues}
                                     className="basic-multi-select"
                                     classNamePrefix="select" />
                             </div>
@@ -367,7 +385,7 @@ export default function AddSponsorship() {
                               </div>
                             </div>
 
-                            <div className="col-lg-12 mb-4">
+                            {/* <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Sponsorship Targeting</label>
                               <div className="row">
 
@@ -424,7 +442,7 @@ export default function AddSponsorship() {
 
 
                               </div>
-                            </div>
+                            </div> */}
 
                             <div className="col-lg-12 text-end">
                               <Button type='submit' variant="contained" className="mr-3 btn-pd">Submit</Button>

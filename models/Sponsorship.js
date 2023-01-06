@@ -7,6 +7,8 @@ const sprtschema = new Schema({
                              
       
          match: { type: String, required: true },
+         league_name: { type: String, required: true },
+         league_id: { type: String, required: true },
          image: { type: String, required: true, default :'' },
          
          reward_type    : { type: String,default :'' },
