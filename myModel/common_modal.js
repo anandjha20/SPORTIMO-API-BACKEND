@@ -91,9 +91,12 @@ function gen_str (length) {
 
   const getLocalDateTime = (data) =>{
     let date_utc=(data.date_utc);
-    let day=date_utc.getDate()<10?"0"+date_utc.getDate():date_utc.getDate();
-    let month=date_utc.getMonth()+1<10?"0"+date_utc.getMonth()+1:date_utc.getMonth()+1;
-    let year=date_utc.getFullYear();
+    let daystr=date_utc.getDate().toString();
+    let day=daystr.length<2?"0"+daystr:daystr;
+    let monthstr=(date_utc.getMonth()+1).toString();
+    let month=monthstr.length<2?"0"+monthstr:monthstr;
+    //console.log({daystr,monthstr})
+    let year=date_utc.getFullYear().toString();
     let time=data.time_utc;
     let dateTimeStr=year+"-"+month+"-"+day+"T"+time+".000Z";
     let zone=(data.zone==undefined?'':data.zone);
