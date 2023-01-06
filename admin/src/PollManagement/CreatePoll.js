@@ -277,7 +277,7 @@ const [answerFiveFr, setAnswerFiveFr] = useState('');
     setleaguesOptionsarry(leaguesArray);
   }
 
-  ///////select Sports ///////////
+  ///////select Sports ////////
   const [sportsArray, setsportsOptionsarry] = React.useState([])
   const handleChangeSports = (SportsOptionsarry) => {
     const sportsArray = [];
@@ -733,7 +733,7 @@ const handleMatchName = (event) => {
                     <div className="row justify-content-center">
                       <div className="col-lg-8">
 
-                        <form onSubmit={(e) => myFormData(e)}>
+                        <form onSubmit={(e) => myFormData(e)} >
                           <div className="row">
                             <div className="col-lg-12">
                               <label className="title-col">Poll Type</label>

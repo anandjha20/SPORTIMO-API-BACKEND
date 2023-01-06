@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../Header";
 import { Link } from "react-router-dom";
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import  { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -16,10 +16,11 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Select from 'react-select';
 
 
 export default function UpdateSponsorship() {
-  
+
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -28,6 +29,22 @@ export default function UpdateSponsorship() {
       document.body.className = "main-body leftmenu";
     }
   }, []);
+ 
+
+  const { id } = useParams();
+  const [datadetail, setDatadetail] = useState('')
+  const [formDate, setFromdate] = useState('')
+  const [toDate, setToDate] = useState('')
+  const [dataImg, setDataImg] = useState('')
+  const [sportsOpt, setSportsOpt] = useState('')
+  const [LeaguesOpt, setLeaguesOpt] = useState('')
+  const [TeamOpt, setTeamOpt] = useState('')
+  const [countryOpt, setCountryOpt] = useState('')
+  const [matchOpt, setMatchOpt] = useState('')
+
+
+
+
   const [alignment, setAlignment] = React.useState('');
   const [alignmentSkip, setAlignmentSkip] = React.useState('skip');
   const [skip_add, setSkip_add] = React.useState("1");
@@ -70,6 +87,216 @@ export default function UpdateSponsorship() {
       },
     },
   };
+
+  ////////////////////multiple dropdown //////////////////////////////
+  const [sport_lists, setSport_lists] = React.useState([]);
+  const [league_lists, setLeague_lists] = React.useState([]);
+  const [team_lists, setTeam_lists] = React.useState([]);
+  const [country_lists, setCountry_lists] = React.useState([]);
+  const [player_lists, setPlayer_lists] = React.useState([]);
+
+  const get_data = async (url, setval) => {
+    try {
+      let sendData = {};
+      let token = localStorage.getItem("token");
+      let header = ({ 'token': `${token}` });
+      let options1 = ({ headers: header });
+      //   let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
+      let response = await axios.get(url, options1, sendData);
+
+      if (response.status) {
+
+        let data = response.data;
+
+        if (data.status) {
+          setval(data.body);
+          // toast.success(data.msg);
+        } else {
+          toast.error('something went wrong please try again');
+        }
+      }
+      else {
+        toast.error('something went wrong please try again..');
+      }
+
+    } catch (err) { console.error(err); toast.error('some errror'); return false; }
+
+  }
+  useEffect(async() => {
+  await get_data('/web_api/sport_list', setSport_lists);
+  await get_data('/web_api/league_list_dropDown', setLeague_lists);
+  await get_data('/web_api/team_list_dropDown', setTeam_lists);
+    // get_data('/web_api/player_list', setPlayer_lists);
+    await get_data('/web_api/country_list', setCountry_lists);
+    document.body.classList.add('bg-salmon');
+  }, []);
+
+
+  const SponsorshipDetail = async () => {
+    await axios.get(`/web_api/sponsor_detail/${id}`)
+      .then(res => {
+        const dataImg = res.data.body[0];
+        const imgpath = dataImg.img;
+        setDataImg(dataImg);
+        setImgPath(imgpath);
+        console.log(imgpath);
+        const datadetail = res.data.body[0].allData;
+        setDatadetail(datadetail);
+        const viewType = datadetail.view_type;
+        const match = datadetail.match;
+        const match1 = [match];
+        setMatch(match);
+        setMatchOpt(match1)
+        setAlignment(viewType);
+        console.log(datadetail);
+        const formDate = datadetail.Fdate.substring(0, 10);
+        const toDate = datadetail.Ldate.substring(0, 10);
+
+        const LeaguesOpt = datadetail.league;
+        const TeamOpt = datadetail.team;
+        const sportsOpt = datadetail.sports;
+        const countryOpt = datadetail.country;
+
+        setLeaguesOpt(LeaguesOpt);
+        setTeamOpt(TeamOpt);
+        setSportsOpt(sportsOpt);
+        setCountryOpt(countryOpt);
+
+        if (datadetail.skip_add == true) {
+          const togglevalue = "skip";
+          setAlignmentSkip(togglevalue);
+        }
+        if (datadetail.skip_add == false) {
+          const togglevalue = "Noskip";
+          setAlignmentSkip(togglevalue);
+        }
+        setFromdate(formDate);
+        setToDate(toDate);
+        console.log(formDate, toDate)
+
+      })
+  }
+  useEffect(async () => {
+    await SponsorshipDetail();
+  }, []);
+
+
+
+  const sportOptions = (sport_lists.length > 0) ? sport_lists.map((item) => {
+    return { value: item._id, label: item.name };
+  }) : [];
+
+  const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+    return { value: item.season_id, label: item.original_name_sportimo };
+
+  }) : [];
+  const matchLeagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+    return { value: item.original_name_sportimo, label: item.original_name_sportimo };
+
+  }) : [];
+
+  const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
+    return { value: item.team_id, label: item.team_name };
+  }) : [];
+
+  const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
+    return { value: item._id, label: item.name };
+  }) : [];
+
+  const countryOptions = (country_lists.length > 0) ? country_lists.map((item) => {
+    return { value: item._id, label: item.name };
+  }) : [];
+
+
+  const selectChange = (e, type) => {
+    console.log(e.currentTarget);
+    alert(" ==jk==  " + type);
+  }
+ 
+  const selectedleague = (LeaguesOpt.length > 0) ? LeaguesOpt.map((item) => {
+    let result=leagueOptions.find(i=>i.value==item)
+
+    return (
+      result);
+  }) : [];
+
+  const selectedteam= (TeamOpt.length > 0) ? TeamOpt.map((item) => {
+    let result=teamOptions.find(i=>i.value==item)
+
+    return (
+      result);
+  }) : [];
+
+  const selectedsport= (sportsOpt.length > 0) ? sportsOpt.map((item) => {
+    let result=sportOptions.find(i=>i.label==item)
+
+    return (
+      result);
+  }) : [];
+  const [selectedMatch, setSelectedMatch] = React.useState([]);
+  let selectedmatch=(matchOpt.length > 0)? matchOpt.map((item) => {
+    let result=leagueOptions.find(i=>i.label==item)
+
+    return (
+      result);
+  }) : [];
+  const selectedcountry= (countryOpt.length > 0) ? countryOpt.map((item) => {
+    let result=countryOptions.find(i=>i.label==item)
+
+    return (
+      result);
+  }) : [];
+
+
+  
+  ///////select Player ///////////
+  const [plrArray, setselectedOptions] = React.useState([])
+  const handleChangePlayer = (selectedOptions) => {
+    const plrArray = [];
+    selectedOptions.map(item => plrArray.push(item.value)
+    );
+    setselectedOptions(plrArray);
+  }
+
+  ///////select Teams ///////////
+  const [teamArray, setteamOptionsarry] = React.useState([])
+  const handleChangeTeam = (teamOptionsarry) => {
+    const teamArray = [];
+    teamOptionsarry.map(item => teamArray.push(item.value)
+    );
+    setteamOptionsarry(teamArray);
+  }
+  ///////select country ///////////
+  const [countryArray, setcountryOptionsarry] = React.useState([])
+  const handleChangeCountry = (countryOptionsarry) => {
+    const countryArray = [];
+    countryOptionsarry.map(item => countryArray.push(item.label)
+    );
+    setcountryOptionsarry(countryArray);
+  }
+
+  ///////select Leagues ///////////
+  const [leaguesArray, setleaguesOptionsarry] = React.useState([])
+  const handleChangeLeagues = (leaguesOptionsarry) => {
+    const leaguesArray = [];
+    leaguesOptionsarry.map(item => leaguesArray.push(item.value)
+    );
+    setleaguesOptionsarry(leaguesArray);
+  }
+
+  ///////select Sports ///////////
+  const [sportsArray, setsportsOptionsarry] = React.useState([])
+  const handleChangeSports = (SportsOptionsarry) => {
+    const sportsArray = [];
+    SportsOptionsarry.map(item => sportsArray.push(item.label)
+    );
+
+
+    setsportsOptionsarry(sportsArray);
+  }
+
+
+
   ////////////////////////////////////////////////////////////////////
 
   const saveFormData = async (e) => {
@@ -86,26 +313,26 @@ export default function UpdateSponsorship() {
       let dataToSend2 = new FormData();
       dataToSend2.append('Fdate', Formvlaues.Fdate);
       dataToSend2.append('Ldate', Formvlaues.Ldate);
-      dataToSend2.append('country', Formvlaues.country);
       dataToSend2.append('image', Formvlaues.image);
-      dataToSend2.append('league', Formvlaues.league);
       dataToSend2.append('match', Formvlaues.match);
-      dataToSend2.append('players', Formvlaues.players);
-      dataToSend2.append('skip_add', Formvlaues.skip_add);
-      dataToSend2.append('sports', Formvlaues.sports);
-      dataToSend2.append('team', Formvlaues.team);
       dataToSend2.append('view_type', Formvlaues.view_type);
+      dataToSend2.append('skip_add', Formvlaues.skip_add);
+      dataToSend2.append('league', JSON.stringify(leaguesArray));
+      dataToSend2.append('country', JSON.stringify(countryArray));
+      dataToSend2.append('sports', JSON.stringify(sportsArray));
+      dataToSend2.append('team', JSON.stringify(teamArray));
+
       console.log("new values == ", dataToSend2);
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
       let options1 = ({ headers: header });
 
-      let response = await axios.put(`/web_api/update_sponsor/${id}`,dataToSend2, options1);
+      let response = await axios.put(`/web_api/update_sponsor/${id}`, dataToSend2, options1);
       if (response.status) {
 
         let data = response.data;
         if (data.status) {
-          //navigate(`/sponsorship`);
+          navigate(`/sponsorship`);
           toast.success(data.msg);
           SponsorshipDetail();
         } else {
@@ -121,52 +348,6 @@ export default function UpdateSponsorship() {
 
 
   }
-
-
-  const { id } = useParams();
-  const [datadetail, setDatadetail] = useState('')
-  const [formDate, setFromdate] = useState('')
-  const [toDate, setToDate] = useState('')
-  const [dataImg, setDataImg] = useState('')
-
-
-  const SponsorshipDetail = async () => {
-    await axios.get(`/web_api/sponsor_detail/${id}`)
-        .then(res => {
-            const dataImg = res.data.body[0];
-            const imgpath = dataImg.img;
-            setDataImg(dataImg);
-            setImgPath(imgpath);
-            console.log(imgpath);
-            const datadetail = res.data.body[0].allData;
-            setDatadetail(datadetail);
-            const viewType = datadetail.view_type;
-            const match = datadetail.match;
-            setMatch(match);
-            setAlignment(viewType);
-            console.log(datadetail);
-            const formDate = datadetail.Fdate.substring(0, 10);
-            const toDate = datadetail.Ldate.substring(0, 10);
-            if(datadetail.skip_add == true)
-            {
-              const togglevalue = "skip";
-              setAlignmentSkip(togglevalue);
-            }
-            if(datadetail.skip_add == false)
-            {
-              const togglevalue = "Noskip";
-              setAlignmentSkip(togglevalue);
-            }
-            setFromdate(formDate);
-            setToDate(toDate);
-            console.log(formDate, toDate)
-           
-        })
-}
-
-  useEffect(() => {
-      SponsorshipDetail();
-  }, []);
 
 
   return (
@@ -207,19 +388,16 @@ export default function UpdateSponsorship() {
 
                         <form id="mdF" onSubmit={(e) => saveFormData(e)} encType="multipart/form-data" >
                           <div className="row">
-                            <div className="col-lg-12 mb-4">
+                          <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Match/league</label>
-                              <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Match/league</InputLabel>
-                                <Select labelId="demo-simple-select-label" id="demo-simple-select"
-                                  MenuProps={MenuProps} name='match' value={match} label="Match/league" onChange={handleChange}>
-                                  <MenuItem value="Bali">Bali Utd vs Rans Nusantara</MenuItem>
-                                  <MenuItem value="Persija">Persija vs Persita	</MenuItem>
-                                  <MenuItem value="Dewa">Dewa United vs Arema</MenuItem>
-                                  <MenuItem value="Football">Football</MenuItem>
-                                </Select>
-                                {/* <FormHelperText>Without label</FormHelperText> */}
-                              </FormControl>
+                              <Select 
+                                    closeMenuOnSelect={true}
+                                    name="match"
+                                    isClearable
+                                    options={matchLeagueOptions}
+                                    defaultInputValue={selectedmatch}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select" />
                             </div>
                             <div className="col-lg-12">
                               <div className="row  mb-2 justify-space-between">
@@ -259,20 +437,20 @@ export default function UpdateSponsorship() {
                             </div> */}
 
                             <div className="col-lg-12 mb-4">
-                              
+
                               <div className="imagebox">
-                               {dataImg.img !== '' ? <img src=  {dataImg.img || ''}  alt="banner image" /> : <><img src='/assets/images/no-image.png' /></>}
+                                {dataImg.img !== '' ? <img src={dataImg.img || ''} alt="banner image" /> : <><img src='/assets/images/no-image.png' /></>}
                               </div>
 
                               <label className="title-col">File Upload</label>
-                              <input type="file" name="image" className="form-control file-input"/>
+                              <input type="file" name="image" className="form-control file-input" />
                             </div>
                             <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Campaign  Date range</label>
                               <div className="row  mb-0">
                                 <div className="col-lg-6">
                                   <label className="label-date">Start Date</label>
-                                  <input className="form-control"  defaultValue={formDate} id="sdate" name='Fdate'  type="date"
+                                  <input className="form-control" defaultValue={formDate} id="sdate" name='Fdate' type="date"
                                     InputLabelProps={{
                                       shrink: true,
                                     }}
@@ -280,8 +458,8 @@ export default function UpdateSponsorship() {
 
                                 </div>
                                 <div className="col-lg-6">
-                                <label className="label-date">End Date</label>
-                                  <input className="form-control" id="edate" defaultValue={toDate} name='Ldate'  label="End Date" type="date"
+                                  <label className="label-date">End Date</label>
+                                  <input className="form-control" id="edate" defaultValue={toDate} name='Ldate' label="End Date" type="date"
                                     InputLabelProps={{ shrink: true, }} />
 
                                 </div>
@@ -291,7 +469,66 @@ export default function UpdateSponsorship() {
                             <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Sponsorship Targeting</label>
                               <div className="row">
-                                <SelectTageting />
+
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select Sports</span>
+                                  <Select isMulti
+                                    closeMenuOnSelect={false}
+                                    name="sports"
+                                    options={sportOptions}
+                                    defaultValue={selectedsport.map((item)=>{
+                                      return item;
+                                    })}
+                                    onChange={handleChangeSports}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select" />
+                                </div>
+
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select League</span>
+                                  <Select isMulti
+                                    closeMenuOnSelect={false}
+                                    name="league"
+                                    
+                                    options={leagueOptions}
+                                    onChange={handleChangeLeagues}
+                                    defaultValue={selectedleague || 'select'}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select" />
+                                </div>
+
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select Team</span>
+                                  <Select isMulti
+                                    closeMenuOnSelect={false}
+                                    name="team"
+                                    options={teamOptions}
+                                    defaultValue={selectedteam}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select"
+                                    onChange={handleChangeTeam}
+                                  />
+                                </div>
+
+               
+                                <div className="col-lg-12  mb-4">
+                                  <label className="title-col mb-2">Targeted Country</label>
+                                </div>
+                                <div className='reletive col-lg-12'>
+                                  <span className='react-select-title'>Select Country</span>
+
+                                  <Select isMulti
+                                    closeMenuOnSelect={false}
+                                    name="country"
+                                    options={countryOptions}
+                                    onChange={handleChangeCountry}
+                                    defaultValue={selectedcountry}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select" />
+                                </div>
+
+
+
                               </div>
                             </div>
 

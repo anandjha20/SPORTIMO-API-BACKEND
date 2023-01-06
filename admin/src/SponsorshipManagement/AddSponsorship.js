@@ -2,25 +2,27 @@ import React from "react";
 import Header from "../Header";
 import { Link } from "react-router-dom";
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import TextField from '@mui/material/TextField';
+import SelectTageting from "./Components/SelectTageting";
 import Button from '@mui/material/Button';
 import { useState, useEffect } from "react";
-import SelectTageting from "./Components/SelectTageting";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Select from 'react-select';
+
 
 
 export default function AddSponsorship() {
   const navigate = useNavigate();
   useEffect(() => {
-     if(!localStorage.getItem("token")) navigate("/");
+    if (!localStorage.getItem("token")) navigate("/");
     document.body.className = "main-body leftmenu sponer_list";
     return () => {
       document.body.className = "main-body leftmenu";
@@ -65,39 +67,171 @@ export default function AddSponsorship() {
       },
     },
   };
+
+
+
+  ////////////////////multiple dropdown //////////////////////////////
+  const [sport_lists, setSport_lists] = React.useState([]);
+  const [league_lists, setLeague_lists] = React.useState([]);
+  const [team_lists, setTeam_lists] = React.useState([]);
+  const [country_lists, setCountry_lists] = React.useState([]);
+  const [player_lists, setPlayer_lists] = React.useState([]);
+
+  const get_data = async (url, setval) => {
+    try {
+      let sendData = {};
+      let token = localStorage.getItem("token");
+      let header = ({ 'token': `${token}` });
+      let options1 = ({ headers: header });
+      //   let options1 = { headers: { "Content-type": "application/json","token": localStorage.getItem('token') } };
+      let response = await axios.get(url, options1, sendData);
+
+      if (response.status) {
+
+        let data = response.data;
+
+        if (data.status) {
+          setval(data.body);
+          // toast.success(data.msg);
+        } else {
+          toast.error('something went wrong please try again');
+        }
+      }
+      else {
+        toast.error('something went wrong please try again..');
+      }
+
+    } catch (err) { console.error(err); toast.error('some errror'); return false; }
+
+  }
+  useEffect(() => {
+    get_data('/web_api/sport_list', setSport_lists);
+    get_data('/web_api/league_list_dropDown', setLeague_lists);
+    get_data('/web_api/team_list_dropDown', setTeam_lists);
+    // get_data('/web_api/player_list', setPlayer_lists);
+    get_data('/web_api/country_list', setCountry_lists);
+    document.body.classList.add('bg-salmon');
+  }, []);
+
+  const sportOptions = (sport_lists.length > 0) ? sport_lists.map((item) => {
+    return { value: item._id, label: item.name };
+  }) : [];
+
+  const leagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+    return { value: item.season_id, label: item.original_name_sportimo };
+
+  }) : [];
+  const matchLeagueOptions = (league_lists.length > 0) ? league_lists.map((item) => {
+    return { value: item.original_name_sportimo, label: item.original_name_sportimo };
+
+  }) : [];
+
+  const teamOptions = (team_lists.length > 0) ? team_lists.map((item) => {
+    return { value: item.team_id, label: item.team_name };
+  }) : [];
+
+  const playersOptions = (player_lists.length > 0) ? player_lists.map((item) => {
+    return { value: item._id, label: item.name };
+  }) : [];
+
+  const countryOptions = (country_lists.length > 0) ? country_lists.map((item) => {
+    return { value: item._id, label: item.name };
+  }) : [];
+
+
+  const selectChange = (e, type) => {
+    console.log(e.currentTarget);
+    alert(" ==jk==  " + type);
+  }
+
+  ///////select Player ///////////
+  const [plrArray, setselectedOptions] = React.useState([])
+  const handleChangePlayer = (selectedOptions) => {
+    const plrArray = [];
+    selectedOptions.map(item => plrArray.push(item.value)
+    );
+    setselectedOptions(plrArray);
+  }
+
+  ///////select Teams ///////////
+  const [teamArray, setteamOptionsarry] = React.useState([])
+  const handleChangeTeam = (teamOptionsarry) => {
+    const teamArray = [];
+    teamOptionsarry.map(item => teamArray.push(item.value)
+    );
+    setteamOptionsarry(teamArray);
+  }
+  ///////select country ///////////
+  const [countryArray, setcountryOptionsarry] = React.useState([])
+  const handleChangeCountry = (countryOptionsarry) => {
+    const countryArray = [];
+    countryOptionsarry.map(item => countryArray.push(item.label)
+    );
+    setcountryOptionsarry(countryArray);
+  }
+
+  ///////select Leagues ///////////
+  const [leaguesArray, setleaguesOptionsarry] = React.useState([])
+  const handleChangeLeagues = (leaguesOptionsarry) => {
+    const leaguesArray = [];
+    leaguesOptionsarry.map(item => leaguesArray.push(item.value)
+    );
+    setleaguesOptionsarry(leaguesArray);
+  }
+
+  ///////select Sports ///////////
+  const [sportsArray, setsportsOptionsarry] = React.useState([])
+  const handleChangeSports = (SportsOptionsarry) => {
+    const sportsArray = [];
+    SportsOptionsarry.map(item => sportsArray.push(item.label)
+    );
+
+
+    setsportsOptionsarry(sportsArray);
+  }
+
+
+
+
+
   ////////////////////////////////////////////////////////////////////
 
   const saveFormData = async (e) => {
     e.preventDefault();
 
     try {
+      
       const data = new FormData(e.target);
       let Formvlaues = Object.fromEntries(data.entries());
 
+
       Formvlaues.skip_add = skip_add;
       Formvlaues.view_type = view_type;
+      // Formvlaues.league = leaguesArray;
+      // Formvlaues.sports = sportsArray;
+      // Formvlaues.country = countryArray;
+      // Formvlaues.team = teamArray;
+      
 
       let dataToSend2 = new FormData();
       dataToSend2.append('Fdate', Formvlaues.Fdate);
       dataToSend2.append('Ldate', Formvlaues.Ldate);
-      dataToSend2.append('country', Formvlaues.country);
       dataToSend2.append('image', Formvlaues.image);
-      dataToSend2.append('league', Formvlaues.league);
       dataToSend2.append('match', Formvlaues.match);
-      dataToSend2.append('players', Formvlaues.players);
-      dataToSend2.append('skip_add', Formvlaues.skip_add);
-      dataToSend2.append('sports', Formvlaues.sports);
-      dataToSend2.append('team', Formvlaues.team);
       dataToSend2.append('view_type', Formvlaues.view_type);
+      dataToSend2.append('skip_add', Formvlaues.skip_add);
+      dataToSend2.append('league', JSON.stringify(leaguesArray));
+      dataToSend2.append('country', JSON.stringify(countryArray));
+      dataToSend2.append('sports', JSON.stringify(sportsArray));
+      dataToSend2.append('team', JSON.stringify(teamArray));
 
-
-      console.log("new values == ", dataToSend2);
-
+   
+   
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
-      let options1 = ({ headers: header });
-      // let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
-      let response = await axios.post('/web_api/add_sponsor',dataToSend2, options1);
+     // let options1 = ({ headers: header });
+     let options1 = { headers: { headers: { 'Content-Type': 'multipart/form-data' }, "token": localStorage.getItem('token') } };
+      let response = await axios.post('/web_api/add_sponsor', dataToSend2, options1);
       if (response.status) {
         let data = response.data;
         if (data.status) {
@@ -160,17 +294,12 @@ export default function AddSponsorship() {
 
                             <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Match/league</label>
-                              <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Match/league</InputLabel>
-                                <Select labelId="demo-simple-select-label" id="demo-simple-select"
-                                  MenuProps={MenuProps} name='match' value={match} label="Match/league" onChange={handleChange}>
-                                  <MenuItem value="Bali">Bali Utd vs Rans Nusantara</MenuItem>
-                                  <MenuItem value="Persija">Persija vs Persita	</MenuItem>
-                                  <MenuItem value="Dewa">Dewa United vs Arema</MenuItem>
-                                  <MenuItem value="Football">Football</MenuItem>
-                                </Select>
-                                {/* <FormHelperText>Without label</FormHelperText> */}
-                              </FormControl>
+                              <Select 
+                                    closeMenuOnSelect={true}
+                                    name="match"
+                                    options={matchLeagueOptions}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select" />
                             </div>
 
                             <div className="col-lg-12">
@@ -242,20 +371,65 @@ export default function AddSponsorship() {
                               <label className="title-col mb-3">Sponsorship Targeting</label>
                               <div className="row">
 
-                                <SelectTageting />
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select Sports</span>
+                                  <Select isMulti
+                                    closeMenuOnSelect={false}
+                                    name="sports"
+                                    options={sportOptions}
+                                    onChange={handleChangeSports}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select" />
+                                </div>
+
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select League</span>
+                                  <Select isMulti
+                                    closeMenuOnSelect={false}
+                                    name="leagues"
+                                    options={leagueOptions}
+                                    onChange={handleChangeLeagues}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select" />
+                                </div>
+
+                                <div className="col-lg-6 reletive mb-4">
+                                  <span className='react-select-title'>Select Team</span>
+                                  <Select isMulti
+                                    closeMenuOnSelect={false}
+                                    name="teams"
+                                    options={teamOptions}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select"
+                                    onChange={handleChangeTeam}
+                                  />
+                                </div>
+
+               
+                                <div className="col-lg-12  mb-4">
+                                  <label className="title-col mb-2">Targeted Country</label>
+                                </div>
+                                <div className='reletive col-lg-12'>
+                                  <span className='react-select-title'>Select Country</span>
+
+                                  <Select isMulti
+                                    closeMenuOnSelect={false}
+                                    name="country"
+                                    options={countryOptions}
+                                    onChange={handleChangeCountry}
+                                    className="basic-multi-select"
+                                    classNamePrefix="select" />
+                                </div>
+
 
 
                               </div>
                             </div>
 
-
                             <div className="col-lg-12 text-end">
                               <Button type='submit' variant="contained" className="mr-3 btn-pd">Submit</Button>
                               <Button type='reset' variant="contained" className="btn btn-dark btn-pd">Reset</Button>
                             </div>
-
-
-
 
                           </div>
                         </form>

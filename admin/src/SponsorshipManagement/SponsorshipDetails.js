@@ -102,13 +102,13 @@ function SponsorshipDetails() {
 
                                                         <div className="col-lg-3 mb-3">
                                                         <label className="title-col mb-2">Impressions</label>
-                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" defaultValue="20" variant="filled"
+                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].allData.impressions_count } variant="filled"
                                                               InputProps={{ readOnly: true, }} />
                                                         </div>
 
                                                         <div className="col-lg-3 mb-3">
                                                         <label className="title-col mb-2">Clicks</label>
-                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" defaultValue="40" variant="filled"
+                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].allData.clicks_count } variant="filled"
                                                                 InputProps={{ readOnly: true, }} />
                                                         </div>
 
@@ -158,7 +158,7 @@ function SponsorshipDetails() {
                                                         <div className="row">
                                                             <div className="col-lg-6 mb-3">
                                                             
-                                                            <TextField  id="filled-basic" fullWidth label="Sports"  value = {sponsorData[0].sport_name || ''} 
+                                                            <TextField  id="filled-basic" fullWidth label="Sports"  value = {sponsorData[0].sports_name} 
                                                                 InputProps={{ readOnly: true, }} />
                                                                 </div>
                                                             <div className="col-lg-6 mb-3">
@@ -169,10 +169,7 @@ function SponsorshipDetails() {
                                                             <TextField id="filled-basic" fullWidth label="Team"  value = {sponsorData[0].team_name || ''} 
                                                                 InputProps={{ readOnly: true, }} />
                                                                 </div>
-                                                            <div className="col-lg-6 mb-3">
-                                                            <TextField id="filled-basic" fullWidth label="Players"  value = {sponsorData[0].players_name || ''} 
-                                                                InputProps={{ readOnly: true, }} />
-                                                                </div>
+                                                            
                                                         </div>
                                                         </div>
 
