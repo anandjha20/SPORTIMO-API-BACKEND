@@ -24,11 +24,14 @@ class Sponsorship {
       let view_type = req.body.view_type; let view_type_len = (view_type || '').length;
       let Fdate = req.body.Fdate; let Fdate_len = (Fdate || '').length;
       let Ldate = req.body.Ldate; let Ldate_len = (Ldate || '').length;
+      let league_id = req.body.league_id; let league_id_len = (league_id || '').length;
       let whr = {};
       if (match_len > 0) { whr.match = match; };
+      if (league_id_len > 0) { whr.league_id = league_id; };
       if (view_type_len > 0) { whr.view_type = view_type; };
       if (Fdate_len > 0 && Ldate_len > 0) { whr.Fdate = { $gte: Fdate }; whr.Fdate = { $lte: Ldate }; };
       let path = MyBasePath(req, res)
+      console.log(whr)
       let data = await Sponsorship_tbl.find(whr);
       data.map((item) => {
         item.image = `${path}/image/assets/sponsorship_image/${item.image}`;
@@ -43,6 +46,38 @@ class Sponsorship {
 
   }
 
+  static sponsor_list_user = async (req, res) => {
+    try {
+      let language = req.body.language;
+      let match = req.body.match; let match_len = (match || '').length;
+      let view_type = req.body.view_type; let view_type_len = (view_type || '').length;
+      let Fdate = req.body.Fdate; let Fdate_len = (Fdate || '').length;
+      let Ldate = req.body.Ldate; let Ldate_len = (Ldate || '').length;
+      let league_id = req.body.league_id; let league_id_len = (league_id || '').length;
+      let whr = {};
+      if (match_len > 0) { whr.match = match; };
+      if (league_id_len > 0) { whr.league_id = league_id; };
+      if (view_type_len > 0) { whr.view_type = view_type; };
+      if (Fdate_len > 0 && Ldate_len > 0) { whr.Fdate = { $gte: Fdate }; whr.Fdate = { $lte: Ldate }; };
+      let path = MyBasePath(req, res)
+      console.log(whr)
+      let data = await Sponsorship_tbl.find(whr);
+      if(isEmpty(data)){
+        whr.league_id = "0";
+        data=await Sponsorship_tbl.find(whr);
+      }
+      data.map((item) => {
+        item.image = `${path}/image/assets/sponsorship_image/${item.image}`;
+      })
+
+      res.status(200).send({ 'status': true, 'msg': (language == 'ar') ? "النجاح" : "success", 'body': data });
+
+    } catch (error) {
+      console.log(error);
+      res.status(200).send({ 'status': false, 'msg': (language == 'ar') ? "خطأ في الخادم" : "server error" });
+    }
+
+  }
 
   static sponsor_detail_user = async (req, res) => {
     try {
