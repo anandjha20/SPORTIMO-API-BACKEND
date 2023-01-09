@@ -169,11 +169,8 @@ export default function IntroSliderTable() {
                                                                 <thead>
                                                                     <tr>
                                                                         <th scope="col">Image</th>
-                                                                        <th scope="col">Title (English)</th>
-                                                                        <th scope="col">Title (Arabic)</th>
-                                                                        <th scope="col">Description (English)</th>
-                                                                        <th scope="col">Description (Arabic)</th>
-                                                                        <th scope="col">Date-Range</th>
+                                                                        <th scope="col">Title </th>
+                                                                        <th scope="col">Description </th>
                                                                         <th scope="col" className="text-end">Actions</th>
                                                                     </tr>
                                                                 </thead>
@@ -181,7 +178,7 @@ export default function IntroSliderTable() {
                                                                     {data == '' ? <>
                                                                         <tr>
                                                                             <td className="text-center" colSpan='6'>
-                                                                                <img src="/assets/images/nodatafound.png" alt='no image' width="350px" /> </td>
+                                                                            <span className="text-center">No slider available!</span> </td>
                                                                         </tr>
                                                                     </> : null}
                                                                     {data.map((item) => {
@@ -189,10 +186,7 @@ export default function IntroSliderTable() {
                                                                             <tr key={item._id}>
                                                                                 <td><div className="imageSlider"><img src={item.image} alt="slider img" /></div></td>
                                                                                 <td>{item.title}</td>
-                                                                                <td>{item.title_ara}</td>
                                                                                 <td>{item.description}</td>
-                                                                                <td>{item.description_ara}</td>
-                                                                                <td>{formatDate} To <br></br>{totDate}</td>
                                                                                 <td className="text-end">
                                                                                     <div className="d-flex justtify-content-end">
                                                                                         <IconButton onClick={(e) => { viewFun(item._id); }} aria-label="delete"> <span className="material-symbols-outlined">

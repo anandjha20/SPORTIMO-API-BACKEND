@@ -84,6 +84,7 @@ const token_check =  require('../middleware/token_check');
     router.get('/sponsor_detail/:id?',SponsorshipController.sponsor_detail);
     router.put('/update_sponsor/:id?',sponsorImgUpload,SponsorshipController.update_sponsor);
     router.delete('/delete_sponsor/:id?',SponsorshipController.delete_sponsor);
+    router.put('/sponsor_active_status_update/:id?',SponsorshipController.sponsor_active_status_update);
 
        
  // FAQ section Routes 

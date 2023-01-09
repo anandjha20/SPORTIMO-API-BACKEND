@@ -21,7 +21,7 @@ export default function IntroSliderImg() {
             document.body.className = "main-body leftmenu";
         }
     }, []);
-
+    const navigate = useNavigate();
     const [data, setData] = useState([])
     const [catView, setCat] = useState([])
     const [open, setOpen] = useState(false);
@@ -43,9 +43,11 @@ export default function IntroSliderImg() {
         dataToSend2.append('description', Formvlaues.description);
         dataToSend2.append('title_ara', Formvlaues.title_ara);
         dataToSend2.append('description_ara', Formvlaues.description_ara);
+        dataToSend2.append('title_fr', Formvlaues.title_fr);
+        dataToSend2.append('description_fr', Formvlaues.description_fr);
         dataToSend2.append('image', Formvlaues.image);
-        dataToSend2.append('from_date', Formvlaues.from_date);
-        dataToSend2.append('to_date', Formvlaues.to_date);
+        // dataToSend2.append('from_date', Formvlaues.from_date);
+        // dataToSend2.append('to_date', Formvlaues.to_date);
 
         console.log(Formvlaues);
         axios.post(`/web_api/introSlider_add`, dataToSend2, options1)
@@ -56,7 +58,10 @@ export default function IntroSliderImg() {
                     if (data.status) {
                         toast.success(data.msg);
                         //e.target.reset();
-                      
+                        const timer = setTimeout(() => {
+                            navigate(`/intro-slider`);
+                         }, 2000);
+                       
                     } else {
                         toast.error('something went wrong please try again');
                     }
@@ -134,6 +139,13 @@ export default function IntroSliderImg() {
                                                     </div>
 
                                                     <div className="col-lg-12 mb-4 p-0">
+                                                         <label className="title-col">Title <span className="text-blue">(French)</span></label>
+                                                         <input  id="categor" autoComplete="off" className="form-control mb-4" name="title_fr"
+                                                            type="text"
+                                                            />
+                                                    </div>
+
+                                                    <div className="col-lg-12 mb-4 p-0">
                                                        <label className="title-col">Description <span className="text-blue">(English)</span></label>
                                                         <TextField id="filled-multiline-static" name='description' label="Enter Description" multiline rows={4} fullWidth variant="filled" />
                                                     </div>
@@ -146,12 +158,17 @@ export default function IntroSliderImg() {
                                                         <TextField id="filled-multiline-static" name='description_ara' label="Enter Description" multiline rows={4} fullWidth variant="filled" />
                                                     </div>
 
+                                                    <div className="col-lg-12 mb-4 p-0">
+                                                       <label className="title-col">Description <span className="text-blue">(French)</span></label>
+                                                        <TextField id="filled-multiline-static" name='description_fr' label="Enter Description" multiline rows={4} fullWidth variant="filled" />
+                                                    </div>
+
                                                     <div className="col-lg-12 mb-4  p-0">
                                                         <label className="title-col">File Upload</label>
                                                         <input type="file" name='image' className="form-control file-input" />
                                                     </div>
 
-                                                    <div className="col-lg-12 mb-4 p-0">
+                                                    {/* <div className="col-lg-12 mb-4 p-0">
                                                     <label className="title-col mb-3">Date-Range</label>
                                                         <div className="row">
                                                             <div className="col-lg-6">
@@ -168,7 +185,7 @@ export default function IntroSliderImg() {
                                                             
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
 
                                                     <div className="mt-3">
                                                         <Button type='submit' className="mr-3 btn-pd btnBg">Add</Button>

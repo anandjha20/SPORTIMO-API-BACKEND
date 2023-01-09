@@ -253,15 +253,15 @@ class UserController {
   
               ///////////////////////////////////////////////////////////////////////////////      
              let myobjs = { token};
-              user_tbl.findOneAndUpdate({user_type: 5,device_id,is_deleted :{$ne : 1}},{$set : myobjs},{new: true}, (err, updatedUser) => {
-                  if(err) {  console.log(err);
-                     return  res.status(200).send({"status":false,"msg":'some errors '}) ;   
-                  }
-                 if(updatedUser){
-                                let ddsq = user_logs_add(updatedUser._id,'login');  
-                  return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
-                 }else{
-                  let add =new user_tbl({name:"guest:"+sportimo_id, user_type, date,device_id,token,otp,seq_id,firebase_token,sportimo_id:"guest:"+sportimo_id});
+            //   user_tbl.findOneAndUpdate({user_type: 5,device_id,is_deleted :{$ne : 1}},{$set : myobjs},{new: true}, (err, updatedUser) => {
+            //       if(err) {  console.log(err);
+            //          return  res.status(200).send({"status":false,"msg":'some errors '}) ;   
+            //       }
+            //      if(updatedUser){
+            //                     let ddsq = user_logs_add(updatedUser._id,'login');  
+            //       return res.status(200).json({ "status":true,"msg": "Guset user login successfully" , "body":updatedUser });
+            //      }else{
+                  let add =new user_tbl({name:"guest:"+sportimo_id, user_type, date,device_id,token,otp,seq_id,firebase_token,sportimo_id:sportimo_id});
       
                            add.save( (err, data) => {
                                 if (err) {        
@@ -274,9 +274,9 @@ class UserController {
                         
                         
                         
-                              }
+                            //  }
                  
-              });       
+             // });       
                   
               ///////////////////////////////////////////////////////////////////////////
           }else{

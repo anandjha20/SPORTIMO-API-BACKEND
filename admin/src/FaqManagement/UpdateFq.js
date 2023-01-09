@@ -73,8 +73,9 @@ function ViewFaqDetail() {
     const match = data.faq_cat_id._id;
     setData(data);
     setIdselect(Idselect);
+
     setMatch(match);
-    console.log(match);
+    console.log({match});
   }
 
 

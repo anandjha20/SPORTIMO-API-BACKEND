@@ -22,8 +22,8 @@ export default function IntroSliderDetails() {
     const navigate = useNavigate();
     const { _id } = useParams();
     const [datadetail, setDatadetail] = useState([])
-    const [formDate, setFromdate] = useState([])
-    const [toDate, setToDate] = useState([])
+    // const [formDate, setFromdate] = useState([])
+    // const [toDate, setToDate] = useState([])
 
     let token = localStorage.getItem("token");
     let header = ({ 'token': `${token}` });
@@ -34,10 +34,10 @@ export default function IntroSliderDetails() {
         await axios.post(`/web_api/introSlider_get/${_id}`)
             .then(res => {
                 const datadetail = res.data.body;
-                const formDate = res.data.body[0].from_date.substring(0, 19);
-                const toDate = res.data.body[0].to_date.substring(0, 19);
-                setFromdate(formDate)
-                setToDate(toDate)
+                // const formDate = res.data.body[0].from_date.substring(0, 19);
+                // const toDate = res.data.body[0].to_date.substring(0, 19);
+                // setFromdate(formDate)
+                // setToDate(toDate)
                 setDatadetail(datadetail);
             })
     }
@@ -59,9 +59,11 @@ export default function IntroSliderDetails() {
         dataToSend2.append('description', Formvlaues.description);
         dataToSend2.append('title_ara', Formvlaues.title_ara);
         dataToSend2.append('description_ara', Formvlaues.description_ara);
+        dataToSend2.append('title_fr', Formvlaues.title_fr);
+        dataToSend2.append('description_fr', Formvlaues.description_fr);
         dataToSend2.append('image', Formvlaues.image);
-        dataToSend2.append('from_date', Formvlaues.from_date);
-        dataToSend2.append('to_date', Formvlaues.to_date);
+        // dataToSend2.append('from_date', Formvlaues.from_date);
+        // dataToSend2.append('to_date', Formvlaues.to_date);
 
         axios.put(`/web_api/introSlider_update/${_id}`, dataToSend2, options1)
             .then(response => {
@@ -153,6 +155,14 @@ export default function IntroSliderDetails() {
 
 
                                                     <div className="col-lg-12 mb-4 p-0">
+                                                         <label className="title-col">Title <span className="text-blue">(French)</span></label>
+                                                         <input  id="categor" defaultValue={ dataShow.title_fr} autoComplete="off" className="form-control mb-4" name="title_fr"
+                                                            type="text"
+                                                            />
+                                                    </div>
+
+
+                                                    <div className="col-lg-12 mb-4 p-0">
                                                        <label className="title-col">Description <span className="text-blue">(English)</span></label>
                                                         <TextField id="filled-multiline-static" defaultValue={ dataShow.description} name='description' label="Enter Description" multiline rows={4} fullWidth variant="filled" />
                                                     </div>
@@ -160,6 +170,10 @@ export default function IntroSliderDetails() {
                                                     <div className="col-lg-12 mb-4 p-0">
                                                        <label className="title-col">Description <span className="text-blue">(Arabic)</span></label>
                                                         <TextField id="filled-multiline-static" defaultValue={ dataShow.description_ara} name='description_ara' label="Enter Description" multiline rows={4} fullWidth variant="filled" />
+                                                    </div>
+                                                    <div className="col-lg-12 mb-4 p-0">
+                                                       <label className="title-col">Description <span className="text-blue">(French)</span></label>
+                                                        <TextField id="filled-multiline-static" defaultValue={ dataShow.description_fr} name='description_fr' label="Enter Description" multiline rows={4} fullWidth variant="filled" />
                                                     </div>
                                                    
 
@@ -171,7 +185,7 @@ export default function IntroSliderDetails() {
                                                         <input type="file" name='image' className="form-control file-input"  />
                                                     </div>
 
-                                                    <div className="col-lg-12 mb-4 p-0">
+                                                    {/* <div className="col-lg-12 mb-4 p-0">
                                                     <label className="title-col mb-3">Date-Range</label>
                                                         <div className="row">
                                                             <div className="col-lg-6">
@@ -186,7 +200,7 @@ export default function IntroSliderDetails() {
                                                             
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </div> */}
 
                                                     <div className="mt-3 mb-3">
                                                         <Button type='submit' className="mr-3 btn-pd btnBg">Update</Button>

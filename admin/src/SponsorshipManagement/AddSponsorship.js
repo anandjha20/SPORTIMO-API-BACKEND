@@ -278,13 +278,13 @@ export default function AddSponsorship() {
           <div className="inner-body">
             <div className="page-header">
               <div>
-                <h2 className="main-content-title tx-24 mg-b-5">Add Sponsorship</h2>
+                <h2 className="main-content-title tx-24 mg-b-5">Add Banner</h2>
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <Link to="/home">Home</Link>
                   </li>
 
-                  <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Sponsorship</li>
+                  <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Hero Banner</li>
                 </ol>
               </div>
 
@@ -333,10 +333,10 @@ export default function AddSponsorship() {
                                 </div>
 
                                 <div className="col-lg-6 mb-3">
-                                  <label className="title-col mb-3">SPONSORSHIP TYPE</label>
+                                  <label className="title-col mb-3">Banner Type</label>
                                   <ToggleButtonGroup
                                     color="primary" name='spon_type' value={alignment} exclusive fullWidth onChange={handleChangeToggle} >
-                                    <ToggleButton onClick={(e) => setView_type('banner')} value="banner">Banner (15sec)</ToggleButton>
+                                    <ToggleButton onClick={(e) => setView_type('banner')} value="banner">Photo (15sec)</ToggleButton>
                                     <ToggleButton onClick={(e) => setView_type('video')} value="video">Video (30sec)</ToggleButton>
                                   </ToggleButtonGroup>
                                 </div>

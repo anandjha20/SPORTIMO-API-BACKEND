@@ -26,20 +26,21 @@ function SponsorshipList() {
         }
       }, []);
 
+    let token = localStorage.getItem("token");
+    let header = ({ 'token': `${token}` });
+    let options1 = ({ headers: header });
+            
+
     const [sponsor_list, setSponsor_list] = React.useState([]);
 
     const get_data = async(sendData) =>{
         try {
          
-            let token = localStorage.getItem("token");
-            let header = ({ 'token': `${token}` });
-            let options1 = ({ headers: header });
             let response = await axios.post( '/web_api/sponsor_list', sendData, options1);
     
           if (response.status) {
     
             let data = response.data;
-    
             if (data.status) {
                 setSponsor_list(data.body);
              // toast.success(data.msg);
@@ -108,23 +109,66 @@ function SponsorshipList() {
      navigate(`/sponsorship/update/${id}`);
         return false;   
     }  
+     /////////////////status update/////////////////////
+ const SponsorActiveDeactive = (_id, active_status) =>
+ { 
+            const setDataForm = { active_status : active_status } 
+             axios.put(`/web_api/sponsor_active_status_update/${_id}`, setDataForm , options1)
+              .then(res => {
+                 if (res.status) {
+                     let data = res.data;
+                     if (data.status) { 
+                         toast.success(data.msg);
+                         return get_data();
+                     } else {
+                         toast.error('something went wrong please try again');
+                     }
+                 }
+                 else {
+                     toast.error('something went wrong please try again..');
+                 }
+ 
+             })
+              
+ } 
+ 
     
     const columns =
         [
  
 
             { title: 'Match/league', field: 'match'},
-            { title: 'Sponsorship Type', field: 'type'},
+            { title: 'Banner Type',  render: rowData => {
+               return rowData.type=="banner"?"Photo":rowData.type
+            }},
             // { title: 'Fill Name', field: 'filename'},
             { title: 'Campaign  Date-Range', field: 'date'},
             { title: 'Impressions', field: 'impression'},
             { title: 'Clicks', field: 'Clicks'},
+            { title: 'Status', render: rowData => {
+                if (rowData.active_status == false) {
+                    return (
+                        <>
+                        
+                         <Button onClick={() => { SponsorActiveDeactive(rowData.id, rowData.active_status="1");}} className="mr-3 btn-pd btnBg">Active</Button>
+                        </>
+                    );
+                  }
+                  if (rowData.active_status == true) {
+                    return (
+                        <>
+                        <Button onClick={() => { SponsorActiveDeactive(rowData.id, rowData.active_status="0");}} className="mr-3 btn-pd deactive text-white">Deactive</Button>
+                        </>
+                    );
+                  }
+            }
+              },
         ]
 
     const data = sponsor_list.length>0? sponsor_list.map((item)=>{
 
        return { type : item.view_type, date : `${item.Fdate.slice(0, 10).split("-").reverse().join("-")} To  ${item.Ldate.slice(0,10).split("-").reverse().join("-")}  `, 
-                       impression : item.impressions_count, Clicks : item.clicks_count, match: item.match , id:item._id,  };
+                       impression : item.impressions_count, Clicks : item.clicks_count, match: item.match , id:item._id,active_status:item.active_status,  };
     }) :[];
 
 
@@ -137,20 +181,20 @@ function SponsorshipList() {
 
                         <div className="page-header">
                             <div>
-                                <h2 className="main-content-title tx-24 mg-b-5">Sponsorship List</h2>
+                                <h2 className="main-content-title tx-24 mg-b-5">Banner List</h2>
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
                                         <Link to="/home">Home</Link>
                                     </li>
 
-                                    <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Sponsorship</li>
+                                    <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Hero Banner</li>
                                 </ol>
                             </div>
                             <div className="d-flex">
                           
                                 <div className="justify-content-center">
                                     <Link to="/sponsorship/add">
-                                        <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add  Sponsorship</Button>
+                                        <Button type='button' variant="contained" className="mr-3 btn-pd btnBg"><i className="fas fa-plus"></i>&nbsp;&nbsp; Add Hero Banner</Button>
                                     </Link>
                                 </div>                              
                             </div>
@@ -164,7 +208,7 @@ function SponsorshipList() {
                 <div className="col-lg-12">
                
                     <MaterialTable
-                        title="Sponsorship List"
+                        title="Banner List"
                         columns={columns}
                         data={data}
                         actions={[
@@ -205,6 +249,7 @@ function SponsorshipList() {
                     </div>
                 </div>
             </div>
+            <ToastContainer position="top-right" />
         </>
 
     );

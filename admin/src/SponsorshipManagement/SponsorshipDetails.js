@@ -64,14 +64,14 @@ function SponsorshipDetails() {
 
                         <div className="page-header">
                             <div>
-                                <h2 className="main-content-title tx-24 mg-b-5">Sponsorship Details</h2>
+                                <h2 className="main-content-title tx-24 mg-b-5">Banner Details</h2>
 
                                 <ol className="breadcrumb">
                                     <li className="breadcrumb-item">
                                         <Link to="/home">Home</Link>
                                     </li>
 
-                                    <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Sponsorship</li>
+                                    <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Hero Banner</li>
                                 </ol>
                             </div>
 
@@ -120,8 +120,8 @@ function SponsorshipDetails() {
                                                         </div>
 
                                                         <div className="col-lg-6 mb-3">
-                                                        <label className="title-col mb-2">SPONSORSHIP TYPE</label>
-                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].view_type || ''} 
+                                                        <label className="title-col mb-2">Banner Type</label>
+                                                            <TextField id="filled-basic" fullWidth label="" className="dt-input" value = {sponsorData[0].view_type=="banner"?"Photo":sponsorData[0].view_type || ''} 
                                                                 variant="filled" InputProps={{ readOnly: true, }} />
                                                         </div>
 

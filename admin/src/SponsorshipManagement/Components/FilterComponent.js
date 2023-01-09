@@ -17,7 +17,7 @@ import Button from "@mui/material/Button";
 
  }
 const sportOptions = [
-    { value: 'banner', label: 'Banner' },
+    { value: 'banner', label: 'Photo' },
     { value: 'video', label: 'Video' },
 ]
 
@@ -35,7 +35,7 @@ const sportOptions = [
                             />
                         </div>
                         <div className="col-lg-3 reletive">
-                            <span className="react-select-title">Sponsorship Type</span>
+                            <span className="react-select-title">Banner Type</span>
                             <Select   name = 'view_type'
                                 options={sportOptions}
                                 className="basic-multi-select"

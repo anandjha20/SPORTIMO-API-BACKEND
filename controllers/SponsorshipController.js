@@ -54,7 +54,7 @@ class Sponsorship {
       let Fdate = req.body.Fdate; let Fdate_len = (Fdate || '').length;
       let Ldate = req.body.Ldate; let Ldate_len = (Ldate || '').length;
       let league_id = req.body.league_id; let league_id_len = (league_id || '').length;
-      let whr = {};
+      let whr = {active_status:1};
       if (match_len > 0) { whr.match = match; };
       if (league_id_len > 0) { whr.league_id = league_id; };
       if (view_type_len > 0) { whr.view_type = view_type; };
@@ -371,6 +371,33 @@ class Sponsorship {
 
 
   }
+
+  static sponsor_active_status_update = async (req, res) => {
+
+    try {
+
+      let id = req.params.id;
+      let active_status=req.body.active_status;
+
+      Sponsorship_tbl.findOneAndUpdate({ _id: id },{$set:{active_status:active_status}},{new:true}, (err, updatedUser) => {
+        if (err) {
+          console.log(err);
+          return res.status(200).send({ "status": false, "msg": 'An error occurred', "body": '' });
+        } else if (!isEmpty(updatedUser)) {
+          return res.status(200).send({ "status": true, "msg": 'Sponsorship status updated ', "body": updatedUser });
+        } else {
+          return res.status(200).send({ "status": false, "msg": 'Invalid Sponsorship Id ', "body": '' });
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(200).send({ "status": false, "msg": 'some errors ', "body": '' });
+
+    }
+
+
+  }
+
 
   static poll_participant = async (req, res) => {
 

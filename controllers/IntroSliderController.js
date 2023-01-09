@@ -8,17 +8,17 @@ class IntroSliderController{
    static introSlider_add = async(req,res)=>{
             try{
     let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-    let title = req.body.title;                      let title_ara = req.body.title_ara; 
-    let description = req.body.description ;         let description_ara = req.body.description_ara ;      
+    let title = req.body.title;                      let title_ara = req.body.title_ara;                  let title_fr = req.body.title_fr; 
+    let description = req.body.description ;         let description_ara = req.body.description_ara ;     let description_fr = req.body.description_fr ;      
 
-    let from_date = req.body.from_date; 
-    let to_date = req.body.to_date; 
+    // let from_date = req.body.from_date; 
+    // let to_date = req.body.to_date; 
        if(isEmpty(image) || isEmpty(title) || isEmpty(description) || isEmpty(title_ara) ||
-              isEmpty(description_ara) || isEmpty(from_date) || isEmpty(to_date) ){ 
+              isEmpty(description_ara) || isEmpty(title_fr) || isEmpty(description_fr) ){ 
             return res.status(200).send({"status":false,"msg":'All Field Reqired'}) ;     
             }  
 
-    let add = new IntroSlider_tbls({ title,description,title_ara,description_ara,image,from_date,to_date});
+    let add = new IntroSlider_tbls({ title,description,title_ara,description_ara,title_fr,description_fr,image});
                  
       let response  = await add.save();  
       if(response){
@@ -69,20 +69,20 @@ class IntroSliderController{
         try {
             let id = req.params.id ;
             let image = ((req.files) && (req.files.image != undefined ) && (req.files.image.length >0) )? req.files.image[0].filename : '';
-            let title = req.body.title;               let title_ara = req.body.title_ara ; 
-            let description = req.body.description ;  let description_ara = req.body.description_ara ;  
+            let title = req.body.title;               let title_ara = req.body.title_ara ;              let title_fr = req.body.title_fr ; 
+            let description = req.body.description ;  let description_ara = req.body.description_ara ;  let description_fr = req.body.description_fr ;  
             let from_date = req.body.from_date;     
             let to_date = req.body.to_date; 
                
-                if( isEmpty(title) || isEmpty(description) || isEmpty(title_ara) || isEmpty(description_ara) ){ 
+                if( isEmpty(title) || isEmpty(description) || isEmpty(title_ara) || isEmpty(description_ara)|| isEmpty(title_fr) || isEmpty(description_fr) ){ 
                     return res.status(200).send({"status":false,"msg":'All Field Reqired'}) ;     
                  } 
 
-                let myobj = { title,description,title_ara,description_ara};  
+                let myobj = { title,description,title_ara,description_ara,title_fr,description_fr};  
 
                  if(!isEmpty(image)){  myobj.image = image;  } 
-                 if(!isEmpty(from_date)){  myobj.from_date = from_date;} 
-                 if(!isEmpty(to_date)){  myobj.to_date = to_date;  }    
+                //  if(!isEmpty(from_date)){  myobj.from_date = from_date;} 
+                //  if(!isEmpty(to_date)){  myobj.to_date = to_date;  }    
               IntroSlider_tbls.findOneAndUpdate({_id: id},{$set : myobj },{new: true}, (err, updatedUser) => {
         if(err) {  console.log(err);
             return res.status(200).send({"status":false,"msg":'An error occurred' , "body": ''}) ;   

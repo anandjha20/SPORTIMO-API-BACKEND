@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../Header";
 import { Link } from "react-router-dom";
 import FormControl from '@mui/material/FormControl';
-import  { SelectChangeEvent } from '@mui/material/Select';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import InputLabel from '@mui/material/InputLabel';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -16,7 +16,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Select from 'react-select';
+//import Select from 'react-select';
 
 
 export default function UpdateSponsorship() {
@@ -51,7 +51,9 @@ export default function UpdateSponsorship() {
   const [view_type, setView_type] = React.useState("banner");
   const [imgpath, setImgPath] = React.useState('');
   const [selectedMatch, setSelectedMatch] = React.useState('');
-
+  const [leagueId, setMatchleagueId] = React.useState('')
+  const [leagueName, setMatchleagueName] = React.useState('')
+  
 
   const handleChangeToggle = (event) => {
     setAlignment(event.target.value);
@@ -150,13 +152,15 @@ export default function UpdateSponsorship() {
         setMatch(match);
         setMatchOpt(match1)
         setAlignment(viewType);
-        console.log(datadetail);
+        setView_type(viewType)
         const formDate = datadetail.Fdate.substring(0, 10);
         const toDate = datadetail.Ldate.substring(0, 10);
         const league_id = datadetail.league_id;
         const league_name = datadetail.league_name;
         let selectedMatchLeague={value:league_id,label:league_name}
-        setSelectedMatch(selectedMatchLeague)
+        setSelectedMatch(selectedMatchLeague);
+        setMatchleagueId(league_id);
+        setMatchleagueName(league_name);
         // const LeaguesOpt = datadetail.league;
         // const TeamOpt = datadetail.team;
         // const sportsOpt = datadetail.sports;
@@ -304,12 +308,11 @@ export default function UpdateSponsorship() {
   //   setsportsOptionsarry(sportsArray);
   // }
 
-  const [leagueId, setMatchleagueId] = React.useState()
-  const [leagueName, setMatchleagueName] = React.useState()
   const handleChangeMatchLeagues = (leaguesOptionsarry) => {
-    let league_id=leaguesOptionsarry.value;
-    let league_name=leaguesOptionsarry.label;
-    console.log({league_id,league_name})
+    let data=leaguesOptionsarry.target.value
+    let result=matchLeagueOptionsArr.filter(item=>item.value==data)
+    let league_id=result[0].value;
+    let league_name=result[0].label;
     setMatchleagueId(league_id);
     setMatchleagueName(league_name);
   }
@@ -326,13 +329,14 @@ export default function UpdateSponsorship() {
 
       Formvlaues.skip_add = skip_add;
       Formvlaues.view_type = view_type;
+      Formvlaues.match = leagueName;
       // Formvlaues.image = imgpath;
 
       let dataToSend2 = new FormData();
       dataToSend2.append('Fdate', Formvlaues.Fdate);
       dataToSend2.append('Ldate', Formvlaues.Ldate);
-      dataToSend2.append('image', Formvlaues.image);
-      dataToSend2.append('match', leagueName);
+      //dataToSend2.append('image', Formvlaues.image);
+      dataToSend2.append('match', Formvlaues.match);
       dataToSend2.append('view_type', Formvlaues.view_type);
       dataToSend2.append('skip_add', Formvlaues.skip_add);
       dataToSend2.append('league_name', leagueName);
@@ -342,26 +346,26 @@ export default function UpdateSponsorship() {
       // dataToSend2.append('sports', JSON.stringify(sportsArray));
       // dataToSend2.append('team', JSON.stringify(teamArray));
 
-      console.log("new values == ", dataToSend2);
+      console.log("new values == ", Formvlaues);
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
       let options1 = ({ headers: header });
 
-      let response = await axios.put(`/web_api/update_sponsor/${id}`, dataToSend2, options1);
-      if (response.status) {
+      // let response = await axios.put(`/web_api/update_sponsor/${id}`, dataToSend2, options1);
+      // if (response.status) {
 
-        let data = response.data;
-        if (data.status) {
-          navigate(`/sponsorship`);
-          toast.success(data.msg);
-          SponsorshipDetail();
-        } else {
-          toast.error('something went wrong please try again');
-        }
-      }
-      else {
-        toast.error('something went wrong please try again..');
-      }
+      //   let data = response.data;
+      //   if (data.status) {
+      //     navigate(`/sponsorship`);
+      //     toast.success(data.msg);
+      //     SponsorshipDetail();
+      //   } else {
+      //     toast.error('something went wrong please try again');
+      //   }
+      // }
+      // else {
+      //   toast.error('something went wrong please try again..');
+      // }
 
     } catch (err) { console.error(err); toast.error('some errror'); return false; }
 
@@ -380,13 +384,13 @@ export default function UpdateSponsorship() {
           <div className="inner-body">
             <div className="page-header">
               <div>
-                <h2 className="main-content-title tx-24 mg-b-5">Update Sponsorship</h2>
+                <h2 className="main-content-title tx-24 mg-b-5">Update Banner</h2>
                 <ol className="breadcrumb">
                   <li className="breadcrumb-item">
                     <Link to="/home">Home</Link>
                   </li>
 
-                  <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Sponsorship</li>
+                  <li className="breadcrumb-item active" aria-current="page">&nbsp;&nbsp;Hero Banner</li>
                 </ol>
               </div>
 
@@ -410,7 +414,7 @@ export default function UpdateSponsorship() {
                           <div className="row">
                           <div className="col-lg-12 mb-4">
                               <label className="title-col mb-3">Match/league</label>
-                              <Select 
+                              {/* <Select 
                                     closeMenuOnSelect={true}
                                     name="match"
                                     isClearable
@@ -418,7 +422,17 @@ export default function UpdateSponsorship() {
                                     defaultInputValue={selectedMatch}
                                     onChange={handleChangeMatchLeagues}
                                     className="basic-multi-select"
-                                    classNamePrefix="select" />
+                                    classNamePrefix="select" /> */}
+                                     <FormControl fullWidth>
+                                     <InputLabel id="demo-simple-select-label">Match/league</InputLabel>
+                                        <Select labelId="demo-simple-select-label" id="demo-simple-select" name='match' MenuProps={MenuProps} value={leagueId} label="Match/league" onChange={handleChangeMatchLeagues}>
+                                            {matchLeagueOptionsArr.map((daTa) => {
+                                                return (
+                                                    <MenuItem value={daTa.value}>{daTa.label}</MenuItem>
+                                                );
+                                            })}
+                                        </Select>
+                                    </FormControl>
                             </div>
                             <div className="col-lg-12">
                               <div className="row  mb-2 justify-space-between">
@@ -432,10 +446,10 @@ export default function UpdateSponsorship() {
                                   </ToggleButtonGroup>
                                 </div>
                                 <div className="col-lg-6 mb-3">
-                                  <label className="title-col mb-3">SPONSORSHIP TYPE</label>
+                                  <label className="title-col mb-3">Banner Type</label>
                                   <ToggleButtonGroup
                                     color="primary" name='spon_type' value={alignment} exclusive fullWidth onChange={handleChangeToggle} >
-                                    <ToggleButton onClick={(e) => setView_type('banner')} value="banner">Banner (15sec)</ToggleButton>
+                                    <ToggleButton onClick={(e) => setView_type('banner')} value="banner">Photo (15sec)</ToggleButton>
                                     <ToggleButton onClick={(e) => setView_type('video')} value="video">Video (30sec)</ToggleButton>
                                   </ToggleButtonGroup>
                                 </div>

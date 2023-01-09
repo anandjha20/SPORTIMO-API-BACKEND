@@ -437,7 +437,7 @@ class prefrenceController{
         let total_select=await user_preference.find({sport_id_mongo:item._id}).countDocuments();
         let match=item.image.match('http');
         if(item.image.length!=0 && match==null){
-          item.image=`${path}/image/assets/team_logo/${item.image}`
+          item.image=`${path}/image/assets/master/${item.image}`
         }
         
           let select=await user_preference.find({sport_id_mongo:item._id,user_id}).countDocuments()

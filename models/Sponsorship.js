@@ -32,7 +32,7 @@ const sprtschema = new Schema({
 
          active_status: { type: Boolean ,default : 1},
          impressions_count: { type: Number ,default : 0},
-        clicks_count: { type: Number ,default : 0},
+         clicks_count: { type: Number ,default : 0},
 });
 
 

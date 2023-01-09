@@ -50,7 +50,7 @@ export default function CreateTipsTricks() {
  const columns =[   
  { title: 'Tips & Tricks', field: 'tips_trick' }, 
   { title: 'Status', render: rowData => {
-    if (rowData.active_status == true) {
+    if (rowData.type == true) {
         return (
             <>
             

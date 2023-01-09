@@ -125,7 +125,7 @@ return (
 							</a>
 							 <ul className="nav-sub">
 								<li className="nav-sub-item">
-									<NavLink  to="/sponsorship" className="nav-sub-link" >Home Sponsorship</NavLink>
+									<NavLink  to="/sponsorship" className="nav-sub-link" >Hero Banner</NavLink>
 								</li>
 								<li className="nav-sub-item">
 									<NavLink  to="/loginSponsorship" className="nav-sub-link" >Login Sponsorship</NavLink>
