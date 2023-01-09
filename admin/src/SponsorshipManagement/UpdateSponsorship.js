@@ -335,7 +335,7 @@ export default function UpdateSponsorship() {
       let dataToSend2 = new FormData();
       dataToSend2.append('Fdate', Formvlaues.Fdate);
       dataToSend2.append('Ldate', Formvlaues.Ldate);
-      //dataToSend2.append('image', Formvlaues.image);
+      dataToSend2.append('image', Formvlaues.image);
       dataToSend2.append('match', Formvlaues.match);
       dataToSend2.append('view_type', Formvlaues.view_type);
       dataToSend2.append('skip_add', Formvlaues.skip_add);
