@@ -346,26 +346,26 @@ export default function UpdateSponsorship() {
       // dataToSend2.append('sports', JSON.stringify(sportsArray));
       // dataToSend2.append('team', JSON.stringify(teamArray));
 
-      console.log("new values == ", Formvlaues);
+      //console.log("new values == ", Formvlaues);
       let token = localStorage.getItem("token");
       let header = ({ 'token': `${token}` });
       let options1 = ({ headers: header });
 
-      // let response = await axios.put(`/web_api/update_sponsor/${id}`, dataToSend2, options1);
-      // if (response.status) {
+      let response = await axios.put(`/web_api/update_sponsor/${id}`, dataToSend2, options1);
+      if (response.status) {
 
-      //   let data = response.data;
-      //   if (data.status) {
-      //     navigate(`/sponsorship`);
-      //     toast.success(data.msg);
-      //     SponsorshipDetail();
-      //   } else {
-      //     toast.error('something went wrong please try again');
-      //   }
-      // }
-      // else {
-      //   toast.error('something went wrong please try again..');
-      // }
+        let data = response.data;
+        if (data.status) {
+          navigate(`/sponsorship`);
+          toast.success(data.msg);
+          SponsorshipDetail();
+        } else {
+          toast.error('something went wrong please try again');
+        }
+      }
+      else {
+        toast.error('something went wrong please try again..');
+      }
 
     } catch (err) { console.error(err); toast.error('some errror'); return false; }
 
