@@ -60,7 +60,7 @@ class Sponsorship {
       if (view_type_len > 0) { whr.view_type = view_type; };
       if (Fdate_len > 0 && Ldate_len > 0) { whr.Fdate = { $gte: Fdate }; whr.Fdate = { $lte: Ldate }; };
       let path = MyBasePath(req, res)
-      console.log(whr)
+      //console.log(whr)
       let data = await Sponsorship_tbl.find(whr);
       if(isEmpty(data)){
         whr.league_id = "0";

@@ -633,6 +633,8 @@ class AdminController {
       let rank_2to3_bonus = req.body.rank_2to3_bonus;
       let rank_4to5_bonus = req.body.rank_4to5_bonus;
       let rank_6to10_bonus = req.body.rank_6to10_bonus;
+      let default_chat_start_time = req.body.default_chat_start_time;
+      let default_chat_end_time = req.body.default_chat_end_time;
 
       if (!isEmpty(unblock_period_days)) { condition_obj = { ...condition_obj, "unblock_period_days": unblock_period_days } };
       if (!isEmpty(auto_chat_blocking)) { condition_obj = { ...condition_obj, "auto_chat_blocking": auto_chat_blocking } };
@@ -643,6 +645,8 @@ class AdminController {
       if (!isEmpty(rank_2to3_bonus)) { condition_obj = { ...condition_obj, "rank_2to3_bonus": rank_2to3_bonus } };
       if (!isEmpty(rank_4to5_bonus)) { condition_obj = { ...condition_obj, "rank_4to5_bonus": rank_4to5_bonus } };
       if (!isEmpty(rank_6to10_bonus)) { condition_obj = { ...condition_obj, "rank_6to10_bonus": rank_6to10_bonus } };
+      if (!isEmpty(default_chat_start_time)) { condition_obj = { ...condition_obj, "default_chat_start_time": default_chat_start_time } };
+      if (!isEmpty(default_chat_end_time)) { condition_obj = { ...condition_obj, "default_chat_end_time": default_chat_end_time } };
 
       if (isEmpty(condition_obj)) {
         return res.status(200).send({ "status": false, "msg": "All Field Required", "body": '' });

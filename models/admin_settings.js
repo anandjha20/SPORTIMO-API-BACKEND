@@ -14,6 +14,8 @@ const admin_settings = new Schema({
          rank_2to3_bonus: { type: Number ,default:75},
          rank_4to5_bonus: { type: Number ,default:50},
          rank_6to10_bonus: { type: Number ,default:25},
+         default_chat_start_time: { type: Number ,default:15},
+         default_chat_end_time: { type: Number ,default:15},
         
         });
 

@@ -29,8 +29,10 @@ const team_match_schema = new Schema({
              status :{type:String, default: '' },
              score_a :{type:String,default: '' }, 
              score_b :{type:String,default: '' }, 
-            venue: { type: Schema.Types.Mixed, default: {} },
-            live: { type: Schema.Types.Mixed, default: {} }
+             venue: { type: Schema.Types.Mixed, default: {} },
+             live: { type: Schema.Types.Mixed, default: {} },
+             chat_start_time: { type:String, default: "" },
+             chat_end_time: { type:String, default: "" }
          }) ;
 
 

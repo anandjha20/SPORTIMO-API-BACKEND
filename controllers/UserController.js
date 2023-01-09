@@ -35,6 +35,7 @@ const { autoincremental,sendNotificationAdd,myBlockUserIds,preferences_ar_convar
     const user_reportings = require('../models/user_reportings');
     const poll_results = require('../models/poll_result');
     const user_preference = require('../models/user_preference');
+    const admin_settings = require('../models/admin_settings');
 
 
 
@@ -1498,9 +1499,14 @@ static verify_nickName = async(req,res)=>{
              let response=await team_matches.aggregate(pipeline)
              
              let local=await getLocalDateTime({date_utc:response[0].date_utc,time_utc:response[0].time_utc,zone})
+             let default_chat_time=await admin_settings.findOne().select("default_chat_start_time default_chat_end_time");
+             console.log(default_chat_time)
              response.map((item)=>{
                 item.date_utc=local.local_date;
                 item.time_utc=local.local_time;
+                item.chat_start_time=item.chat_start_time==""?default_chat_time.default_chat_start_time.toString():item.chat_start_time;
+                item.chat_end_time=item.chat_end_time==""?default_chat_time.default_chat_end_time.toString():item.chat_end_time;
+                
              });
              
              let total_cards=await match_cards.find({"match_id":_id}).countDocuments()
