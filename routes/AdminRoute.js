@@ -28,6 +28,7 @@ const MasterImgUpload = img_upload('./assets/master', 'image');
 const predictionCardImgUpload = img_upload('./assets/predictionCard_img', 'image');
 const leagueLogoImgUpload = img_upload('./assets/league_logo', 'image');
 const teamLogoImgUpload = img_upload('./assets/team_logo', 'image');
+const badgeImgUpload = img_upload('./assets/badges', 'image');
 /// import user token middleware  
 const token_check = require('../middleware/token_check');
 
@@ -55,6 +56,7 @@ let TakeoverScreen = require("../controllers/takeoverScreenController");
 let emojiController = require("../controllers/emojiController");
 let analyticsController = require("../controllers/analyticsController");
 let prefrenceController = require("../controllers/prefrenceController");
+let rewardsController = require("../controllers/rewardsController");
 
 // admin login Routes  
 router.post('/admin_login/', AdminController.admin_login);
@@ -333,6 +335,17 @@ router.put('/update_team/:id?', teamLogoImgUpload, prefrenceController.update_te
 router.delete('/delete_custom_league/:id?', prefrenceController.delete_custom_league);
 router.put('/restore_league_logo/:id?', prefrenceController.restore_league_logo);
 router.put('/restore_team_logo/:id?', prefrenceController.restore_team_logo);
+
+//reward apis
+router.post('/reward_gamePoint_add', rewardsController.reward_gamePoint_add);
+router.put('/reward_gamePoint_update/:id?', rewardsController.reward_gamePoint_update);
+router.delete('/reward_gamePoint_delete/:id?', rewardsController.reward_gamePoint_delete);
+router.post('/reward_gamePoint_list', rewardsController.reward_gamePoint_list);
+
+router.post('/reward_badges_add', badgeImgUpload,rewardsController.reward_badges_add);
+router.put('/reward_badges_update/:id?', badgeImgUpload, rewardsController.reward_badges_update);
+router.delete('/reward_badges_delete/:id?', rewardsController.reward_badges_delete);
+router.post('/reward_badges_list', rewardsController.reward_badges_list);
 
 
 
