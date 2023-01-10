@@ -281,7 +281,7 @@ const [answerFiveFr, setAnswerFiveFr] = useState('');
   const [sportsArray, setsportsOptionsarry] = React.useState([])
   const handleChangeSports = (SportsOptionsarry) => {
     const sportsArray = [];
-    SportsOptionsarry.map(item => sportsArray.push(item.label)
+    SportsOptionsarry.map(item => sportsArray.push(item.value)
     );
    
     
