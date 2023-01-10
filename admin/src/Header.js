@@ -125,7 +125,7 @@ return (
 							</a>
 							 <ul className="nav-sub">
 								<li className="nav-sub-item">
-									<NavLink  to="/sponsorship" className="nav-sub-link" >Hero Banner</NavLink>
+									<NavLink  to="/sponsorship" className="nav-sub-link" >Home Sponsorship</NavLink>
 								</li>
 								<li className="nav-sub-item">
 									<NavLink  to="/loginSponsorship" className="nav-sub-link" >Login Sponsorship</NavLink>
@@ -291,12 +291,37 @@ return (
 							<span className="sidemenu-label">Create Emoji</span></NavLink>
 						</li> 
 
-						<li className="nav-item" >
-							<NavLink  to="/admin-setting" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
-							<i className="fe fe-settings sidemenu-icon menu-icon"></i>
-							<span className="sidemenu-label">Admin Settings</span></NavLink>
-						</li> 
+					
 						
+
+						{/* <li className="nav-item nav-link-local" onClick={handleProfile}>
+						<NavLink  to="/admin-setting" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
+							<i className="fe fe-settings sidemenu-icon menu-icon"></i>
+							<span className="sidemenu-label">Admin </span></NavLink>
+							 <ul className="nav-sub">
+								<li className="nav-sub-item">
+									<NavLink  to="/admin-setting" className="nav-sub-link" >Admin Settings</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="" className="nav-sub-link " >Admin chat</NavLink>
+								</li>
+							</ul>
+						</li> */}
+						<li className="nav-item nav-link-local" onClick={handleProfile}>
+							<a  className="nav-link with-sub cursor"><span className="shape1"></span><span className="shape2"></span><i className="fe fe-settings sidemenu-icon menu-icon"></i><span className="sidemenu-label">Settings</span><i className="angle fe fe-chevron-right"></i>
+							</a>
+							 <ul className="nav-sub">
+								<li className="nav-sub-item">
+									<NavLink  to="/admin-setting" className="nav-sub-link" >Admin Settings</NavLink>
+								</li>
+								<li className="nav-sub-item">
+									<NavLink  to="/admin_chat_settings" className="nav-sub-link " >Chat Time Settings</NavLink>
+								</li>
+							</ul>
+						</li>
+
+
+
 						<li className="nav-item" >
 							<NavLink  to="/reports" className="nav-link"><span className="shape1"></span><span className="shape2"></span>
 							<i className="fad fa-flag-alt sidemenu-icon menu-icon"></i>

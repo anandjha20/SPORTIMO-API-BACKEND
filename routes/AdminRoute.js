@@ -62,6 +62,7 @@ router.post('/admin_login/', AdminController.admin_login);
 // all poll  Routes            
 router.post('/add_poll', PollController.add_poll);
 router.post('/poll_list/:id?', token_check, PollController.poll_list);
+router.post('/poll_data_by_poll_id/:id?', token_check, PollController.poll_data_by_poll_id);
 
 router.post('/user_list/:id?', AdminController.user_list);
 router.post('/user_delete', AdminController.user_delete);

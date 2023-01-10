@@ -67,6 +67,7 @@ import UserAnalyticsMangement from "./AnalyticsMangement/UserAnalyticsMangement"
 import ReportMangement from "./ReportAnalyticsManagement/ReportManagement";
 import ReportDetail from "./ReportAnalyticsManagement/ReportDetail";
 import AddTakeoverScreen from "./SponsorshipManagement/AddTakeoverScreen";
+import ChatSettings from "./AdminSetting/chatSettings";
 
 function App() {
 
@@ -164,6 +165,8 @@ function App() {
 
         {/*Admin Setting*/} 
         <Route path="/admin-setting" element={ <AddminSetting /> } />
+        <Route path="/admin_chat_settings" element={ <ChatSettings /> } />
+        
 
         {/*Create Avatar*/} 
         <Route path="/avatar" element={ <CreateAvatar /> } />

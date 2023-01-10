@@ -24,7 +24,7 @@ function AddminSetting() {
                 let data =resp.data
                 if(data.status){
                     toast.success(data.msg)
-                    setData(data);  
+                    return userlist()  
                     
                 }else{
                     toast.error(data.msg)
@@ -106,6 +106,15 @@ function AddminSetting() {
                             <div className="col-lg-12 reletive mb-4">
                             <label className="title-col">Default Prediction Update Period</label>
                               <input type="text" className="form-control card-input"  name='default_prediction_update_period' defaultValue={data.guest_user_active_days}  fullWidth  variant="filled" autoComplete="off" />
+                            </div>   
+
+                            <div className="col-lg-12 reletive mb-4">
+                            <label className="title-col">Default Chat Start Time (Before Match Starts in minute) </label>
+                              <input type="text" className="form-control card-input"  name='default_chat_start_time' defaultValue={data.default_chat_start_time}  fullWidth  variant="filled" autoComplete="off" />
+                            </div>   
+                            <div className="col-lg-12 reletive mb-4">
+                            <label className="title-col">Default Chat End Time (After Match End in minute)</label>
+                              <input type="text" className="form-control card-input"  name='default_chat_end_time' defaultValue={data.default_chat_end_time}  fullWidth  variant="filled" autoComplete="off" />
                             </div>   
 
                             <div className="col-lg-12 text-start">
